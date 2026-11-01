@@ -478,6 +478,7 @@
     }
 
     const isGithubPagesHost = window.location.hostname.endsWith('github.io');
+    const appShareUrl = isGithubPagesHost ? `${window.location.origin}${window.location.pathname}` : 'https://bndkxbqf2g-stack.github.io/Einkaufen/';
     const stored = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } };
     const settings = stored('angebotskueche.settings', { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'] });
     let offers = [...seedOffers, ...stored('angebotskueche.customOffers', [])].map(offer => ({ validUntil: defaultOfferEnd(), source: 'Demo-Import', confidence: 'mittel', packSize: '1 Packung', ...offer }));
@@ -853,7 +854,7 @@
       if (!recipe) return;
       const text = `${recipe.title}\n\n${recipe.ingredients.map(item => `- ${item}`).join('\n')}\n\nAngebotsküche · ${marketDisplayString(recipe.store)}`;
       if (navigator.share) {
-        try { await navigator.share({ title: recipe.title, text }); showToast('Teilen-Menü geöffnet.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
+        try { await navigator.share({ title: recipe.title, text, url: appShareUrl }); showToast('Teilen-Menü geöffnet.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(text); showToast('Zutaten in die Zwischenablage kopiert.');
       } else {
@@ -866,7 +867,7 @@
       if (!recipes.length) { showToast('Keine offenen Vorschläge zum Teilen.'); return; }
       const text = recipes.map(recipe => `${recipe.title}\n${recipe.ingredients.map(item => `- ${item}`).join('\n')}`).join('\n\n');
       if (navigator.share) {
-        try { await navigator.share({ title: 'Angebotsküche · Rezeptauswahl', text }); showToast('Rezeptauswahl geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
+        try { await navigator.share({ title: 'Angebotsküche · Rezeptauswahl', text, url: appShareUrl }); showToast('Rezeptauswahl geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(text); showToast('Rezeptauswahl in die Zwischenablage kopiert.');
       } else {
@@ -879,7 +880,7 @@
       if (!recipe || !recipe.ingredients?.length) { showToast('Für dieses Rezept sind noch keine Zutaten erkannt.'); return; }
       const text = `${recipe.name}\n\n${recipe.ingredients.map(item => `- ${item}`).join('\n')}\n\nQuelle: ${recipe.source}`;
       if (navigator.share) {
-        try { await navigator.share({ title: recipe.name, text, url: recipe.url }); showToast('Lieblingsrezept geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
+        try { await navigator.share({ title: recipe.name, text, url: recipe.url || appShareUrl }); showToast('Lieblingsrezept geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(text); showToast('Lieblingsrezept in die Zwischenablage kopiert.');
       } else {
@@ -895,7 +896,7 @@
       const ingredients = [...ingredientCounts.entries()].sort((a, b) => a[0].localeCompare(b[0], 'de')).map(([ingredient, count]) => `- ${ingredient}${count > 1 ? ` · für ${count} Gerichte` : ''}`).join('\n');
       const text = `Angebotsküche · ${meals.length}-Tage-Plan\n\n${ingredients}`;
       if (navigator.share) {
-        try { await navigator.share({ title: 'Angebotsküche · Plan', text }); showToast('Plan geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
+        try { await navigator.share({ title: 'Angebotsküche · Plan', text, url: appShareUrl }); showToast('Plan geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(text); showToast('Zusammengefasste Zutaten in die Zwischenablage kopiert.');
       } else {
@@ -911,7 +912,7 @@
       const lines = [...groups.entries()].map(([group, items]) => `${marketDisplayName(group)}\n${items.map(item => `- ${item.name}${item.count > 1 ? ` · für ${item.count} Gerichte` : ''}${item.offer ? ` · ${item.offer.packSize || '1 Packung'} · ${item.offer.price}` : ' · ergänzen'}`).join('\n')}`).join('\n\n');
       const text = `Angebotsküche · offene Einkaufsliste\n\n${lines}`;
       if (navigator.share) {
-        try { await navigator.share({ title: 'Angebotsküche · Einkaufsliste', text }); showToast('Einkaufsliste geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
+        try { await navigator.share({ title: 'Angebotsküche · Einkaufsliste', text, url: appShareUrl }); showToast('Einkaufsliste geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
       } else if (navigator.clipboard) {
         try { await navigator.clipboard.writeText(text); showToast('Einkaufsliste in die Zwischenablage kopiert.'); } catch { showToast('Die Einkaufsliste konnte nicht in die Zwischenablage kopiert werden.'); }
       } else {
