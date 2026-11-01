@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: 22
       - name: Browser-Abhängigkeiten installieren
-        run: npm install --no-save playwright pdf-parse && npx playwright install --with-deps chromium
+        run: sudo apt-get update && sudo apt-get install -y tesseract-ocr tesseract-ocr-deu && npm install --no-save playwright pdf-parse && npx playwright install --with-deps chromium
       - name: Lidl-Prospekt für Zellingen auslesen
         run: node automation/lidl-offers.mjs
       - name: Aktualisierte Angebote committen
