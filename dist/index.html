@@ -307,7 +307,7 @@
     <main class="main">
       <div class="topbar">
         <div class="breadcrumb">Zellingen <span>›</span> <strong>Meine Küche</strong></div>
-        <div class="top-actions"><button class="icon-button" title="Einstellungen" aria-label="Einstellungen">⚙</button><div class="avatar">MK</div></div>
+        <div class="top-actions"><button class="icon-button" id="openSettings" title="Einstellungen" aria-label="Einstellungen">⚙</button><div class="avatar">MK</div></div>
       </div>
 
       <section class="page active" id="page-plan">
@@ -402,6 +402,10 @@
         <div class="section-grid"><section class="panel"><div class="panel-header"><div><h2 class="panel-title">Immer vorhanden</h2><p class="panel-subtitle">Diese Zutaten beeinflussen den Angebotswert nicht.</p></div></div><div class="panel-body"><div class="inventory" id="pantryList"></div></div></section><section class="panel"><div class="panel-header"><div><h2 class="panel-title">Planungsregel</h2><p class="panel-subtitle">So bleibt der Vorschlag alltagstauglich.</p></div></div><div class="panel-body"><div class="explain" style="margin:0"><h3>Grundlage + Angebotsanker</h3><p>Ein Gericht braucht mindestens einen sinnvollen Angebotsanker. Zwei starke Hauptzutaten ergeben einen Top-Treffer. Der Rest darf aus deinen Vorräten kommen oder regulär ergänzt werden.</p></div></div></section></div>
       </section>
     </main>
+  </div>
+
+  <div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+    <div class="modal"><div class="modal-header"><div><h2 id="settingsModalTitle">Verbindungen &amp; Einstellungen</h2><p>Bring wird über einen geschützten GitHub-Actions-Lauf eingebunden.</p></div><button class="close" id="closeSettings" aria-label="Schließen">×</button></div><section class="panel" style="margin:0 0 14px;box-shadow:none;border-color:var(--line)"><div class="panel-body" style="padding:15px"><div class="panel-title">Bring verbinden</div><p class="source-note" style="margin-top:8px">Die App speichert kein Bring-Passwort. Für die wöchentliche automatische Auslese meldest du dich einmal im lokalen Bring-Browser an. Die GitHub Action verwendet anschließend nur die verschlüsselte Sitzung.</p><div class="modal-actions" style="justify-content:flex-start;margin-top:14px"><a class="outline-button" href="https://web.getbring.com/" target="_blank" rel="noopener">Bring öffnen ↗</a><a class="outline-button" href="https://github.com/bndkxbqf2g-stack/Einkaufen/settings/secrets/actions" target="_blank" rel="noopener">GitHub-Secret ↗</a><button class="primary-button" id="copyBringSetup">Einrichtung kopieren</button></div><div class="source-note" id="bringConnectionStatus" style="margin-top:12px">Noch keine Bring-Sitzung bestätigt. Nach dem Einrichten zeigt der Marktstatus die Zahl der erkannten Artikel.</div></div></section><p class="source-note">Einrichtung: Im Repository-Ordner <strong>node automation/bring-login.mjs</strong> ausführen, anmelden, die erzeugte Datei als Base64-Secret <strong>BRING_STORAGE_STATE_B64</strong> hinterlegen und die lokale Sitzungsdatei danach löschen. Zugangsdaten niemals in der App oder im Repository speichern.</p><div class="modal-actions"><button class="outline-button" id="cancelSettings">Schließen</button></div></div>
   </div>
 
   <div class="modal-backdrop" id="favoriteModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -1276,6 +1280,13 @@
 
     function showToast(message) { const toast = $('#toast'); toast.textContent = message; toast.classList.add('show'); clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => toast.classList.remove('show'), 3000); }
 
+    function closeSettings() { $('#settingsModal').classList.remove('open'); }
+
+    async function copyBringSetup() {
+      const setup = 'Bring-Verbindung für Angebotsküche\n\n1. Im Repository-Ordner ausführen: node automation/bring-login.mjs\n2. Im geöffneten Bring-Browser anmelden und danach Enter drücken.\n3. bring-storage-state.json als Base64 in GitHub unter Settings → Secrets and variables → Actions als BRING_STORAGE_STATE_B64 hinterlegen.\n4. Die lokale Datei bring-storage-state.json löschen.\n\nDie App speichert kein Passwort. Die wöchentliche GitHub Action liest die Bring-Prospekte per Playwright/OCR aus und veröffentlicht die erkannte Artikelzahl.';
+      try { await navigator.clipboard.writeText(setup); $('#bringConnectionStatus').textContent = 'Einrichtungstext kopiert. Nach dem Hinterlegen des Secrets kann der Workflow gestartet werden.'; showToast('Bring-Einrichtung kopiert.'); } catch { $('#bringConnectionStatus').textContent = setup; showToast('Kopieren nicht möglich – der Einrichtungstext steht jetzt hier.'); }
+    }
+
     const backupArrayKeys = ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems'];
     const backupObjectKeys = ['shoppingChecks', 'liveOfferStatus', 'manualPlan', 'recipeRatings'];
 
@@ -1346,6 +1357,11 @@
     $('#dataFile').addEventListener('change', event => importUserData(event.target.files[0]));
     $('#cloudSave').addEventListener('click', cloudSaveData);
     $('#cloudLoad').addEventListener('click', cloudLoadData);
+    $('#openSettings').addEventListener('click', () => $('#settingsModal').classList.add('open'));
+    $('#closeSettings').addEventListener('click', closeSettings);
+    $('#cancelSettings').addEventListener('click', closeSettings);
+    $('#settingsModal').addEventListener('click', event => { if (event.target.id === 'settingsModal') closeSettings(); });
+    $('#copyBringSetup').addEventListener('click', copyBringSetup);
     $('#sharePlan').addEventListener('click', shareCurrentPlan);
     $('#shareShoppingList').addEventListener('click', shareShoppingList);
     $('#checkAllShopping').addEventListener('click', () => { getShoppingItems().forEach(item => { shoppingChecks[item.id] = true; }); localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks)); renderShoppingList(); showToast('Alle aktuellen Einkaufsartikel abgehakt.'); });
