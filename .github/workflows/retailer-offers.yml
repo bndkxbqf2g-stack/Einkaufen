@@ -1,0 +1,66 @@
+name: Aldi, Kaufland, EDEKA und Netto Angebote aktualisieren
+
+on:
+  workflow_dispatch:
+    inputs:
+      market:
+        description: Markt für den Einzelabruf
+        required: true
+        default: alle
+        type: choice
+        options:
+          - alle
+          - Aldi
+          - Kaufland
+          - EDEKA
+          - Netto
+  schedule:
+    - cron: '45 4 * * 0'
+  push:
+    branches: [main]
+    paths:
+      - automation/retailer-offers.mjs
+      - .github/workflows/retailer-offers.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: retailer-offers
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+      - name: Node.js einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Browser für geschützte Händlerseiten installieren
+        run: npm install --no-save playwright && npx playwright install --with-deps chromium
+      - name: Offizielle Angebotsseiten auslesen
+        env:
+          SELECTED_MARKET: ${{ inputs.market || 'alle' }}
+        run: |
+          set -uo pipefail
+          if [ "$SELECTED_MARKET" = "alle" ]; then
+            for market in Aldi Kaufland EDEKA Netto; do
+              if ! node automation/retailer-offers.mjs "$market"; then
+                echo "::warning::${market} konnte in diesem Lauf nicht aktualisiert werden; der letzte gültige Stand bleibt erhalten."
+              fi
+            done
+          else
+            node automation/retailer-offers.mjs "$SELECTED_MARKET"
+          fi
+      - name: Aktualisierte Angebote committen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add generated/*-offers.json
+          git diff --cached --quiet || git commit -m "Update retailer offers for Zellingen"
+          git push
+
