@@ -5,9 +5,13 @@ import { existsSync } from 'node:fs';
 const operaCandidates = [
   process.env.OPERA_PATH,
   `${process.env.LOCALAPPDATA || ''}\\Programs\\Opera\\opera.exe`,
+  `${process.env.LOCALAPPDATA || ''}\\Programs\\Opera\\launcher.exe`,
   `${process.env.LOCALAPPDATA || ''}\\Programs\\Opera GX\\opera.exe`,
+  `${process.env.LOCALAPPDATA || ''}\\Programs\\Opera GX\\launcher.exe`,
   `${process.env.ProgramFiles || ''}\\Opera\\opera.exe`,
+  `${process.env.ProgramFiles || ''}\\Opera\\launcher.exe`,
   `${process.env.ProgramFiles || ''}\\Opera GX\\opera.exe`,
+  `${process.env.ProgramFiles || ''}\\Opera GX\\launcher.exe`,
 ].filter(Boolean);
 const operaPath = operaCandidates.find(existsSync);
 if (!operaPath) {
