@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Mirror static entry files
         run: |
@@ -31,6 +33,7 @@ jobs:
           cp dist/sw.js sw.js
 
       - name: Commit mirrored files
+        shell: bash
         run: |
           if git diff --quiet -- index.html manifest.json sw.js; then
             echo "Root files are already current."
@@ -40,4 +43,15 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html manifest.json sw.js
           git commit -m "Sync GitHub Pages root with dist"
-          git push
+          for attempt in 1 2 3 4 5; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Push race detected; retrying in ${attempt}s."
+            sleep "${attempt}"
+            git fetch origin main
+            git rebase origin/main
+          done
+          echo "Could not update the GitHub Pages root after five attempts."
+          exit 1
+
