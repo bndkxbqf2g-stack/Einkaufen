@@ -1,0 +1,55 @@
+{
+  "market": "EDEKA",
+  "sourceUrl": "https://www.edeka.de/angebote/",
+  "store": "Region Zellingen",
+  "fetchedAt": "2026-11-01T13:10:10.790Z",
+  "validUntil": "08.11.2026",
+  "parser": "edeka-github-actions-v1",
+  "offers": [
+    {
+      "name": "Himbeeren",
+      "price": "2,99 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 78,
+      "note": "offizielle Händlerseite",
+      "validUntil": "08.11.2026"
+    },
+    {
+      "name": "Géramont",
+      "price": "1,99 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 78,
+      "note": "offizielle Händlerseite",
+      "validUntil": "08.11.2026"
+    },
+    {
+      "name": "FRoSTA Pfannengericht",
+      "price": "2,22 €",
+      "saving": "-38%",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 78,
+      "note": "offizielle Händlerseite",
+      "validUntil": "08.11.2026"
+    },
+    {
+      "name": "albi Fruchtsaft oder Nektar",
+      "price": "1,11 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 78,
+      "note": "offizielle Händlerseite",
+      "validUntil": "08.11.2026"
+    }
+  ]
+}
+
