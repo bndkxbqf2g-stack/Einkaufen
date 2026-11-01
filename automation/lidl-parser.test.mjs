@@ -8,4 +8,5 @@ assert.equal(offers.length, 2);
 assert.equal(offers[0].name, 'Pfanni Speisekartoffeln');
 assert.equal(offers[0].price, '2,49 €');
 assert.equal(offers[1].name, 'Müller Joghurt mit der Ecke');
+assert.equal(parseLidlOfferText('ZUSTIMMEN Lohnt sich 2,11 €\nFüllung: reine Wolle 6,99 €').length, 0);
 console.log('Lidl parser checks passed');

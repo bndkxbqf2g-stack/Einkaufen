@@ -1,6 +1,7 @@
 const DATE_PATTERN = /(?:gültig\s+(?:von|ab)\s+)?(\d{1,2})\.(\d{1,2})\.(\d{4})?\s*(?:bis|–|-)\s*(\d{1,2})\.(\d{1,2})\.(\d{4})?/i;
 const PRICE_PATTERN = /(?:nur\s+|ab\s+)?(\d{1,3}[.,]\d{2})\s*(?:€|EUR|\*)?/i;
 const NON_FOOD_PATTERN = /\b(wc|toilet|spül|wasch|shampoo|kosmetik|werkzeug|garten|bekleidung|schuh|auto|akku|drucker|spielzeug|matratze|bettwäsche|tierfutter|smartphone|fernseher|werkbank)\b/i;
+const FOOD_HINT_PATTERN = /(apfel|banan|birn|beeren|obst|gemüse|kartoff|tomat|paprika|gurke|salat|zwiebel|knoblauch|karott|möhre|brokk|blumenkohl|spinat|fleisch|hack|rind|schwein|hähn|chicken|wurst|salami|schinken|speck|fisch|lachs|thun|joghurt|almighurt|milch|sahne|butter|käse|quark|eier?\b|brot|bröt|toast|mehl|reis|nudel|pasta|pizza|pommes|suppe|sauce|soße|fertiggericht|müsli|cerealien|cornflakes|schokolade|hanuta|kakao|keks|chips|snack|erdnuss|nuss|konfitüre|marmelade|kaffee|tee|saft|wasser|limonade|cola|bier|wein)/i;
 const HEADER_PATTERN = /^(?:lidl|angebote|aktionsprospekt|prospekt|filiale|image|gültig|seite|zurück|weiter|alle angebote|wähle|wochenangebote)\b/i;
 const DETAIL_PATTERN = /^(?:[-–]?\s*\d{1,3}\s*%|\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml|St\.?|Stück)|(?:nur|ab)\s+\d+[.,]\d{2})$/i;
 
@@ -32,7 +33,7 @@ function cleanName(value) {
 }
 
 function likelyFood(name) {
-  return name.length >= 3 && !NON_FOOD_PATTERN.test(name) && !HEADER_PATTERN.test(name);
+  return name.length >= 4 && /[A-Za-zÄÖÜäöüß]{4}/.test(name) && FOOD_HINT_PATTERN.test(name) && !NON_FOOD_PATTERN.test(name) && !HEADER_PATTERN.test(name);
 }
 
 function packSize(text) {
