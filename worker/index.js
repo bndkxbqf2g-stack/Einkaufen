@@ -36,7 +36,7 @@ function syncUserId(request) {
 function validSyncPayload(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload) || payload.version !== 1) return false;
   const arrays = ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems'];
-  const objects = ['settings', 'shoppingChecks', 'liveOfferStatus'];
+  const objects = ['settings', 'shoppingChecks', 'liveOfferStatus', 'manualPlan', 'recipeRatings'];
   if (arrays.some(key => payload[key] !== undefined && (!Array.isArray(payload[key]) || payload[key].length > 5000))) return false;
   if (objects.some(key => payload[key] !== undefined && (!payload[key] || typeof payload[key] !== 'object' || Array.isArray(payload[key])))) return false;
   return true;
@@ -366,3 +366,4 @@ export default {
     return new Response(page, { headers: { 'content-type': 'text/html; charset=utf-8' } });
   },
 };
+
