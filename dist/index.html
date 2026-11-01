@@ -114,6 +114,20 @@
     .meal-meta { display: flex; flex-wrap: wrap; gap: 7px 12px; margin-top: 6px; color: var(--ink-soft); font-size: 11px; }
     .meal-meta b { color: var(--ink); }
     .meal-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .recipe-preview { margin-top: 9px; }
+    .recipe-preview-label { display: block; margin-bottom: 5px; color: var(--ink-soft); font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+    .recipe-preview-list { display: flex; flex-wrap: wrap; gap: 5px; }
+    .recipe-preview-list .ingredient { padding: 4px 6px; font-size: 9px; }
+    .day-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
+    .plan-suggestions { margin-top: 18px; grid-column: 1 / -1; }
+    .plan-suggestion-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .plan-suggestion-card { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--line); border-radius: 13px; background: #fffefa; }
+    .plan-suggestion-card .catalog-name { margin-top: 0; }
+    .plan-suggestion-card .suggestion-reason { min-height: 31px; }
+    .manual-choice { color: var(--green-2); font-size: 9px; font-weight: 850; }
+    .rating-choice { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; }
+    .rating-choice button { padding: 10px 4px; border: 1px solid var(--line); border-radius: 9px; color: var(--ink); background: #fbfcf8; font-size: 11px; font-weight: 850; }
+    .rating-choice button:hover { border-color: var(--green-2); background: var(--mint); }
     .tag { padding: 4px 7px; border-radius: 5px; color: var(--green-2); background: var(--mint); font-size: 10px; font-weight: 750; }
     .tag.yellow { color: #916f13; background: #fff0bc; }
     .tag.muted { color: var(--ink-soft); background: #eff2ec; }
@@ -257,6 +271,7 @@
       .side-stack { grid-template-columns: 1fr; }
       .catalog { grid-template-columns: 1fr 1fr; }
       .suggestion-grid { grid-template-columns: 1fr; }
+      .plan-suggestion-strip { grid-template-columns: 1fr; }
       .shopping-summary { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 420px) {
@@ -322,7 +337,7 @@
               <div class="filters">
                 <label class="filter">Personen <select id="peopleSelect"><option>2</option><option>3</option><option>4</option></select></label>
                 <label class="filter">Tage <select id="daysSelect"><option value="5">5</option><option value="4">4</option></select></label>
-                <label class="filter">Max. Märkte <select id="marketsSelect"><option value="2">2</option><option value="1">1</option><option value="3">3</option></select></label>
+                <label class="filter">Max. Märkte <select id="marketsSelect"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></label>
                 <button class="filter" id="openMarkets" type="button">Märkte wählen&nbsp;⌄</button>
                 <label class="filter filter-toggle">Reste einplanen <span class="switch"><input id="leftoverToggle" type="checkbox" checked><span class="slider"></span></span></label>
                 <label class="filter filter-toggle">Abends optional <span class="switch"><input id="eveningToggle" type="checkbox" checked><span class="slider"></span></span></label>
@@ -330,6 +345,11 @@
               <div class="source-note" id="pinnedNote" style="margin-bottom:6px"></div><div class="source-note" id="leftoverNote" style="margin-bottom:12px"></div>
               <div class="day-list" id="dayList"></div>
             </div>
+          </section>
+
+          <section class="panel plan-suggestions">
+            <div class="panel-header"><div><h2 class="panel-title">Rezeptvorschläge</h2><p class="panel-subtitle">Du entscheidest selbst, was an welchem Tag gegessen wird.</p></div><button class="text-button" data-page-link="suggestions">Alle Vorschläge&nbsp;→</button></div>
+            <div class="panel-body"><div class="plan-suggestion-strip" id="planSuggestionStrip"></div></div>
           </section>
 
           <div class="side-stack">
@@ -392,6 +412,12 @@
   </div>
   <div class="modal-backdrop" id="marketModal" role="dialog" aria-modal="true" aria-labelledby="marketModalTitle">
     <div class="modal"><div class="modal-header"><div><h2 id="marketModalTitle">Deine Märkte</h2><p>Wähle die Filialen, die bei der Angebotsplanung berücksichtigt werden. Das Marktlimit begrenzt weiterhin die tatsächlichen Stopps pro Plan.</p></div><button class="close" id="closeMarketModal" aria-label="Schließen">×</button></div><div class="market-list" id="marketChoices"></div><div class="modal-actions"><button class="outline-button" id="cancelMarketModal">Abbrechen</button><button class="primary-button" id="saveMarkets">Märkte speichern</button></div></div>
+  </div>
+  <div class="modal-backdrop" id="assignModal" role="dialog" aria-modal="true" aria-labelledby="assignModalTitle">
+    <div class="modal"><div class="modal-header"><div><h2 id="assignModalTitle">Rezept einem Tag zuordnen</h2><p id="assignRecipeLabel">Wähle selbst, wann dieses Rezept gekocht wird. Eine bestehende Auswahl für den Tag wird ersetzt.</p></div><button class="close" id="closeAssignModal" aria-label="Schließen">×</button></div><label class="source-note" for="assignDaySelect">Tag</label><select class="input" id="assignDaySelect"></select><div class="source-note" id="assignStatus" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelAssignModal">Abbrechen</button><button class="primary-button" id="saveDayAssignment">Rezept zuordnen</button></div></div>
+  </div>
+  <div class="modal-backdrop" id="ratingModal" role="dialog" aria-modal="true" aria-labelledby="ratingModalTitle">
+    <div class="modal"><div class="modal-header"><div><h2 id="ratingModalTitle">Wie war das Rezept?</h2><p id="ratingRecipeLabel">Deine Bewertung bleibt lokal gespeichert und hilft dir später bei der Auswahl.</p></div><button class="close" id="closeRatingModal" aria-label="Schließen">×</button></div><div class="rating-choice" id="ratingChoices"><button data-rating="1">★</button><button data-rating="2">★★</button><button data-rating="3">★★★</button><button data-rating="4">★★★★</button><button data-rating="5">★★★★★</button></div><div class="source-note" style="margin-top:10px">1 = nicht wieder · 5 = unbedingt wieder</div></div>
   </div>
   <div class="modal-backdrop" id="pantryModal" role="dialog" aria-modal="true" aria-labelledby="pantryModalTitle">
     <div class="modal"><div class="modal-header"><div><h2 id="pantryModalTitle">Vorrat ergänzen</h2><p>Diese Zutat wird bei Angebotsmatches, Kosten und der Einkaufsliste als vorhanden behandelt.</p></div><button class="close" id="closePantryModal" aria-label="Schließen">×</button></div><label class="source-note" for="pantryInput">Zutat</label><input class="input" id="pantryInput" maxlength="60" placeholder="z. B. Haferflocken oder Tomatenmark" autocomplete="off"><div class="source-note" id="pantryStatus" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelPantryModal">Abbrechen</button><button class="primary-button" id="savePantryItem">Vorrat speichern</button></div></div>
@@ -460,6 +486,10 @@
     let pinnedRecipes = stored('angebotskueche.pinnedRecipes', []);
     let shoppingChecks = stored('angebotskueche.shoppingChecks', {});
     let manualShoppingItems = stored('angebotskueche.manualShoppingItems', []);
+    let manualPlan = stored('angebotskueche.manualPlan', {});
+    let recipeRatings = stored('angebotskueche.recipeRatings', {});
+    if (!manualPlan || typeof manualPlan !== 'object' || Array.isArray(manualPlan)) manualPlan = {};
+    if (!recipeRatings || typeof recipeRatings !== 'object' || Array.isArray(recipeRatings)) recipeRatings = {};
     if (!Array.isArray(manualShoppingItems)) manualShoppingItems = [];
     manualShoppingItems = manualShoppingItems.filter(item => item && typeof item.name === 'string' && item.name.trim()).map(item => ({ id: String(item.id || `manual-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`), name: item.name.trim() }));
     if (!shoppingChecks || typeof shoppingChecks !== 'object' || Array.isArray(shoppingChecks)) shoppingChecks = {};
@@ -577,7 +607,7 @@
     }
 
     async function refreshOfficialOffers() {
-      const selected = sortedSelectedMarkets().filter(name => liveOfferMarkets.has(name));
+      const selected = sortedSelectedMarkets().filter(name => liveOfferMarkets.has(name)).slice(0, Number($('#marketsSelect').value || settings.markets || 2));
       if (!selected.length) { showToast('Für die ausgewählten Märkte ist derzeit kein stabiler Live-Adapter verfügbar.'); return; }
       const button = $('#refreshOfficialOffers');
       button.disabled = true;
@@ -652,13 +682,76 @@
       $('#pinnedNote').textContent = pinnedLabels.length ? `Vorgemerkt und bevorzugt: ${pinnedLabels.join(' · ')}.` : 'Noch keine zusätzlichen Rezepte vorgemerkt.';
       const reused = [...new Set(visible.flatMap(meal => meal.reusedIngredients || []))];
       $('#leftoverNote').textContent = reused.length ? `Restelogik aktiv: ${reused.slice(0, 3).join(' · ')} werden in mehreren Gerichten weiterverwendet.` : 'Noch keine sinnvolle Zutatenüberschneidung für die Resteverwertung erkannt.';
-      $('#dayList').innerHTML = visible.map((meal, index) => `
+      $('#dayList').innerHTML = visible.map((meal, index) => { const rating = recipeRatings[mealRatingKey(meal)]?.rating; return `
         <article class="day-card ${index === 0 ? 'today' : ''}">
           <div class="day-date">${index === 0 ? '<span class="today-tag">Heute</span>' : ''}<span class="day-name">${escapeHtml(meal.day)}</span><small>${escapeHtml(meal.date)}</small></div>
-          <div class="meal-row"><div class="meal-emoji ${meal.kind === 'warm' ? 'warm' : ''}">${escapeHtml(meal.emoji)}</div><div class="meal-info"><div class="meal-type">${meal.kind === 'warm' ? 'Warmes Hauptgericht' : 'Abendessen'}</div><div class="meal-title">${escapeHtml(meal.title)}</div><div class="meal-meta"><span>für <b>${people} Personen</b></span><span>ca. <b>${(parseFloat(meal.cost.replace(',', '.')) * multiplier).toFixed(2).replace('.', ',')} €</b></span><span>${escapeHtml(marketDisplayString(meal.store))}</span></div><div class="meal-tags">${meal.tags.map((tag, tagIndex) => `<span class="tag ${tagIndex === 1 ? 'yellow' : ''}">${escapeHtml(tag)}</span>`).join('')}</div></div></div>
-          <div class="day-score"><div class="score"><span class="score-ring" style="background:conic-gradient(var(--green-2) 0 ${meal.score}%, #e1ece2 ${meal.score}% 100%)"><span>${meal.score}</span></span> Match</div><button class="text-button meal-detail" data-title="${escapeHtml(meal.title)}" data-note="${escapeHtml(meal.note)}">Details&nbsp;→</button></div>
-        </article>`).join('') + (evening ? `<div class="day-card" style="background:#f4f8f1;border-style:dashed"><div class="day-date"><span class="day-name">Abends</span><small>optional</small></div><div class="meal-row"><div class="meal-emoji">🍞</div><div class="meal-info"><div class="meal-type">Leichtes Abendessen</div><div class="meal-title">${leftovers ? 'Brotzeit oder Restetag' : 'Brotzeit mit Vorräten'}</div><div class="meal-meta"><span>kein extra Angebotsstopp nötig</span></div></div></div><div class="day-score"><span class="tag muted">flexibel</span></div></div>` : '');
+          <div class="meal-row"><div class="meal-emoji ${meal.kind === 'warm' ? 'warm' : ''}">${escapeHtml(meal.emoji)}</div><div class="meal-info"><div class="meal-type">${meal.kind === 'warm' ? 'Warmes Hauptgericht' : 'Abendessen'}${meal.manual ? '<span class="manual-choice">· deine Auswahl</span>' : ''}</div><div class="meal-title">${escapeHtml(meal.title)}</div><div class="meal-meta"><span>für <b>${people} Personen</b></span><span>ca. <b>${(parseFloat(meal.cost.replace(',', '.')) * multiplier).toFixed(2).replace('.', ',')} €</b></span><span>${escapeHtml(marketDisplayString(meal.store))}</span></div><div class="meal-tags">${meal.tags.map((tag, tagIndex) => `<span class="tag ${tagIndex === 1 ? 'yellow' : ''}">${escapeHtml(tag)}</span>`).join('')}</div><div class="recipe-preview"><span class="recipe-preview-label">Rezept · Zutaten</span><div class="recipe-preview-list">${getMealIngredients(meal).slice(0, 6).map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('') || '<span class="source-note">Zutaten noch nicht hinterlegt</span>'}</div></div></div></div>
+          <div class="day-score"><div class="score"><span class="score-ring" style="background:conic-gradient(var(--green-2) 0 ${meal.score}%, #e1ece2 ${meal.score}% 100%)"><span>${meal.score}</span></span> Match</div><div class="day-actions"><button class="text-button meal-detail" data-title="${escapeHtml(meal.title)}" data-note="${escapeHtml(meal.note)}">Details&nbsp;→</button><button class="small-button" data-choose-day="${index}">Rezept wählen</button>${meal.manual ? `<button class="small-button remove" data-clear-day="${index}">Auswahl lösen</button>` : ''}<button class="small-button" data-rate-meal="${index}">${rating ? `Bewertet: ${'★'.repeat(rating)}` : 'Gekocht? Bewerten'}</button></div></div>
+        </article>`; }).join('') + (evening ? `<div class="day-card" style="background:#f4f8f1;border-style:dashed"><div class="day-date"><span class="day-name">Abends</span><small>optional</small></div><div class="meal-row"><div class="meal-emoji">🍞</div><div class="meal-info"><div class="meal-type">Leichtes Abendessen</div><div class="meal-title">${leftovers ? 'Brotzeit oder Restetag' : 'Brotzeit mit Vorräten'}</div><div class="meal-meta"><span>kein extra Angebotsstopp nötig</span></div></div></div><div class="day-score"><span class="tag muted">flexibel</span></div></div>` : '');
+      renderPlanSuggestions();
       renderShoppingList();
+    }
+
+    function renderPlanSuggestions() {
+      const candidates = getPlanCandidates().slice(0, 3);
+      $('#planSuggestionStrip').innerHTML = candidates.length ? candidates.map(recipe => {
+        const match = scoreRecipe(recipe);
+        const assignedDay = Object.entries(manualPlan).find(([, id]) => id === recipe.id)?.[0];
+        const ingredients = (recipe.ingredients || []).slice(0, 4);
+        const favorite = isRecipeFavorite(recipe);
+        return `<article class="plan-suggestion-card"><div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(recipe.emoji)}</div><span class="favorite-match">${escapeHtml(match.score)}%</span></div><div class="catalog-name">${escapeHtml(recipe.title)}</div><div class="suggestion-reason">${escapeHtml(match.reason || 'Passender Angebotsanker')}</div><div class="suggestion-ingredients">${ingredients.map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('')}</div>${assignedDay !== undefined ? `<div class="manual-choice">Für Tag ${Number(assignedDay) + 1} ausgewählt</div>` : ''}<div class="suggestion-actions"><button class="small-button primary" data-assign-recipe="${escapeHtml(recipe.id)}">${assignedDay !== undefined ? 'Tag ändern' : 'Für Tag auswählen'}</button><button class="small-button ${favorite ? '' : 'primary'}" data-favorite-recipe="${escapeHtml(recipe.id)}">${favorite ? '✓ In Favoriten' : '♡ Favorit'}</button></div></article>`;
+      }).join('') : '<div class="empty-state">Für deine Auswahl sind gerade keine Rezeptvorschläge verfügbar.</div>';
+    }
+
+    let assignmentRecipeId = '';
+
+    function openAssignModal(recipeId, dayIndex = null) {
+      const candidate = getPlanCandidateById(recipeId);
+      if (!candidate) { showToast('Dieses Rezept ist nicht mehr verfügbar.'); return; }
+      assignmentRecipeId = candidate.id;
+      const days = Number($('#daysSelect').value);
+      const preferred = dayIndex === null ? Object.keys(manualPlan).find(key => manualPlan[key] === candidate.id) : String(dayIndex);
+      $('#assignRecipeLabel').textContent = `${candidate.title} · Wähle selbst, wann dieses Rezept gekocht wird.`;
+      $('#assignDaySelect').innerHTML = Array.from({ length: days }, (_, index) => {
+        const date = getPlanDateInfo(index);
+        const current = getPlanCandidateById(manualPlan[String(index)]);
+        const currentLabel = current && current.id !== candidate.id ? ` · aktuell: ${current.title}` : '';
+        return `<option value="${index}" ${preferred === String(index) ? 'selected' : ''}>${index === 0 ? 'Heute' : date.day} · ${date.short}${escapeHtml(currentLabel)}</option>`;
+      }).join('');
+      $('#assignStatus').textContent = preferred !== undefined ? 'Die bisherige Zuordnung wird vorausgewählt.' : 'Ein Tag ohne feste Auswahl wird vorausgewählt.';
+      $('#assignModal').classList.add('open');
+    }
+
+    function closeAssignModal() {
+      $('#assignModal').classList.remove('open');
+      assignmentRecipeId = '';
+    }
+
+    let ratingMealKey = '';
+
+    function mealRatingKey(meal) {
+      return String(meal.recipeId || meal.title || '').trim();
+    }
+
+    function openRatingModal(meal) {
+      ratingMealKey = mealRatingKey(meal);
+      if (!ratingMealKey) return;
+      $('#ratingRecipeLabel').textContent = `${meal.title} · Wie hat es euch geschmeckt? Deine Bewertung bleibt lokal gespeichert.`;
+      $('#ratingModal').classList.add('open');
+    }
+
+    function closeRatingModal() {
+      $('#ratingModal').classList.remove('open');
+      ratingMealKey = '';
+    }
+
+    function saveRecipeRating(rating) {
+      if (!ratingMealKey) return;
+      recipeRatings[ratingMealKey] = { rating: Number(rating), ratedAt: new Date().toISOString() };
+      localStorage.setItem('angebotskueche.recipeRatings', JSON.stringify(recipeRatings));
+      closeRatingModal();
+      renderPlan();
+      showToast('Bewertung gespeichert – danke!');
     }
 
     function shoppingIngredientKey(ingredient) {
@@ -750,7 +843,7 @@
       const candidates = suggestionSeed.filter(recipe => !dismissedRecipes.includes(recipe.id)).filter(recipe => filter === 'all' || (filter === 'vegetarian' && recipe.vegetarian) || (filter === 'quick' && recipe.time <= 30)).sort((a, b) => scoreRecipe(b).score - scoreRecipe(a).score);
       $('#restoreDismissed').style.display = dismissedRecipes.length ? 'inline-flex' : 'none';
       if (!candidates.length) { $('#suggestionGrid').innerHTML = '<div class="empty-state">Für diesen Filter sind keine weiteren Vorschläge offen.</div>'; return; }
-      $('#suggestionGrid').innerHTML = candidates.map(recipe => { const pinned = pinnedRecipes.includes(recipe.id); const match = scoreRecipe(recipe); const evidence = match.requiredIngredients.length ? `${match.matchedIngredients.length}/${match.requiredIngredients.length} Angebotszutaten` : 'Zutatenanalyse ausstehend'; return `<article class="suggestion-card"><div class="suggestion-head"><div><div class="catalog-icon">${escapeHtml(recipe.emoji)}</div><div class="suggestion-title">${escapeHtml(recipe.title)}</div></div><span class="favorite-match">${escapeHtml(match.score)}% Match</span></div><div class="suggestion-reason">${escapeHtml(match.reason || 'Noch kein direkter Angebotsanker')} · ${escapeHtml(marketDisplayString(match.store || 'mehrere Märkte'))}</div><div class="source-note">${escapeHtml(evidence)} · Vorrat wird nicht gewertet</div><div class="meal-tags">${recipe.tags.map((tag, index) => `<span class="tag ${index === 0 && recipe.vegetarian ? '' : 'yellow'}">${escapeHtml(tag)}</span>`).join('')}</div><div class="suggestion-ingredients">${recipe.ingredients.map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('')}</div><div class="suggestion-actions"><button class="small-button ${pinned ? '' : 'primary'}" data-plan-recipe="${recipe.id}">${pinned ? '✓ Vorgemerkt' : '＋ Für Plan merken'}</button><button class="small-button" data-share-recipe="${recipe.id}">↗ Teilen</button><button class="small-button remove" data-dismiss-recipe="${recipe.id}">Nicht mehr vorschlagen</button></div></article>`; }).join('');
+      $('#suggestionGrid').innerHTML = candidates.map(recipe => { const pinned = pinnedRecipes.includes(recipe.id); const favorite = isRecipeFavorite(recipe); const match = scoreRecipe(recipe); const evidence = match.requiredIngredients.length ? `${match.matchedIngredients.length}/${match.requiredIngredients.length} Angebotszutaten` : 'Zutatenanalyse ausstehend'; return `<article class="suggestion-card"><div class="suggestion-head"><div><div class="catalog-icon">${escapeHtml(recipe.emoji)}</div><div class="suggestion-title">${escapeHtml(recipe.title)}</div></div><span class="favorite-match">${escapeHtml(match.score)}% Match</span></div><div class="suggestion-reason">${escapeHtml(match.reason || 'Noch kein direkter Angebotsanker')} · ${escapeHtml(marketDisplayString(match.store || 'mehrere Märkte'))}</div><div class="source-note">${escapeHtml(evidence)} · Vorrat wird nicht gewertet</div><div class="meal-tags">${recipe.tags.map((tag, index) => `<span class="tag ${index === 0 && recipe.vegetarian ? '' : 'yellow'}">${escapeHtml(tag)}</span>`).join('')}</div><div class="suggestion-ingredients">${recipe.ingredients.map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('')}</div><div class="suggestion-actions"><button class="small-button primary" data-assign-recipe="${recipe.id}">Für Tag auswählen</button><button class="small-button ${favorite ? '' : 'primary'}" data-favorite-recipe="${recipe.id}">${favorite ? '✓ In Favoriten' : '♡ In Favoriten'}</button><button class="small-button ${pinned ? '' : 'primary'}" data-plan-recipe="${recipe.id}">${pinned ? '✓ Vorgemerkt' : '＋ Für Plan merken'}</button><button class="small-button" data-share-recipe="${recipe.id}">↗ Teilen</button><button class="small-button remove" data-dismiss-recipe="${recipe.id}">Nicht mehr vorschlagen</button></div></article>`; }).join('');
     }
 
     async function shareRecipe(id) {
@@ -917,30 +1010,98 @@
         .sort((a, b) => (scoreRecipe(b).score + (b.favorite ? 4 : 0)) - (scoreRecipe(a).score + (a.favorite ? 4 : 0)));
     }
 
+    function getPlanCandidateById(id, candidates = getPlanCandidates()) {
+      return candidates.find(recipe => recipe.id === id) || null;
+    }
+
+    function isRecipeFavorite(recipe) {
+      return favorites.some(item => normalizeIngredient(item.name) === normalizeIngredient(recipe.title));
+    }
+
+    function saveRecipeToFavorites(recipeId) {
+      const recipe = getPlanCandidateById(recipeId);
+      if (!recipe) return;
+      if (isRecipeFavorite(recipe)) { showToast(`${recipe.title} ist bereits in deinen Favoriten.`); return; }
+      favorites.push({ name: recipe.title, icon: recipe.emoji || '🥘', source: recipe.source || 'Angebotsküche', match: recipe.reason || 'Aus deinen Rezeptvorschlägen', score: recipe.score || 0, note: `${recipe.time || 30} Min. · aus Rezeptvorschlag`, ingredients: [...(recipe.ingredients || [])] });
+      localStorage.setItem('angebotskueche.favorites', JSON.stringify(favorites));
+      renderFavorites();
+      renderSuggestions();
+      renderPlan();
+      showToast(`${recipe.title} wurde in Favoriten gespeichert.`);
+    }
+
+    function assignRecipeToDay(recipeId, dayIndex) {
+      const candidate = getPlanCandidateById(recipeId);
+      const index = Number(dayIndex);
+      const days = Number($('#daysSelect').value);
+      if (!candidate || !Number.isInteger(index) || index < 0 || index >= days) return false;
+      Object.keys(manualPlan).forEach(key => { if (manualPlan[key] === candidate.id) delete manualPlan[key]; });
+      manualPlan[String(index)] = candidate.id;
+      localStorage.setItem('angebotskueche.manualPlan', JSON.stringify(manualPlan));
+      return true;
+    }
+
+    function clearDayAssignment(dayIndex) {
+      delete manualPlan[String(dayIndex)];
+      localStorage.setItem('angebotskueche.manualPlan', JSON.stringify(manualPlan));
+    }
+
     function suggestionAsMeal(recipe, index) {
       const template = planBase[index] || planBase[0];
       const match = scoreRecipe(recipe);
       const store = match.store || recipe.store || 'mehrere Märkte';
       const pinned = pinnedRecipes.includes(recipe.id);
-      return { ...template, title: recipe.title, emoji: recipe.emoji, store: store.split(' + ')[0], cost: estimateMealCost(recipe, template.cost), score: match.score, tags: [...(recipe.tags || []), ...(recipe.favorite ? ['Lieblingsrezept'] : []), pinned ? 'vorgemerkt' : 'Angebotsanker'], note: match.reason || 'Passender Angebotsanker gefunden', main: normalizeIngredient(recipe.ingredients?.[0] || recipe.title), profile: recipe.favorite ? 'Lieblingsrezept' : template.profile || 'Angebotsrezept', vegetarian: recipe.vegetarian, ingredients: recipe.ingredients };
+      return { ...template, recipeId: recipe.id, title: recipe.title, emoji: recipe.emoji, store: store.split(' + ')[0], cost: estimateMealCost(recipe, template.cost), score: match.score, tags: [...(recipe.tags || []), ...(recipe.favorite ? ['Lieblingsrezept'] : []), pinned ? 'vorgemerkt' : 'Angebotsanker'], note: match.reason || 'Passender Angebotsanker gefunden', main: normalizeIngredient(recipe.ingredients?.[0] || recipe.title), profile: recipe.favorite ? 'Lieblingsrezept' : template.profile || 'Angebotsrezept', vegetarian: recipe.vegetarian, ingredients: recipe.ingredients };
     }
 
     function getCurrentPlanMeals() {
       const days = Number($('#daysSelect').value);
       const planCandidates = getPlanCandidates();
-      const pinnedMeals = pinnedRecipes.map(id => planCandidates.find(recipe => recipe.id === id)).filter(Boolean).map((recipe, index) => suggestionAsMeal(recipe, index));
-      const pinnedTitles = new Set(pinnedMeals.map(meal => meal.title));
-      const usedMains = new Set(pinnedMeals.map(meal => meal.main));
-      const selected = [...pinnedMeals];
-      for (const recipe of getPlanCandidates()) {
-        if (selected.length >= days || pinnedTitles.has(recipe.title)) continue;
+      const selected = Array(days).fill(null);
+      const usedIds = new Set();
+      const usedTitles = new Set();
+      const usedMains = new Set();
+      Object.entries(manualPlan).forEach(([dayIndex, recipeId]) => {
+        const index = Number(dayIndex);
+        const recipe = getPlanCandidateById(recipeId, planCandidates);
+        if (!recipe || !Number.isInteger(index) || index < 0 || index >= days || selected[index]) return;
+        const meal = suggestionAsMeal(recipe, index);
+        selected[index] = { ...meal, manual: true, tags: [...meal.tags, 'manuell gewählt'] };
+        usedIds.add(recipe.id);
+        usedTitles.add(recipe.title);
+        usedMains.add(meal.main);
+      });
+      for (const recipeId of pinnedRecipes) {
+        const recipe = getPlanCandidateById(recipeId, planCandidates);
+        if (!recipe || usedIds.has(recipe.id)) continue;
+        const index = selected.findIndex(meal => !meal);
+        if (index < 0) break;
+        const meal = suggestionAsMeal(recipe, index);
+        selected[index] = meal;
+        usedIds.add(recipe.id);
+        usedTitles.add(recipe.title);
+        usedMains.add(meal.main);
+      }
+      for (const recipe of planCandidates) {
+        if (usedIds.has(recipe.id)) continue;
+        const index = selected.findIndex(meal => !meal);
+        if (index < 0) break;
         const main = normalizeIngredient(recipe.ingredients?.[0] || recipe.title);
-        if (usedMains.has(main) && selected.length < days - 1) continue;
-        selected.push(suggestionAsMeal(recipe, selected.length));
+        if (usedMains.has(main) && selected.filter(Boolean).length < days - 1) continue;
+        const meal = suggestionAsMeal(recipe, index);
+        selected[index] = meal;
+        usedIds.add(recipe.id);
+        usedTitles.add(recipe.title);
         usedMains.add(main);
       }
-      const fallback = planBase.filter(meal => !selected.some(item => item.title === meal.title));
-      const dated = [...selected, ...fallback].slice(0, days).map((meal, index) => { const date = getPlanDateInfo(index); return { ...meal, day: date.day, date: date.short }; });
+      const fallback = planBase.filter(meal => !usedTitles.has(meal.title));
+      let fallbackIndex = 0;
+      for (let index = 0; index < days; index += 1) {
+        if (selected[index]) continue;
+        selected[index] = fallback[fallbackIndex] || planBase[index] || planBase[0];
+        fallbackIndex += 1;
+      }
+      const dated = selected.slice(0, days).map((meal, index) => { const date = getPlanDateInfo(index); return { ...meal, day: date.day, date: date.short }; });
       return applyLeftoverPlan(dated);
     }
 
@@ -1100,10 +1261,10 @@
     function showToast(message) { const toast = $('#toast'); toast.textContent = message; toast.classList.add('show'); clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => toast.classList.remove('show'), 3000); }
 
     const backupArrayKeys = ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems'];
-    const backupObjectKeys = ['shoppingChecks', 'liveOfferStatus'];
+    const backupObjectKeys = ['shoppingChecks', 'liveOfferStatus', 'manualPlan', 'recipeRatings'];
 
     function buildUserDataPayload() {
-      return { version: 1, exportedAt: new Date().toISOString(), settings: stored('angebotskueche.settings', settings), pantry: stored('angebotskueche.pantry', pantry), favorites: stored('angebotskueche.favorites', favorites), dismissedRecipes: stored('angebotskueche.dismissedRecipes', dismissedRecipes), pinnedRecipes: stored('angebotskueche.pinnedRecipes', pinnedRecipes), customOffers: stored('angebotskueche.customOffers', []), shoppingChecks: stored('angebotskueche.shoppingChecks', shoppingChecks), manualShoppingItems: stored('angebotskueche.manualShoppingItems', manualShoppingItems), liveOfferStatus: stored('angebotskueche.liveOfferStatus', liveOfferStatus) };
+      return { version: 1, exportedAt: new Date().toISOString(), settings: stored('angebotskueche.settings', settings), pantry: stored('angebotskueche.pantry', pantry), favorites: stored('angebotskueche.favorites', favorites), dismissedRecipes: stored('angebotskueche.dismissedRecipes', dismissedRecipes), pinnedRecipes: stored('angebotskueche.pinnedRecipes', pinnedRecipes), customOffers: stored('angebotskueche.customOffers', []), shoppingChecks: stored('angebotskueche.shoppingChecks', shoppingChecks), manualShoppingItems: stored('angebotskueche.manualShoppingItems', manualShoppingItems), liveOfferStatus: stored('angebotskueche.liveOfferStatus', liveOfferStatus), manualPlan: stored('angebotskueche.manualPlan', manualPlan), recipeRatings: stored('angebotskueche.recipeRatings', recipeRatings) };
     }
 
     function validateUserDataPayload(payload) {
@@ -1196,10 +1357,15 @@
       const dismiss = event.target.closest('[data-dismiss-recipe]');
       const share = event.target.closest('[data-share-recipe]');
       const plan = event.target.closest('[data-plan-recipe]');
+      const assign = event.target.closest('[data-assign-recipe]');
+      const favorite = event.target.closest('[data-favorite-recipe]');
       if (dismiss) { dismissedRecipes = [...new Set([...dismissedRecipes, dismiss.dataset.dismissRecipe])]; pinnedRecipes = pinnedRecipes.filter(item => item !== dismiss.dataset.dismissRecipe); localStorage.setItem('angebotskueche.dismissedRecipes', JSON.stringify(dismissedRecipes)); localStorage.setItem('angebotskueche.pinnedRecipes', JSON.stringify(pinnedRecipes)); renderSuggestions(); renderPlan(); showToast('Rezept ausgeblendet und künftig nicht mehr vorgeschlagen.'); }
       if (share) shareRecipe(share.dataset.shareRecipe);
+      if (assign) openAssignModal(assign.dataset.assignRecipe);
+      if (favorite) saveRecipeToFavorites(favorite.dataset.favoriteRecipe);
       if (plan) { const id = plan.dataset.planRecipe; pinnedRecipes = pinnedRecipes.includes(id) ? pinnedRecipes.filter(item => item !== id) : [...pinnedRecipes, id]; localStorage.setItem('angebotskueche.pinnedRecipes', JSON.stringify(pinnedRecipes)); renderSuggestions(); renderPlan(); showToast(pinnedRecipes.includes(id) ? 'Rezept für die nächste Planberechnung vorgemerkt.' : 'Rezept aus den Vormerkungen entfernt.'); }
     });
+    $('#planSuggestionStrip').addEventListener('click', event => { const assign = event.target.closest('[data-assign-recipe]'); const favorite = event.target.closest('[data-favorite-recipe]'); if (assign) openAssignModal(assign.dataset.assignRecipe); if (favorite) saveRecipeToFavorites(favorite.dataset.favoriteRecipe); });
     $('#favoriteCatalog').addEventListener('click', event => {
       const share = event.target.closest('[data-share-favorite]');
       const plan = event.target.closest('[data-plan-favorite]');
@@ -1231,7 +1397,36 @@
     $('#cancelMarketModal').addEventListener('click', () => $('#marketModal').classList.remove('open'));
     $('#marketModal').addEventListener('click', event => { if (event.target.id === 'marketModal') event.currentTarget.classList.remove('open'); });
     $('#saveMarkets').addEventListener('click', () => { const selected = $$('[data-market-choice]:checked').map(input => input.value); if (!selected.length) { showToast('Bitte mindestens einen Markt auswählen.'); return; } settings.selectedMarkets = selected; persistSettings(); renderMarkets(); renderPlan(); renderSourceStatus(); renderOffers($('#offerFilter').value); $('#marketModal').classList.remove('open'); showToast(`${selected.length} Märkte gespeichert.`); });
-    $$('#dayList').forEach(list => list.addEventListener('click', event => event.target.closest('.meal-detail') && showToast(`${event.target.closest('.meal-detail').dataset.title}: ${event.target.closest('.meal-detail').dataset.note}.`)));
+    $('#dayList').addEventListener('click', event => {
+      const detail = event.target.closest('.meal-detail');
+      const choose = event.target.closest('[data-choose-day]');
+      const clear = event.target.closest('[data-clear-day]');
+      const rate = event.target.closest('[data-rate-meal]');
+      if (detail) showToast(`${detail.dataset.title}: ${detail.dataset.note}.`);
+      if (choose) {
+        const meal = getCurrentPlanMeals()[Number(choose.dataset.chooseDay)];
+        const recipe = getPlanCandidates().find(candidate => candidate.title === meal?.title);
+        if (recipe) openAssignModal(recipe.id, choose.dataset.chooseDay);
+        else showToast('Für diesen Tag ist keine auswählbare Rezeptquelle hinterlegt.');
+      }
+      if (clear) { clearDayAssignment(clear.dataset.clearDay); renderPlan(); renderSuggestions(); showToast('Die manuelle Tagesauswahl wurde gelöst.'); }
+      if (rate) { const meal = getCurrentPlanMeals()[Number(rate.dataset.rateMeal)]; if (meal) openRatingModal(meal); }
+    });
+    $('#closeAssignModal').addEventListener('click', closeAssignModal);
+    $('#cancelAssignModal').addEventListener('click', closeAssignModal);
+    $('#assignModal').addEventListener('click', event => { if (event.target.id === 'assignModal') closeAssignModal(); });
+    $('#saveDayAssignment').addEventListener('click', () => {
+      if (!assignmentRecipeId || !assignRecipeToDay(assignmentRecipeId, $('#assignDaySelect').value)) { showToast('Rezept konnte diesem Tag nicht zugeordnet werden.'); return; }
+      const title = getPlanCandidateById(assignmentRecipeId)?.title || 'Rezept';
+      const dayLabel = $('#assignDaySelect').selectedOptions[0]?.textContent || 'Tag';
+      closeAssignModal();
+      renderPlan();
+      renderSuggestions();
+      showToast(`${title} für ${dayLabel.split(' · ')[0]} ausgewählt.`);
+    });
+    $('#closeRatingModal').addEventListener('click', closeRatingModal);
+    $('#ratingModal').addEventListener('click', event => { if (event.target.id === 'ratingModal') closeRatingModal(); });
+    $('#ratingChoices').addEventListener('click', event => { const choice = event.target.closest('[data-rating]'); if (choice) saveRecipeRating(choice.dataset.rating); });
     $('#openFavorite').addEventListener('click', () => $('#favoriteModal').classList.add('open'));
     $('#closeModal').addEventListener('click', () => $('#favoriteModal').classList.remove('open'));
     $('#cancelModal').addEventListener('click', () => $('#favoriteModal').classList.remove('open'));
@@ -1315,3 +1510,4 @@
   </script>
 </body>
 </html>
+
