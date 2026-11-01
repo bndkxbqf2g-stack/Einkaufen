@@ -387,7 +387,7 @@
       <section class="page" id="page-offers">
         <div class="hero"><div><div class="eyebrow"><span></span> Angebotsradar</div><h1>Was lohnt sich<br><em style="font-style:normal;color:var(--coral)">diese Woche?</em></h1><p class="hero-copy">Alle relevanten Angebote aus deinen ausgewählten Märkten – normalisiert, bewertet und mit passenden Rezepten verbunden.</p></div><div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap"><button class="outline-button" id="refreshOfficialOffers">↻&nbsp; Offizielle Quellen prüfen</button><button class="primary-button" id="openOfferImport">＋&nbsp; Angebote importieren</button></div></div>
         <div class="panel"><div class="panel-header"><div><h2 class="panel-title">Angebote in deiner Nähe</h2><p class="panel-subtitle">Demo-Daten, bestätigte Live-Importe und eigene Importe · nur gültige Angebote</p></div><label class="filter">Markt <select id="offerFilter"><option value="all">Alle Märkte</option><option>Aldi</option><option value="Kaufland">Kaufland Würzburg</option><option>Lidl</option><option>EDEKA</option><option>Penny</option><option>Netto</option><option>Marktkauf Tüngersheim</option></select></label></div><div class="panel-body"><div class="catalog" id="offerCatalog"></div></div></div>
-        <section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Datenquellen &amp; Filialstatus</h2><p class="panel-subtitle">Damit klar bleibt, woher ein Angebot kommt.</p></div><button class="text-button" id="openMarketsFromSources">Filialen wählen&nbsp;→</button></div><div class="panel-body"><div class="source-status-grid" id="sourceStatusList"></div><div class="source-note" style="margin-top:12px">ALDI SÜD, Kaufland, EDEKA, Lidl und Netto können über offizielle bzw. automatisch geprüfte Quellen geprüft werden. Penny und Marktkauf bleiben mit manuellem Import nutzbar. Abgelaufene Angebote werden automatisch ausgeblendet.</div></div></section>
+        <section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Datenquellen &amp; Filialstatus</h2><p class="panel-subtitle">Damit klar bleibt, woher ein Angebot kommt.</p></div><button class="text-button" id="openMarketsFromSources">Filialen wählen&nbsp;→</button></div><div class="panel-body"><div class="source-status-grid" id="sourceStatusList"></div><div class="source-note" style="margin-top:12px">Auf GitHub Pages wird Lidl aus dem GitHub-Actions-Datensatz geladen. Aldi, Kaufland, EDEKA und Netto benötigen für den direkten Quellenabruf ein App-Backend; Penny und Marktkauf bleiben per manuellem Import nutzbar. Abgelaufene Angebote werden automatisch ausgeblendet.</div></div></section>
         <section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Importe pflegen</h2><p class="panel-subtitle">Ungültige oder abgelaufene Fallback-Daten bleiben nicht unbemerkt.</p></div><button class="outline-button" id="clearExpiredOffers" disabled>Abgelaufene entfernen</button></div><div class="panel-body"><div class="source-note" id="offerMaintenanceNote">Noch keine eigenen Angebote importiert.</div></div></section>
       </section>
 
@@ -477,6 +477,7 @@
       return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
     }
 
+    const isGithubPagesHost = window.location.hostname.endsWith('github.io');
     const stored = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } };
     const settings = stored('angebotskueche.settings', { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'] });
     let offers = [...seedOffers, ...stored('angebotskueche.customOffers', [])].map(offer => ({ validUntil: defaultOfferEnd(), source: 'Demo-Import', confidence: 'mittel', packSize: '1 Packung', ...offer }));
@@ -568,7 +569,7 @@
         const activeLabel = activeMarkets.includes(name) ? 'für Planung aktiv' : selected.includes(name) ? 'ausgewählt, über dem Stopplimit' : 'nicht ausgewählt';
         const live = liveOfferStatus[name];
         const offerLabel = count === 1 ? '1 gültiges Angebot' : count ? `${count} gültige Angebote` : 'manueller Import';
-        const sourceLabel = live?.count ? `Live geprüft · ${live.count} Treffer` : live?.error ? 'Live-Prüfung fehlgeschlagen' : liveOfferMarkets.has(name) ? 'Live-Quelle verfügbar' : 'manueller Import';
+        const sourceLabel = live?.count ? `${isGithubPagesHost && name === 'Lidl' ? 'GitHub-Workflow geprüft' : 'Live geprüft'} · ${live.count} Treffer` : live?.error ? 'Live-Prüfung fehlgeschlagen' : isGithubPagesHost && name !== 'Lidl' && liveOfferMarkets.has(name) ? 'Nur mit App-Backend live prüfbar' : liveOfferMarkets.has(name) ? 'Live-Quelle verfügbar' : 'manueller Import';
         return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(details.logo)}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(details.distance)} · ${activeLabel}</div><div class="source-note">${escapeHtml(sourceLabel)}${live?.fetchedAt ? ` · ${escapeHtml(new Date(live.fetchedAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }))}` : ''}</div>${details.source ? `<a class="source-note" href="${escapeHtml(details.source)}" target="_blank" rel="noopener">Offizielle Angebote öffnen ↗</a>` : ''}</div></div><span class="market-count">${offerLabel}</span></div>`;
       }).join('');
     }
@@ -607,14 +608,15 @@
     }
 
     async function refreshOfficialOffers() {
-      const selected = sortedSelectedMarkets().filter(name => liveOfferMarkets.has(name)).slice(0, Number($('#marketsSelect').value || settings.markets || 2));
+      const selected = sortedSelectedMarkets().filter(name => liveOfferMarkets.has(name) && (!isGithubPagesHost || name === 'Lidl')).slice(0, Number($('#marketsSelect').value || settings.markets || 2));
       if (!selected.length) { showToast('Für die ausgewählten Märkte ist derzeit kein stabiler Live-Adapter verfügbar.'); return; }
       const button = $('#refreshOfficialOffers');
       button.disabled = true;
       button.textContent = '↻ Quellen werden geprüft …';
       const fetched = await Promise.all(selected.map(async market => {
         try {
-          const response = await fetch(`/api/offers?market=${encodeURIComponent(market)}`, { headers: { accept: 'application/json' } });
+          const sourcePath = isGithubPagesHost && market === 'Lidl' ? './generated/lidl-offers.json' : `/api/offers?market=${encodeURIComponent(market)}`;
+          const response = await fetch(sourcePath, { headers: { accept: 'application/json' } });
           const payload = await response.json();
           if (!response.ok || !Array.isArray(payload.offers)) throw new Error(payload.error || 'Keine verwertbaren Angebote');
           return { market, payload };
@@ -1258,6 +1260,17 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function configureGithubPages() {
+      if (!isGithubPagesHost) return;
+      ['cloudSave', 'cloudLoad'].forEach(id => {
+        const button = $(`#${id}`);
+        button.disabled = true;
+        button.title = 'Auf GitHub Pages ist kein serverseitiger Cloud-Speicher verfügbar.';
+      });
+      $('#cloudSave').textContent = '☁ Cloud nur im App-Backend';
+      $('#cloudLoad').textContent = '☁ Cloud nur im App-Backend';
+    }
+
     function showToast(message) { const toast = $('#toast'); toast.textContent = message; toast.classList.add('show'); clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => toast.classList.remove('show'), 3000); }
 
     const backupArrayKeys = ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems'];
@@ -1504,6 +1517,7 @@
       showToast(`${imported.length} Angebot${imported.length === 1 ? '' : 'e'} übernommen${details ? ` · ${details}` : ''}.`);
     });
 
+    configureGithubPages();
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
     renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderOffers(); renderFavorites(); renderPantry(); renderSourceStatus();
     if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
