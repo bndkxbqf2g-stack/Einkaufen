@@ -12,3 +12,9 @@ Der GitHub-Actions-Workflow `.github/workflows/lidl-offers.yml` öffnet den offi
 
 Manuell starten: GitHub → Actions → **Lidl-Angebote aktualisieren** oder **Aldi, Kaufland, EDEKA und Netto Angebote aktualisieren** → **Run workflow**.
 
+## Bring-Prospekte
+
+Der Workflow `.github/workflows/bring-offers.yml` öffnet die Bring-Web-App in einem Playwright-Browser, wählt den konfigurierten Ort, lädt sichtbare Prospektbilder und liest Lebensmittelangebote per Tesseract-OCR aus. Er läuft sonntags und schreibt die erkannte Artikelzahl nach `generated/bring-offers.json`.
+
+Für den eingeloggten Abruf muss im öffentlichen Repository unter **Settings → Secrets and variables → Actions** das Secret `BRING_STORAGE_STATE_B64` hinterlegt werden. Es enthält nur einen verschlüsselten Playwright-Storage-State, niemals das Passwort. Optional kann die Repository-Variable `BRING_BROCHURE_URLS` zeilenweise geteilte Bring-Prospektlinks enthalten. Ohne Sitzung oder Links bricht der Workflow kontrolliert ab und erzeugt keine erfundenen Angebote.
+
