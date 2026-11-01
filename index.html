@@ -386,8 +386,8 @@
 
       <section class="page" id="page-offers">
         <div class="hero"><div><div class="eyebrow"><span></span> Angebotsradar</div><h1>Was lohnt sich<br><em style="font-style:normal;color:var(--coral)">diese Woche?</em></h1><p class="hero-copy">Alle relevanten Angebote aus deinen ausgewählten Märkten – normalisiert, bewertet und mit passenden Rezepten verbunden.</p></div><div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap"><button class="outline-button" id="refreshOfficialOffers">↻&nbsp; Offizielle Quellen prüfen</button><button class="primary-button" id="openOfferImport">＋&nbsp; Angebote importieren</button></div></div>
-        <div class="panel"><div class="panel-header"><div><h2 class="panel-title">Angebote in deiner Nähe</h2><p class="panel-subtitle">Demo-Daten, bestätigte Live-Importe und eigene Importe · nur gültige Angebote</p></div><label class="filter">Markt <select id="offerFilter"><option value="all">Alle Märkte</option><option>Aldi</option><option value="Kaufland">Kaufland Würzburg</option><option>Lidl</option><option>EDEKA</option><option>Penny</option><option>Netto</option><option>Marktkauf Tüngersheim</option></select></label></div><div class="panel-body"><div class="catalog" id="offerCatalog"></div></div></div>
-        <section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Datenquellen &amp; Filialstatus</h2><p class="panel-subtitle">Damit klar bleibt, woher ein Angebot kommt.</p></div><button class="text-button" id="openMarketsFromSources">Filialen wählen&nbsp;→</button></div><div class="panel-body"><div class="source-status-grid" id="sourceStatusList"></div><div class="source-note" style="margin-top:12px">Auf GitHub Pages werden Aldi, Kaufland, EDEKA, Lidl und Netto aus den regelmäßigen GitHub-Actions-Datensätzen geladen. Penny und Marktkauf bleiben per manuellem Import nutzbar. Abgelaufene Angebote werden automatisch ausgeblendet.</div></div></section>
+        <div class="panel"><div class="panel-header"><div><h2 class="panel-title">Angebote in deiner Nähe</h2><p class="panel-subtitle">Demo-Daten, bestätigte Live-Importe und eigene Importe · nur gültige Angebote</p></div><label class="filter">Markt <select id="offerFilter"><option value="all">Alle Märkte</option><option>Aldi</option><option value="Kaufland">Kaufland Würzburg</option><option>Lidl</option><option>EDEKA</option><option>Penny</option><option>Netto</option><option>Marktkauf Tüngersheim</option><option>Bring</option></select></label></div><div class="panel-body"><div class="catalog" id="offerCatalog"></div></div></div>
+        <section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Datenquellen &amp; Filialstatus</h2><p class="panel-subtitle">Damit klar bleibt, woher ein Angebot kommt.</p></div><button class="text-button" id="openMarketsFromSources">Filialen wählen&nbsp;→</button></div><div class="panel-body"><div class="source-status-grid" id="sourceStatusList"></div><div class="source-note" style="margin-top:12px">Auf GitHub Pages werden Aldi, Kaufland, EDEKA, Lidl und Netto aus den regelmäßigen GitHub-Actions-Datensätzen geladen. Bring kann über den eingeloggten Cloud-Browser wöchentlich per Playwright und OCR importiert werden. Penny und Marktkauf bleiben per manuellem Import nutzbar. Abgelaufene Angebote werden automatisch ausgeblendet.</div></div></section>
         <section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Importe pflegen</h2><p class="panel-subtitle">Ungültige oder abgelaufene Fallback-Daten bleiben nicht unbemerkt.</p></div><button class="outline-button" id="clearExpiredOffers" disabled>Abgelaufene entfernen</button></div><div class="panel-body"><div class="source-note" id="offerMaintenanceNote">Noch keine eigenen Angebote importiert.</div></div></section>
       </section>
 
@@ -502,11 +502,12 @@
       EDEKA: { distance: '3,1 km', count: 4, logo: 'E', source: 'https://www.edeka.de/angebote/' },
       Penny: { distance: '5,5 km', count: 3, logo: 'P', source: 'https://www.penny.de/angebote' },
       Netto: { distance: '5,9 km', count: 3, logo: 'N', source: 'https://www.netto-online.de/angebote/c-N07' },
-      'Marktkauf Tüngersheim': { distance: '7,3 km', count: 4, logo: 'M', source: 'https://www.edeka.de/marktkauf/angebote.jsp' }
+      'Marktkauf Tüngersheim': { distance: '7,3 km', count: 4, logo: 'M', source: 'https://www.edeka.de/marktkauf/angebote.jsp' },
+      Bring: { distance: 'Cloud-Browser', count: 0, logo: 'B', source: 'https://web.getbring.com/' }
     };
     const marketDisplayNames = { Kaufland: 'Kaufland Würzburg' };
-    const liveOfferMarkets = new Set(['Aldi', 'Kaufland', 'EDEKA', 'Lidl', 'Netto']);
-    const generatedOfferFiles = { Aldi: 'aldi-offers.json', Kaufland: 'kaufland-offers.json', EDEKA: 'edeka-offers.json', Lidl: 'lidl-offers.json', Netto: 'netto-offers.json' };
+    const liveOfferMarkets = new Set(['Aldi', 'Kaufland', 'EDEKA', 'Lidl', 'Netto', 'Bring']);
+    const generatedOfferFiles = { Aldi: 'aldi-offers.json', Kaufland: 'kaufland-offers.json', EDEKA: 'edeka-offers.json', Lidl: 'lidl-offers.json', Netto: 'netto-offers.json', Bring: 'bring-offers.json' };
     let liveOfferStatus = stored('angebotskueche.liveOfferStatus', {});
     if (!liveOfferStatus || typeof liveOfferStatus !== 'object' || Array.isArray(liveOfferStatus)) liveOfferStatus = {};
     if (!Array.isArray(settings.selectedMarkets) || !settings.selectedMarkets.length) settings.selectedMarkets = ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'];
@@ -570,7 +571,7 @@
         const count = offers.filter(offer => isOfferCurrent(offer) && offer.store === name).length;
         const activeLabel = activeMarkets.includes(name) ? 'für Planung aktiv' : selected.includes(name) ? 'ausgewählt, über dem Stopplimit' : 'nicht ausgewählt';
         const live = liveOfferStatus[name];
-        const offerLabel = count === 1 ? '1 gültiges Angebot' : count ? `${count} gültige Angebote` : 'manueller Import';
+        const offerLabel = name === 'Bring' ? `${count} Artikel erkannt` : count === 1 ? '1 gültiges Angebot' : count ? `${count} gültige Angebote` : 'manueller Import';
         const sourceLabel = live?.count ? `${isGithubPagesHost ? 'GitHub-Workflow geprüft' : 'Live geprüft'} · ${live.count} Treffer` : live?.error ? 'Live-Prüfung fehlgeschlagen' : isGithubPagesHost && liveOfferMarkets.has(name) ? 'GitHub-Workflow verfügbar' : liveOfferMarkets.has(name) ? 'Live-Quelle verfügbar' : 'manueller Import';
         return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(details.logo)}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(details.distance)} · ${activeLabel}</div><div class="source-note">${escapeHtml(sourceLabel)}${live?.fetchedAt ? ` · ${escapeHtml(new Date(live.fetchedAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }))}` : ''}</div>${details.source ? `<a class="source-note" href="${escapeHtml(details.source)}" target="_blank" rel="noopener">Offizielle Angebote öffnen ↗</a>` : ''}</div></div><span class="market-count">${offerLabel}</span></div>`;
       }).join('');
@@ -641,7 +642,7 @@
       const uniqueImported = imported.filter(offer => { const key = offerImportKey(offer); if (knownKeys.has(key)) return false; knownKeys.add(key); return true; });
       offers.push(...uniqueImported);
       fetched.forEach(result => {
-        liveOfferStatus[result.market] = result.payload ? { fetchedAt: new Date().toISOString(), validUntil: result.payload.validUntil, count: result.payload.offers.length } : { fetchedAt: new Date().toISOString(), error: result.error || 'Keine verwertbaren Angebote', count: 0 };
+        liveOfferStatus[result.market] = result.payload ? { fetchedAt: new Date().toISOString(), validUntil: result.payload.validUntil, count: Number(result.payload.recognizedCount || result.payload.offers.length) } : { fetchedAt: new Date().toISOString(), error: result.error || 'Keine verwertbaren Angebote', count: 0 };
       });
       localStorage.setItem('angebotskueche.liveOfferStatus', JSON.stringify(liveOfferStatus));
       refreshOfferViews();
