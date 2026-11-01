@@ -2,7 +2,7 @@
   "market": "EDEKA",
   "sourceUrl": "https://www.edeka.de/angebote/",
   "store": "Region Zellingen",
-  "fetchedAt": "2026-11-01T13:10:10.790Z",
+  "fetchedAt": "2026-11-01T13:18:11.801Z",
   "validUntil": "08.11.2026",
   "parser": "edeka-github-actions-v1",
   "offers": [
@@ -52,4 +52,3 @@
     }
   ]
 }
-

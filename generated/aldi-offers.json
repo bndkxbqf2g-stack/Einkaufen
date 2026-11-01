@@ -2,7 +2,7 @@
   "market": "Aldi",
   "sourceUrl": "https://www.aldi-sued.de/angebote",
   "store": "Region Zellingen",
-  "fetchedAt": "2026-11-01T13:12:22.353Z",
+  "fetchedAt": "2026-11-01T13:18:10.031Z",
   "validUntil": "08.11.2026",
   "parser": "aldi-github-actions-v1",
   "offers": [
@@ -272,4 +272,3 @@
     }
   ]
 }
-

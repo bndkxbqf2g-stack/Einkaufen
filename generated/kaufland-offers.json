@@ -2,7 +2,7 @@
   "market": "Kaufland",
   "sourceUrl": "https://filiale.kaufland.de/angebote.html",
   "store": "Region Zellingen",
-  "fetchedAt": "2026-11-01T13:10:47.258Z",
+  "fetchedAt": "2026-11-01T13:18:11.265Z",
   "validUntil": "07.11.2026",
   "parser": "kaufland-github-actions-v1",
   "offers": [
@@ -156,17 +156,6 @@
       "icon": "🛒",
       "category": "Lebensmittel",
       "packSize": "150-g",
-      "relevance": 78,
-      "note": "offizielle Händlerseite",
-      "validUntil": "07.11.2026"
-    },
-    {
-      "name": "KNÜLLER KINDER Schokolade oder YOGURETTE Schokoriegel je 100-g-Packg. (1 kg =",
-      "price": "1,29 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "100-g",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -337,17 +326,6 @@
       "validUntil": "07.11.2026"
     },
     {
-      "name": "KNÜLLER CHANTRÉ Weinbrand je 0,7-l-Fl. (1 l =",
-      "price": "6,49 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "0,7-l",
-      "relevance": 78,
-      "note": "offizielle Händlerseite",
-      "validUntil": "07.11.2026"
-    },
-    {
       "name": "KNÜLLER EFFECT Energy Drink je",
       "price": "0,79 €",
       "saving": "–",
@@ -387,17 +365,6 @@
       "icon": "🛒",
       "category": "Lebensmittel",
       "packSize": "24-St",
-      "relevance": 78,
-      "note": "offizielle Händlerseite",
-      "validUntil": "07.11.2026"
-    },
-    {
-      "name": "KNÜLLER FINISH Spülmaschinen-Tabs oder -Caps je 36 - 64-St.-Packg. (pro Anwendung =",
-      "price": "6,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "64-St",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -580,4 +547,3 @@
     }
   ]
 }
-
