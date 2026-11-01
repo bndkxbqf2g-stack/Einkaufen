@@ -2,23 +2,14 @@ import { chromium } from 'playwright';
 import { createInterface } from 'node:readline';
 import { existsSync } from 'node:fs';
 
-const operaCandidates = [
-  process.env.OPERA_PATH,
-  `${process.env.LOCALAPPDATA || ''}\\Programs\\Opera\\opera.exe`,
-  `${process.env.LOCALAPPDATA || ''}\\Programs\\Opera\\launcher.exe`,
-  `${process.env.LOCALAPPDATA || ''}\\Programs\\Opera GX\\opera.exe`,
-  `${process.env.LOCALAPPDATA || ''}\\Programs\\Opera GX\\launcher.exe`,
-  `${process.env.ProgramFiles || ''}\\Opera\\opera.exe`,
-  `${process.env.ProgramFiles || ''}\\Opera\\launcher.exe`,
-  `${process.env.ProgramFiles || ''}\\Opera GX\\opera.exe`,
-  `${process.env.ProgramFiles || ''}\\Opera GX\\launcher.exe`,
+const chromeCandidates = [
+  process.env.CHROME_PATH,
+  `${process.env.LOCALAPPDATA || ''}\\Google\\Chrome\\Application\\chrome.exe`,
+  `${process.env.ProgramFiles || ''}\\Google\\Chrome\\Application\\chrome.exe`,
+  `${process.env['ProgramFiles(x86)'] || ''}\\Google\\Chrome\\Application\\chrome.exe`,
 ].filter(Boolean);
-const operaPath = operaCandidates.find(existsSync);
-if (!operaPath) {
-  throw new Error(`Opera wurde nicht gefunden. Setze OPERA_PATH auf den Pfad zu opera.exe. Geprüft: ${operaCandidates.join(', ')}`);
-}
-
-const browser = await chromium.launch({ headless: false, executablePath: operaPath });
+const chromePath = chromeCandidates.find(existsSync);
+const browser = await chromium.launch(chromePath ? { headless: false, executablePath: chromePath } : { headless: false, channel: 'chrome' });
 const context = await browser.newContext({ locale: 'de-DE' });
 const page = await context.newPage();
 await page.goto('https://web.getbring.com/', { waitUntil: 'domcontentloaded' });
