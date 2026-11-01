@@ -18,3 +18,5 @@ Der Workflow `.github/workflows/bring-offers.yml` öffnet die Bring-Web-App in e
 
 Für den eingeloggten Abruf muss im öffentlichen Repository unter **Settings → Secrets and variables → Actions** das Secret `BRING_STORAGE_STATE_B64` hinterlegt werden. Es enthält nur einen verschlüsselten Playwright-Storage-State, niemals das Passwort. Optional kann die Repository-Variable `BRING_BROCHURE_URLS` zeilenweise geteilte Bring-Prospektlinks enthalten. Ohne Sitzung oder Links bricht der Workflow kontrolliert ab und erzeugt keine erfundenen Angebote.
 
+Zum Erstellen der Sitzung lokal einmal `npm install --no-save playwright`, `npx playwright install chromium` und anschließend `node automation/bring-login.mjs` ausführen. Den Inhalt von `bring-storage-state.json` danach Base64-kodiert als Secret hinterlegen und die lokale Datei löschen. Die erkannte Artikelzahl erscheint im Marktstatus der App als „Artikel erkannt“.
+
