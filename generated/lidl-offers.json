@@ -1,0 +1,9 @@
+{
+  "market": "Lidl",
+  "sourceUrl": "https://www.lidl.de/c/online-prospekte/s10005610/",
+  "store": "Zellingen",
+  "fetchedAt": null,
+  "validUntil": null,
+  "parser": "lidl-playwright-v1",
+  "offers": []
+}

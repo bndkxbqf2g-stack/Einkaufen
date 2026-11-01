@@ -1,0 +1,36 @@
+name: Lidl-Angebote aktualisieren
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 4 * * 0'
+  push:
+    branches: [main]
+    paths-ignore:
+      - generated/lidl-offers.json
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+      - name: Node.js einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Browser-Abhängigkeiten installieren
+        run: npm install --no-save playwright pdf-parse && npx playwright install --with-deps chromium
+      - name: Lidl-Prospekt für Zellingen auslesen
+        run: node automation/lidl-offers.mjs
+      - name: Aktualisierte Angebote committen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add generated/lidl-offers.json
+          git diff --cached --quiet || git commit -m "Update Lidl offers for Zellingen"
+          git push

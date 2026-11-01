@@ -1,0 +1,1317 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Angebotsküche plant warme Gerichte aus aktuellen Lebensmittelangeboten rund um Zellingen." />
+  <meta name="theme-color" content="#174c42" />
+  <link rel="manifest" href="./manifest.json" />
+  <title>Angebotsküche · Dein Wochenplan</title>
+  <style>
+    :root {
+      --ink: #17312c;
+      --ink-soft: #5a6f6a;
+      --paper: #f6f5f0;
+      --card: #fffefa;
+      --line: #e4e8df;
+      --green: #174c42;
+      --green-2: #2f735d;
+      --mint: #dceee3;
+      --cream: #f8edd0;
+      --peach: #f7d6c1;
+      --coral: #eb7754;
+      --yellow: #f5c94b;
+      --shadow: 0 18px 50px rgba(23, 49, 44, .08);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .app-shell { min-height: 100vh; display: grid; grid-template-columns: 248px 1fr; }
+    .sidebar {
+      position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column;
+      padding: 28px 18px 22px; background: var(--green); color: #f4f8f1;
+    }
+    .brand { display: flex; align-items: center; gap: 11px; padding: 0 10px 34px; }
+    .brand-mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; background: var(--yellow); color: var(--green); font-size: 20px; box-shadow: 0 5px 14px rgba(0,0,0,.14); }
+    .brand-name { font-weight: 800; letter-spacing: -.03em; font-size: 17px; }
+    .brand-sub { display: block; color: #a9c7b5; font-size: 11px; font-weight: 500; margin-top: 2px; }
+    .nav-label { padding: 0 12px 10px; color: #9ec1af; font-size: 10px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+    .nav { display: grid; gap: 6px; }
+    .nav-button { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px; border: 0; border-radius: 12px; color: #d9e9dd; background: transparent; text-align: left; font-weight: 650; font-size: 13px; transition: .18s ease; }
+    .nav-button:hover, .nav-button.active { background: rgba(255,255,255,.12); color: #fff; }
+    .nav-icon { width: 20px; display: inline-grid; place-items: center; opacity: .9; font-size: 17px; }
+    .sidebar-spacer { flex: 1; }
+    .freshness { padding: 15px; border: 1px solid rgba(255,255,255,.14); border-radius: 16px; background: rgba(255,255,255,.07); }
+    .freshness-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; font-weight: 750; }
+    .status-dot { width: 7px; height: 7px; display: inline-block; border-radius: 50%; background: #76d7a5; box-shadow: 0 0 0 4px rgba(118,215,165,.13); }
+    .freshness p { margin: 0; color: #b1d0bd; font-size: 11px; line-height: 1.45; }
+    .main { min-width: 0; padding: 27px 38px 60px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 25px; }
+    .breadcrumb { color: var(--ink-soft); font-size: 12px; font-weight: 650; }
+    .breadcrumb strong { color: var(--ink); }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .icon-button, .avatar { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; background: var(--card); color: var(--ink); }
+    .icon-button:hover { border-color: var(--green-2); transform: translateY(-1px); }
+    .avatar { border: 0; background: var(--peach); font-size: 12px; font-weight: 800; }
+    .hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 23px; }
+    .eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 11px; color: var(--green-2); font-size: 11px; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    .eyebrow span { width: 23px; height: 1px; display: inline-block; background: var(--green-2); }
+    h1 { margin: 0; max-width: 700px; font-size: clamp(29px, 4vw, 49px); line-height: .98; letter-spacing: -.065em; font-weight: 850; }
+    .hero-copy { max-width: 610px; margin: 13px 0 0; color: var(--ink-soft); font-size: 14px; line-height: 1.55; }
+    .primary-button { display: inline-flex; align-items: center; gap: 9px; padding: 13px 16px; border: 0; border-radius: 12px; color: white; background: var(--coral); box-shadow: 0 9px 18px rgba(235,119,84,.21); font-size: 13px; font-weight: 800; white-space: nowrap; transition: .18s ease; }
+    .primary-button:hover { transform: translateY(-2px); box-shadow: 0 12px 21px rgba(235,119,84,.28); }
+    .outline-button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 13px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: var(--card); font-size: 12px; font-weight: 750; }
+    .outline-button:hover { border-color: var(--green-2); background: #fbfcf7; }
+    .outline-button:disabled { cursor: not-allowed; opacity: .52; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 25px; }
+    .stat { min-height: 102px; padding: 17px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--card); }
+    .stat-label { display: flex; justify-content: space-between; color: var(--ink-soft); font-size: 11px; font-weight: 700; }
+    .stat-value { margin-top: 12px; font-size: 24px; line-height: 1; font-weight: 850; letter-spacing: -.04em; }
+    .stat-note { margin-top: 8px; color: var(--green-2); font-size: 11px; font-weight: 700; }
+    .stat-accent { background: var(--cream); border-color: #f1e1b7; }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(280px, .8fr); gap: 18px; align-items: start; }
+    .panel { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--card); box-shadow: var(--shadow); }
+    .panel-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 20px 20px 15px; }
+    .panel-title { margin: 0; font-size: 17px; letter-spacing: -.025em; }
+    .panel-subtitle { margin: 5px 0 0; color: var(--ink-soft); font-size: 12px; line-height: 1.4; }
+    .panel-body { padding: 0 20px 20px; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 16px; }
+    .filter { display: inline-flex; align-items: center; gap: 6px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 9px; background: #fbfcf8; color: var(--ink-soft); font-size: 11px; font-weight: 750; }
+    .filter select { border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 11px; font-weight: 800; }
+    .filter-toggle { gap: 8px; }
+    .switch { position: relative; width: 30px; height: 17px; display: inline-block; }
+    .switch input { position: absolute; opacity: 0; }
+    .slider { position: absolute; inset: 0; border-radius: 99px; background: #cbd7d0; transition: .2s; }
+    .slider:before { content: ""; position: absolute; width: 13px; height: 13px; top: 2px; left: 2px; border-radius: 50%; background: white; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.15); }
+    .switch input:checked + .slider { background: var(--green-2); }
+    .switch input:checked + .slider:before { transform: translateX(13px); }
+    .day-list { display: grid; gap: 10px; }
+    .day-card { position: relative; display: grid; grid-template-columns: 73px minmax(0, 1fr) auto; gap: 15px; align-items: center; padding: 15px 14px; border: 1px solid var(--line); border-radius: 15px; background: #fffefa; transition: .18s ease; }
+    .day-card:hover { border-color: #b4d0bf; box-shadow: 0 8px 23px rgba(23,49,44,.06); }
+    .day-card.today { border-color: #efd8bd; background: #fffaf1; }
+    .day-date { align-self: stretch; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding-right: 12px; border-right: 1px solid var(--line); }
+    .day-name { font-size: 12px; font-weight: 850; }
+    .day-date small { color: var(--ink-soft); font-size: 10px; font-weight: 650; }
+    .today-tag { width: fit-content; padding: 3px 6px; border-radius: 5px; color: #98502f; background: #f9dcc8; font-size: 9px; font-weight: 850; text-transform: uppercase; }
+    .meal-row { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+    .meal-emoji { width: 48px; height: 48px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 14px; background: var(--mint); font-size: 25px; }
+    .meal-emoji.warm { background: var(--peach); }
+    .meal-info { min-width: 0; }
+    .meal-type { display: flex; align-items: center; gap: 7px; margin-bottom: 3px; color: var(--ink-soft); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; }
+    .meal-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 850; letter-spacing: -.02em; }
+    .meal-meta { display: flex; flex-wrap: wrap; gap: 7px 12px; margin-top: 6px; color: var(--ink-soft); font-size: 11px; }
+    .meal-meta b { color: var(--ink); }
+    .meal-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .tag { padding: 4px 7px; border-radius: 5px; color: var(--green-2); background: var(--mint); font-size: 10px; font-weight: 750; }
+    .tag.yellow { color: #916f13; background: #fff0bc; }
+    .tag.muted { color: var(--ink-soft); background: #eff2ec; }
+    .day-score { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .score { display: flex; align-items: center; gap: 6px; color: var(--green-2); font-size: 12px; font-weight: 850; }
+    .score-ring { width: 27px; height: 27px; display: grid; place-items: center; border-radius: 50%; color: var(--green); background: conic-gradient(var(--green-2) 0 82%, #e1ece2 82% 100%); font-size: 8px; font-weight: 900; }
+    .score-ring:after { content: ""; position: absolute; width: 21px; height: 21px; border-radius: 50%; background: var(--card); }
+    .score-ring span { position: relative; z-index: 1; }
+    .text-button { border: 0; background: transparent; color: var(--green-2); font-size: 11px; font-weight: 800; }
+    .text-button:hover { text-decoration: underline; }
+    .side-stack { display: grid; gap: 18px; }
+    .offer-list { display: grid; gap: 10px; }
+    .offer { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); }
+    .offer:last-child { border-bottom: 0; padding-bottom: 0; }
+    .offer-thumb { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 11px; background: var(--cream); font-size: 20px; }
+    .offer-name { font-size: 12px; font-weight: 800; }
+    .offer-store { margin-top: 3px; color: var(--ink-soft); font-size: 10px; }
+    .offer-price { text-align: right; }
+    .offer-price strong { display: block; font-size: 13px; }
+    .offer-price span { color: var(--coral); font-size: 10px; font-weight: 850; }
+    .market-list { display: grid; gap: 8px; }
+    .market-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .market-row:last-child { border-bottom: 0; }
+    .market-left { display: flex; align-items: center; gap: 9px; min-width: 0; }
+    .market-logo { width: 27px; height: 27px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 8px; background: #edf2ec; color: var(--green); font-size: 10px; font-weight: 900; }
+    .market-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 780; }
+    .market-distance { color: var(--ink-soft); font-size: 10px; }
+    .market-count { padding: 5px 7px; border-radius: 6px; color: var(--green-2); background: var(--mint); font-size: 10px; font-weight: 850; }
+    .explain { padding: 15px; border-radius: 15px; background: var(--green); color: white; }
+    .explain h3 { margin: 0 0 8px; font-size: 13px; }
+    .explain p { margin: 0; color: #c9ded0; font-size: 11px; line-height: 1.5; }
+    .explain b { color: #fff; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .section-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
+    .catalog { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+    .catalog-card { padding: 13px; border: 1px solid var(--line); border-radius: 14px; background: #fffefa; }
+    .catalog-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .catalog-icon { width: 37px; height: 37px; display: grid; place-items: center; border-radius: 11px; background: var(--mint); font-size: 19px; }
+    .discount { color: var(--coral); font-size: 11px; font-weight: 850; }
+    .catalog-name { margin-top: 10px; font-size: 12px; font-weight: 850; }
+    .catalog-meta { display: flex; justify-content: space-between; gap: 5px; margin-top: 5px; color: var(--ink-soft); font-size: 10px; }
+    .catalog-price { color: var(--ink); font-weight: 850; }
+    .suggestion-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+    .suggestion-card { display: flex; flex-direction: column; gap: 13px; padding: 15px; border: 1px solid var(--line); border-radius: 15px; background: #fffefa; transition: .18s ease; }
+    .suggestion-card:hover { border-color: #b4d0bf; box-shadow: 0 8px 23px rgba(23,49,44,.06); transform: translateY(-1px); }
+    .suggestion-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .suggestion-title { margin-top: 9px; font-size: 14px; font-weight: 850; letter-spacing: -.02em; line-height: 1.2; }
+    .suggestion-reason { color: var(--ink-soft); font-size: 11px; line-height: 1.45; }
+    .suggestion-ingredients { display: flex; flex-wrap: wrap; gap: 5px; }
+    .ingredient { padding: 5px 7px; border-radius: 6px; color: var(--ink-soft); background: #eff2ec; font-size: 10px; font-weight: 700; }
+    .suggestion-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: auto; }
+    .small-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 9px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: #fbfcf8; font-size: 10px; font-weight: 800; }
+    .small-button:hover { border-color: var(--green-2); }
+    .small-button.primary { border-color: var(--green-2); color: white; background: var(--green-2); }
+    .small-button.remove { color: #a05540; }
+    .source-note { color: var(--ink-soft); font-size: 10px; font-weight: 700; }
+    .source-status-grid { display: grid; gap: 8px; }
+    .source-status-grid .market-row { background: #fffefa; }
+    .shopping-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .shopping-stat { min-height: 96px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--card); }
+    .shopping-stat.accent { border-color: #cfe2d4; background: #f1f8f0; }
+    .shopping-stat-label { color: var(--ink-soft); font-size: 11px; font-weight: 750; }
+    .shopping-stat-value { margin-top: 10px; font-size: 23px; line-height: 1; font-weight: 850; letter-spacing: -.04em; }
+    .shopping-stat-note { margin-top: 8px; color: var(--green-2); font-size: 10px; font-weight: 750; }
+    .shopping-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .shopping-groups { display: grid; gap: 18px; }
+    .shopping-group { overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: #fffefa; }
+    .shopping-group-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 13px; color: var(--green); background: #f4f8f1; font-size: 12px; font-weight: 850; }
+    .shopping-group-title span { color: var(--ink-soft); font-size: 10px; font-weight: 700; }
+    .shopping-items { display: grid; }
+    .shopping-item { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 12px 13px; border-top: 1px solid var(--line); }
+    .shopping-item:first-child { border-top: 0; }
+    .shopping-item input { width: 17px; height: 17px; accent-color: var(--green-2); }
+    .shopping-item.done .shopping-item-name, .shopping-item.done .shopping-item-meta { color: #9aa8a0; text-decoration: line-through; }
+    .shopping-item-name { display: block; font-size: 12px; font-weight: 850; }
+    .shopping-item-meta { display: block; margin-top: 3px; color: var(--ink-soft); font-size: 10px; line-height: 1.4; }
+    .shopping-item-side { min-width: 92px; text-align: right; }
+    .shopping-item-price { display: block; color: var(--ink); font-size: 12px; font-weight: 850; }
+    .shopping-item-pack { display: block; margin-top: 3px; color: var(--ink-soft); font-size: 10px; }
+    .shopping-item-missing { display: inline-flex; padding: 5px 7px; border-radius: 6px; color: #916f13; background: #fff0bc; font-size: 10px; font-weight: 800; }
+    .shopping-item-remove { margin-top: 6px; padding: 4px 6px; border: 0; color: #a05540; background: transparent; font-size: 9px; font-weight: 800; }
+    .favorite-card { display: flex; flex-direction: column; justify-content: space-between; min-height: 170px; padding: 15px; border: 1px solid var(--line); border-radius: 15px; background: #fffefa; }
+    .favorite-card .catalog-icon { background: var(--peach); }
+    .favorite-match { display: inline-flex; width: fit-content; padding: 5px 7px; border-radius: 6px; color: #8e6c13; background: #fff0bc; font-size: 10px; font-weight: 800; }
+    .inventory { display: flex; flex-wrap: wrap; gap: 8px; }
+    .inventory-chip { display: inline-flex; align-items: center; gap: 7px; padding: 9px 10px; border: 1px solid #cfe2d4; border-radius: 9px; color: var(--green-2); background: #f1f8f0; font-size: 11px; font-weight: 750; }
+    .inventory-chip button { width: 16px; height: 16px; padding: 0; border: 0; border-radius: 50%; color: var(--green-2); background: transparent; font-size: 14px; line-height: 1; }
+    .empty-state { padding: 34px 15px; color: var(--ink-soft); text-align: center; font-size: 13px; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 10; display: none; place-items: center; padding: 20px; background: rgba(14, 35, 31, .48); backdrop-filter: blur(5px); }
+    .modal-backdrop.open { display: grid; }
+    .modal { width: min(480px, 100%); padding: 22px; border-radius: 21px; background: var(--card); box-shadow: 0 25px 80px rgba(0,0,0,.24); }
+    .modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; }
+    .modal h2 { margin: 0; font-size: 20px; letter-spacing: -.04em; }
+    .modal p { margin: 8px 0 18px; color: var(--ink-soft); font-size: 12px; line-height: 1.5; }
+    .close { width: 30px; height: 30px; border: 0; border-radius: 50%; background: #eef2eb; color: var(--ink); }
+    .input { width: 100%; padding: 12px; border: 1px solid var(--line); outline: 0; border-radius: 10px; color: var(--ink); background: #fbfcf8; font-size: 13px; }
+    .input:focus { border-color: var(--green-2); box-shadow: 0 0 0 3px rgba(47,115,93,.1); }
+    .textarea { min-height: 125px; resize: vertical; line-height: 1.55; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 17px; }
+    .toast { position: fixed; right: 22px; bottom: 22px; z-index: 20; max-width: 320px; padding: 12px 15px; border-radius: 12px; color: white; background: var(--green); box-shadow: 0 14px 30px rgba(23,49,44,.23); font-size: 12px; font-weight: 700; transform: translateY(20px); opacity: 0; pointer-events: none; transition: .22s ease; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    @media (max-width: 1120px) {
+      .app-shell { grid-template-columns: 76px 1fr; }
+      .sidebar { padding: 22px 12px; align-items: center; }
+      .brand { padding: 0 0 30px; }
+      .brand-copy, .nav-label, .nav-button span:not(.nav-icon), .freshness { display: none; }
+      .nav-button { justify-content: center; padding: 13px; }
+      .main { padding: 25px 25px 50px; }
+    }
+    @media (max-width: 830px) {
+      .main { padding: 20px 16px 40px; }
+      .hero { align-items: flex-start; flex-direction: column; }
+      .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .workspace, .section-grid { grid-template-columns: 1fr; }
+      .side-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+      .app-shell { display: block; }
+      .sidebar { position: sticky; z-index: 5; top: 0; width: 100%; height: auto; flex-direction: row; justify-content: space-between; padding: 10px 14px; }
+      .brand { padding: 0; }
+      .brand-mark { width: 34px; height: 34px; }
+      .nav { display: flex; gap: 2px; }
+      .nav-button { width: 40px; height: 40px; padding: 8px; }
+      .nav-button.active { background: rgba(255,255,255,.15); }
+      .sidebar-spacer { display: none; }
+      .main { padding: 17px 12px 35px; }
+      .topbar { margin-bottom: 20px; }
+      .breadcrumb { font-size: 11px; }
+      .hero-copy { font-size: 13px; }
+      .stats { gap: 8px; }
+      .stat { min-height: 90px; padding: 13px; }
+      .stat-value { font-size: 20px; }
+      .panel-header, .panel-body { padding-left: 14px; padding-right: 14px; }
+      .day-card { grid-template-columns: 56px minmax(0, 1fr); gap: 10px; }
+      .day-score { grid-column: 2; flex-direction: row; align-items: center; justify-content: space-between; margin-top: -3px; }
+      .day-date { padding-right: 8px; }
+      .meal-emoji { width: 40px; height: 40px; font-size: 20px; }
+      .meal-row { gap: 9px; }
+      .meal-title { white-space: normal; line-height: 1.25; }
+      .side-stack { grid-template-columns: 1fr; }
+      .catalog { grid-template-columns: 1fr 1fr; }
+      .suggestion-grid { grid-template-columns: 1fr; }
+      .shopping-summary { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 420px) {
+      .shopping-summary { grid-template-columns: 1fr; }
+      .shopping-item { grid-template-columns: 22px minmax(0, 1fr); }
+      .shopping-item-side { grid-column: 2; min-width: 0; text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">✦</div>
+        <div class="brand-copy"><div class="brand-name">Angebotsküche</div><span class="brand-sub">Zellingen · persönlich geplant</span></div>
+      </div>
+      <div class="nav-label">Planung</div>
+      <nav class="nav" aria-label="Hauptnavigation">
+        <button class="nav-button active" data-page="plan"><span class="nav-icon">◷</span><span>Mein Plan</span></button>
+        <button class="nav-button" data-page="shopping"><span class="nav-icon">✓</span><span>Einkaufsliste</span></button>
+        <button class="nav-button" data-page="suggestions"><span class="nav-icon">✦</span><span>Vorschläge</span></button>
+        <button class="nav-button" data-page="offers"><span class="nav-icon">⌁</span><span>Angebote</span></button>
+        <button class="nav-button" data-page="favorites"><span class="nav-icon">♡</span><span>Lieblingsrezepte</span></button>
+        <button class="nav-button" data-page="pantry"><span class="nav-icon">◌</span><span>Vorräte</span></button>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="freshness">
+        <div class="freshness-top"><span><i class="status-dot"></i> Datenstatus</span><span>heute</span></div>
+        <p>ALDI SÜD, Kaufland, EDEKA, Lidl und Netto sind live prüfbar. Penny und Marktkauf bleiben mit manuellem Import nutzbar.</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="breadcrumb">Zellingen <span>›</span> <strong>Meine Küche</strong></div>
+        <div class="top-actions"><button class="icon-button" title="Einstellungen" aria-label="Einstellungen">⚙</button><div class="avatar">MK</div></div>
+      </div>
+
+      <section class="page active" id="page-plan">
+        <div class="hero">
+          <div>
+            <div class="eyebrow"><span></span> Dein Wochenplan</div>
+            <h1>Kochen, was gerade<br><em style="font-style:normal;color:var(--coral)">günstig</em> ist.</h1>
+            <p class="hero-copy">Ein warmer Hauptgang pro Tag, gute Angebotsfunde und Reste, die wirklich weiterverwendet werden. Für die nächsten fünf Tage rund um Zellingen.</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><button class="outline-button" id="sharePlan">↗&nbsp; Plan teilen</button><button class="primary-button" id="generatePlan">↻&nbsp; Plan neu berechnen</button></div>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><div class="stat-label"><span>Planzeitraum</span><span>⌄</span></div><div class="stat-value" id="dayCount">5 Tage</div><div class="stat-note" id="planRangeNote">31. Okt. – 04. Nov.</div></div>
+          <div class="stat stat-accent"><div class="stat-label"><span>Geschätzter Einkauf</span><span>€</span></div><div class="stat-value" id="totalCost">42,80 €</div><div class="stat-note" id="totalCostNote">ca. 8,56 € pro Tag</div></div>
+          <div class="stat"><div class="stat-label"><span>Abwechslung</span><span>✦</span></div><div class="stat-value" id="varietyScore">92 %</div><div class="stat-note" id="varietyNote">verschiedene Profile</div></div>
+          <div class="stat"><div class="stat-label"><span>Märkte</span><span>⌖</span></div><div class="stat-value" id="marketCount">2</div><div class="stat-note" id="marketNote">Aldi + Kaufland Würzburg</div></div>
+        </div>
+
+        <div class="workspace">
+          <section class="panel">
+            <div class="panel-header">
+              <div><h2 class="panel-title">Deine nächsten Tage</h2><p class="panel-subtitle">Sortiert nach Angebotswert, Haltbarkeit, Abwechslung und Resteverwertung.</p></div>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><button class="text-button" data-page-link="suggestions">Mehr Vorschläge&nbsp;→</button><button class="outline-button" data-page-link="shopping">Einkaufsliste&nbsp;→</button><button class="outline-button" id="changePlan">Plan anpassen&nbsp;⌄</button></div>
+            </div>
+            <div class="panel-body">
+              <div class="filters">
+                <label class="filter">Personen <select id="peopleSelect"><option>2</option><option>3</option><option>4</option></select></label>
+                <label class="filter">Tage <select id="daysSelect"><option value="5">5</option><option value="4">4</option></select></label>
+                <label class="filter">Max. Märkte <select id="marketsSelect"><option value="2">2</option><option value="1">1</option><option value="3">3</option></select></label>
+                <button class="filter" id="openMarkets" type="button">Märkte wählen&nbsp;⌄</button>
+                <label class="filter filter-toggle">Reste einplanen <span class="switch"><input id="leftoverToggle" type="checkbox" checked><span class="slider"></span></span></label>
+                <label class="filter filter-toggle">Abends optional <span class="switch"><input id="eveningToggle" type="checkbox" checked><span class="slider"></span></span></label>
+              </div>
+              <div class="source-note" id="pinnedNote" style="margin-bottom:6px"></div><div class="source-note" id="leftoverNote" style="margin-bottom:12px"></div>
+              <div class="day-list" id="dayList"></div>
+            </div>
+          </section>
+
+          <div class="side-stack">
+            <section class="panel">
+              <div class="panel-header"><div><h2 class="panel-title">Angebots-Highlights</h2><p class="panel-subtitle">Die Zutaten, die den Plan tragen.</p></div><button class="text-button" data-page-link="offers">Alle ansehen</button></div>
+              <div class="panel-body"><div class="offer-list" id="highlightList"></div></div>
+            </section>
+            <section class="panel">
+              <div class="panel-header"><div><h2 class="panel-title">Dein Markt-Mix</h2><p class="panel-subtitle" id="marketSubtitle">Bewusst auf zwei Stopps begrenzt.</p></div></div>
+              <div class="panel-body"><div class="market-list" id="marketList"></div></div>
+            </section>
+            <div class="explain"><h3>Warum dieser Plan?</h3><p><b>Abwechslungsfilter aktiv:</b> keine gleiche Hauptzutat an zwei aufeinanderfolgenden Tagen, unterschiedliche Küchenprofile und mindestens ein vegetarischer Tag. Reste wandern nur als Bestandteil eines neuen Gerichts weiter.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-shopping">
+        <div class="hero"><div><div class="eyebrow"><span></span> Einkaufsliste</div><h1>Ein Plan,<br><em style="font-style:normal;color:var(--coral)">ein klarer Einkauf.</em></h1><p class="hero-copy">Die Liste entsteht aus deinem aktuellen Plan. Vorräte und Zutaten, die als Reste weiterverwendet werden, werden zusammengeführt – Angebote bleiben dem passenden Markt zugeordnet.</p></div><div class="shopping-actions"><button class="outline-button" id="clearShoppingChecks">Abhaken zurücksetzen</button><button class="outline-button" id="openShoppingItem">＋ Artikel ergänzen</button><button class="primary-button" id="shareShoppingList">↗&nbsp; Liste teilen</button></div></div>
+        <div class="shopping-summary">
+          <div class="shopping-stat"><div class="shopping-stat-label">Offene Artikel</div><div class="shopping-stat-value" id="shoppingOpenCount">0</div><div class="shopping-stat-note" id="shoppingOpenNote">wird aus dem Plan berechnet</div></div>
+          <div class="shopping-stat accent"><div class="shopping-stat-label">Angebotswert</div><div class="shopping-stat-value" id="shoppingOfferTotal">0,00 €</div><div class="shopping-stat-note" id="shoppingOfferNote">einmal pro Packung gerechnet</div></div>
+          <div class="shopping-stat"><div class="shopping-stat-label">Ergänzen</div><div class="shopping-stat-value" id="shoppingMissingCount">0</div><div class="shopping-stat-note">nicht als Angebot hinterlegt</div></div>
+        </div>
+        <section class="panel">
+          <div class="panel-header"><div><h2 class="panel-title">Nach Markt sortiert</h2><p class="panel-subtitle">Ein Haken und ergänzte Artikel bleiben lokal gespeichert und werden beim nächsten Planwechsel neu abgeglichen.</p></div><div class="shopping-actions"><button class="outline-button" id="checkAllShopping">Alles abhaken</button><button class="text-button" id="refreshShoppingList">Liste aktualisieren</button></div></div>
+          <div class="panel-body"><div class="source-note" id="shoppingHint" style="margin-bottom:13px"></div><div id="shoppingList"></div></div>
+        </section>
+      </section>
+
+      <section class="page" id="page-suggestions">
+        <div class="hero"><div><div class="eyebrow"><span></span> Mehr Auswahl</div><h1>Mehrere Ideen,<br><em style="font-style:normal;color:var(--coral)">ein guter Treffer.</em></h1><p class="hero-copy">Hier siehst du mehrere passende Rezepte gleichzeitig. Sie werden nach Angebotswert, Abwechslung und Aufwand sortiert.</p></div><button class="outline-button" data-page-link="plan">←&nbsp; Zum Plan</button></div>
+        <div class="panel"><div class="panel-header"><div><h2 class="panel-title">Rezeptvorschläge</h2><p class="panel-subtitle">Entfernte Rezepte bleiben ausgeblendet, bis du sie wieder freigibst.</p></div><div style="display:flex;align-items:center;gap:8px"><label class="filter">Filter <select id="suggestionFilter"><option value="all">Alle</option><option value="vegetarian">Vegetarisch</option><option value="quick">Unter 30 Min.</option></select></label><button class="outline-button" id="shareAllSuggestions">↗ Auswahl teilen</button><button class="outline-button" id="restoreDismissed" style="display:none">Ausgeblendete zurückholen</button></div></div><div class="panel-body"><div class="suggestion-grid" id="suggestionGrid"></div><div class="source-note" style="margin-top:15px">Das Teilen nutzt das normale Teilen-Menü deines Geräts. Wenn keine Teilen-Funktion verfügbar ist, werden die Inhalte in die Zwischenablage kopiert.</div></div></div>
+      </section>
+
+      <section class="page" id="page-offers">
+        <div class="hero"><div><div class="eyebrow"><span></span> Angebotsradar</div><h1>Was lohnt sich<br><em style="font-style:normal;color:var(--coral)">diese Woche?</em></h1><p class="hero-copy">Alle relevanten Angebote aus deinen ausgewählten Märkten – normalisiert, bewertet und mit passenden Rezepten verbunden.</p></div><div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap"><button class="outline-button" id="refreshOfficialOffers">↻&nbsp; Offizielle Quellen prüfen</button><button class="primary-button" id="openOfferImport">＋&nbsp; Angebote importieren</button></div></div>
+        <div class="panel"><div class="panel-header"><div><h2 class="panel-title">Angebote in deiner Nähe</h2><p class="panel-subtitle">Demo-Daten, bestätigte Live-Importe und eigene Importe · nur gültige Angebote</p></div><label class="filter">Markt <select id="offerFilter"><option value="all">Alle Märkte</option><option>Aldi</option><option value="Kaufland">Kaufland Würzburg</option><option>Lidl</option><option>EDEKA</option><option>Penny</option><option>Netto</option><option>Marktkauf Tüngersheim</option></select></label></div><div class="panel-body"><div class="catalog" id="offerCatalog"></div></div></div>
+        <section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Datenquellen &amp; Filialstatus</h2><p class="panel-subtitle">Damit klar bleibt, woher ein Angebot kommt.</p></div><button class="text-button" id="openMarketsFromSources">Filialen wählen&nbsp;→</button></div><div class="panel-body"><div class="source-status-grid" id="sourceStatusList"></div><div class="source-note" style="margin-top:12px">ALDI SÜD, Kaufland, EDEKA, Lidl und Netto können über offizielle bzw. automatisch geprüfte Quellen geprüft werden. Penny und Marktkauf bleiben mit manuellem Import nutzbar. Abgelaufene Angebote werden automatisch ausgeblendet.</div></div></section>
+        <section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Importe pflegen</h2><p class="panel-subtitle">Ungültige oder abgelaufene Fallback-Daten bleiben nicht unbemerkt.</p></div><button class="outline-button" id="clearExpiredOffers" disabled>Abgelaufene entfernen</button></div><div class="panel-body"><div class="source-note" id="offerMaintenanceNote">Noch keine eigenen Angebote importiert.</div></div></section>
+      </section>
+
+      <section class="page" id="page-favorites">
+        <div class="hero"><div><div class="eyebrow"><span></span> Deine Sammlung</div><h1>Lieblingsrezepte,<br><em style="font-style:normal;color:var(--coral)">wenn es passt.</em></h1><p class="hero-copy">Importiere Rezepte per Link. Angebotsküche prüft die Hauptzutaten und hebt sie hervor, sobald sie in deinen Märkten auftauchen.</p></div><button class="primary-button" id="openFavorite">＋&nbsp; Rezept importieren</button></div>
+        <div class="section-grid"><section class="panel"><div class="panel-header"><div><h2 class="panel-title">Passt gerade gut</h2><p class="panel-subtitle">Lieblingsrezepte mit mindestens einer starken Angebotszutat.</p></div></div><div class="panel-body"><div class="catalog" id="favoriteCatalog"></div></div></section><section class="panel"><div class="panel-header"><div><h2 class="panel-title">So bewertet die App</h2><p class="panel-subtitle">Nicht jedes Angebot ist ein guter Rezeptgrund.</p></div></div><div class="panel-body"><div class="explain" style="margin:0"><h3>Hauptzutaten statt Kleinkram</h3><p>Ein Angebot auf Hackfleisch, Kartoffeln, Gnocchi, Würstchen, Nudeln, Käse oder Gemüse zählt stark. Gewürze und einzelne Nebenzutaten verändern den Rezeptscore kaum.</p></div></div></section></div>
+      </section>
+
+      <section class="page" id="page-pantry">
+        <div class="hero"><div><div class="eyebrow"><span></span> Deine Vorräte</div><h1>Was schon da ist,<br><em style="font-style:normal;color:var(--coral)">zählt nicht mit.</em></h1><p class="hero-copy">Die App rechnet Grundvorräte aus dem Angebotswert heraus. Passe die Liste an deinen Haushalt an – Milch und Butter sind bei dir bewusst als „meistens da“ angelegt.</p></div><div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap"><button class="outline-button" id="exportData">↓&nbsp; Daten sichern</button><button class="outline-button" id="importData">↑&nbsp; Daten laden</button><button class="outline-button" id="cloudLoad">☁&nbsp; Cloud laden</button><button class="outline-button" id="cloudSave">☁&nbsp; Cloud speichern</button><button class="primary-button" id="addPantry">＋&nbsp; Vorrat ergänzen</button><input id="dataFile" type="file" accept="application/json,.json" hidden></div></div>
+        <div class="source-note" style="margin-top:-8px;margin-bottom:16px">Cloud-Sync ist optional und nur für deinen angemeldeten Account. Lokales Backup bleibt jederzeit verfügbar.</div>
+        <div class="section-grid"><section class="panel"><div class="panel-header"><div><h2 class="panel-title">Immer vorhanden</h2><p class="panel-subtitle">Diese Zutaten beeinflussen den Angebotswert nicht.</p></div></div><div class="panel-body"><div class="inventory" id="pantryList"></div></div></section><section class="panel"><div class="panel-header"><div><h2 class="panel-title">Planungsregel</h2><p class="panel-subtitle">So bleibt der Vorschlag alltagstauglich.</p></div></div><div class="panel-body"><div class="explain" style="margin:0"><h3>Grundlage + Angebotsanker</h3><p>Ein Gericht braucht mindestens einen sinnvollen Angebotsanker. Zwei starke Hauptzutaten ergeben einen Top-Treffer. Der Rest darf aus deinen Vorräten kommen oder regulär ergänzt werden.</p></div></div></section></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="favoriteModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal"><div class="modal-header"><div><h2 id="modalTitle">Lieblingsrezept importieren</h2><p>Link optional: importiere von lecker.de oder Chefkoch, oder speichere eine eigene Zutatenliste direkt hier.</p></div><button class="close" id="closeModal" aria-label="Schließen">×</button></div><div class="meal-tags" style="margin:0 0 12px"><span class="tag muted">lecker.de</span><span class="tag muted">Chefkoch</span><span class="tag muted">manuell</span></div><input class="input" id="recipeName" placeholder="Rezeptname (optional bei Link)" maxlength="100"/><input class="input" id="recipeUrl" style="margin-top:9px" placeholder="https://www.lecker.de/… oder https://www.chefkoch.de/…" type="url"/><label class="source-note" style="display:block;margin-top:12px">Zutaten (mindestens eine bei manueller Eingabe)<textarea class="input textarea" id="recipeIngredients" style="margin-top:6px;min-height:90px" placeholder="eine Zutat pro Zeile, z. B. Kartoffeln&#10;Wiener Würstchen&#10;Zwiebel"></textarea></label><div class="source-note" id="importStatus" style="margin-top:10px"></div><div class="modal-actions"><button class="outline-button" id="cancelModal">Abbrechen</button><button class="primary-button" id="importRecipe">Rezept übernehmen</button></div></div>
+  </div>
+  <div class="modal-backdrop" id="offerModal" role="dialog" aria-modal="true" aria-labelledby="offerModalTitle">
+    <div class="modal"><div class="modal-header"><div><h2 id="offerModalTitle">Angebote ergänzen</h2><p>Manueller Fallback für Prospekte oder Quellen, die noch nicht automatisch ausgelesen werden können. Eine Zeile pro Angebot:</p></div><button class="close" id="closeOfferModal" aria-label="Schließen">×</button></div><textarea class="input textarea" id="offerInput" placeholder="Kartoffeln | Aldi | 1,99 € | -33% | Basis | 2,5 kg | TT.MM.JJJJ | Prospekt&#10;Hackfleisch | Lidl | 4,99 € | -20% | Hauptzutat | 500 g | TT.MM.JJJJ | Lidl-Prospekt"></textarea><div class="source-note" style="margin-top:8px">Für Lidl: <a href="https://www.lidl.de/c/online-prospekte/s10005610/" target="_blank" rel="noopener">offiziellen Prospekt öffnen</a>, Filiale auswählen und die Lebensmittelzeilen hier übernehmen. Format: Produkt | Markt | Preis | Rabatt | Kategorie | Packung | gültig bis | Quelle. Tabulator- und Semikolon-Zeilen werden ebenfalls erkannt.</div><div class="modal-actions"><button class="outline-button" id="cancelOfferModal">Abbrechen</button><button class="primary-button" id="importOffers">Angebote übernehmen</button></div></div>
+  </div>
+  <div class="modal-backdrop" id="marketModal" role="dialog" aria-modal="true" aria-labelledby="marketModalTitle">
+    <div class="modal"><div class="modal-header"><div><h2 id="marketModalTitle">Deine Märkte</h2><p>Wähle die Filialen, die bei der Angebotsplanung berücksichtigt werden. Das Marktlimit begrenzt weiterhin die tatsächlichen Stopps pro Plan.</p></div><button class="close" id="closeMarketModal" aria-label="Schließen">×</button></div><div class="market-list" id="marketChoices"></div><div class="modal-actions"><button class="outline-button" id="cancelMarketModal">Abbrechen</button><button class="primary-button" id="saveMarkets">Märkte speichern</button></div></div>
+  </div>
+  <div class="modal-backdrop" id="pantryModal" role="dialog" aria-modal="true" aria-labelledby="pantryModalTitle">
+    <div class="modal"><div class="modal-header"><div><h2 id="pantryModalTitle">Vorrat ergänzen</h2><p>Diese Zutat wird bei Angebotsmatches, Kosten und der Einkaufsliste als vorhanden behandelt.</p></div><button class="close" id="closePantryModal" aria-label="Schließen">×</button></div><label class="source-note" for="pantryInput">Zutat</label><input class="input" id="pantryInput" maxlength="60" placeholder="z. B. Haferflocken oder Tomatenmark" autocomplete="off"><div class="source-note" id="pantryStatus" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelPantryModal">Abbrechen</button><button class="primary-button" id="savePantryItem">Vorrat speichern</button></div></div>
+  </div>
+  <div class="modal-backdrop" id="shoppingModal" role="dialog" aria-modal="true" aria-labelledby="shoppingModalTitle">
+    <div class="modal"><div class="modal-header"><div><h2 id="shoppingModalTitle">Artikel ergänzen</h2><p>Zusätzliche Artikel bleiben lokal in deiner Einkaufsliste und werden ebenfalls gegen aktive Angebote geprüft.</p></div><button class="close" id="closeShoppingModal" aria-label="Schließen">×</button></div><label class="source-note" for="shoppingItemInput">Artikel</label><input class="input" id="shoppingItemInput" maxlength="60" placeholder="z. B. Tomaten oder Küchenrolle" autocomplete="off"><div class="source-note" id="shoppingItemStatus" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelShoppingModal">Abbrechen</button><button class="primary-button" id="saveShoppingItem">Zur Liste hinzufügen</button></div></div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const seedOffers = [
+      { name: 'Wiener Würstchen', store: 'Aldi', price: '2,49 €', saving: '-28%', icon: '🌭', category: 'Hauptzutat', packSize: '300 g', relevance: 96, note: 'ideal für Eintopf & Hotpot' },
+      { name: 'Speisekartoffeln', store: 'Aldi', price: '1,99 €', saving: '-33%', icon: '🥔', category: 'Basis', packSize: '2,5 kg', relevance: 94, note: 'lange haltbar' },
+      { name: 'Gouda gerieben', store: 'Kaufland', price: '1,79 €', saving: '-31%', icon: '🧀', category: 'Hauptzutat', packSize: '150 g', relevance: 91, note: 'für Auflauf & Frittata' },
+      { name: 'Paprika-Mix', store: 'Kaufland', price: '1,49 €', saving: '-25%', icon: '🫑', category: 'Gemüse', packSize: '3er Pack', relevance: 84, note: 'Restetag eingeplant' },
+      { name: 'Hackfleisch gemischt', store: 'Lidl', price: '4,99 €', saving: '-20%', icon: '🥩', category: 'Hauptzutat', packSize: '500 g', relevance: 80, note: 'nicht im aktuellen Mix' },
+      { name: 'Gnocchi', store: 'EDEKA', price: '1,29 €', saving: '-24%', icon: '🍝', category: 'Basis', packSize: '500 g', relevance: 78, note: 'schnelles Feierabendgericht' },
+      { name: 'Brokkoli', store: 'EDEKA', price: '1,19 €', saving: '-21%', icon: '🥦', category: 'Gemüse', packSize: '500 g', relevance: 73, note: 'gut für Ofengerichte' },
+      { name: 'Eier, 10 Stück', store: 'Kaufland', price: '2,29 €', saving: '-18%', icon: '🥚', category: 'Hauptzutat', packSize: '10 Stück', relevance: 70, note: 'Frittata & Brotzeit' }
+    ];
+
+    const planBase = [
+      { day: 'Heute', date: 'Sa, 31. Okt.', title: 'Kartoffel-Würstchen-Eintopf', emoji: '🍲', store: 'Aldi', cost: '7,80 €', score: 96, tags: ['2 Angebotsanker', 'Rest für Mo'], evening: 'Brotzeit', kind: 'warm', note: 'Würstchen + Kartoffeln im Angebot', main: 'Würstchen', profile: 'Hausmannskost', vegetarian: false },
+      { day: 'Sonntag', date: 'So, 01. Nov.', title: 'Gnocchi-Paprika-Pfanne mit Gouda', emoji: '🥘', store: 'Kaufland', cost: '8,40 €', score: 92, tags: ['Käse im Angebot', '20 Min.'], evening: 'Reste-Pfanne', kind: 'warm', note: 'Paprika wird komplett aufgebraucht', main: 'Gnocchi', profile: 'Italienisch', vegetarian: true },
+      { day: 'Montag', date: 'Mo, 02. Nov.', title: 'Cremige Gemüse-Frittata', emoji: '🍳', store: 'Kaufland', cost: '6,20 €', score: 88, tags: ['Resteverwertung', 'vegetarisch'], evening: 'Brotzeit', kind: 'warm', note: 'Eier + übrig gebliebenes Gemüse', main: 'Eier', profile: 'Mediterran', vegetarian: true },
+      { day: 'Dienstag', date: 'Di, 03. Nov.', title: 'Linsencurry mit Reis und Paprika', emoji: '🍛', store: 'Kaufland', cost: '6,90 €', score: 85, tags: ['neue Küche', 'vegetarisch'], evening: '—', kind: 'warm', note: 'Paprika im Angebot, Gewürze aus dem Vorrat', main: 'Linsen', profile: 'Indisch', vegetarian: true },
+      { day: 'Mittwoch', date: 'Mi, 04. Nov.', title: 'Ofen-Hähnchen mit Brokkoli und Reis', emoji: '🍗', store: 'Kaufland', cost: '9,40 €', score: 82, tags: ['neue Proteinquelle', 'Brokkoli im Angebot'], evening: 'Restetag', kind: 'warm', note: 'Brokkoli im Angebot, Hähnchen ergänzt', main: 'Hähnchen', profile: 'Ofengericht', vegetarian: false }
+    ];
+
+    const planIngredientMap = {
+      'Kartoffel-Würstchen-Eintopf': ['Kartoffeln', 'Wiener Würstchen', 'Möhren', 'Zwiebel'],
+      'Gnocchi-Paprika-Pfanne mit Gouda': ['Gnocchi', 'Paprika', 'Gouda', 'Sahne'],
+      'Cremige Gemüse-Frittata': ['Eier', 'Paprika', 'Zucchini', 'Gouda'],
+      'Linsencurry mit Reis und Paprika': ['rote Linsen', 'Reis', 'Paprika', 'Kokosmilch'],
+      'Ofen-Hähnchen mit Brokkoli und Reis': ['Hähnchen', 'Brokkoli', 'Reis', 'Joghurt']
+    };
+
+    const suggestionSeed = [
+      { id: 'linsencurry-paprika', title: 'Rotes Linsencurry mit Paprika', emoji: '🍛', score: 94, store: 'Kaufland', reason: 'Paprika im Angebot bei Kaufland Würzburg · Gewürze aus dem Vorrat', time: 25, vegetarian: true, tags: ['vegetarisch', '25 Min.'], ingredients: ['rote Linsen', 'Paprika', 'Kokosmilch', 'Reis'] },
+      { id: 'kartoffelgratin-gouda', title: 'Kartoffelgratin mit Gouda', emoji: '🥔', score: 91, store: 'Aldi + Kaufland', reason: 'Kartoffeln und Käse sind starke Angebotsanker', time: 55, vegetarian: true, tags: ['vegetarisch', 'Ofengericht'], ingredients: ['Kartoffeln', 'Gouda', 'Sahne', 'Zwiebel'] },
+      { id: 'shakshuka', title: 'Shakshuka mit Brot', emoji: '🍅', score: 83, store: 'Kaufland', reason: 'Eier im Angebot bei Kaufland Würzburg · Brotzeit-Zutaten werden genutzt', time: 30, vegetarian: true, tags: ['vegetarisch', '30 Min.'], ingredients: ['Eier', 'Tomaten', 'Paprika', 'Brot'] },
+      { id: 'haehnchen-ofenblech', title: 'Hähnchen-Gemüse-Blech', emoji: '🍗', score: 86, store: 'Kaufland', reason: 'Neue Proteinquelle · Brokkoli im Angebot', time: 45, vegetarian: false, tags: ['proteinreich', 'Restetag'], ingredients: ['Hähnchen', 'Brokkoli', 'Kartoffeln', 'Joghurt'] },
+      { id: 'gnocchi-paprika', title: 'Gnocchi-Paprika-Pfanne', emoji: '🥘', score: 89, store: 'Kaufland', reason: 'Gnocchi und Paprika ergeben einen schnellen Treffer', time: 20, vegetarian: true, tags: ['vegetarisch', '20 Min.'], ingredients: ['Gnocchi', 'Paprika', 'Gouda', 'Sahne'] },
+      { id: 'wuerzige-hack-reispfanne', title: 'Würzige Hack-Reispfanne', emoji: '🍚', score: 78, store: 'Lidl', reason: 'Hackfleisch im Angebot · bewusst anderer Markt', time: 35, vegetarian: false, tags: ['familientauglich', '35 Min.'], ingredients: ['Hackfleisch', 'Reis', 'Paprika', 'Mais'] }
+    ];
+
+    const seededFavorites = [
+      { name: 'Lasagne al forno', icon: '🍝', source: 'Chefkoch', match: 'Hackfleisch im Angebot bei Lidl', score: 74, note: 'Lieblingsrezept · 90 Min.' },
+      { name: 'Paprika-Reis-Pfanne', icon: '🍚', source: 'lecker.de', match: 'Paprika im Angebot bei Kaufland Würzburg', score: 86, note: 'Lieblingsrezept · 30 Min.' },
+      { name: 'Kartoffelgratin', icon: '🥔', source: 'Chefkoch', match: 'Kartoffeln + Käse im Angebot', score: 97, note: 'Lieblingsrezept · 55 Min.' },
+      { name: 'Shakshuka', icon: '🍅', source: 'lecker.de', match: 'Eier im Angebot bei Kaufland Würzburg', score: 71, note: 'Lieblingsrezept · 35 Min.' }
+    ];
+
+    function defaultOfferEnd() {
+      const date = new Date();
+      date.setDate(date.getDate() + 7);
+      return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
+    }
+
+    const stored = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } };
+    const settings = stored('angebotskueche.settings', { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'] });
+    let offers = [...seedOffers, ...stored('angebotskueche.customOffers', [])].map(offer => ({ validUntil: defaultOfferEnd(), source: 'Demo-Import', confidence: 'mittel', packSize: '1 Packung', ...offer }));
+    let favorites = stored('angebotskueche.favorites', seededFavorites);
+    let pantry = stored('angebotskueche.pantry', ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch']);
+    let dismissedRecipes = stored('angebotskueche.dismissedRecipes', []);
+    let pinnedRecipes = stored('angebotskueche.pinnedRecipes', []);
+    let shoppingChecks = stored('angebotskueche.shoppingChecks', {});
+    let manualShoppingItems = stored('angebotskueche.manualShoppingItems', []);
+    if (!Array.isArray(manualShoppingItems)) manualShoppingItems = [];
+    manualShoppingItems = manualShoppingItems.filter(item => item && typeof item.name === 'string' && item.name.trim()).map(item => ({ id: String(item.id || `manual-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`), name: item.name.trim() }));
+    if (!shoppingChecks || typeof shoppingChecks !== 'object' || Array.isArray(shoppingChecks)) shoppingChecks = {};
+    const marketDetails = {
+      Aldi: { distance: '4,8 km', count: 7, logo: 'A', source: 'https://www.aldi-sued.de/angebote' },
+      Kaufland: { distance: '18,6 km', count: 9, logo: 'K', source: 'https://filiale.kaufland.de/angebote.html' },
+      Lidl: { distance: '6,2 km', count: 5, logo: 'L', source: 'https://www.lidl.de/c/online-prospekte/s10005610/' },
+      EDEKA: { distance: '3,1 km', count: 4, logo: 'E', source: 'https://www.edeka.de/angebote/' },
+      Penny: { distance: '5,5 km', count: 3, logo: 'P', source: 'https://www.penny.de/angebote' },
+      Netto: { distance: '5,9 km', count: 3, logo: 'N', source: 'https://www.netto-online.de/angebote/c-N07' },
+      'Marktkauf Tüngersheim': { distance: '7,3 km', count: 4, logo: 'M', source: 'https://www.edeka.de/marktkauf/angebote.jsp' }
+    };
+    const marketDisplayNames = { Kaufland: 'Kaufland Würzburg' };
+    const liveOfferMarkets = new Set(['Aldi', 'Kaufland', 'EDEKA', 'Lidl', 'Netto']);
+    let liveOfferStatus = stored('angebotskueche.liveOfferStatus', {});
+    if (!liveOfferStatus || typeof liveOfferStatus !== 'object' || Array.isArray(liveOfferStatus)) liveOfferStatus = {};
+    if (!Array.isArray(settings.selectedMarkets) || !settings.selectedMarkets.length) settings.selectedMarkets = ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'];
+
+    function marketDisplayName(name) {
+      return marketDisplayNames[name] || name;
+    }
+
+    function marketDisplayString(value) {
+      return String(value || '').split(' + ').map(marketDisplayName).join(' + ');
+    }
+
+    function canonicalMarketName(value) {
+      const normalized = String(value || '').trim().toLowerCase();
+      return Object.keys(marketDetails).find(name => name.toLowerCase() === normalized || marketDisplayName(name).toLowerCase() === normalized) || '';
+    }
+
+    function sortedSelectedMarkets() {
+      return (Array.isArray(settings.selectedMarkets) ? settings.selectedMarkets.filter(name => marketDetails[name]) : ['Aldi', 'Kaufland', 'Lidl', 'EDEKA']).sort((first, second) => parseFloat(marketDetails[first].distance.replace(',', '.')) - parseFloat(marketDetails[second].distance.replace(',', '.')));
+    }
+
+    const $ = (selector) => document.querySelector(selector);
+    const $$ = (selector) => [...document.querySelectorAll(selector)];
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+    }
+
+    function parseManualIngredients(value) {
+      return String(value || '').split(/[\n,;]/).map(item => item.trim()).filter(item => item.length >= 2).slice(0, 40);
+    }
+
+    function splitOfferRow(row) {
+      const delimiter = row.includes('|') ? '|' : row.includes('\t') ? '\t' : row.includes(';') ? ';' : null;
+      return delimiter ? row.split(delimiter).map(value => value.trim()) : row.split(/\s{2,}/).map(value => value.trim());
+    }
+
+    const planWeekdays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+    const planMonths = ['Jan.', 'Feb.', 'März', 'Apr.', 'Mai', 'Juni', 'Juli', 'Aug.', 'Sept.', 'Okt.', 'Nov.', 'Dez.'];
+
+    function getPlanDateInfo(offset) {
+      const date = new Date();
+      date.setHours(12, 0, 0, 0);
+      date.setDate(date.getDate() + offset);
+      const day = String(date.getDate()).padStart(2, '0');
+      const shortDay = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'][date.getDay()];
+      return { day: planWeekdays[date.getDay()], short: `${shortDay}, ${day}. ${planMonths[date.getMonth()]}` };
+    }
+
+    function planRangeLabel(days) {
+      if (!days) return '';
+      const start = getPlanDateInfo(0).short;
+      const end = getPlanDateInfo(days - 1).short;
+      return `${start} – ${end}`;
+    }
+
+    function renderSourceStatus() {
+      const selected = sortedSelectedMarkets();
+      const activeMarkets = selected.slice(0, Number(settings.markets || 2));
+      $('#sourceStatusList').innerHTML = Object.entries(marketDetails).map(([name, details]) => {
+        const count = offers.filter(offer => isOfferCurrent(offer) && offer.store === name).length;
+        const activeLabel = activeMarkets.includes(name) ? 'für Planung aktiv' : selected.includes(name) ? 'ausgewählt, über dem Stopplimit' : 'nicht ausgewählt';
+        const live = liveOfferStatus[name];
+        const offerLabel = count === 1 ? '1 gültiges Angebot' : count ? `${count} gültige Angebote` : 'manueller Import';
+        const sourceLabel = live?.count ? `Live geprüft · ${live.count} Treffer` : live?.error ? 'Live-Prüfung fehlgeschlagen' : liveOfferMarkets.has(name) ? 'Live-Quelle verfügbar' : 'manueller Import';
+        return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(details.logo)}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(details.distance)} · ${activeLabel}</div><div class="source-note">${escapeHtml(sourceLabel)}${live?.fetchedAt ? ` · ${escapeHtml(new Date(live.fetchedAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }))}` : ''}</div>${details.source ? `<a class="source-note" href="${escapeHtml(details.source)}" target="_blank" rel="noopener">Offizielle Angebote öffnen ↗</a>` : ''}</div></div><span class="market-count">${offerLabel}</span></div>`;
+      }).join('');
+    }
+
+    function isImportedOffer(offer) {
+      return offer && offer.source !== 'Demo-Import';
+    }
+
+    function persistCustomOffers() {
+      localStorage.setItem('angebotskueche.customOffers', JSON.stringify(offers.filter(isImportedOffer)));
+    }
+
+    function offerImportKey(offer) {
+      return `${normalizeIngredient(offer.name)}|${canonicalMarketName(offer.store)}|${String(offer.validUntil || '').trim()}`;
+    }
+
+    function renderOfferMaintenance() {
+      const imported = offers.filter(isImportedOffer);
+      const expired = imported.filter(offer => !isOfferCurrent(offer));
+      $('#offerMaintenanceNote').textContent = imported.length ? `${imported.length} eigene Angebote gespeichert · ${imported.length - expired.length} aktuell${expired.length ? ` · ${expired.length} abgelaufen` : ''}. Abgelaufene Einträge werden nicht geplant und können hier entfernt werden.` : 'Noch keine eigenen Angebote importiert. Die Demo-Angebote bleiben unverändert.';
+      const clearButton = $('#clearExpiredOffers');
+      clearButton.disabled = !expired.length;
+      clearButton.textContent = expired.length ? `Abgelaufene entfernen (${expired.length})` : 'Keine abgelaufenen';
+    }
+
+    function refreshOfferViews(message) {
+      persistCustomOffers();
+      renderOffers($('#offerFilter').value);
+      renderHighlights();
+      renderSuggestions();
+      renderFavorites();
+      renderPlan();
+      renderMarkets();
+      renderSourceStatus();
+      if (message) showToast(message);
+    }
+
+    async function refreshOfficialOffers() {
+      const selected = sortedSelectedMarkets().filter(name => liveOfferMarkets.has(name));
+      if (!selected.length) { showToast('Für die ausgewählten Märkte ist derzeit kein stabiler Live-Adapter verfügbar.'); return; }
+      const button = $('#refreshOfficialOffers');
+      button.disabled = true;
+      button.textContent = '↻ Quellen werden geprüft …';
+      const fetched = await Promise.all(selected.map(async market => {
+        try {
+          const response = await fetch(`/api/offers?market=${encodeURIComponent(market)}`, { headers: { accept: 'application/json' } });
+          const payload = await response.json();
+          if (!response.ok || !Array.isArray(payload.offers)) throw new Error(payload.error || 'Keine verwertbaren Angebote');
+          return { market, payload };
+        } catch (error) {
+          return { market, error: error?.message || 'Live-Quelle nicht erreichbar' };
+        }
+      }));
+      const successful = fetched.filter(result => result.payload?.offers?.length);
+      const successfulMarkets = new Set(successful.map(result => result.market));
+      const imported = successful.flatMap(result => result.payload.offers.map(offer => ({
+        ...offer,
+        store: result.market,
+        source: 'Offizieller Live-Import',
+        confidence: 'hoch',
+        note: offer.note || 'offizielle Händlerseite',
+        icon: offer.icon || '🛒',
+      })));
+      offers = offers.filter(offer => !(offer.source === 'Offizieller Live-Import' && successfulMarkets.has(offer.store)));
+      const knownKeys = new Set(offers.filter(isImportedOffer).map(offerImportKey));
+      const uniqueImported = imported.filter(offer => { const key = offerImportKey(offer); if (knownKeys.has(key)) return false; knownKeys.add(key); return true; });
+      offers.push(...uniqueImported);
+      fetched.forEach(result => {
+        liveOfferStatus[result.market] = result.payload ? { fetchedAt: new Date().toISOString(), validUntil: result.payload.validUntil, count: result.payload.offers.length } : { fetchedAt: new Date().toISOString(), error: result.error || 'Keine verwertbaren Angebote', count: 0 };
+      });
+      localStorage.setItem('angebotskueche.liveOfferStatus', JSON.stringify(liveOfferStatus));
+      refreshOfferViews();
+      button.disabled = false;
+      button.textContent = '↻ Offizielle Quellen prüfen';
+      const failed = fetched.filter(result => result.error).length;
+      showToast(`${uniqueImported.length} offizielle Angebote aktualisiert${failed ? ` · ${failed} Quelle${failed === 1 ? '' : 'n'} nicht verfügbar` : ''}.`);
+    }
+
+    function removeImportedOffer(index) {
+      const offer = offers[index];
+      if (!isImportedOffer(offer)) return;
+      offers.splice(index, 1);
+      refreshOfferViews(`${offer.name} wurde aus deinen Importen entfernt.`);
+    }
+
+    function clearExpiredOffers() {
+      const expired = offers.filter(offer => isImportedOffer(offer) && !isOfferCurrent(offer));
+      if (!expired.length) { showToast('Keine abgelaufenen eigenen Angebote vorhanden.'); return; }
+      if (!window.confirm(`${expired.length} abgelaufene Angebote aus deinen Importen entfernen?`)) return;
+      const expiredSet = new Set(expired);
+      for (let index = offers.length - 1; index >= 0; index -= 1) if (expiredSet.has(offers[index])) offers.splice(index, 1);
+      refreshOfferViews(`${expired.length} abgelaufene Angebote entfernt.`);
+    }
+
+    function renderPlan() {
+      const days = Number($('#daysSelect').value);
+      const people = Number($('#peopleSelect').value);
+      const leftovers = $('#leftoverToggle').checked;
+      const evening = $('#eveningToggle').checked;
+      const multiplier = people / 2;
+      $('#dayCount').textContent = `${days} Tage`;
+      $('#planRangeNote').textContent = planRangeLabel(days);
+      const visible = getCurrentPlanMeals();
+      const estimatedCost = visible.reduce((sum, meal) => sum + parseMoney(meal.cost), 0) * multiplier;
+      $('#totalCost').textContent = formatEuro(estimatedCost);
+      $('#totalCostNote').textContent = `ca. ${formatEuro(days ? estimatedCost / days : 0)} pro Tag · Packungsbasis`;
+      const variety = calculateVariety(visible);
+      $('#varietyScore').textContent = `${variety.score} %`;
+      $('#varietyNote').textContent = `${variety.profiles} Profile · ${variety.vegetarian} vegetarisch`;
+      const pinnedLabels = visible.filter(meal => meal.tags.includes('vorgemerkt')).map(meal => meal.title);
+      $('#pinnedNote').textContent = pinnedLabels.length ? `Vorgemerkt und bevorzugt: ${pinnedLabels.join(' · ')}.` : 'Noch keine zusätzlichen Rezepte vorgemerkt.';
+      const reused = [...new Set(visible.flatMap(meal => meal.reusedIngredients || []))];
+      $('#leftoverNote').textContent = reused.length ? `Restelogik aktiv: ${reused.slice(0, 3).join(' · ')} werden in mehreren Gerichten weiterverwendet.` : 'Noch keine sinnvolle Zutatenüberschneidung für die Resteverwertung erkannt.';
+      $('#dayList').innerHTML = visible.map((meal, index) => `
+        <article class="day-card ${index === 0 ? 'today' : ''}">
+          <div class="day-date">${index === 0 ? '<span class="today-tag">Heute</span>' : ''}<span class="day-name">${escapeHtml(meal.day)}</span><small>${escapeHtml(meal.date)}</small></div>
+          <div class="meal-row"><div class="meal-emoji ${meal.kind === 'warm' ? 'warm' : ''}">${escapeHtml(meal.emoji)}</div><div class="meal-info"><div class="meal-type">${meal.kind === 'warm' ? 'Warmes Hauptgericht' : 'Abendessen'}</div><div class="meal-title">${escapeHtml(meal.title)}</div><div class="meal-meta"><span>für <b>${people} Personen</b></span><span>ca. <b>${(parseFloat(meal.cost.replace(',', '.')) * multiplier).toFixed(2).replace('.', ',')} €</b></span><span>${escapeHtml(marketDisplayString(meal.store))}</span></div><div class="meal-tags">${meal.tags.map((tag, tagIndex) => `<span class="tag ${tagIndex === 1 ? 'yellow' : ''}">${escapeHtml(tag)}</span>`).join('')}</div></div></div>
+          <div class="day-score"><div class="score"><span class="score-ring" style="background:conic-gradient(var(--green-2) 0 ${meal.score}%, #e1ece2 ${meal.score}% 100%)"><span>${meal.score}</span></span> Match</div><button class="text-button meal-detail" data-title="${escapeHtml(meal.title)}" data-note="${escapeHtml(meal.note)}">Details&nbsp;→</button></div>
+        </article>`).join('') + (evening ? `<div class="day-card" style="background:#f4f8f1;border-style:dashed"><div class="day-date"><span class="day-name">Abends</span><small>optional</small></div><div class="meal-row"><div class="meal-emoji">🍞</div><div class="meal-info"><div class="meal-type">Leichtes Abendessen</div><div class="meal-title">${leftovers ? 'Brotzeit oder Restetag' : 'Brotzeit mit Vorräten'}</div><div class="meal-meta"><span>kein extra Angebotsstopp nötig</span></div></div></div><div class="day-score"><span class="tag muted">flexibel</span></div></div>` : '');
+      renderShoppingList();
+    }
+
+    function shoppingIngredientKey(ingredient) {
+      return normalizeIngredient(ingredient).replace(/\b(frisch|frische|frischen|gehackt|gerieben|gemischt|rote|roten|gross|grosse|große|klein|kleine)\b/g, ' ').replace(/\s+/g, ' ').trim();
+    }
+
+    function getShoppingItems() {
+      const activeOffers = getActiveOffers();
+      const items = new Map();
+      getCurrentPlanMeals().forEach(meal => {
+        getMealIngredients(meal).forEach(rawIngredient => {
+          const ingredient = String(rawIngredient || '').trim();
+          if (!ingredient || isPantryIngredient(ingredient)) return;
+          const key = shoppingIngredientKey(ingredient);
+          if (!key) return;
+          const current = items.get(key) || { id: `shopping-${key.replace(/[^a-z0-9]+/g, '-')}`, name: ingredient, count: 0, meals: [], offer: null };
+          current.count += 1;
+          if (!current.meals.includes(meal.title)) current.meals.push(meal.title);
+          const candidates = activeOffers.filter(offer => offerMatchesIngredient(ingredient, offer)).sort((first, second) => {
+            const marketOrder = sortedSelectedMarkets();
+            const firstMarket = marketOrder.indexOf(first.store);
+            const secondMarket = marketOrder.indexOf(second.store);
+            return (firstMarket === -1 ? 99 : firstMarket) - (secondMarket === -1 ? 99 : secondMarket) || Number(second.relevance || 0) - Number(first.relevance || 0);
+          });
+          if (candidates[0] && !current.offer) current.offer = candidates[0];
+          items.set(key, current);
+        });
+      });
+      manualShoppingItems.forEach(manualItem => {
+        const ingredient = manualItem.name.trim();
+        if (!ingredient || isPantryIngredient(ingredient)) return;
+        const key = shoppingIngredientKey(ingredient);
+        if (!key || items.has(key)) return;
+        const offer = activeOffers.filter(candidate => offerMatchesIngredient(ingredient, candidate)).sort((first, second) => Number(second.relevance || 0) - Number(first.relevance || 0))[0] || null;
+        items.set(key, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id });
+      });
+      return [...items.values()].sort((first, second) => Number(Boolean(first.offer)) - Number(Boolean(second.offer)) || first.name.localeCompare(second.name, 'de'));
+    }
+
+    function renderShoppingList() {
+      const items = getShoppingItems();
+      const openItems = items.filter(item => !shoppingChecks[item.id]);
+      const offerItems = items.filter(item => item.offer);
+      const missingItems = items.filter(item => !item.offer);
+      const offerTotal = offerItems.reduce((sum, item) => sum + parseMoney(item.offer.price), 0);
+      $('#shoppingOpenCount').textContent = String(openItems.length);
+      $('#shoppingOpenNote').textContent = `${items.length ? `${items.length - openItems.length} von ${items.length} ` : ''}abgehakt`;
+      $('#shoppingOfferTotal').textContent = formatEuro(offerTotal);
+      $('#shoppingOfferNote').textContent = `${offerItems.length} Artikel aus aktiven Märkten`;
+      $('#shoppingMissingCount').textContent = String(missingItems.length);
+      $('#shoppingHint').textContent = items.length ? `${openItems.length} offene Artikel · ${offerItems.length} mit Angebotsanker · Vorräte werden nicht angezeigt.` : 'Noch keine einkaufbaren Zutaten im aktuellen Plan.';
+      if (!items.length) { $('#shoppingList').innerHTML = '<div class="empty-state">Für den aktuellen Plan gibt es noch keine Einkaufsliste.</div>'; return; }
+      const groups = new Map();
+      items.forEach(item => { const label = item.offer?.store || 'Ergänzen'; if (!groups.has(label)) groups.set(label, []); groups.get(label).push(item); });
+      const marketOrder = sortedSelectedMarkets();
+      const orderedGroups = [...groups.entries()].sort((first, second) => {
+        if (first[0] === 'Ergänzen') return 1;
+        if (second[0] === 'Ergänzen') return -1;
+        return (marketOrder.indexOf(first[0]) === -1 ? 99 : marketOrder.indexOf(first[0])) - (marketOrder.indexOf(second[0]) === -1 ? 99 : marketOrder.indexOf(second[0]));
+      });
+       $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group"><div class="shopping-group-title"><span>${escapeHtml(group === 'Ergänzen' ? 'Noch zu ergänzen' : marketDisplayName(group))}</span><span>${groupItems.length} Artikel</span></div><div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const useLabel = item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(item.offer.packSize || '1 Packung')} · ${escapeHtml(item.offer.saving || 'Angebot')}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
+    }
+
+    function openShoppingItemModal() {
+      $('#shoppingItemInput').value = '';
+      $('#shoppingItemStatus').textContent = '';
+      $('#shoppingModal').classList.add('open');
+      $('#shoppingItemInput').focus();
+    }
+
+    function saveManualShoppingItem() {
+      const input = $('#shoppingItemInput');
+      const status = $('#shoppingItemStatus');
+      const candidate = input.value.trim().replace(/\s+/g, ' ');
+      if (!candidate) { status.textContent = 'Bitte einen Artikel eingeben.'; input.focus(); return; }
+      if (isPantryIngredient(candidate)) { status.textContent = 'Dieser Artikel ist bereits als Vorrat hinterlegt.'; input.focus(); return; }
+      const key = shoppingIngredientKey(candidate);
+      const alreadyListed = getShoppingItems().some(item => shoppingIngredientKey(item.name) === key);
+      if (alreadyListed) { status.textContent = `${candidate} steht bereits auf der Einkaufsliste.`; input.focus(); return; }
+      manualShoppingItems.push({ id: `manual-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, name: candidate });
+      localStorage.setItem('angebotskueche.manualShoppingItems', JSON.stringify(manualShoppingItems));
+      $('#shoppingModal').classList.remove('open');
+      renderShoppingList();
+      showToast(`${candidate} zur Einkaufsliste hinzugefügt.`);
+    }
+
+    function renderSuggestions() {
+      const filter = $('#suggestionFilter').value;
+      const candidates = suggestionSeed.filter(recipe => !dismissedRecipes.includes(recipe.id)).filter(recipe => filter === 'all' || (filter === 'vegetarian' && recipe.vegetarian) || (filter === 'quick' && recipe.time <= 30)).sort((a, b) => scoreRecipe(b).score - scoreRecipe(a).score);
+      $('#restoreDismissed').style.display = dismissedRecipes.length ? 'inline-flex' : 'none';
+      if (!candidates.length) { $('#suggestionGrid').innerHTML = '<div class="empty-state">Für diesen Filter sind keine weiteren Vorschläge offen.</div>'; return; }
+      $('#suggestionGrid').innerHTML = candidates.map(recipe => { const pinned = pinnedRecipes.includes(recipe.id); const match = scoreRecipe(recipe); const evidence = match.requiredIngredients.length ? `${match.matchedIngredients.length}/${match.requiredIngredients.length} Angebotszutaten` : 'Zutatenanalyse ausstehend'; return `<article class="suggestion-card"><div class="suggestion-head"><div><div class="catalog-icon">${escapeHtml(recipe.emoji)}</div><div class="suggestion-title">${escapeHtml(recipe.title)}</div></div><span class="favorite-match">${escapeHtml(match.score)}% Match</span></div><div class="suggestion-reason">${escapeHtml(match.reason || 'Noch kein direkter Angebotsanker')} · ${escapeHtml(marketDisplayString(match.store || 'mehrere Märkte'))}</div><div class="source-note">${escapeHtml(evidence)} · Vorrat wird nicht gewertet</div><div class="meal-tags">${recipe.tags.map((tag, index) => `<span class="tag ${index === 0 && recipe.vegetarian ? '' : 'yellow'}">${escapeHtml(tag)}</span>`).join('')}</div><div class="suggestion-ingredients">${recipe.ingredients.map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('')}</div><div class="suggestion-actions"><button class="small-button ${pinned ? '' : 'primary'}" data-plan-recipe="${recipe.id}">${pinned ? '✓ Vorgemerkt' : '＋ Für Plan merken'}</button><button class="small-button" data-share-recipe="${recipe.id}">↗ Teilen</button><button class="small-button remove" data-dismiss-recipe="${recipe.id}">Nicht mehr vorschlagen</button></div></article>`; }).join('');
+    }
+
+    async function shareRecipe(id) {
+      const recipe = suggestionSeed.find(item => item.id === id);
+      if (!recipe) return;
+      const text = `${recipe.title}\n\n${recipe.ingredients.map(item => `- ${item}`).join('\n')}\n\nAngebotsküche · ${marketDisplayString(recipe.store)}`;
+      if (navigator.share) {
+        try { await navigator.share({ title: recipe.title, text }); showToast('Teilen-Menü geöffnet.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(text); showToast('Zutaten in die Zwischenablage kopiert.');
+      } else {
+        showToast('Teilen wird auf diesem Gerät nicht unterstützt.');
+      }
+    }
+
+    async function shareAllSuggestions() {
+      const recipes = suggestionSeed.filter(recipe => !dismissedRecipes.includes(recipe.id)).slice(0, 4);
+      if (!recipes.length) { showToast('Keine offenen Vorschläge zum Teilen.'); return; }
+      const text = recipes.map(recipe => `${recipe.title}\n${recipe.ingredients.map(item => `- ${item}`).join('\n')}`).join('\n\n');
+      if (navigator.share) {
+        try { await navigator.share({ title: 'Angebotsküche · Rezeptauswahl', text }); showToast('Rezeptauswahl geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(text); showToast('Rezeptauswahl in die Zwischenablage kopiert.');
+      } else {
+        showToast('Teilen wird auf diesem Gerät nicht unterstützt.');
+      }
+    }
+
+    async function shareFavorite(index) {
+      const recipe = favorites[index];
+      if (!recipe || !recipe.ingredients?.length) { showToast('Für dieses Rezept sind noch keine Zutaten erkannt.'); return; }
+      const text = `${recipe.name}\n\n${recipe.ingredients.map(item => `- ${item}`).join('\n')}\n\nQuelle: ${recipe.source}`;
+      if (navigator.share) {
+        try { await navigator.share({ title: recipe.name, text, url: recipe.url }); showToast('Lieblingsrezept geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(text); showToast('Lieblingsrezept in die Zwischenablage kopiert.');
+      } else {
+        showToast('Teilen wird auf diesem Gerät nicht unterstützt.');
+      }
+    }
+
+    async function shareCurrentPlan() {
+      const meals = getCurrentPlanMeals();
+      const ingredientCounts = new Map();
+      meals.forEach(meal => (meal.ingredients || planIngredientMap[meal.title] || []).forEach(ingredient => ingredientCounts.set(ingredient, (ingredientCounts.get(ingredient) || 0) + 1)));
+      if (!ingredientCounts.size) { showToast('Für diesen Plan sind noch keine Zutaten verfügbar.'); return; }
+      const ingredients = [...ingredientCounts.entries()].sort((a, b) => a[0].localeCompare(b[0], 'de')).map(([ingredient, count]) => `- ${ingredient}${count > 1 ? ` · für ${count} Gerichte` : ''}`).join('\n');
+      const text = `Angebotsküche · ${meals.length}-Tage-Plan\n\n${ingredients}`;
+      if (navigator.share) {
+        try { await navigator.share({ title: 'Angebotsküche · Plan', text }); showToast('Plan geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(text); showToast('Zusammengefasste Zutaten in die Zwischenablage kopiert.');
+      } else {
+        showToast('Teilen wird auf diesem Gerät nicht unterstützt.');
+      }
+    }
+
+    async function shareShoppingList() {
+      const pending = getShoppingItems().filter(item => !shoppingChecks[item.id]);
+      if (!pending.length) { showToast('Die Einkaufsliste ist bereits vollständig abgehakt.'); return; }
+      const groups = new Map();
+      pending.forEach(item => { const group = item.offer?.store || 'Noch zu ergänzen'; if (!groups.has(group)) groups.set(group, []); groups.get(group).push(item); });
+      const lines = [...groups.entries()].map(([group, items]) => `${marketDisplayName(group)}\n${items.map(item => `- ${item.name}${item.count > 1 ? ` · für ${item.count} Gerichte` : ''}${item.offer ? ` · ${item.offer.packSize || '1 Packung'} · ${item.offer.price}` : ' · ergänzen'}`).join('\n')}`).join('\n\n');
+      const text = `Angebotsküche · offene Einkaufsliste\n\n${lines}`;
+      if (navigator.share) {
+        try { await navigator.share({ title: 'Angebotsküche · Einkaufsliste', text }); showToast('Einkaufsliste geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
+      } else if (navigator.clipboard) {
+        try { await navigator.clipboard.writeText(text); showToast('Einkaufsliste in die Zwischenablage kopiert.'); } catch { showToast('Die Einkaufsliste konnte nicht in die Zwischenablage kopiert werden.'); }
+      } else {
+        showToast('Teilen wird auf diesem Gerät nicht unterstützt.');
+      }
+    }
+
+    function renderHighlights() {
+      $('#highlightList').innerHTML = offers.filter(isOfferCurrent).slice(0, 4).map(offer => `<div class="offer"><div class="offer-thumb">${escapeHtml(offer.icon)}</div><div><div class="offer-name">${escapeHtml(offer.name)}</div><div class="offer-store">${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.note)}</div></div><div class="offer-price"><strong>${escapeHtml(offer.price)}</strong><span>${escapeHtml(offer.saving)}</span></div></div>`).join('');
+    }
+
+    function persistSettings() {
+      settings.people = Number($('#peopleSelect').value);
+      settings.days = Number($('#daysSelect').value);
+      settings.markets = Number($('#marketsSelect').value);
+      settings.leftovers = $('#leftoverToggle').checked;
+      settings.evening = $('#eveningToggle').checked;
+      localStorage.setItem('angebotskueche.settings', JSON.stringify({ people: settings.people, days: settings.days, markets: settings.markets, leftovers: settings.leftovers, evening: settings.evening, selectedMarkets: settings.selectedMarkets }));
+    }
+
+    function calculateVariety(meals) {
+      if (!meals.length) return { score: 0, profiles: 0, mains: 0, vegetarian: 0 };
+      const profiles = new Set(meals.map(meal => meal.profile).filter(Boolean)).size;
+      const mains = new Set(meals.map(meal => meal.main).filter(Boolean)).size;
+      const vegetarian = meals.filter(meal => meal.vegetarian).length;
+      const repeatedMainNextDay = meals.slice(1).filter((meal, index) => meal.main && meal.main === meals[index].main).length;
+      const score = Math.max(0, Math.min(96, Math.round((profiles / meals.length) * 45 + (mains / meals.length) * 35 + (vegetarian ? 12 : 0) - repeatedMainNextDay * 10)));
+      return { score, profiles, mains, vegetarian };
+    }
+
+    function getMealIngredients(meal) {
+      return meal.ingredients || planIngredientMap[meal.title] || [];
+    }
+
+    function ingredientsOverlap(first, second) {
+      const firstText = normalizeIngredient(first).trim();
+      const secondText = normalizeIngredient(second).trim();
+      if (!firstText || !secondText) return false;
+      if (firstText === secondText) return true;
+      const firstWords = firstText.split(/\s+/).filter(word => word.length >= 4);
+      return firstWords.some(word => secondText.includes(word) || (word.endsWith('en') && secondText.includes(word.slice(0, -2))) || (word.endsWith('e') && secondText.includes(word.slice(0, -1))));
+    }
+
+    function isPantryIngredient(ingredient) {
+      const normalizedIngredient = normalizeIngredient(ingredient).trim();
+      return pantry.some(item => {
+        const normalizedPantryItem = normalizeIngredient(item).trim();
+        if (!normalizedIngredient || !normalizedPantryItem) return false;
+        if (normalizedIngredient === normalizedPantryItem) return true;
+        const ingredientWords = normalizedIngredient.split(/\s+/).filter(Boolean);
+        if (normalizedPantryItem.length < 4) return normalizedPantryItem === 'ol' && ingredientWords.some(word => word === 'ol' || (word.endsWith('ol') && word.length >= 4));
+        if (normalizedIngredient.includes(normalizedPantryItem)) return true;
+        return ingredientsOverlap(normalizedIngredient, normalizedPantryItem);
+      });
+    }
+
+    function applyLeftoverPlan(meals) {
+      if ($('#leftoverToggle')?.checked === false) return meals.map(meal => ({ ...meal, reusedIngredients: [] }));
+      const seen = [];
+      return meals.map(meal => {
+        const ingredients = getMealIngredients(meal);
+        const reusedIngredients = ingredients.filter(ingredient => !isPantryIngredient(ingredient) && seen.some(previous => ingredientsOverlap(ingredient, previous))).slice(0, 3);
+        seen.push(...ingredients);
+        return reusedIngredients.length ? { ...meal, reusedIngredients, tags: [...new Set([...(meal.tags || []), 'Resteverwertung'])], note: `${meal.note} · ${reusedIngredients.join(' + ')} werden weiterverwendet` } : { ...meal, reusedIngredients: [] };
+      });
+    }
+
+    function parseMoney(value) {
+      const match = String(value || '').match(/\d+(?:[,.]\d{1,2})?/);
+      return match ? Number(match[0].replace(',', '.')) : 0;
+    }
+
+    function formatEuro(value) {
+      return `${Number(value || 0).toFixed(2).replace('.', ',')} €`;
+    }
+
+    function estimateMealCost(recipe, fallback) {
+      const active = getActiveOffers();
+      const matched = [];
+      (recipe.ingredients || []).filter(ingredient => !isPantryIngredient(ingredient)).forEach(ingredient => {
+        const offer = active.find(candidate => offerMatchesIngredient(ingredient, candidate));
+        if (offer && !matched.some(item => item.store === offer.store && item.name === offer.name)) matched.push(offer);
+      });
+      if (matched.length < 2) return fallback;
+      const offerTotal = matched.reduce((sum, offer) => sum + parseMoney(offer.price), 0);
+      return formatEuro(Math.max(parseMoney(fallback) * 0.75, offerTotal));
+    }
+
+    function favoriteAsCandidate(item, index) {
+      const ingredients = Array.isArray(item.ingredients) ? item.ingredients : [];
+      return { id: `favorite-${index}`, title: item.name, emoji: item.icon || '♡', score: item.score || 0, store: '', reason: 'Lieblingsrezept', time: item.time || 45, vegetarian: Boolean(item.vegetarian), tags: ['Lieblingsrezept'], ingredients, favorite: true, source: item.source };
+    }
+
+    function getPlanCandidates() {
+      const favoriteCandidates = favorites.map(favoriteAsCandidate).filter(recipe => recipe.ingredients.length);
+      return [...favoriteCandidates, ...suggestionSeed]
+        .filter(recipe => !dismissedRecipes.includes(recipe.id))
+        .sort((a, b) => (scoreRecipe(b).score + (b.favorite ? 4 : 0)) - (scoreRecipe(a).score + (a.favorite ? 4 : 0)));
+    }
+
+    function suggestionAsMeal(recipe, index) {
+      const template = planBase[index] || planBase[0];
+      const match = scoreRecipe(recipe);
+      const store = match.store || recipe.store || 'mehrere Märkte';
+      const pinned = pinnedRecipes.includes(recipe.id);
+      return { ...template, title: recipe.title, emoji: recipe.emoji, store: store.split(' + ')[0], cost: estimateMealCost(recipe, template.cost), score: match.score, tags: [...(recipe.tags || []), ...(recipe.favorite ? ['Lieblingsrezept'] : []), pinned ? 'vorgemerkt' : 'Angebotsanker'], note: match.reason || 'Passender Angebotsanker gefunden', main: normalizeIngredient(recipe.ingredients?.[0] || recipe.title), profile: recipe.favorite ? 'Lieblingsrezept' : template.profile || 'Angebotsrezept', vegetarian: recipe.vegetarian, ingredients: recipe.ingredients };
+    }
+
+    function getCurrentPlanMeals() {
+      const days = Number($('#daysSelect').value);
+      const planCandidates = getPlanCandidates();
+      const pinnedMeals = pinnedRecipes.map(id => planCandidates.find(recipe => recipe.id === id)).filter(Boolean).map((recipe, index) => suggestionAsMeal(recipe, index));
+      const pinnedTitles = new Set(pinnedMeals.map(meal => meal.title));
+      const usedMains = new Set(pinnedMeals.map(meal => meal.main));
+      const selected = [...pinnedMeals];
+      for (const recipe of getPlanCandidates()) {
+        if (selected.length >= days || pinnedTitles.has(recipe.title)) continue;
+        const main = normalizeIngredient(recipe.ingredients?.[0] || recipe.title);
+        if (usedMains.has(main) && selected.length < days - 1) continue;
+        selected.push(suggestionAsMeal(recipe, selected.length));
+        usedMains.add(main);
+      }
+      const fallback = planBase.filter(meal => !selected.some(item => item.title === meal.title));
+      const dated = [...selected, ...fallback].slice(0, days).map((meal, index) => { const date = getPlanDateInfo(index); return { ...meal, day: date.day, date: date.short }; });
+      return applyLeftoverPlan(dated);
+    }
+
+    function renderMarkets() {
+      const limit = Number($('#marketsSelect').value);
+      const selected = sortedSelectedMarkets();
+      const used = (selected.length ? selected : ['Aldi']).slice(0, limit);
+      const marketLabel = marketDisplayString(used.join(' + '));
+      $('#marketCount').textContent = used.length;
+      $('#marketNote').textContent = marketLabel;
+      $('#marketSubtitle').textContent = `Einkaufsroute: ${marketLabel} · maximal ${used.length} ${used.length === 1 ? 'Stopp' : 'Stopps'}.`;
+      $('#marketList').innerHTML = used.map((name, index) => { const currentCount = offers.filter(offer => isOfferCurrent(offer) && offer.store === name).length; return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(marketDetails[name].logo)}</div><div><div class="market-name">${index + 1}. ${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(marketDetails[name].distance)} entfernt</div></div></div><span class="market-count">${currentCount} gültige Angebote</span></div>`; }).join('');
+    }
+
+    function renderMarketChoices() {
+      const selected = Array.isArray(settings.selectedMarkets) ? settings.selectedMarkets : [];
+      $('#marketChoices').innerHTML = Object.entries(marketDetails).map(([name, details]) => `<label class="market-row" style="cursor:pointer"><div class="market-left"><input type="checkbox" value="${name}" data-market-choice ${selected.includes(name) ? 'checked' : ''}><div class="market-logo">${details.logo}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(details.distance)} entfernt</div></div></div><span class="market-count">${details.count} Treffer</span></label>`).join('');
+    }
+
+    function renderOffers(filter = 'all') {
+      const current = offers.filter(isOfferCurrent);
+      const filtered = filter === 'all' ? current : current.filter(offer => offer.store === filter);
+      $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => { const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : ''; return `<div class="catalog-card"><div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(offer.icon)}</div><span class="discount">${escapeHtml(offer.saving)}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category)}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note)} · ${escapeHtml(offer.packSize || '1 Packung')}</span><span>${escapeHtml(offer.relevance)}% Match</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source)} · ${escapeHtml(offer.confidence)} sicher</div>${removeAction}</div>`; }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
+      renderOfferMaintenance();
+    }
+
+    function parseRecipeJsonLd(html) {
+      try {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const blocks = [...doc.querySelectorAll('script[type="application/ld+json"]')];
+        const candidates = blocks.flatMap(block => {
+          try {
+            const parsed = JSON.parse(block.textContent || '');
+            if (Array.isArray(parsed)) return parsed;
+            if (Array.isArray(parsed['@graph'])) return parsed['@graph'];
+            return [parsed];
+          } catch { return []; }
+        });
+        const recipe = candidates.find(item => { const type = item && item['@type']; return type === 'Recipe' || (Array.isArray(type) && type.includes('Recipe')); });
+        if (!recipe || !Array.isArray(recipe.recipeIngredient)) return null;
+        return { name: recipe.name, ingredients: recipe.recipeIngredient.map(item => String(item).trim()).filter(Boolean) };
+      } catch { return null; }
+    }
+
+    async function readRecipeFromSource(url) {
+      try {
+        const parserResponse = await fetch(`/api/recipe?url=${encodeURIComponent(url)}`, { headers: { accept: 'application/json' } });
+        if (parserResponse.ok) {
+          const parsed = await parserResponse.json();
+          if (parsed?.name && Array.isArray(parsed.ingredients) && parsed.ingredients.length) return parsed;
+        }
+      } catch {}
+      try {
+        const response = await fetch(url, { headers: { accept: 'text/html,application/xhtml+xml' } });
+        if (!response.ok) return null;
+        return parseRecipeJsonLd(await response.text());
+      } catch { return null; }
+    }
+
+    function normalizeIngredient(value) {
+      return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9äöüß ]/g, ' ');
+    }
+
+    function offerEndDate(value) {
+      const match = String(value || '').match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+      if (!match) return null;
+      const date = new Date(Number(match[3]), Number(match[2]) - 1, Number(match[1]), 23, 59, 59);
+      return date.getFullYear() === Number(match[3]) && date.getMonth() === Number(match[2]) - 1 && date.getDate() === Number(match[1]) ? date : null;
+    }
+
+    function isOfferCurrent(offer) {
+      const end = offerEndDate(String(offer?.validUntil || '').trim());
+      return Boolean(end) && end >= new Date();
+    }
+
+    function getActiveOffers() {
+      const selected = sortedSelectedMarkets();
+      const activeMarkets = selected.slice(0, Number(settings.markets || 2));
+      const current = offers.filter(isOfferCurrent);
+      return activeMarkets.length ? current.filter(offer => activeMarkets.includes(offer.store)) : current;
+    }
+
+    function offerMatchesIngredient(ingredient, offer) {
+      const words = normalizeIngredient(ingredient).split(/\s+/).filter(word => word.length >= 4);
+      const offerName = normalizeIngredient(offer.name);
+      return words.some(word => offerName.includes(word) || (word.endsWith('en') && offerName.includes(word.slice(0, -2))) || (word.endsWith('e') && offerName.includes(word.slice(0, -1))));
+    }
+
+    function scoreRecipe(recipe) {
+      const ingredients = (recipe.ingredients || []).filter(ingredient => !isPantryIngredient(ingredient));
+      if (!ingredients.length) return { score: recipe.score || 0, reason: recipe.reason || 'Zutatenanalyse ausstehend', store: recipe.store, matchedIngredients: [], requiredIngredients: [] };
+      const matches = ingredients.filter(ingredient => getActiveOffers().some(offer => offerMatchesIngredient(ingredient, offer)));
+      const stores = [...new Set(getActiveOffers().filter(offer => matches.some(ingredient => offerMatchesIngredient(ingredient, offer))).map(offer => offer.store))];
+      return { score: matches.length ? Math.min(97, 45 + Math.round((matches.length / ingredients.length) * 50)) : Math.max(35, (recipe.score || 60) - 15), reason: matches.length ? `${matches.slice(0, 2).join(' + ')} im Angebot` : recipe.reason, store: stores.length ? stores.join(' + ') : recipe.store, matchedIngredients: matches, requiredIngredients: ingredients };
+    }
+
+    function getFavoriteMatch(item) {
+      const ingredients = (Array.isArray(item.ingredients) ? item.ingredients : []).filter(ingredient => !isPantryIngredient(ingredient));
+      if (!ingredients.length) return { score: item.score || 0, text: item.match || 'Zutatenanalyse ausstehend', matchedIngredients: [], requiredIngredients: [] };
+      const matched = ingredients.filter(ingredient => getActiveOffers().some(offer => offerMatchesIngredient(ingredient, offer)));
+      const score = Math.min(96, 50 + Math.round((matched.length / ingredients.length) * 45));
+      return { score, text: matched.length ? `${matched.slice(0, 2).join(' + ')} im Angebot` : 'Noch kein direkter Angebotsanker erkannt', matchedIngredients: matched, requiredIngredients: ingredients };
+    }
+
+    function isBuiltInFavorite(item) {
+      return item?.builtIn === true || (!item?.url && !Array.isArray(item?.ingredients));
+    }
+
+    function renderFavorites() {
+      $('#favoriteCatalog').innerHTML = favorites.map((item, index) => { const match = getFavoriteMatch(item); const pinned = pinnedRecipes.includes(`favorite-${index}`); const evidence = match.requiredIngredients.length ? `${match.matchedIngredients.length}/${match.requiredIngredients.length} Angebotszutaten` : 'Zutatenanalyse ausstehend'; const actions = `${item.ingredients?.length ? `<button class="small-button ${pinned ? '' : 'primary'}" data-plan-favorite="${index}">${pinned ? '✓ Im Plan vorgemerkt' : '＋ Für Plan merken'}</button><button class="small-button" data-share-favorite="${index}">↗ Teilen</button>` : ''}${isBuiltInFavorite(item) ? '' : `<button class="small-button remove" data-remove-favorite="${index}">Rezept entfernen</button>`}`; return `<div class="favorite-card"><div><div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(item.icon)}</div><span class="favorite-match">${match.score ? `${escapeHtml(match.score)}% Match` : 'Import vorgemerkt'}</span></div><div class="catalog-name">${escapeHtml(item.name)}</div><div class="catalog-meta"><span>${escapeHtml(item.note)}</span><span>${escapeHtml(item.source || 'Quelle offen')}</span></div><div class="source-note">${escapeHtml(evidence)} · Vorrat wird nicht gewertet</div>${item.ingredients?.length ? `<div class="catalog-meta"><span>${escapeHtml(item.ingredients.length)} Zutaten erkannt</span></div>` : ''}${item.url ? `<a class="source-note" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Quelle öffnen ↗</a>` : ''}</div><div class="favorite-match">${escapeHtml(match.text)}</div>${actions ? `<div class="suggestion-actions">${actions}</div>` : ''}</div>`; }).join('');
+    }
+
+    function refreshPantryDependentViews() {
+      renderPlan();
+      renderSuggestions();
+      renderHighlights();
+      renderOffers($('#offerFilter').value);
+      renderFavorites();
+      renderMarkets();
+      renderSourceStatus();
+    }
+
+    function renderPantry() {
+      $('#pantryList').innerHTML = pantry.map(item => `<span class="inventory-chip">${escapeHtml(item)}<button title="${escapeHtml(item)} entfernen" data-remove-pantry="${escapeHtml(item)}">×</button></span>`).join('');
+      $$('[data-remove-pantry]').forEach(button => button.addEventListener('click', () => { const removed = button.dataset.removePantry; pantry = pantry.filter(item => item !== removed); localStorage.setItem('angebotskueche.pantry', JSON.stringify(pantry)); renderPantry(); refreshPantryDependentViews(); showToast(`${removed} wird künftig als Einkauf berücksichtigt.`); }));
+    }
+
+    function openPantryModal() {
+      $('#pantryInput').value = '';
+      $('#pantryStatus').textContent = '';
+      $('#pantryModal').classList.add('open');
+      $('#pantryInput').focus();
+    }
+
+    function closePantryModal() {
+      $('#pantryModal').classList.remove('open');
+    }
+
+    function savePantryItem() {
+      const candidate = $('#pantryInput').value.trim();
+      if (!candidate) { $('#pantryStatus').textContent = 'Bitte eine Zutat eingeben.'; $('#pantryInput').focus(); return; }
+      if (pantry.some(existing => normalizeIngredient(existing) === normalizeIngredient(candidate))) { $('#pantryStatus').textContent = `${candidate} ist bereits als Vorrat gespeichert.`; $('#pantryInput').focus(); return; }
+      pantry.push(candidate);
+      localStorage.setItem('angebotskueche.pantry', JSON.stringify(pantry));
+      renderPantry();
+      refreshPantryDependentViews();
+      closePantryModal();
+      showToast(`${candidate} als Vorrat gespeichert.`);
+    }
+
+    function showPage(page) {
+      $$('.nav-button').forEach(button => button.classList.toggle('active', button.dataset.page === page));
+      $$('.page').forEach(section => section.classList.toggle('active', section.id === `page-${page}`));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showToast(message) { const toast = $('#toast'); toast.textContent = message; toast.classList.add('show'); clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => toast.classList.remove('show'), 3000); }
+
+    const backupArrayKeys = ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems'];
+    const backupObjectKeys = ['shoppingChecks', 'liveOfferStatus'];
+
+    function buildUserDataPayload() {
+      return { version: 1, exportedAt: new Date().toISOString(), settings: stored('angebotskueche.settings', settings), pantry: stored('angebotskueche.pantry', pantry), favorites: stored('angebotskueche.favorites', favorites), dismissedRecipes: stored('angebotskueche.dismissedRecipes', dismissedRecipes), pinnedRecipes: stored('angebotskueche.pinnedRecipes', pinnedRecipes), customOffers: stored('angebotskueche.customOffers', []), shoppingChecks: stored('angebotskueche.shoppingChecks', shoppingChecks), manualShoppingItems: stored('angebotskueche.manualShoppingItems', manualShoppingItems), liveOfferStatus: stored('angebotskueche.liveOfferStatus', liveOfferStatus) };
+    }
+
+    function validateUserDataPayload(payload) {
+      if (!payload || payload.version !== 1 || typeof payload !== 'object' || Array.isArray(payload)) throw new Error('invalid');
+      backupArrayKeys.forEach(key => { if (payload[key] !== undefined && !Array.isArray(payload[key])) throw new Error('invalid'); });
+      backupObjectKeys.forEach(key => { if (payload[key] !== undefined && (!payload[key] || typeof payload[key] !== 'object' || Array.isArray(payload[key]))) throw new Error('invalid'); });
+      if (payload.settings && (typeof payload.settings !== 'object' || Array.isArray(payload.settings))) throw new Error('invalid');
+      return payload;
+    }
+
+    function applyUserDataPayload(payload, message) {
+      validateUserDataPayload(payload);
+      localStorage.setItem('angebotskueche.settings', JSON.stringify(payload.settings || settings));
+      backupArrayKeys.forEach(key => { if (payload[key] !== undefined) localStorage.setItem(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
+      backupObjectKeys.forEach(key => { if (payload[key] !== undefined) localStorage.setItem(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
+      showToast(message);
+      setTimeout(() => location.reload(), 500);
+    }
+
+    function exportUserData() {
+      const payload = buildUserDataPayload();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `angebotskueche-backup-${new Date().toISOString().slice(0, 10)}.json`; link.click(); URL.revokeObjectURL(link.href); showToast('Deine Angebotsküche-Daten wurden gesichert.');
+    }
+
+    async function cloudSaveData() {
+      const button = $('#cloudSave');
+      button.disabled = true;
+      try {
+        const response = await fetch('/api/sync', { method: 'PUT', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ payload: buildUserDataPayload() }) });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Cloud-Speicherung nicht verfügbar');
+        showToast(`Cloud gespeichert · ${new Date(result.updatedAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}`);
+      } catch (error) { showToast(error?.message || 'Cloud-Speicherung momentan nicht verfügbar.'); }
+      finally { button.disabled = false; }
+    }
+
+    async function cloudLoadData() {
+      const button = $('#cloudLoad');
+      button.disabled = true;
+      try {
+        const response = await fetch('/api/sync', { headers: { accept: 'application/json' } });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Cloud-Laden nicht verfügbar');
+        if (!result.payload) { showToast('Noch kein Cloud-Stand gespeichert.'); return; }
+        const stamp = result.updatedAt ? ` vom ${new Date(result.updatedAt).toLocaleString('de-DE')}` : '';
+        if (window.confirm(`Cloud-Stand${stamp} auf diesem Gerät übernehmen? Lokale Daten werden ersetzt.`)) applyUserDataPayload(result.payload, 'Cloud-Daten geladen – die App wird aktualisiert.');
+      } catch (error) { showToast(error?.message || 'Cloud-Laden momentan nicht verfügbar.'); }
+      finally { button.disabled = false; }
+    }
+
+    function importUserData(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => { try { applyUserDataPayload(JSON.parse(reader.result), 'Daten geladen – die App wird aktualisiert.'); } catch { showToast('Die Datei ist kein gültiges Angebotsküche-Backup.'); } };
+      reader.readAsText(file);
+    }
+
+    $$('.nav-button').forEach(button => button.addEventListener('click', () => showPage(button.dataset.page)));
+    $$('[data-page-link]').forEach(button => button.addEventListener('click', () => showPage(button.dataset.pageLink)));
+    $('#exportData').addEventListener('click', exportUserData);
+    $('#importData').addEventListener('click', () => $('#dataFile').click());
+    $('#dataFile').addEventListener('change', event => importUserData(event.target.files[0]));
+    $('#cloudSave').addEventListener('click', cloudSaveData);
+    $('#cloudLoad').addEventListener('click', cloudLoadData);
+    $('#sharePlan').addEventListener('click', shareCurrentPlan);
+    $('#shareShoppingList').addEventListener('click', shareShoppingList);
+    $('#checkAllShopping').addEventListener('click', () => { getShoppingItems().forEach(item => { shoppingChecks[item.id] = true; }); localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks)); renderShoppingList(); showToast('Alle aktuellen Einkaufsartikel abgehakt.'); });
+    $('#clearShoppingChecks').addEventListener('click', () => { shoppingChecks = {}; localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks)); renderShoppingList(); showToast('Die Haken wurden zurückgesetzt.'); });
+    $('#refreshShoppingList').addEventListener('click', () => { renderShoppingList(); showToast('Einkaufsliste aus dem aktuellen Plan aktualisiert.'); });
+    $('#shoppingList').addEventListener('change', event => { const input = event.target.closest('[data-shopping-check]'); if (!input) return; shoppingChecks[input.dataset.shoppingCheck] = input.checked; localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks)); renderShoppingList(); });
+     $('#shoppingList').addEventListener('click', event => { const remove = event.target.closest('[data-remove-shopping]'); if (!remove) return; const id = remove.dataset.removeShopping; manualShoppingItems = manualShoppingItems.filter(item => item.id !== id); delete shoppingChecks[`manual-${id}`]; localStorage.setItem('angebotskueche.manualShoppingItems', JSON.stringify(manualShoppingItems)); localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks)); renderShoppingList(); showToast('Zusätzlicher Artikel entfernt.'); });
+     $('#openShoppingItem').addEventListener('click', openShoppingItemModal);
+     $('#closeShoppingModal').addEventListener('click', () => $('#shoppingModal').classList.remove('open'));
+     $('#cancelShoppingModal').addEventListener('click', () => $('#shoppingModal').classList.remove('open'));
+     $('#shoppingModal').addEventListener('click', event => { if (event.target.id === 'shoppingModal') event.currentTarget.classList.remove('open'); });
+     $('#saveShoppingItem').addEventListener('click', saveManualShoppingItem);
+     $('#shoppingItemInput').addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); saveManualShoppingItem(); } });
+    $('#generatePlan').addEventListener('click', () => { renderPlan(); renderMarkets(); persistSettings(); showToast('Plan neu berechnet – Reste und Angebotsanker aktualisiert.'); });
+    $('#changePlan').addEventListener('click', () => { $('#peopleSelect').focus(); showToast('Passe Personen, Tage oder Marktlimit direkt oben im Plan an.'); });
+    $('#daysSelect').addEventListener('change', () => { renderPlan(); persistSettings(); });
+    $('#peopleSelect').addEventListener('change', () => { renderPlan(); persistSettings(); });
+    $('#marketsSelect').addEventListener('change', () => { renderMarkets(); renderPlan(); persistSettings(); renderSourceStatus(); showToast(`Marktlimit auf ${$('#marketsSelect').value} gesetzt.`); });
+    $('#leftoverToggle').addEventListener('change', () => { renderPlan(); persistSettings(); });
+    $('#eveningToggle').addEventListener('change', () => { renderPlan(); persistSettings(); });
+    $('#offerFilter').addEventListener('change', (event) => renderOffers(event.target.value));
+    $('#suggestionFilter').addEventListener('change', renderSuggestions);
+    $('#shareAllSuggestions').addEventListener('click', shareAllSuggestions);
+    $('#suggestionGrid').addEventListener('click', event => {
+      const dismiss = event.target.closest('[data-dismiss-recipe]');
+      const share = event.target.closest('[data-share-recipe]');
+      const plan = event.target.closest('[data-plan-recipe]');
+      if (dismiss) { dismissedRecipes = [...new Set([...dismissedRecipes, dismiss.dataset.dismissRecipe])]; pinnedRecipes = pinnedRecipes.filter(item => item !== dismiss.dataset.dismissRecipe); localStorage.setItem('angebotskueche.dismissedRecipes', JSON.stringify(dismissedRecipes)); localStorage.setItem('angebotskueche.pinnedRecipes', JSON.stringify(pinnedRecipes)); renderSuggestions(); renderPlan(); showToast('Rezept ausgeblendet und künftig nicht mehr vorgeschlagen.'); }
+      if (share) shareRecipe(share.dataset.shareRecipe);
+      if (plan) { const id = plan.dataset.planRecipe; pinnedRecipes = pinnedRecipes.includes(id) ? pinnedRecipes.filter(item => item !== id) : [...pinnedRecipes, id]; localStorage.setItem('angebotskueche.pinnedRecipes', JSON.stringify(pinnedRecipes)); renderSuggestions(); renderPlan(); showToast(pinnedRecipes.includes(id) ? 'Rezept für die nächste Planberechnung vorgemerkt.' : 'Rezept aus den Vormerkungen entfernt.'); }
+    });
+    $('#favoriteCatalog').addEventListener('click', event => {
+      const share = event.target.closest('[data-share-favorite]');
+      const plan = event.target.closest('[data-plan-favorite]');
+       const remove = event.target.closest('[data-remove-favorite]');
+      if (share) shareFavorite(Number(share.dataset.shareFavorite));
+      if (plan) {
+        const id = `favorite-${plan.dataset.planFavorite}`;
+        pinnedRecipes = pinnedRecipes.includes(id) ? pinnedRecipes.filter(item => item !== id) : [...pinnedRecipes, id];
+        localStorage.setItem('angebotskueche.pinnedRecipes', JSON.stringify(pinnedRecipes));
+        renderFavorites(); renderPlan();
+        showToast(pinnedRecipes.includes(id) ? 'Lieblingsrezept für den Plan vorgemerkt.' : 'Lieblingsrezept aus den Vormerkungen entfernt.');
+      }
+       if (remove) {
+         const index = Number(remove.dataset.removeFavorite);
+         const item = favorites[index];
+         if (!item || isBuiltInFavorite(item) || !window.confirm(`${item.name} aus deinen Lieblingsrezepten entfernen?`)) return;
+         favorites.splice(index, 1);
+         pinnedRecipes = pinnedRecipes.map(id => { if (!id.startsWith('favorite-')) return id; const oldIndex = Number(id.slice('favorite-'.length)); if (oldIndex === index) return null; return oldIndex > index ? `favorite-${oldIndex - 1}` : id; }).filter(Boolean);
+         localStorage.setItem('angebotskueche.favorites', JSON.stringify(favorites));
+         localStorage.setItem('angebotskueche.pinnedRecipes', JSON.stringify(pinnedRecipes));
+         renderFavorites(); renderPlan();
+         showToast('Lieblingsrezept entfernt.');
+       }
+    });
+    $('#restoreDismissed').addEventListener('click', () => { dismissedRecipes = []; localStorage.setItem('angebotskueche.dismissedRecipes', JSON.stringify(dismissedRecipes)); renderSuggestions(); showToast('Ausgeblendete Rezepte sind wieder sichtbar.'); });
+    $('#openMarkets').addEventListener('click', () => { renderMarketChoices(); $('#marketModal').classList.add('open'); });
+    $('#openMarketsFromSources').addEventListener('click', () => { renderMarketChoices(); $('#marketModal').classList.add('open'); });
+    $('#closeMarketModal').addEventListener('click', () => $('#marketModal').classList.remove('open'));
+    $('#cancelMarketModal').addEventListener('click', () => $('#marketModal').classList.remove('open'));
+    $('#marketModal').addEventListener('click', event => { if (event.target.id === 'marketModal') event.currentTarget.classList.remove('open'); });
+    $('#saveMarkets').addEventListener('click', () => { const selected = $$('[data-market-choice]:checked').map(input => input.value); if (!selected.length) { showToast('Bitte mindestens einen Markt auswählen.'); return; } settings.selectedMarkets = selected; persistSettings(); renderMarkets(); renderPlan(); renderSourceStatus(); renderOffers($('#offerFilter').value); $('#marketModal').classList.remove('open'); showToast(`${selected.length} Märkte gespeichert.`); });
+    $$('#dayList').forEach(list => list.addEventListener('click', event => event.target.closest('.meal-detail') && showToast(`${event.target.closest('.meal-detail').dataset.title}: ${event.target.closest('.meal-detail').dataset.note}.`)));
+    $('#openFavorite').addEventListener('click', () => $('#favoriteModal').classList.add('open'));
+    $('#closeModal').addEventListener('click', () => $('#favoriteModal').classList.remove('open'));
+    $('#cancelModal').addEventListener('click', () => $('#favoriteModal').classList.remove('open'));
+    $('#favoriteModal').addEventListener('click', event => { if (event.target.id === 'favoriteModal') event.currentTarget.classList.remove('open'); });
+    $('#importRecipe').addEventListener('click', async () => {
+      const manualName = $('#recipeName').value.trim();
+      const url = $('#recipeUrl').value.trim();
+      const manualIngredients = parseManualIngredients($('#recipeIngredients').value);
+      if (!url && !manualIngredients.length) { showToast('Füge einen Rezeptlink oder mindestens eine manuelle Zutat ein.'); return; }
+      let source = 'Manuell';
+      let recipeData = null;
+      let fallbackLabel = manualName || 'Eigenes Rezept';
+      if (url) {
+        let parsed;
+        try { parsed = new URL(url); } catch { showToast('Bitte einen gültigen Rezeptlink einfügen.'); return; }
+        const host = parsed.hostname.toLowerCase();
+        source = host === 'lecker.de' || host.endsWith('.lecker.de') ? 'lecker.de' : host === 'chefkoch.de' || host.endsWith('.chefkoch.de') ? 'Chefkoch' : null;
+        if (!source) { showToast('Bitte einen Link von lecker.de oder Chefkoch verwenden.'); return; }
+        $('#importStatus').textContent = `Lese strukturierte Rezeptdaten von ${source} …`;
+        const slug = decodeURIComponent(parsed.pathname.split('/').filter(Boolean).pop() || '').replace(/\.(html?|php)$/i, '').replace(/[-_]+/g, ' ').trim();
+        fallbackLabel = manualName || (slug ? slug.replace(/\b\w/g, letter => letter.toUpperCase()) : `Rezept von ${source}`);
+        recipeData = await readRecipeFromSource(url);
+      }
+      const ingredients = recipeData?.ingredients?.length ? recipeData.ingredients : manualIngredients;
+      const ingredientLabel = recipeData?.ingredients?.length ? 'automatisch erkannt' : manualIngredients.length ? 'manuell ergänzt' : 'Analyse ausstehend';
+      const name = recipeData?.name || fallbackLabel;
+      favorites.push({ name, icon: source === 'Chefkoch' ? '👩‍🍳' : '🥘', source, match: ingredients.length ? 'Zutaten erkannt – wird gegen Angebote geprüft' : 'Link gespeichert – Zutatenanalyse ausstehend', score: 0, note: ingredients.length ? `${source} · ${ingredients.length} Zutaten · ${ingredientLabel}` : `${source} · Analyse ausstehend`, ingredients, url });
+      localStorage.setItem('angebotskueche.favorites', JSON.stringify(favorites));
+      renderFavorites(); renderSuggestions(); renderPlan();
+      $('#favoriteModal').classList.remove('open');
+      $('#recipeName').value = '';
+      $('#recipeUrl').value = '';
+      $('#recipeIngredients').value = '';
+      $('#importStatus').textContent = '';
+      showToast(ingredients.length ? `${source}-Rezept mit ${ingredients.length} Zutaten importiert.` : `${source}-Rezept gespeichert – die Quelle blockiert den direkten Browserimport.`);
+    });
+    $('#addPantry').addEventListener('click', openPantryModal);
+    $('#closePantryModal').addEventListener('click', closePantryModal);
+    $('#cancelPantryModal').addEventListener('click', closePantryModal);
+    $('#pantryModal').addEventListener('click', event => { if (event.target.id === 'pantryModal') closePantryModal(); });
+    $('#savePantryItem').addEventListener('click', savePantryItem);
+    $('#pantryInput').addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); savePantryItem(); } });
+    $('#openOfferImport').addEventListener('click', () => $('#offerModal').classList.add('open'));
+    $('#refreshOfficialOffers').addEventListener('click', refreshOfficialOffers);
+    $('#closeOfferModal').addEventListener('click', () => $('#offerModal').classList.remove('open'));
+    $('#cancelOfferModal').addEventListener('click', () => $('#offerModal').classList.remove('open'));
+    $('#offerModal').addEventListener('click', event => { if (event.target.id === 'offerModal') event.currentTarget.classList.remove('open'); });
+    $('#clearExpiredOffers').addEventListener('click', clearExpiredOffers);
+    $('#offerCatalog').addEventListener('click', event => {
+      const removeButton = event.target.closest('[data-remove-offer]');
+      if (removeButton) removeImportedOffer(Number(removeButton.dataset.removeOffer));
+    });
+    $('#importOffers').addEventListener('click', () => {
+      const rows = $('#offerInput').value.split('\n').map(row => row.trim()).filter(Boolean);
+      const rejected = [];
+      const duplicates = [];
+      const knownKeys = new Set(offers.filter(isImportedOffer).map(offerImportKey));
+      const imported = rows.map(row => {
+        const parts = splitOfferRow(row);
+        const [name, store, price, saving = '–', category = 'Hauptzutat', packSizeOrDate = '1 Packung', dateOrSource = defaultOfferEnd(), source = 'manueller Import'] = parts;
+        const legacyDate = /^\d{1,2}\.\d{1,2}\.\d{4}$/.test(packSizeOrDate);
+        const packSize = legacyDate ? '1 Packung' : packSizeOrDate;
+        const validUntil = legacyDate ? packSizeOrDate : (dateOrSource || defaultOfferEnd());
+        const resolvedSource = legacyDate ? (dateOrSource || 'manueller Import') : source;
+        const market = canonicalMarketName(store);
+        const end = offerEndDate(validUntil);
+        if (!name || !market || parseMoney(price) <= 0 || !end || end < new Date()) { rejected.push(row); return null; }
+        return { name: name.trim(), store: market, price: price.trim(), saving: saving.trim(), icon: '🛒', category: category.trim(), packSize: packSize.trim(), relevance: 82, note: 'manuell importiert', validUntil: validUntil.trim(), source: resolvedSource.trim(), confidence: 'niedrig' };
+      }).filter(Boolean).filter(offer => { const key = offerImportKey(offer); if (knownKeys.has(key)) { duplicates.push(offer); return false; } knownKeys.add(key); return true; });
+      if (!imported.length) { showToast(duplicates.length ? 'Diese Angebote sind bereits gespeichert.' : 'Keine gültigen aktuellen Angebote erkannt. Prüfe Markt, Preis und Datum (TT.MM.JJJJ).'); return; }
+      offers.push(...imported);
+      refreshOfferViews();
+      $('#offerModal').classList.remove('open'); $('#offerInput').value = '';
+      const details = [rejected.length ? `${rejected.length} übersprungen` : '', duplicates.length ? `${duplicates.length} bereits vorhanden` : ''].filter(Boolean).join(' · ');
+      showToast(`${imported.length} Angebot${imported.length === 1 ? '' : 'e'} übernommen${details ? ` · ${details}` : ''}.`);
+    });
+
+    $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
+    renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderOffers(); renderFavorites(); renderPantry(); renderSourceStatus();
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+  </script>
+</body>
+</html>

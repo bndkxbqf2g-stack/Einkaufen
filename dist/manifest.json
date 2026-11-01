@@ -1,0 +1,12 @@
+{
+  "name": "Angebotsküche · Rezeptplaner aus lokalen Angeboten",
+  "short_name": "Angebotsküche",
+  "description": "Warme Rezepte aus Angeboten rund um Zellingen planen.",
+  "lang": "de-DE",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f5f0",
+  "theme_color": "#174c42",
+  "categories": ["food", "lifestyle", "shopping"]
+}
