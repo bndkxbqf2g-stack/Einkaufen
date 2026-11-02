@@ -165,9 +165,6 @@
     .section-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
     .catalog { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
     .catalog-card { padding: 13px; border: 1px solid var(--line); border-radius: 14px; background: #fffefa; }
-    .catalog-media { height: 132px; display: grid; place-items: center; margin: -1px -1px 11px; border-radius: 12px; overflow: hidden; background: #eff2ec; }
-    .catalog-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .catalog-media-fallback { font-size: 42px; }
     .catalog-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
     .catalog-icon { width: 37px; height: 37px; display: grid; place-items: center; border-radius: 11px; background: var(--mint); font-size: 19px; }
     .discount { color: var(--coral); font-size: 11px; font-weight: 850; }
@@ -180,6 +177,14 @@
     .suggestion-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
     .suggestion-title { margin-top: 9px; font-size: 14px; font-weight: 850; letter-spacing: -.02em; line-height: 1.2; }
     .suggestion-reason { color: var(--ink-soft); font-size: 11px; line-height: 1.45; }
+    .suggestion-detail { display: grid; gap: 7px; padding: 10px; border-radius: 10px; background: #f4f8f1; color: var(--ink-soft); font-size: 10px; line-height: 1.45; }
+    .suggestion-detail strong { color: var(--ink); }
+    .suggestion-cost { display: flex; flex-wrap: wrap; gap: 7px 12px; color: var(--green-2); font-size: 10px; font-weight: 800; }
+    .suggestion-instructions { color: var(--ink-soft); font-size: 11px; line-height: 1.45; }
+    .suggestion-rating { color: #9a7414; font-size: 10px; font-weight: 850; }
+    .suggestion-filter-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .filter-check { cursor: pointer; }
+    .filter-check input { accent-color: var(--green-2); }
     .suggestion-ingredients { display: flex; flex-wrap: wrap; gap: 5px; }
     .ingredient { padding: 5px 7px; border-radius: 6px; color: var(--ink-soft); background: #eff2ec; font-size: 10px; font-weight: 700; }
     .suggestion-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: auto; }
@@ -303,7 +308,7 @@
       <div class="sidebar-spacer"></div>
       <div class="freshness">
         <div class="freshness-top"><span><i class="status-dot"></i> Datenstatus</span><span>heute</span></div>
-        <p>ALDI SÜD, Kaufland, EDEKA, Lidl und Netto sind live prüfbar. Penny wird jetzt automatisch aus KaufDA geladen; Marktkauf bleibt mit manuellem Import nutzbar.</p>
+        <p>KaufDA prüft Aldi, EDEKA, Lidl, Penny und Kaufland regelmäßig. Bring bleibt als optionaler Fallback verfügbar.</p>
       </div>
     </aside>
 
@@ -384,13 +389,13 @@
 
       <section class="page" id="page-suggestions">
         <div class="hero"><div><div class="eyebrow"><span></span> Mehr Auswahl</div><h1>Mehrere Ideen,<br><em style="font-style:normal;color:var(--coral)">ein guter Treffer.</em></h1><p class="hero-copy">Hier siehst du mehrere passende Rezepte gleichzeitig. Sie werden nach Angebotswert, Abwechslung und Aufwand sortiert.</p></div><button class="outline-button" data-page-link="plan">←&nbsp; Zum Plan</button></div>
-        <div class="panel"><div class="panel-header"><div><h2 class="panel-title">Rezeptvorschläge</h2><p class="panel-subtitle">Entfernte Rezepte bleiben ausgeblendet, bis du sie wieder freigibst.</p></div><div style="display:flex;align-items:center;gap:8px"><label class="filter">Filter <select id="suggestionFilter"><option value="all">Alle</option><option value="vegetarian">Vegetarisch</option><option value="quick">Unter 30 Min.</option></select></label><button class="outline-button" id="shareAllSuggestions">↗ Auswahl teilen</button><button class="outline-button" id="restoreDismissed" style="display:none">Ausgeblendete zurückholen</button></div></div><div class="panel-body"><div class="suggestion-grid" id="suggestionGrid"></div><div class="source-note" style="margin-top:15px">Das Teilen nutzt das normale Teilen-Menü deines Geräts. Wenn keine Teilen-Funktion verfügbar ist, werden die Inhalte in die Zwischenablage kopiert.</div></div></div>
+        <div class="panel"><div class="panel-header"><div><h2 class="panel-title">Rezeptvorschläge</h2><p class="panel-subtitle">Aktuelle Angebote, Vorräte, Favoriten und deine Bewertungen fließen in die Auswahl ein.</p></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><label class="filter">Sortierung <select id="suggestionSort"><option value="match">Bester Angebots-Match</option><option value="cheapest">Günstigste zuerst</option><option value="variety">Mehr Abwechslung</option></select></label><button class="outline-button" id="shareAllSuggestions">↗ Auswahl teilen</button><button class="outline-button" id="restoreDismissed" style="display:none">Ausgeblendete zurückholen</button></div></div><div class="panel-body"><div class="suggestion-filter-row" style="margin-bottom:15px"><label class="filter">Ansicht <select id="suggestionFilter"><option value="all">Alle passenden Rezepte</option><option value="favorites">Nur Favoriten</option></select></label><label class="filter filter-check"><input id="suggestionMax30" type="checkbox"> maximal 30 Min.</label><label class="filter filter-check"><input id="suggestionVegetarian" type="checkbox"> vegetarisch</label><label class="filter filter-check"><input id="suggestionFamily" type="checkbox"> familiengeeignet</label><label class="filter filter-check"><input id="suggestionLeftovers" type="checkbox"> Resteverwertung</label><label class="filter filter-check"><input id="suggestionOfferMin2" type="checkbox" checked> mindestens 2 Angebotszutaten</label></div><div class="source-note" id="suggestionFilterNote" style="margin-bottom:13px"></div><div class="suggestion-grid" id="suggestionGrid"></div><div class="source-note" style="margin-top:15px">Angebotspreise sind Packungspreise aus den aktiven Märkten. Vorräte erzeugen keinen Angebots-Match und werden nicht in den Kosten gezählt.</div></div></div>
       </section>
 
       <section class="page" id="page-offers">
-        <div class="hero"><div><div class="eyebrow"><span></span> Angebotsradar</div><h1>Was lohnt sich<br><em style="font-style:normal;color:var(--coral)">diese Woche?</em></h1><p class="hero-copy">Alle relevanten Angebote aus deinen ausgewählten Märkten – normalisiert, bewertet und mit passenden Rezepten verbunden.</p></div><div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap"><button class="outline-button" id="refreshOfficialOffers">↻&nbsp; Offizielle Quellen prüfen</button><a class="outline-button" id="runKaufdaWorkflow" href="https://github.com/bndkxbqf2g-stack/Einkaufen/actions/workflows/kaufda-offers.yml" target="_blank" rel="noopener">KaufDA-Angebote starten ↗</a><button class="primary-button" id="openOfferImport">＋&nbsp; Angebote importieren</button></div></div>
-        <div class="panel"><div class="panel-header"><div><h2 class="panel-title">Angebote in deiner Nähe</h2><p class="panel-subtitle">Aktuelle KaufDA-Karten mit Bild, Bezeichnung, Preis und Gültigkeit · nur Lebensmittelangebote</p></div><label class="filter">Markt <select id="offerFilter"><option value="all">Alle Märkte</option><option>Aldi</option><option value="Kaufland">Kaufland Würzburg</option><option>Lidl</option><option>EDEKA</option><option>Penny</option><option>Netto</option><option>Marktkauf Tüngersheim</option></select></label></div><div class="panel-body"><div class="catalog" id="offerCatalog"></div></div></div>
-        <section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Datenquellen &amp; Filialstatus</h2><p class="panel-subtitle">Damit klar bleibt, woher ein Angebot kommt.</p></div><button class="text-button" id="openMarketsFromSources">Filialen wählen&nbsp;→</button></div><div class="panel-body"><div class="source-status-grid" id="sourceStatusList"></div><div class="source-note" style="margin-top:12px">KaufDA ist die bevorzugte Quelle für Aldi Zellingen, EDEKA Traut Zellingen, Lidl Zellingen, Penny Zellingen und Kaufland Würzburg/Nürnberger Straße. Die fünf Märkte werden per GitHub Actions geladen, mit strukturierten Angebotskarten und Prospekt-OCR geprüft; erkannte Artikel werden hier gezählt. KaufDA wird als einzige automatisierte Angebotsquelle verwendet. Über „KaufDA-Angebote starten“ öffnest du GitHub direkt für einen manuellen Lauf. Abgelaufene Angebote werden automatisch ausgeblendet.</div></div></section>
+        <div class="hero"><div><div class="eyebrow"><span></span> Angebotsradar</div><h1>Was lohnt sich<br><em style="font-style:normal;color:var(--coral)">diese Woche?</em></h1><p class="hero-copy">Alle relevanten Angebote aus deinen ausgewählten Märkten – normalisiert, bewertet und mit passenden Rezepten verbunden.</p></div><div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap"><button class="outline-button" id="refreshOfficialOffers">↻&nbsp; Offizielle Quellen prüfen</button><a class="outline-button" id="runBringWorkflow" href="https://github.com/bndkxbqf2g-stack/Einkaufen/actions/workflows/bring-offers.yml" target="_blank" rel="noopener">Bring-Workflow starten ↗</a><a class="outline-button" id="runKaufdaWorkflow" href="https://github.com/bndkxbqf2g-stack/Einkaufen/actions/workflows/kaufda-offers.yml" target="_blank" rel="noopener">KaufDA-Netto starten ↗</a><button class="primary-button" id="openOfferImport">＋&nbsp; Angebote importieren</button></div></div>
+        <div class="panel"><div class="panel-header"><div><h2 class="panel-title">Angebote in deiner Nähe</h2><p class="panel-subtitle">Demo-Daten, bestätigte Live-Importe und eigene Importe · nur gültige Angebote</p></div><label class="filter">Markt <select id="offerFilter"><option value="all">Alle Märkte</option><option>Aldi</option><option value="Kaufland">Kaufland Würzburg</option><option>Lidl</option><option>EDEKA</option><option>Penny</option><option>Netto</option><option>Marktkauf Tüngersheim</option><option>Bring</option></select></label></div><div class="panel-body"><div class="catalog" id="offerCatalog"></div></div></div>
+        <section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Datenquellen &amp; Filialstatus</h2><p class="panel-subtitle">Damit klar bleibt, woher ein Angebot kommt.</p></div><button class="text-button" id="openMarketsFromSources">Filialen wählen&nbsp;→</button></div><div class="panel-body"><div class="source-status-grid" id="sourceStatusList"></div><div class="source-note" style="margin-top:12px">Auf GitHub Pages werden Aldi, Kaufland, EDEKA, Lidl und Netto aus den regelmäßigen GitHub-Actions-Datensätzen geladen. Für Netto steht zusätzlich der KaufDA-Workflow mit strukturierten Angebotskarten und Prospekt-OCR bereit. Bring kann über den eingeloggten Cloud-Browser wöchentlich per Playwright und OCR importiert werden. Über die Workflow-Schaltflächen öffnest du GitHub direkt für einen manuellen Lauf. Penny und Marktkauf bleiben per manuellem Import nutzbar. Abgelaufene Angebote werden automatisch ausgeblendet.</div></div></section>
         <section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Importe pflegen</h2><p class="panel-subtitle">Ungültige oder abgelaufene Fallback-Daten bleiben nicht unbemerkt.</p></div><button class="outline-button" id="clearExpiredOffers" disabled>Abgelaufene entfernen</button></div><div class="panel-body"><div class="source-note" id="offerMaintenanceNote">Noch keine eigenen Angebote importiert.</div></div></section>
       </section>
 
@@ -408,8 +413,9 @@
   </div>
 
   <div class="modal-backdrop" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
-    <div class="modal"><div class="modal-header"><div><h2 id="settingsModalTitle">Angebotsquellen &amp; Einstellungen</h2><p>KaufDA ist die automatisierte Quelle für die fünf ausgewählten Märkte.</p></div><button class="close" id="closeSettings" aria-label="Schließen">×</button></div><section class="panel" style="margin:0 0 14px;box-shadow:none;border-color:var(--line)"><div class="panel-body" style="padding:15px"><div class="panel-title">KaufDA-Workflow</div><p class="source-note" style="margin-top:8px">Der wöchentliche GitHub-Workflow liest die vollständigen KaufDA-Prospektseiten per OCR aus und veröffentlicht die erkannten Lebensmittelangebote für Aldi Süd, EDEKA Traut, Lidl, Penny und Kaufland Würzburg.</p><div class="modal-actions" style="justify-content:flex-start;margin-top:14px"><a class="outline-button" href="https://github.com/bndkxbqf2g-stack/Einkaufen/actions/workflows/kaufda-offers.yml" target="_blank" rel="noopener">Workflow öffnen ↗</a></div></div></section><p class="source-note">Die App zeigt die erkannte Artikelzahl je Markt an. Falls KaufDA seine Prospektstruktur ändert, bleibt der manuelle Import verfügbar.</p><div class="modal-actions"><button class="outline-button" id="cancelSettings">Schließen</button></div></div>
+    <div class="modal"><div class="modal-header"><div><h2 id="settingsModalTitle">Verbindungen &amp; Einstellungen</h2><p>Bring wird über einen geschützten GitHub-Actions-Lauf eingebunden.</p></div><button class="close" id="closeSettings" aria-label="Schließen">×</button></div><section class="panel" style="margin:0 0 14px;box-shadow:none;border-color:var(--line)"><div class="panel-body" style="padding:15px"><div class="panel-title">Bring verbinden</div><p class="source-note" style="margin-top:8px">Die App speichert kein Bring-Passwort. Für die wöchentliche automatische Auslese meldest du dich einmal im lokalen Bring-Browser an. Die GitHub Action verwendet anschließend nur die verschlüsselte Sitzung.</p><div class="modal-actions" style="justify-content:flex-start;margin-top:14px"><a class="outline-button" href="https://web.getbring.com/" target="_blank" rel="noopener">Bring öffnen ↗</a><a class="outline-button" href="https://github.com/bndkxbqf2g-stack/Einkaufen/settings/secrets/actions" target="_blank" rel="noopener">GitHub-Secret ↗</a><button class="primary-button" id="copyBringSetup">Einrichtung kopieren</button></div><div class="source-note" id="bringConnectionStatus" style="margin-top:12px">Noch keine Bring-Sitzung bestätigt. Nach dem Einrichten zeigt der Marktstatus die Zahl der erkannten Artikel.</div></div></section><p class="source-note">Einrichtung: Im Repository-Ordner <strong>node automation/bring-login.mjs</strong> ausführen, anmelden, die erzeugte Datei als Base64-Secret <strong>BRING_STORAGE_STATE_B64</strong> hinterlegen und die lokale Sitzungsdatei danach löschen. Zugangsdaten niemals in der App oder im Repository speichern.</p><div class="modal-actions"><button class="outline-button" id="cancelSettings">Schließen</button></div></div>
   </div>
+
   <div class="modal-backdrop" id="favoriteModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal"><div class="modal-header"><div><h2 id="modalTitle">Lieblingsrezept importieren</h2><p>Link optional: importiere von lecker.de oder Chefkoch, oder speichere eine eigene Zutatenliste direkt hier.</p></div><button class="close" id="closeModal" aria-label="Schließen">×</button></div><div class="meal-tags" style="margin:0 0 12px"><span class="tag muted">lecker.de</span><span class="tag muted">Chefkoch</span><span class="tag muted">manuell</span></div><input class="input" id="recipeName" placeholder="Rezeptname (optional bei Link)" maxlength="100"/><input class="input" id="recipeUrl" style="margin-top:9px" placeholder="https://www.lecker.de/… oder https://www.chefkoch.de/…" type="url"/><label class="source-note" style="display:block;margin-top:12px">Zutaten (mindestens eine bei manueller Eingabe)<textarea class="input textarea" id="recipeIngredients" style="margin-top:6px;min-height:90px" placeholder="eine Zutat pro Zeile, z. B. Kartoffeln&#10;Wiener Würstchen&#10;Zwiebel"></textarea></label><div class="source-note" id="importStatus" style="margin-top:10px"></div><div class="modal-actions"><button class="outline-button" id="cancelModal">Abbrechen</button><button class="primary-button" id="importRecipe">Rezept übernehmen</button></div></div>
   </div>
@@ -462,19 +468,21 @@
     };
 
     const suggestionSeed = [
-      { id: 'linsencurry-paprika', title: 'Rotes Linsencurry mit Paprika', emoji: '🍛', score: 94, store: 'Kaufland', reason: 'Paprika im Angebot bei Kaufland Würzburg · Gewürze aus dem Vorrat', time: 25, vegetarian: true, tags: ['vegetarisch', '25 Min.'], ingredients: ['rote Linsen', 'Paprika', 'Kokosmilch', 'Reis'] },
-      { id: 'kartoffelgratin-gouda', title: 'Kartoffelgratin mit Gouda', emoji: '🥔', score: 91, store: 'Aldi + Kaufland', reason: 'Kartoffeln und Käse sind starke Angebotsanker', time: 55, vegetarian: true, tags: ['vegetarisch', 'Ofengericht'], ingredients: ['Kartoffeln', 'Gouda', 'Sahne', 'Zwiebel'] },
-      { id: 'shakshuka', title: 'Shakshuka mit Brot', emoji: '🍅', score: 83, store: 'Kaufland', reason: 'Eier im Angebot bei Kaufland Würzburg · Brotzeit-Zutaten werden genutzt', time: 30, vegetarian: true, tags: ['vegetarisch', '30 Min.'], ingredients: ['Eier', 'Tomaten', 'Paprika', 'Brot'] },
-      { id: 'haehnchen-ofenblech', title: 'Hähnchen-Gemüse-Blech', emoji: '🍗', score: 86, store: 'Kaufland', reason: 'Neue Proteinquelle · Brokkoli im Angebot', time: 45, vegetarian: false, tags: ['proteinreich', 'Restetag'], ingredients: ['Hähnchen', 'Brokkoli', 'Kartoffeln', 'Joghurt'] },
-      { id: 'gnocchi-paprika', title: 'Gnocchi-Paprika-Pfanne', emoji: '🥘', score: 89, store: 'Kaufland', reason: 'Gnocchi und Paprika ergeben einen schnellen Treffer', time: 20, vegetarian: true, tags: ['vegetarisch', '20 Min.'], ingredients: ['Gnocchi', 'Paprika', 'Gouda', 'Sahne'] },
-      { id: 'wuerzige-hack-reispfanne', title: 'Würzige Hack-Reispfanne', emoji: '🍚', score: 78, store: 'Lidl', reason: 'Hackfleisch im Angebot · bewusst anderer Markt', time: 35, vegetarian: false, tags: ['familientauglich', '35 Min.'], ingredients: ['Hackfleisch', 'Reis', 'Paprika', 'Mais'] }
+      { id: 'linsencurry-paprika', title: 'Rotes Linsencurry mit Paprika', emoji: '🍛', score: 94, store: 'Kaufland', reason: 'Paprika im Angebot bei Kaufland Würzburg · Gewürze aus dem Vorrat', time: 25, vegetarian: true, familyFriendly: true, category: 'Topfgericht', difficulty: 'leicht', tags: ['vegetarisch', '25 Min.'], ingredients: ['rote Linsen', 'Paprika', 'Kokosmilch', 'Reis'], instructions: 'Zwiebel und Paprika anbraten, Linsen und Kokosmilch zugeben und cremig köcheln. Mit Reis servieren.', leftoverFriendly: true },
+      { id: 'kartoffelgratin-gouda', title: 'Kartoffelgratin mit Gouda', emoji: '🥔', score: 91, store: 'Aldi + Kaufland', reason: 'Kartoffeln und Käse sind starke Angebotsanker', time: 55, vegetarian: true, familyFriendly: true, category: 'Ofengericht', difficulty: 'leicht', tags: ['vegetarisch', 'Ofengericht'], ingredients: ['Kartoffeln', 'Gouda', 'Sahne', 'Zwiebel'], instructions: 'Kartoffeln dünn schneiden, mit Sahne und Käse schichten und goldbraun backen.', leftoverFriendly: true },
+      { id: 'shakshuka', title: 'Shakshuka mit Brot', emoji: '🍅', score: 83, store: 'Kaufland', reason: 'Eier im Angebot bei Kaufland Würzburg · Brotzeit-Zutaten werden genutzt', time: 30, vegetarian: true, familyFriendly: true, category: 'Pfannengericht', difficulty: 'leicht', tags: ['vegetarisch', '30 Min.'], ingredients: ['Eier', 'Tomaten', 'Paprika', 'Brot'], instructions: 'Tomaten und Paprika würzen, Eier in die Sauce schlagen und zugedeckt stocken lassen.', leftoverFriendly: false },
+      { id: 'haehnchen-ofenblech', title: 'Hähnchen-Gemüse-Blech', emoji: '🍗', score: 86, store: 'Kaufland', reason: 'Neue Proteinquelle · Brokkoli im Angebot', time: 45, vegetarian: false, familyFriendly: true, category: 'Ofengericht', difficulty: 'leicht', tags: ['proteinreich', 'Restetag'], ingredients: ['Hähnchen', 'Brokkoli', 'Kartoffeln', 'Joghurt'], instructions: 'Hähnchen und Gemüse würzen, gemeinsam im Ofen garen und mit Joghurt servieren.', leftoverFriendly: true },
+      { id: 'gnocchi-paprika', title: 'Gnocchi-Paprika-Pfanne', emoji: '🥘', score: 89, store: 'Kaufland', reason: 'Gnocchi und Paprika ergeben einen schnellen Treffer', time: 20, vegetarian: true, familyFriendly: true, category: 'Pfannengericht', difficulty: 'leicht', tags: ['vegetarisch', '20 Min.'], ingredients: ['Gnocchi', 'Paprika', 'Gouda', 'Sahne'], instructions: 'Gnocchi und Paprika in der Pfanne braten, Sahne und Käse unterheben und kurz schmelzen lassen.', leftoverFriendly: true },
+      { id: 'wuerzige-hack-reispfanne', title: 'Würzige Hack-Reispfanne', emoji: '🍚', score: 78, store: 'Lidl', reason: 'Hackfleisch im Angebot · bewusst anderer Markt', time: 35, vegetarian: false, familyFriendly: true, category: 'Pfannengericht', difficulty: 'leicht', tags: ['familientauglich', '35 Min.'], ingredients: ['Hackfleisch', 'Reis', 'Paprika', 'Mais'], instructions: 'Hackfleisch krümelig braten, Gemüse und gekochten Reis zugeben und kräftig abschmecken.', leftoverFriendly: true },
+      { id: 'fisch-kartoffel-pfanne', title: 'Fisch-Kartoffel-Pfanne mit Gemüse', emoji: '🐟', score: 76, store: 'Aldi', reason: 'Kartoffeln und Gemüse im Angebot · bringt Fisch in den Plan', time: 30, vegetarian: false, familyFriendly: true, category: 'Fisch', difficulty: 'leicht', tags: ['Fisch', '30 Min.'], ingredients: ['Fischfilet', 'Kartoffeln', 'Brokkoli', 'Zitrone'], instructions: 'Kartoffeln vorgaren, Gemüse und Fisch in der Pfanne fertig garen und mit Zitrone abschmecken.', leftoverFriendly: false },
+      { id: 'gemuese-suppe', title: 'Cremige Gemüse-Suppe mit Brot', emoji: '🥣', score: 72, store: 'EDEKA', reason: 'Brokkoli und Kartoffeln im Angebot · gut vorzubereiten', time: 35, vegetarian: true, familyFriendly: true, category: 'Suppe', difficulty: 'leicht', tags: ['vegetarisch', 'Suppe'], ingredients: ['Brokkoli', 'Kartoffeln', 'Möhren', 'Brot'], instructions: 'Gemüse weich kochen, pürieren und mit Brot servieren. Eine Portion für den nächsten Tag zurückstellen.', leftoverFriendly: true }
     ];
 
     const seededFavorites = [
-      { name: 'Lasagne al forno', icon: '🍝', source: 'Chefkoch', match: 'Hackfleisch im Angebot bei Lidl', score: 74, note: 'Lieblingsrezept · 90 Min.' },
-      { name: 'Paprika-Reis-Pfanne', icon: '🍚', source: 'lecker.de', match: 'Paprika im Angebot bei Kaufland Würzburg', score: 86, note: 'Lieblingsrezept · 30 Min.' },
-      { name: 'Kartoffelgratin', icon: '🥔', source: 'Chefkoch', match: 'Kartoffeln + Käse im Angebot', score: 97, note: 'Lieblingsrezept · 55 Min.' },
-      { name: 'Shakshuka', icon: '🍅', source: 'lecker.de', match: 'Eier im Angebot bei Kaufland Würzburg', score: 71, note: 'Lieblingsrezept · 35 Min.' }
+      { name: 'Lasagne al forno', icon: '🍝', source: 'Chefkoch', match: 'Hackfleisch im Angebot bei Lidl', score: 74, note: 'Lieblingsrezept · 90 Min.', time: 90, familyFriendly: true, category: 'Ofengericht', ingredients: ['Hackfleisch', 'Lasagneplatten', 'Tomaten', 'Gouda'], instructions: 'Sauce kochen, mit Lasagneplatten schichten und mit Käse überbacken.' },
+      { name: 'Paprika-Reis-Pfanne', icon: '🍚', source: 'lecker.de', match: 'Paprika im Angebot bei Kaufland Würzburg', score: 86, note: 'Lieblingsrezept · 30 Min.', time: 30, vegetarian: true, familyFriendly: true, category: 'Pfannengericht', ingredients: ['Paprika', 'Reis', 'Tomaten', 'Gouda'], instructions: 'Paprika anbraten, Reis und Tomaten zugeben und mit Käse vollenden.' },
+      { name: 'Kartoffelgratin', icon: '🥔', source: 'Chefkoch', match: 'Kartoffeln + Käse im Angebot', score: 97, note: 'Lieblingsrezept · 55 Min.', time: 55, vegetarian: true, familyFriendly: true, category: 'Ofengericht', ingredients: ['Kartoffeln', 'Gouda', 'Sahne', 'Zwiebel'], instructions: 'Kartoffeln schichten, mit Sahne und Käse übergießen und goldbraun backen.' },
+      { name: 'Shakshuka', icon: '🍅', source: 'lecker.de', match: 'Eier im Angebot bei Kaufland Würzburg', score: 71, note: 'Lieblingsrezept · 35 Min.', time: 35, vegetarian: true, familyFriendly: true, category: 'Pfannengericht', ingredients: ['Eier', 'Tomaten', 'Paprika', 'Brot'], instructions: 'Tomaten und Paprika köcheln, Eier hineingeben und stocken lassen.' }
     ];
 
     function defaultOfferEnd() {
@@ -486,23 +494,20 @@
     const isGithubPagesHost = window.location.hostname.endsWith('github.io');
     const appShareUrl = isGithubPagesHost ? `${window.location.origin}${window.location.pathname}` : 'https://bndkxbqf2g-stack.github.io/Einkaufen/';
     const stored = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } };
-    const storedArray = (key, fallback = []) => { const value = stored(key, fallback); return Array.isArray(value) ? value : fallback; };
-    const storedObject = (key, fallback = {}) => { const value = stored(key, fallback); return value && typeof value === 'object' && !Array.isArray(value) ? value : fallback; };
-    const settingsDefaults = { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'] };
-    const storedSettings = storedObject('angebotskueche.settings', settingsDefaults);
-    const settings = { ...settingsDefaults, ...storedSettings, selectedMarkets: Array.isArray(storedSettings.selectedMarkets) ? storedSettings.selectedMarkets : settingsDefaults.selectedMarkets };
-    const savedCustomOffers = storedArray('angebotskueche.customOffers', []);
-    let offers = [...seedOffers, ...savedCustomOffers.filter(offer => offer && typeof offer === 'object')].map(offer => ({ validUntil: defaultOfferEnd(), source: 'Demo-Import', confidence: 'mittel', packSize: '1 Packung', ...offer }));
-    let favorites = storedArray('angebotskueche.favorites', seededFavorites).filter(item => item && typeof item === 'object' && !Array.isArray(item));
-    let pantry = storedArray('angebotskueche.pantry', ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch']).filter(item => typeof item === 'string' && item.trim());
-    let dismissedRecipes = storedArray('angebotskueche.dismissedRecipes', []).filter(item => typeof item === 'string');
-    let pinnedRecipes = storedArray('angebotskueche.pinnedRecipes', []).filter(item => typeof item === 'string');
-    let shoppingChecks = storedObject('angebotskueche.shoppingChecks', {});
-    let manualShoppingItems = storedArray('angebotskueche.manualShoppingItems', []);
-    let manualPlan = storedObject('angebotskueche.manualPlan', {});
-    let recipeRatings = storedObject('angebotskueche.recipeRatings', {});
+    const settings = stored('angebotskueche.settings', { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'] });
+    let offers = [...seedOffers, ...stored('angebotskueche.customOffers', [])].map(offer => ({ validUntil: defaultOfferEnd(), source: 'Demo-Import', confidence: 'mittel', packSize: '1 Packung', ...offer }));
+    let favorites = stored('angebotskueche.favorites', seededFavorites);
+    let pantry = stored('angebotskueche.pantry', ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch']);
+    let dismissedRecipes = stored('angebotskueche.dismissedRecipes', []);
+    let pinnedRecipes = stored('angebotskueche.pinnedRecipes', []);
+    let shoppingChecks = stored('angebotskueche.shoppingChecks', {});
+    let manualShoppingItems = stored('angebotskueche.manualShoppingItems', []);
+    let manualPlan = stored('angebotskueche.manualPlan', {});
+    let recipeRatings = stored('angebotskueche.recipeRatings', {});
+    let suggestionPreferences = stored('angebotskueche.suggestionPreferences', { sort: 'match', filter: 'all', max30: false, vegetarian: false, family: false, leftovers: false, offerMin2: true });
     if (!manualPlan || typeof manualPlan !== 'object' || Array.isArray(manualPlan)) manualPlan = {};
     if (!recipeRatings || typeof recipeRatings !== 'object' || Array.isArray(recipeRatings)) recipeRatings = {};
+    if (!suggestionPreferences || typeof suggestionPreferences !== 'object' || Array.isArray(suggestionPreferences)) suggestionPreferences = { sort: 'match', filter: 'all', max30: false, vegetarian: false, family: false, leftovers: false, offerMin2: true };
     if (!Array.isArray(manualShoppingItems)) manualShoppingItems = [];
     manualShoppingItems = manualShoppingItems.filter(item => item && typeof item.name === 'string' && item.name.trim()).map(item => ({ id: String(item.id || `manual-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`), name: item.name.trim() }));
     if (!shoppingChecks || typeof shoppingChecks !== 'object' || Array.isArray(shoppingChecks)) shoppingChecks = {};
@@ -514,13 +519,19 @@
       Penny: { distance: '5,5 km', count: 3, logo: 'P', source: 'https://www.penny.de/angebote' },
       Netto: { distance: '5,9 km', count: 3, logo: 'N', source: 'https://www.netto-online.de/angebote/c-N07' },
       'Marktkauf Tüngersheim': { distance: '7,3 km', count: 4, logo: 'M', source: 'https://www.edeka.de/marktkauf/angebote.jsp' },
+      Bring: { distance: 'Cloud-Browser', count: 0, logo: 'B', source: 'https://web.getbring.com/' }
     };
     const marketDisplayNames = { Kaufland: 'Kaufland Würzburg' };
-    const liveOfferMarkets = new Set(['Aldi', 'Kaufland', 'EDEKA', 'Lidl', 'Penny', 'Netto']);
-    const generatedOfferFiles = { Aldi: 'aldi-offers.json', Kaufland: 'kaufland-offers.json', EDEKA: 'edeka-offers.json', Lidl: 'lidl-offers.json', Penny: 'penny-offers.json', Netto: 'netto-offers.json' };
+    const liveOfferMarkets = new Set(['Aldi', 'Kaufland', 'EDEKA', 'Lidl', 'Penny', 'Netto', 'Bring']);
+    const generatedOfferFiles = { Aldi: 'aldi-offers.json', Kaufland: 'kaufland-offers.json', EDEKA: 'edeka-offers.json', Lidl: 'lidl-offers.json', Penny: 'penny-offers.json', Netto: 'netto-offers.json', Bring: 'bring-offers.json' };
     let liveOfferStatus = stored('angebotskueche.liveOfferStatus', {});
     if (!liveOfferStatus || typeof liveOfferStatus !== 'object' || Array.isArray(liveOfferStatus)) liveOfferStatus = {};
     if (!Array.isArray(settings.selectedMarkets) || !settings.selectedMarkets.length) settings.selectedMarkets = ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'];
+    favorites = favorites.map(item => {
+      const builtIn = seededFavorites.find(seed => normalizeIngredient(seed.name) === normalizeIngredient(item.name));
+      if (!builtIn) return item;
+      return { ...builtIn, ...item, ingredients: Array.isArray(item.ingredients) && item.ingredients.length ? item.ingredients : builtIn.ingredients, time: item.time || builtIn.time, vegetarian: item.vegetarian ?? builtIn.vegetarian, familyFriendly: item.familyFriendly ?? builtIn.familyFriendly, category: item.category || builtIn.category, difficulty: item.difficulty || builtIn.difficulty, instructions: item.instructions || builtIn.instructions };
+    });
 
     function marketDisplayName(name) {
       return marketDisplayNames[name] || name;
@@ -581,9 +592,8 @@
         const count = offers.filter(offer => isOfferCurrent(offer) && offer.store === name).length;
         const activeLabel = activeMarkets.includes(name) ? 'für Planung aktiv' : selected.includes(name) ? 'ausgewählt, über dem Stopplimit' : 'nicht ausgewählt';
         const live = liveOfferStatus[name];
-        const offerLabel = count === 1 ? '1 gültiges Angebot' : count ? `${count} gültige Angebote` : 'manueller Import';
-        const coverageLabel = ` · Karten ${live.loadedCardCount}/${live.targetCount}${live.targetReached ? ' · vollständig' : ' · Nachladen prüfen'}`;
-        const sourceLabel = live?.count ? `${isGithubPagesHost ? 'GitHub-Workflow geprüft' : 'Live geprüft'} · ${live.count} Treffer${coverageLabel}` : live?.error ? 'Live-Prüfung fehlgeschlagen' : isGithubPagesHost && liveOfferMarkets.has(name) ? 'GitHub-Workflow verfügbar' : liveOfferMarkets.has(name) ? 'Live-Quelle verfügbar' : 'manueller Import';
+        const offerLabel = name === 'Bring' ? `${count} Artikel erkannt` : count === 1 ? '1 gültiges Angebot' : count ? `${count} gültige Angebote` : 'manueller Import';
+        const sourceLabel = live?.count ? `${isGithubPagesHost ? 'GitHub-Workflow geprüft' : 'Live geprüft'} · ${live.count} Treffer` : live?.error ? 'Live-Prüfung fehlgeschlagen' : isGithubPagesHost && liveOfferMarkets.has(name) ? 'GitHub-Workflow verfügbar' : liveOfferMarkets.has(name) ? 'Live-Quelle verfügbar' : 'manueller Import';
         return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(details.logo)}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(details.distance)} · ${activeLabel}</div><div class="source-note">${escapeHtml(sourceLabel)}${live?.fetchedAt ? ` · ${escapeHtml(new Date(live.fetchedAt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }))}` : ''}</div>${details.source ? `<a class="source-note" href="${escapeHtml(details.source)}" target="_blank" rel="noopener">Offizielle Angebote öffnen ↗</a>` : ''}</div></div><span class="market-count">${offerLabel}</span></div>`;
       }).join('');
     }
@@ -622,7 +632,9 @@
     }
 
     async function refreshOfficialOffers() {
-      const selected = sortedSelectedMarkets().filter(name => liveOfferMarkets.has(name)).slice(0, Number($('#marketsSelect').value || settings.markets || 2));      if (!selected.length) { showToast('Für die ausgewählten Märkte ist derzeit kein stabiler Live-Adapter verfügbar.'); return; }
+      const selected = sortedSelectedMarkets().filter(name => liveOfferMarkets.has(name)).slice(0, Number($('#marketsSelect').value || settings.markets || 2));
+      if (isGithubPagesHost && liveOfferMarkets.has('Bring') && !selected.includes('Bring')) selected.push('Bring');
+      if (!selected.length) { showToast('Für die ausgewählten Märkte ist derzeit kein stabiler Live-Adapter verfügbar.'); return; }
       const button = $('#refreshOfficialOffers');
       button.disabled = true;
       button.textContent = '↻ Quellen werden geprüft …';
@@ -646,14 +658,13 @@
         confidence: 'hoch',
         note: offer.note || 'offizielle Händlerseite',
         icon: offer.icon || '🛒',
-        imageUrl: offer.imageUrl || offer.image || '',
       })));
       offers = offers.filter(offer => !(offer.source === 'Offizieller Live-Import' && successfulMarkets.has(offer.store)));
       const knownKeys = new Set(offers.filter(isImportedOffer).map(offerImportKey));
       const uniqueImported = imported.filter(offer => { const key = offerImportKey(offer); if (knownKeys.has(key)) return false; knownKeys.add(key); return true; });
       offers.push(...uniqueImported);
       fetched.forEach(result => {
-        liveOfferStatus[result.market] = result.payload ? { fetchedAt: new Date().toISOString(), validUntil: result.payload.validUntil, count: Number(result.payload.recognizedCount || result.payload.offers.length), targetCount: Number(result.payload.targetOfferCount || 0), loadedCardCount: Number(result.payload.loadedOfferCardCount || 0), targetReached: result.payload.targetReached !== false } : { fetchedAt: new Date().toISOString(), error: result.error || 'Keine verwertbaren Angebote', count: 0, targetCount: 0, loadedCardCount: 0, targetReached: false };
+        liveOfferStatus[result.market] = result.payload ? { fetchedAt: new Date().toISOString(), validUntil: result.payload.validUntil, count: Number(result.payload.recognizedCount || result.payload.offers.length) } : { fetchedAt: new Date().toISOString(), error: result.error || 'Keine verwertbaren Angebote', count: 0 };
       });
       localStorage.setItem('angebotskueche.liveOfferStatus', JSON.stringify(liveOfferStatus));
       refreshOfferViews();
@@ -854,16 +865,64 @@
       showToast(`${candidate} zur Einkaufsliste hinzugefügt.`);
     }
 
+    function persistSuggestionPreferences() {
+      localStorage.setItem('angebotskueche.suggestionPreferences', JSON.stringify(suggestionPreferences));
+    }
+
+    function suggestionSortValue(recipe, match) {
+      const rating = recipeRating(recipe);
+      const recentMeals = getCurrentPlanMeals().slice(0, 5);
+      const repeatedCategory = recentMeals.some(meal => meal.profile && recipe.category && meal.profile === recipe.category);
+      const varietyBonus = repeatedCategory ? -12 : (recipe.category ? 5 : 0);
+      if (suggestionPreferences.sort === 'cheapest') return (100 - parseMoney(match.estimatedCost)) + match.score / 10 + rating * 2;
+      if (suggestionPreferences.sort === 'variety') return match.score + varietyBonus + rating * 2;
+      return match.score + varietyBonus + rating * 3;
+    }
+
+    function getSuggestionCandidates() {
+      const candidates = getPlanCandidates().filter(recipe => !dismissedRecipes.includes(recipe.id));
+      return candidates.map(recipe => ({ recipe, match: scoreRecipe(recipe) })).filter(({ recipe, match }) => {
+        if (suggestionPreferences.filter === 'favorites' && !recipe.favorite) return false;
+        if (suggestionPreferences.max30 && Number(recipe.time || 999) > 30) return false;
+        if (suggestionPreferences.vegetarian && !recipe.vegetarian) return false;
+        if (suggestionPreferences.family && !recipe.familyFriendly) return false;
+        if (suggestionPreferences.leftovers && !isLeftoverRecipe(recipe)) return false;
+        if (suggestionPreferences.offerMin2 && match.matchedIngredients.length < 2) return false;
+        return true;
+      }).sort((first, second) => suggestionSortValue(second.recipe, second.match) - suggestionSortValue(first.recipe, first.match));
+    }
+
     function renderSuggestions() {
-      const filter = $('#suggestionFilter').value;
-      const candidates = suggestionSeed.filter(recipe => !dismissedRecipes.includes(recipe.id)).filter(recipe => filter === 'all' || (filter === 'vegetarian' && recipe.vegetarian) || (filter === 'quick' && recipe.time <= 30)).sort((a, b) => scoreRecipe(b).score - scoreRecipe(a).score);
+      const filter = $('#suggestionFilter');
+      const sort = $('#suggestionSort');
+      const max30 = $('#suggestionMax30');
+      const vegetarian = $('#suggestionVegetarian');
+      const family = $('#suggestionFamily');
+      const leftovers = $('#suggestionLeftovers');
+      const offerMin2 = $('#suggestionOfferMin2');
+      if (filter) filter.value = suggestionPreferences.filter || 'all';
+      if (sort) sort.value = suggestionPreferences.sort || 'match';
+      if (max30) max30.checked = Boolean(suggestionPreferences.max30);
+      if (vegetarian) vegetarian.checked = Boolean(suggestionPreferences.vegetarian);
+      if (family) family.checked = Boolean(suggestionPreferences.family);
+      if (leftovers) leftovers.checked = Boolean(suggestionPreferences.leftovers);
+      if (offerMin2) offerMin2.checked = suggestionPreferences.offerMin2 !== false;
+      const candidates = getSuggestionCandidates();
       $('#restoreDismissed').style.display = dismissedRecipes.length ? 'inline-flex' : 'none';
-      if (!candidates.length) { $('#suggestionGrid').innerHTML = '<div class="empty-state">Für diesen Filter sind keine weiteren Vorschläge offen.</div>'; return; }
-      $('#suggestionGrid').innerHTML = candidates.map(recipe => { const pinned = pinnedRecipes.includes(recipe.id); const favorite = isRecipeFavorite(recipe); const match = scoreRecipe(recipe); const evidence = match.requiredIngredients.length ? `${match.matchedIngredients.length}/${match.requiredIngredients.length} Angebotszutaten` : 'Zutatenanalyse ausstehend'; return `<article class="suggestion-card"><div class="suggestion-head"><div><div class="catalog-icon">${escapeHtml(recipe.emoji)}</div><div class="suggestion-title">${escapeHtml(recipe.title)}</div></div><span class="favorite-match">${escapeHtml(match.score)}% Match</span></div><div class="suggestion-reason">${escapeHtml(match.reason || 'Noch kein direkter Angebotsanker')} · ${escapeHtml(marketDisplayString(match.store || 'mehrere Märkte'))}</div><div class="source-note">${escapeHtml(evidence)} · Vorrat wird nicht gewertet</div><div class="meal-tags">${recipe.tags.map((tag, index) => `<span class="tag ${index === 0 && recipe.vegetarian ? '' : 'yellow'}">${escapeHtml(tag)}</span>`).join('')}</div><div class="suggestion-ingredients">${recipe.ingredients.map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('')}</div><div class="suggestion-actions"><button class="small-button primary" data-assign-recipe="${recipe.id}">Für Tag auswählen</button><button class="small-button ${favorite ? '' : 'primary'}" data-favorite-recipe="${recipe.id}">${favorite ? '✓ In Favoriten' : '♡ In Favoriten'}</button><button class="small-button ${pinned ? '' : 'primary'}" data-plan-recipe="${recipe.id}">${pinned ? '✓ Vorgemerkt' : '＋ Für Plan merken'}</button><button class="small-button" data-share-recipe="${recipe.id}">↗ Teilen</button><button class="small-button remove" data-dismiss-recipe="${recipe.id}">Nicht mehr vorschlagen</button></div></article>`; }).join('');
+      $('#suggestionFilterNote').textContent = `${candidates.length} passende Rezepte · sortiert nach ${suggestionPreferences.sort === 'cheapest' ? 'Kosten' : suggestionPreferences.sort === 'variety' ? 'Abwechslung' : 'Angebots-Match'} · ${getActiveOffers().length} aktuelle Angebote geprüft`;
+      if (!candidates.length) { $('#suggestionGrid').innerHTML = '<div class="empty-state">Für diese Filter sind keine Rezepte mit genügend aktuellen Angebotszutaten offen.</div>'; return; }
+      $('#suggestionGrid').innerHTML = candidates.map(({ recipe, match }) => {
+        const pinned = pinnedRecipes.includes(recipe.id);
+        const favorite = isRecipeFavorite(recipe);
+        const evidence = match.requiredIngredients.length ? `${match.matchedIngredients.length} von ${match.requiredIngredients.length} Zutaten im Angebot` : 'Zutatenanalyse ausstehend';
+        const rating = recipeRating(recipe);
+        const markets = match.stores.length ? match.stores.map(marketDisplayName).join(' + ') : 'kein aktiver Markt';
+        return `<article class="suggestion-card"><div class="suggestion-head"><div><div class="catalog-icon">${escapeHtml(recipe.emoji)}</div><div class="suggestion-title">${escapeHtml(recipe.title)}</div></div><span class="favorite-match">${escapeHtml(match.score)}% Match</span></div><div class="suggestion-reason">${escapeHtml(match.reason || 'Noch kein direkter Angebotsanker')}</div><div class="suggestion-detail"><div><strong>${escapeHtml(evidence)}</strong> · Vorräte nicht gewertet</div><div class="suggestion-cost"><span>ca. ${escapeHtml(match.estimatedCost)} für die Angebots-Packungen</span><span>${escapeHtml(markets)}</span></div></div><div class="meal-tags">${(recipe.tags || []).map((tag, index) => `<span class="tag ${index === 0 && recipe.vegetarian ? '' : 'yellow'}">${escapeHtml(tag)}</span>`).join('')}</div><div class="suggestion-ingredients">${(recipe.ingredients || []).map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('')}</div><div class="suggestion-detail"><div><strong>${escapeHtml(recipe.time || '–')} Min. · ${escapeHtml(recipe.difficulty || 'leicht')} · ${escapeHtml(recipe.familyFriendly ? 'familiengeeignet' : 'für Erwachsene')}</strong></div><div class="suggestion-instructions">${escapeHtml(recipe.instructions || 'Kurze Zubereitung ist für dieses Rezept noch nicht hinterlegt.')}</div>${rating ? `<div class="suggestion-rating">Deine Bewertung: ${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}</div>` : ''}</div><div class="suggestion-actions"><button class="small-button primary" data-today-recipe="${escapeHtml(recipe.id)}">Für heute wählen</button><button class="small-button" data-assign-recipe="${escapeHtml(recipe.id)}">Tag auswählen</button><button class="small-button ${favorite ? '' : 'primary'}" data-favorite-recipe="${escapeHtml(recipe.id)}">${favorite ? '✓ In Favoriten' : '♡ Favorit speichern'}</button><button class="small-button ${pinned ? '' : 'primary'}" data-plan-recipe="${escapeHtml(recipe.id)}">${pinned ? '✓ Vorgemerkt' : '＋ Für Plan vormerken'}</button><button class="small-button" data-rate-recipe="${escapeHtml(recipe.id)}">${rating ? 'Bewertung ändern' : 'Gekocht? Bewerten'}</button><button class="small-button" data-share-recipe="${escapeHtml(recipe.id)}">↗ Teilen</button><button class="small-button remove" data-dismiss-recipe="${escapeHtml(recipe.id)}">Nicht mehr vorschlagen</button></div></article>`;
+      }).join('');
     }
 
     async function shareRecipe(id) {
-      const recipe = suggestionSeed.find(item => item.id === id);
+      const recipe = getPlanCandidateById(id);
       if (!recipe) return;
       const text = `${recipe.title}\n\n${recipe.ingredients.map(item => `- ${item}`).join('\n')}\n\nAngebotsküche · ${marketDisplayString(recipe.store)}`;
       if (navigator.share) {
@@ -1003,20 +1062,15 @@
     }
 
     function estimateMealCost(recipe, fallback) {
-      const active = getActiveOffers();
-      const matched = [];
-      (recipe.ingredients || []).filter(ingredient => !isPantryIngredient(ingredient)).forEach(ingredient => {
-        const offer = active.find(candidate => offerMatchesIngredient(ingredient, candidate));
-        if (offer && !matched.some(item => item.store === offer.store && item.name === offer.name)) matched.push(offer);
-      });
-      if (matched.length < 2) return fallback;
-      const offerTotal = matched.reduce((sum, offer) => sum + parseMoney(offer.price), 0);
+      const match = getRecipeMatchDetails(recipe);
+      if (match.matchedOffers.length < 2) return fallback;
+      const offerTotal = match.matchedOffers.reduce((sum, offer) => sum + parseMoney(offer.price), 0);
       return formatEuro(Math.max(parseMoney(fallback) * 0.75, offerTotal));
     }
 
     function favoriteAsCandidate(item, index) {
       const ingredients = Array.isArray(item.ingredients) ? item.ingredients : [];
-      return { id: `favorite-${index}`, title: item.name, emoji: item.icon || '♡', score: item.score || 0, store: '', reason: 'Lieblingsrezept', time: item.time || 45, vegetarian: Boolean(item.vegetarian), tags: ['Lieblingsrezept'], ingredients, favorite: true, source: item.source };
+      return { id: `favorite-${index}`, title: item.name, emoji: item.icon || '♡', score: item.score || 0, store: '', reason: 'Lieblingsrezept', time: item.time || 45, vegetarian: Boolean(item.vegetarian), familyFriendly: Boolean(item.familyFriendly), category: item.category || 'Lieblingsrezept', difficulty: item.difficulty || 'variabel', tags: ['Lieblingsrezept', ...(item.vegetarian ? ['vegetarisch'] : [])], ingredients, instructions: item.instructions || 'Zutaten vorbereiten, nach deinem gespeicherten Rezept zubereiten und abschmecken.', leftoverFriendly: Boolean(item.leftoverFriendly), favorite: true, source: item.source };
     }
 
     function getPlanCandidates() {
@@ -1038,7 +1092,7 @@
       const recipe = getPlanCandidateById(recipeId);
       if (!recipe) return;
       if (isRecipeFavorite(recipe)) { showToast(`${recipe.title} ist bereits in deinen Favoriten.`); return; }
-      favorites.push({ name: recipe.title, icon: recipe.emoji || '🥘', source: recipe.source || 'Angebotsküche', match: recipe.reason || 'Aus deinen Rezeptvorschlägen', score: recipe.score || 0, note: `${recipe.time || 30} Min. · aus Rezeptvorschlag`, ingredients: [...(recipe.ingredients || [])] });
+      favorites.push({ name: recipe.title, icon: recipe.emoji || '🥘', source: recipe.source || 'Angebotsküche', match: recipe.reason || 'Aus deinen Rezeptvorschlägen', score: recipe.score || 0, note: `${recipe.time || 30} Min. · aus Rezeptvorschlag`, time: recipe.time, vegetarian: Boolean(recipe.vegetarian), familyFriendly: Boolean(recipe.familyFriendly), category: recipe.category, difficulty: recipe.difficulty, instructions: recipe.instructions, leftoverFriendly: Boolean(recipe.leftoverFriendly), ingredients: [...(recipe.ingredients || [])] });
       localStorage.setItem('angebotskueche.favorites', JSON.stringify(favorites));
       renderFavorites();
       renderSuggestions();
@@ -1140,12 +1194,7 @@
     function renderOffers(filter = 'all') {
       const current = offers.filter(isOfferCurrent);
       const filtered = filter === 'all' ? current : current.filter(offer => offer.store === filter);
-      $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => {
-        const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : '';
-        const imageUrl = /^https?:\/\//i.test(String(offer.imageUrl || '')) ? String(offer.imageUrl) : '';
-        const media = imageUrl ? `<div class="catalog-media"><img loading="lazy" src="${escapeHtml(imageUrl)}" alt="${escapeHtml(offer.name)}" /></div>` : `<div class="catalog-media"><div class="catalog-media-fallback">${escapeHtml(offer.icon || '🛒')}</div></div>`;
-        return `<div class="catalog-card">${media}<div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(offer.icon || '🛒')}</div><span class="discount">${escapeHtml(offer.saving || '–')}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category || 'Lebensmittel')}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note || 'KaufDA-Angebot')} · ${escapeHtml(offer.packSize || '1 Packung')}</span><span>${escapeHtml(offer.relevance || 80)}% Match</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source || 'Angebot')}</div>${removeAction}</div>`;
-      }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
+      $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => { const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : ''; return `<div class="catalog-card"><div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(offer.icon)}</div><span class="discount">${escapeHtml(offer.saving)}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category)}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note)} · ${escapeHtml(offer.packSize || '1 Packung')}</span><span>${escapeHtml(offer.relevance)}% Match</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source)} · ${escapeHtml(offer.confidence)} sicher</div>${removeAction}</div>`; }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
       renderOfferMaintenance();
     }
 
@@ -1211,12 +1260,51 @@
       return words.some(word => offerName.includes(word) || (word.endsWith('en') && offerName.includes(word.slice(0, -2))) || (word.endsWith('e') && offerName.includes(word.slice(0, -1))));
     }
 
+    function recipeRating(recipe) {
+      const rating = recipeRatings[recipe.id]?.rating;
+      return Number.isFinite(Number(rating)) ? Number(rating) : 0;
+    }
+
+    function getRecipeMatchDetails(recipe) {
+      const requiredIngredients = (recipe.ingredients || []).filter(ingredient => !isPantryIngredient(ingredient));
+      const activeOffers = getActiveOffers();
+      const matchedIngredients = [];
+      const matchedOffers = [];
+      requiredIngredients.forEach(ingredient => {
+        const candidates = activeOffers.filter(offer => offerMatchesIngredient(ingredient, offer)).sort((first, second) => Number(second.relevance || 0) - Number(first.relevance || 0));
+        if (!candidates.length) return;
+        matchedIngredients.push(ingredient);
+        const offer = candidates[0];
+        if (!matchedOffers.some(item => item.store === offer.store && normalizeIngredient(item.name) === normalizeIngredient(offer.name))) matchedOffers.push(offer);
+      });
+      const stores = [...new Set(matchedOffers.map(offer => offer.store))];
+      const matchedNames = matchedIngredients.slice(0, 3);
+      const scoreBase = requiredIngredients.length ? Math.round((matchedIngredients.length / requiredIngredients.length) * 70) : 0;
+      const offerBonus = matchedIngredients.length >= 2 ? 20 : matchedIngredients.length ? 8 : 0;
+      const ratingBonus = recipeRating(recipe) ? (recipeRating(recipe) - 3) * 3 : 0;
+      const score = Math.max(0, Math.min(99, Math.round(25 + scoreBase + offerBonus + ratingBonus)));
+      const reason = matchedNames.length ? `${matchedNames.join(' + ')} im Angebot` : (recipe.reason || 'Noch kein direkter Angebotsanker');
+      return { score, reason, store: stores.length ? stores.join(' + ') : recipe.store, stores, matchedIngredients, matchedOffers, requiredIngredients, estimatedCost: estimateMatchCost(matchedOffers, recipe) };
+    }
+
+    function estimateMatchCost(matchedOffers, recipe) {
+      if (!matchedOffers.length) return parseMoney(recipe.cost || 0) ? formatEuro(parseMoney(recipe.cost)) : '–';
+      const total = matchedOffers.reduce((sum, offer) => sum + parseMoney(offer.price), 0);
+      return formatEuro(total);
+    }
+
+    function recipeHasRecentOverlap(recipe) {
+      const currentMeals = getCurrentPlanMeals ? getCurrentPlanMeals() : [];
+      return currentMeals.some(meal => getMealIngredients(meal).some(previous => (recipe.ingredients || []).some(current => ingredientsOverlap(current, previous))));
+    }
+
+    function isLeftoverRecipe(recipe) {
+      return Boolean(recipe.leftoverFriendly) || (recipe.tags || []).some(tag => /rest|reste/i.test(tag)) || recipeHasRecentOverlap(recipe);
+    }
+
     function scoreRecipe(recipe) {
-      const ingredients = (recipe.ingredients || []).filter(ingredient => !isPantryIngredient(ingredient));
-      if (!ingredients.length) return { score: recipe.score || 0, reason: recipe.reason || 'Zutatenanalyse ausstehend', store: recipe.store, matchedIngredients: [], requiredIngredients: [] };
-      const matches = ingredients.filter(ingredient => getActiveOffers().some(offer => offerMatchesIngredient(ingredient, offer)));
-      const stores = [...new Set(getActiveOffers().filter(offer => matches.some(ingredient => offerMatchesIngredient(ingredient, offer))).map(offer => offer.store))];
-      return { score: matches.length ? Math.min(97, 45 + Math.round((matches.length / ingredients.length) * 50)) : Math.max(35, (recipe.score || 60) - 15), reason: matches.length ? `${matches.slice(0, 2).join(' + ')} im Angebot` : recipe.reason, store: stores.length ? stores.join(' + ') : recipe.store, matchedIngredients: matches, requiredIngredients: ingredients };
+      const match = getRecipeMatchDetails(recipe);
+      return { ...match, score: match.matchedIngredients.length ? match.score : Math.max(20, (recipe.score || 45) - 20) };
     }
 
     function getFavoriteMatch(item) {
@@ -1294,11 +1382,16 @@
 
     function closeSettings() { $('#settingsModal').classList.remove('open'); }
 
+    async function copyBringSetup() {
+      const setup = 'Bring-Verbindung für Angebotsküche\n\n1. Im Repository-Ordner ausführen: node automation/bring-login.mjs\n2. Im geöffneten Bring-Browser anmelden und danach Enter drücken.\n3. bring-storage-state.json als Base64 in GitHub unter Settings → Secrets and variables → Actions als BRING_STORAGE_STATE_B64 hinterlegen.\n4. Die lokale Datei bring-storage-state.json löschen.\n\nDie App speichert kein Passwort. Die wöchentliche GitHub Action liest die Bring-Prospekte per Playwright/OCR aus und veröffentlicht die erkannte Artikelzahl.';
+      try { await navigator.clipboard.writeText(setup); $('#bringConnectionStatus').textContent = 'Einrichtungstext kopiert. Nach dem Hinterlegen des Secrets kann der Workflow gestartet werden.'; showToast('Bring-Einrichtung kopiert.'); } catch { $('#bringConnectionStatus').textContent = setup; showToast('Kopieren nicht möglich – der Einrichtungstext steht jetzt hier.'); }
+    }
+
     const backupArrayKeys = ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems'];
-    const backupObjectKeys = ['shoppingChecks', 'liveOfferStatus', 'manualPlan', 'recipeRatings'];
+    const backupObjectKeys = ['shoppingChecks', 'liveOfferStatus', 'manualPlan', 'recipeRatings', 'suggestionPreferences'];
 
     function buildUserDataPayload() {
-      return { version: 1, exportedAt: new Date().toISOString(), settings: stored('angebotskueche.settings', settings), pantry: stored('angebotskueche.pantry', pantry), favorites: stored('angebotskueche.favorites', favorites), dismissedRecipes: stored('angebotskueche.dismissedRecipes', dismissedRecipes), pinnedRecipes: stored('angebotskueche.pinnedRecipes', pinnedRecipes), customOffers: stored('angebotskueche.customOffers', []), shoppingChecks: stored('angebotskueche.shoppingChecks', shoppingChecks), manualShoppingItems: stored('angebotskueche.manualShoppingItems', manualShoppingItems), liveOfferStatus: stored('angebotskueche.liveOfferStatus', liveOfferStatus), manualPlan: stored('angebotskueche.manualPlan', manualPlan), recipeRatings: stored('angebotskueche.recipeRatings', recipeRatings) };
+      return { version: 1, exportedAt: new Date().toISOString(), settings: stored('angebotskueche.settings', settings), pantry: stored('angebotskueche.pantry', pantry), favorites: stored('angebotskueche.favorites', favorites), dismissedRecipes: stored('angebotskueche.dismissedRecipes', dismissedRecipes), pinnedRecipes: stored('angebotskueche.pinnedRecipes', pinnedRecipes), customOffers: stored('angebotskueche.customOffers', []), shoppingChecks: stored('angebotskueche.shoppingChecks', shoppingChecks), manualShoppingItems: stored('angebotskueche.manualShoppingItems', manualShoppingItems), liveOfferStatus: stored('angebotskueche.liveOfferStatus', liveOfferStatus), manualPlan: stored('angebotskueche.manualPlan', manualPlan), recipeRatings: stored('angebotskueche.recipeRatings', recipeRatings), suggestionPreferences: stored('angebotskueche.suggestionPreferences', suggestionPreferences) };
     }
 
     function validateUserDataPayload(payload) {
@@ -1367,7 +1460,9 @@
     $('#openSettings').addEventListener('click', () => $('#settingsModal').classList.add('open'));
     $('#closeSettings').addEventListener('click', closeSettings);
     $('#cancelSettings').addEventListener('click', closeSettings);
-    $('#settingsModal').addEventListener('click', event => { if (event.target.id === 'settingsModal') closeSettings(); });    $('#sharePlan').addEventListener('click', shareCurrentPlan);
+    $('#settingsModal').addEventListener('click', event => { if (event.target.id === 'settingsModal') closeSettings(); });
+    $('#copyBringSetup').addEventListener('click', copyBringSetup);
+    $('#sharePlan').addEventListener('click', shareCurrentPlan);
     $('#shareShoppingList').addEventListener('click', shareShoppingList);
     $('#checkAllShopping').addEventListener('click', () => { getShoppingItems().forEach(item => { shoppingChecks[item.id] = true; }); localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks)); renderShoppingList(); showToast('Alle aktuellen Einkaufsartikel abgehakt.'); });
     $('#clearShoppingChecks').addEventListener('click', () => { shoppingChecks = {}; localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks)); renderShoppingList(); showToast('Die Haken wurden zurückgesetzt.'); });
@@ -1388,17 +1483,23 @@
     $('#leftoverToggle').addEventListener('change', () => { renderPlan(); persistSettings(); });
     $('#eveningToggle').addEventListener('change', () => { renderPlan(); persistSettings(); });
     $('#offerFilter').addEventListener('change', (event) => renderOffers(event.target.value));
-    $('#suggestionFilter').addEventListener('change', renderSuggestions);
+    $('#suggestionFilter').addEventListener('change', event => { suggestionPreferences.filter = event.target.value; persistSuggestionPreferences(); renderSuggestions(); });
+    $('#suggestionSort').addEventListener('change', event => { suggestionPreferences.sort = event.target.value; persistSuggestionPreferences(); renderSuggestions(); });
+    [['suggestionMax30', 'max30'], ['suggestionVegetarian', 'vegetarian'], ['suggestionFamily', 'family'], ['suggestionLeftovers', 'leftovers'], ['suggestionOfferMin2', 'offerMin2']].forEach(([id, key]) => { $(`#${id}`).addEventListener('change', event => { suggestionPreferences[key] = event.target.checked; persistSuggestionPreferences(); renderSuggestions(); }); });
     $('#shareAllSuggestions').addEventListener('click', shareAllSuggestions);
     $('#suggestionGrid').addEventListener('click', event => {
       const dismiss = event.target.closest('[data-dismiss-recipe]');
       const share = event.target.closest('[data-share-recipe]');
       const plan = event.target.closest('[data-plan-recipe]');
       const assign = event.target.closest('[data-assign-recipe]');
+      const today = event.target.closest('[data-today-recipe]');
+      const rate = event.target.closest('[data-rate-recipe]');
       const favorite = event.target.closest('[data-favorite-recipe]');
       if (dismiss) { dismissedRecipes = [...new Set([...dismissedRecipes, dismiss.dataset.dismissRecipe])]; pinnedRecipes = pinnedRecipes.filter(item => item !== dismiss.dataset.dismissRecipe); localStorage.setItem('angebotskueche.dismissedRecipes', JSON.stringify(dismissedRecipes)); localStorage.setItem('angebotskueche.pinnedRecipes', JSON.stringify(pinnedRecipes)); renderSuggestions(); renderPlan(); showToast('Rezept ausgeblendet und künftig nicht mehr vorgeschlagen.'); }
       if (share) shareRecipe(share.dataset.shareRecipe);
       if (assign) openAssignModal(assign.dataset.assignRecipe);
+      if (today) { const id = today.dataset.todayRecipe; if (assignRecipeToDay(id, 0)) { renderPlan(); renderSuggestions(); showToast(`${getPlanCandidateById(id)?.title || 'Rezept'} für heute ausgewählt.`); } }
+      if (rate) { const recipe = getPlanCandidateById(rate.dataset.rateRecipe); if (recipe) openRatingModal({ recipeId: recipe.id, title: recipe.title }); }
       if (favorite) saveRecipeToFavorites(favorite.dataset.favoriteRecipe);
       if (plan) { const id = plan.dataset.planRecipe; pinnedRecipes = pinnedRecipes.includes(id) ? pinnedRecipes.filter(item => item !== id) : [...pinnedRecipes, id]; localStorage.setItem('angebotskueche.pinnedRecipes', JSON.stringify(pinnedRecipes)); renderSuggestions(); renderPlan(); showToast(pinnedRecipes.includes(id) ? 'Rezept für die nächste Planberechnung vorgemerkt.' : 'Rezept aus den Vormerkungen entfernt.'); }
     });
@@ -1543,8 +1644,7 @@
 
     configureGithubPages();
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
-    const initialRenderers = [['Plan', renderPlan], ['Rezeptvorschläge', renderSuggestions], ['Highlights', renderHighlights], ['Märkte', renderMarkets], ['Angebote', renderOffers], ['Favoriten', renderFavorites], ['Vorräte', renderPantry], ['Quellenstatus', renderSourceStatus]];
-    initialRenderers.forEach(([label, renderer]) => { try { renderer(); } catch (error) { console.error(`Angebotsküche: ${label} konnte nicht gerendert werden`, error); } });
+    renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderOffers(); renderFavorites(); renderPantry(); renderSourceStatus();
     if (isGithubPagesHost) setTimeout(() => refreshOfficialOffers(), 0);
     if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
   </script>
