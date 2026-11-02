@@ -512,17 +512,16 @@
       return offer && ['Offizieller Live-Import', 'Bring-OCR-Import'].includes(String(offer.source || '').trim());
     }
     let storedCustomOffers = stored('angebotskueche.customOffers', []);
-    const offerStorageVersion = Number(localStorage.getItem('angebotskueche.offerStorageVersion') || 0);
-    if (offerStorageVersion < 2 && Array.isArray(storedCustomOffers)) {
-      const automatic = storedCustomOffers.filter(isAutomaticLiveOffer);
+    const automaticStoredOffers = Array.isArray(storedCustomOffers) ? storedCustomOffers.filter(isAutomaticLiveOffer) : [];
+    if (automaticStoredOffers.length) {
       const manual = storedCustomOffers.filter(offer => !isAutomaticLiveOffer(offer));
-      if (automatic.length) {
-        try {
-          localStorage.setItem('angebotskueche.legacyLiveOffers', JSON.stringify({ migratedAt: new Date().toISOString(), offers: automatic }));
-          localStorage.setItem('angebotskueche.customOffers', JSON.stringify(manual));
-          storedCustomOffers = manual;
-        } catch { /* Der alte Cache bleibt erhalten, wenn der lokale Speicher voll ist. */ }
-      }
+      try {
+        if (!localStorage.getItem('angebotskueche.legacyLiveOffers')) localStorage.setItem('angebotskueche.legacyLiveOffers', JSON.stringify({ migratedAt: new Date().toISOString(), offers: automaticStoredOffers }));
+        localStorage.setItem('angebotskueche.customOffers', JSON.stringify(manual));
+        localStorage.setItem('angebotskueche.offerStorageVersion', '2');
+        storedCustomOffers = manual;
+      } catch { /* Der alte Cache bleibt erhalten, wenn der lokale Speicher voll ist. */ }
+    } else if (!localStorage.getItem('angebotskueche.offerStorageVersion')) {
       localStorage.setItem('angebotskueche.offerStorageVersion', '2');
     }
     let offers = [...seedOffers, ...(Array.isArray(storedCustomOffers) ? storedCustomOffers : [])].map(offer => ({ validUntil: defaultOfferEnd(), source: 'Demo-Import', confidence: 'mittel', packSize: '1 Packung', ...offer }));
