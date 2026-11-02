@@ -3,10 +3,10 @@
   "store": "ALDI SÜD",
   "location": "Zellingen",
   "sourceUrl": "https://www.kaufda.de/search?query=ALDI+S%C3%9CD&lat=49.901699199999996&lng=9.812895&city=Zellingen&zip=97225",
-  "fetchedAt": "2026-11-02T11:43:28.517Z",
+  "fetchedAt": "2026-11-02T11:46:48.592Z",
   "validUntil": "09.11.2026",
   "parser": "kaufda-offer-cards-v5",
-  "recognizedCount": 92,
+  "recognizedCount": 87,
   "targetOfferCount": 410,
   "loadedOfferCardCount": 428,
   "targetReached": true,
@@ -612,54 +612,6 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "Geschenkverpackung oder -Deko",
-      "store": "ALDI SÜD",
-      "price": "0,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "LED-Sternen-Lichtervorhang",
-      "store": "ALDI SÜD",
-      "price": "7,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "LED-Teelichter",
-      "store": "ALDI SÜD",
-      "price": "6,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Geschmückte Zuckerhutfichte",
-      "store": "ALDI SÜD",
-      "price": "9,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
-    },
-    {
       "name": "Milchreis",
       "store": "ALDI SÜD",
       "price": "0,39 €",
@@ -924,18 +876,6 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "Schneeanzug",
-      "store": "ALDI SÜD",
-      "price": "9,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
-    },
-    {
       "name": "Zitronat oder Orangeat",
       "store": "ALDI SÜD",
       "price": "0,79 €",
@@ -972,6 +912,18 @@
       "validUntil": "09.11.2026"
     },
     {
+      "name": "Mandeln",
+      "store": "ALDI SÜD",
+      "price": "2,49 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
       "name": "Raspelschokolade",
       "store": "ALDI SÜD",
       "price": "1,59 €",
@@ -987,18 +939,6 @@
       "name": "Milch-Schokoladenstreusel",
       "store": "ALDI SÜD",
       "price": "2,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Zucker-Streudekor",
-      "store": "ALDI SÜD",
-      "price": "0,89 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
