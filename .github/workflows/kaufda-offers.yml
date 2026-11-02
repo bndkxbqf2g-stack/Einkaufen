@@ -5,7 +5,11 @@ on:
     branches: [main]
     paths:
       - 'automation/trigger-aldi.txt'
+      - 'automation/trigger-edeka.txt'
+      - 'automation/trigger-lidl.txt'
+      - 'automation/trigger-penny.txt'
       - 'automation/trigger-netto.txt'
+      - 'automation/trigger-kaufland.txt'
       - 'automation/trigger-all.txt'
   workflow_dispatch:
     inputs:
@@ -54,7 +58,7 @@ jobs:
           KAUFDA_URLS: ${{ vars.KAUFDA_URLS }}
           KAUFDA_BROWSER_URLS: ${{ vars.KAUFDA_BROWSER_URLS }}
           KAUFDA_STORAGE_STATE_B64: ${{ secrets.KAUFDA_STORAGE_STATE_B64 }}
-          KAUFDA_MARKET: ${{ github.event_name == 'push' && (contains(github.event.head_commit.message, 'Alle Märkte') && 'all' || contains(github.event.head_commit.message, 'Netto') && 'Netto' || 'Aldi') || inputs.market || 'all' }}
+          KAUFDA_MARKET: ${{ github.event_name == 'push' && (contains(github.event.head_commit.message, 'Alle Märkte') && 'all' || contains(github.event.head_commit.message, 'EDEKA') && 'EDEKA' || contains(github.event.head_commit.message, 'Lidl') && 'Lidl' || contains(github.event.head_commit.message, 'Penny') && 'Penny' || contains(github.event.head_commit.message, 'Netto') && 'Netto' || contains(github.event.head_commit.message, 'Kaufland') && 'Kaufland' || contains(github.event.head_commit.message, 'Aldi') && 'Aldi' || 'Aldi') || inputs.market || 'all' }}
         run: node automation/kaufda-offers.mjs
       - name: Angebotsdaten veröffentlichen
         run: |

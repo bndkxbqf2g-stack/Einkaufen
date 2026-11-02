@@ -55,20 +55,32 @@ async function cardOffers(page, validUntil, config) {
   const items = await page.locator('[aria-label*="zur Einkaufsliste hinzufügen"]').evaluateAll(inputs => inputs.map(input => {
     const label = input.getAttribute('aria-label') || '';
     let node = input;
-    let fallbackNode = input.parentElement;
+    let bestNode = input.parentElement;
+    let bestPriceCount = Number.POSITIVE_INFINITY;
     for (let index = 0; index < 10 && node.parentElement; index += 1) {
       node = node.parentElement;
-      fallbackNode = node;
       const text = node.innerText || '';
       const prices = text.match(/(?:ab\s*)?\d{1,4}[,.]\d{2}\s*€/g) || [];
-      if (prices.length === 1 && text.length <= 420) break;
+      if (prices.length && prices.length < bestPriceCount && text.length <= 520) {
+        bestNode = node;
+        bestPriceCount = prices.length;
+      }
+      if (prices.length === 1 && text.length <= 360) {
+        bestNode = node;
+        break;
+      }
     }
-    node = fallbackNode;
     const name = label.replace(/\s+zur Einkaufsliste hinzufügen\s*$/i, '').trim();
-    const text = node.innerText || '';
-    const price = (text.match(/(?:ab\s*)?\d{1,4}[,.]\d{2}\s*€/) || [])[0] || '';
-    const image = node.querySelector('img');
-    const imageUrl = image?.currentSrc || image?.getAttribute('src') || image?.getAttribute('data-src') || image?.getAttribute('data-lazy-src') || image?.getAttribute('data-original') || image?.getAttribute('srcset')?.split(',')[0]?.trim().split(' ')[0] || '';
+    const text = bestNode.innerText || '';
+    const prices = text.match(/(?:ab\s*)?\d{1,4}[,.]\d{2}\s*€/g) || [];
+    const plausiblePrices = prices.filter(candidate => {
+      const value = Number((candidate.match(/\d{1,4}[,.]\d{2}/) || ['0'])[0].replace(',', '.'));
+      return Number.isFinite(value) && value > 0 && value <= 30;
+    });
+    const price = plausiblePrices[0] || '';
+    const image = bestNode.querySelector('img');
+    const imageCandidates = [...(image ? [image.currentSrc, image.getAttribute('src'), image.getAttribute('data-src'), image.getAttribute('data-lazy-src'), image.getAttribute('data-original'), image.getAttribute('srcset')?.split(',')[0]?.trim().split(' ')[0]] : [])].filter(url => /^https?:\/\//i.test(url || '') && !/logo\.svg/i.test(url || ''));
+    const imageUrl = imageCandidates[0] || '';
     return { name, price, text, imageUrl };
   }));
   return items.map(item => ({ ...item, validUntil, store: config.store }));
@@ -118,7 +130,7 @@ async function collectStructuredOffers(page, validUntil, config) {
     for (const item of items) {
       const parsedPrice = priceFrom(item.price);
       const numericPrice = Number(parsedPrice.replace(',', '.').replace(/[^0-9.]/g, ''));
-      if (parsedPrice === '–' || !Number.isFinite(numericPrice) || numericPrice > 100 || !likelyFood(item.name)) continue;
+      if (parsedPrice === '–' || !Number.isFinite(numericPrice) || numericPrice > 30 || !likelyFood(item.name)) continue;
       if (!cardBelongsToConfig(item, config)) continue;
       const key = item.name.toLowerCase() + '|' + priceFrom(item.price) + '|' + config.store;
       const previous = unique.get(key);

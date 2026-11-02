@@ -1,0 +1,1 @@
+EDEKA: Einzelmarkt-Parser nach Preisprüfung ausführen
