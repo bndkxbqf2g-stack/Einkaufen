@@ -100,8 +100,9 @@ async function collectStructuredOffers(page, validUntil, config) {
   const unique = new Map();
   let stablePasses = 0;
   const browserScroll = Boolean(config.browserUrl);
-  const maxPasses = browserScroll ? 160 : 80;
-  const requiredStablePasses = browserScroll ? 10 : 4;
+  const maxPasses = browserScroll ? 500 : 80;
+  const requiredStablePasses = browserScroll ? 20 : 4;
+  const targetCardCount = Number(config.expectedOfferCount || 0);
   const addVisibleCards = (items) => {
     for (const item of items) {
       if (priceFrom(item.price) === '–' || !likelyFood(item.name)) continue;
@@ -117,9 +118,11 @@ async function collectStructuredOffers(page, validUntil, config) {
     await page.evaluate(() => window.scrollBy(0, Math.max(700, window.innerHeight * 0.85)));
     await page.waitForTimeout(browserScroll ? 650 : 350);
     addVisibleCards(await cardOffers(page, validUntil, config));
+    const loadedCardCount = await page.locator('[aria-label*="zur Einkaufsliste hinzufügen"]').count();
     const atBottom = await page.evaluate(() => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 32);
     if (unique.size === before && atBottom) stablePasses += 1;
     else stablePasses = 0;
+    if (targetCardCount && loadedCardCount >= targetCardCount) break;
     if (stablePasses >= requiredStablePasses) break;
   }
   await page.evaluate(() => window.scrollTo(0, 0));
@@ -173,6 +176,7 @@ async function scrapeMarket(page, config) {
   await page.waitForTimeout(1_500);
   if (config.browserUrl && /\/search(?:\?|$)/i.test(page.url())) {
     targetOfferCount = await readOfferTargetCount(page);
+    config.expectedOfferCount = targetOfferCount;
     const offersButton = page.getByRole('button', { name: /^Angebote\b/i }).first();
     if (await offersButton.count()) {
       try { await offersButton.click({ timeout: 8_000 }); await page.waitForTimeout(1_000); } catch { /* search results may already be expanded */ }
