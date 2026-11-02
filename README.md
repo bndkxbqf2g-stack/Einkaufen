@@ -14,6 +14,19 @@ Manuell starten: GitHub → Actions → **Lidl-Angebote aktualisieren** oder **A
 
 ## KaufDA-Angebote
 
-Der GitHub-Actions-Workflow `.github/workflows/kaufda-offers.yml` liest die vollständigen Prospektseiten per Bild-URL und Tesseract-OCR aus. Er verarbeitet Aldi Süd Zellingen, EDEKA Traut Zellingen, Lidl Zellingen, Penny Zellingen und Kaufland Würzburg/Nürnberger Straße und schreibt die Ergebnisse nach `generated/*-offers.json`. Die App zeigt die je Markt erkannte Artikelzahl an.
+Der GitHub-Actions-Workflow `.github/workflows/kaufda-offers.yml` nutzt strukturierte Angebotskarten der öffentlichen KaufDA-Filialseiten als Standard. Er scrollt nachgeladene Inhalte automatisch, filtert ausschließlich Lebensmittel und schreibt die Ergebnisse nach `generated/*-offers.json`. Wenn die Filialseite keine strukturierten Karten liefert, bleibt OCR für die öffentliche Prospektseite als Fallback verfügbar. Die App zeigt die je Markt erkannte Artikelzahl an.
 
-Der Workflow läuft wöchentlich und kann zusätzlich manuell über GitHub → Actions → **KaufDA-Angebote für Zellingen und Würzburg aktualisieren** → **Run workflow** gestartet werden. Wenn KaufDA seine Prospektstruktur ändert, bleibt der manuelle Angebotsimport in der App verfügbar.
+Der Workflow verarbeitet Aldi Süd Zellingen, EDEKA Traut Zellingen, Lidl Zellingen, Penny Zellingen und Kaufland Würzburg/Nürnberger Straße. Er läuft wöchentlich und kann zusätzlich manuell über GitHub → Actions → **KaufDA-Angebote für Zellingen und Würzburg aktualisieren** → **Run workflow** gestartet werden.
+
+### Erweiterter Browserpfad für vollständige Angebotslisten (optional)
+
+Wenn KaufDA die vollständige Angebotsliste nur in einer Browseransicht anzeigt, kann pro Markt eine zusätzliche Browser-URL als Repository-Variable `KAUFDA_BROWSER_URLS` hinterlegt werden. Eine Zeile hat das Format `Markt|URL`, zum Beispiel:
+
+```text
+Aldi|https://...
+Lidl|https://...
+```
+
+Der Workflow öffnet diese URL headless, scrollt bis keine neuen Karten mehr erscheinen und übernimmt nur Lebensmittelkarten. Die öffentliche Filialseite bleibt der sichere Standard, wenn keine Browser-URL konfiguriert ist. Für eine geschützte KaufDA-Seite kann optional ein exportierter Playwright-Storage-State als Base64 in das GitHub-Secret `KAUFDA_STORAGE_STATE_B64` gelegt werden. Cookies und Sitzungsdaten niemals committen oder als Repository-Variable speichern. Liefert die Browseransicht keine strukturierten Karten, bricht der Lauf sauber ab; die vorhandenen Daten bleiben erhalten und der manuelle Import bleibt verfügbar.
+
+Wenn KaufDA seine Seitenstruktur ändert, bleibt der manuelle Angebotsimport in der App verfügbar.
