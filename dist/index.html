@@ -263,8 +263,8 @@
       .sidebar { position: sticky; z-index: 5; top: 0; width: 100%; height: auto; flex-direction: row; justify-content: space-between; padding: 10px 14px; }
       .brand { padding: 0; }
       .brand-mark { width: 34px; height: 34px; }
-      .nav { display: flex; gap: 2px; }
-      .nav-button { width: 40px; height: 40px; padding: 8px; }
+      .nav { position: relative; z-index: 6; display: flex; gap: 2px; }
+      .nav-button { position: relative; z-index: 7; width: 44px; height: 44px; padding: 9px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
       .nav-button.active { background: rgba(255,255,255,.15); }
       .sidebar-spacer { display: none; }
       .main { padding: 17px 12px 35px; }
@@ -1530,7 +1530,7 @@
       reader.readAsText(file);
     }
 
-    $$('.nav-button').forEach(button => button.addEventListener('click', () => showPage(button.dataset.page)));
+    document.addEventListener('click', event => { const button = event.target.closest?.('.nav-button'); if (button?.dataset.page) showPage(button.dataset.page); });
     $$('[data-page-link]').forEach(button => button.addEventListener('click', () => showPage(button.dataset.pageLink)));
     $('#exportData').addEventListener('click', exportUserData);
     $('#importData').addEventListener('click', () => $('#dataFile').click());
