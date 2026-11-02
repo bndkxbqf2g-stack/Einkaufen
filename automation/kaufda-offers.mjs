@@ -7,7 +7,7 @@ import { chromium } from 'playwright';
 
 const execFileAsync = promisify(execFile);
 const defaultMarkets = [
-  { key: 'Aldi', market: 'Aldi', store: 'ALDI SÜD', location: 'Zellingen', url: 'https://www.kaufda.de/Filialen/Zellingen/ALDI-SUeD-Wuerzburger-Strasse/v-f37322', file: 'aldi-offers.json' },
+  { key: 'Aldi', market: 'Aldi', store: 'ALDI SÜD', location: 'Zellingen', url: 'https://www.kaufda.de/Zellingen/ALDI-SUeD/p-r90', file: 'aldi-offers.json' },
   { key: 'EDEKA', market: 'EDEKA', store: 'EDEKA Traut', location: 'Zellingen', url: 'https://www.kaufda.de/Zellingen/EDEKA/p-r107', file: 'edeka-offers.json' },
   { key: 'Lidl', market: 'Lidl', store: 'Lidl', location: 'Zellingen', url: 'https://www.kaufda.de/Zellingen/Lidl/p-r74', file: 'lidl-offers.json' },
   { key: 'Penny', market: 'Penny', store: 'Penny', location: 'Zellingen', url: 'https://www.kaufda.de/Zellingen/Penny-Markt/p-r75', file: 'penny-offers.json' },
