@@ -7,7 +7,7 @@ import { chromium } from 'playwright';
 
 const execFileAsync = promisify(execFile);
 const defaultMarkets = [
-  { key: 'Aldi', market: 'Aldi', store: 'ALDI SÜD', location: 'Zellingen', url: 'https://www.kaufda.de/Zellingen/ALDI-SUeD/p-r90', file: 'aldi-offers.json' },
+  { key: 'Aldi', market: 'Aldi', store: 'ALDI SÜD', location: 'Zellingen', url: 'https://www.kaufda.de/Zellingen/ALDI-SUeD/p-r90', browserUrl: 'https://www.kaufda.de/search?query=ALDI+S%C3%9CD&lat=49.901699199999996&lng=9.812895&city=Zellingen&zip=97225', file: 'aldi-offers.json' },
   { key: 'EDEKA', market: 'EDEKA', store: 'EDEKA Traut', location: 'Zellingen', url: 'https://www.kaufda.de/Zellingen/EDEKA/p-r107', file: 'edeka-offers.json' },
   { key: 'Lidl', market: 'Lidl', store: 'Lidl', location: 'Zellingen', url: 'https://www.kaufda.de/Zellingen/Lidl/p-r74', file: 'lidl-offers.json' },
   { key: 'Penny', market: 'Penny', store: 'Penny', location: 'Zellingen', url: 'https://www.kaufda.de/Zellingen/Penny-Markt/p-r75', file: 'penny-offers.json' },
@@ -131,7 +131,7 @@ function configuredMarkets() {
   const markets = defaultMarkets.map(config => ({
     ...config,
     url: urlOverrides.get(config.key.toLowerCase()) || config.url,
-    browserUrl: browserOverrides.get(config.key.toLowerCase()) || ''
+    browserUrl: browserOverrides.get(config.key.toLowerCase()) || config.browserUrl || ''
   }));
   const selected = String(process.env.KAUFDA_MARKET || 'all').trim().toLowerCase();
   if (!selected || selected === 'all') return markets;
@@ -145,6 +145,12 @@ async function scrapeMarket(page, config) {
   const sourceUrl = config.browserUrl || config.url;
   await page.goto(sourceUrl, { waitUntil: 'domcontentloaded', timeout: 45_000 });
   await page.waitForTimeout(1_500);
+  if (config.browserUrl && /\/search(?:\?|$)/i.test(page.url())) {
+    const offersButton = page.getByRole('button', { name: /^Angebote\b/i }).first();
+    if (await offersButton.count()) {
+      try { await offersButton.click({ timeout: 8_000 }); await page.waitForTimeout(1_000); } catch { /* search results may already be expanded */ }
+    }
+  }
   const pageText = await page.locator('body').innerText();
   const validUntil = validUntilFrom(pageText);
   const structuredItems = await collectStructuredOffers(page, validUntil, config);
