@@ -560,6 +560,7 @@
     let manualShoppingItems = stored('angebotskueche.manualShoppingItems', []);
     let manualPlan = stored('angebotskueche.manualPlan', {});
     let recipeRatings = stored('angebotskueche.recipeRatings', {});
+    let recipeHistory = stored('angebotskueche.recipeHistory', []);
     let suggestionPreferences = stored('angebotskueche.suggestionPreferences', { sort: 'match', filter: 'all', max30: false, vegetarian: false, family: false, leftovers: false, offerMin2: true });
     if (!Array.isArray(favorites)) favorites = seededFavorites;
     favorites = favorites.filter(item => item && typeof item === 'object' && typeof item.name === 'string' && item.name.trim());
@@ -570,6 +571,8 @@
     pinnedRecipes = pinnedRecipes.filter(item => typeof item === 'string');
     if (!manualPlan || typeof manualPlan !== 'object' || Array.isArray(manualPlan)) manualPlan = {};
     if (!recipeRatings || typeof recipeRatings !== 'object' || Array.isArray(recipeRatings)) recipeRatings = {};
+    if (!Array.isArray(recipeHistory)) recipeHistory = [];
+    recipeHistory = recipeHistory.filter(item => typeof item === 'string').slice(0, 20);
     if (!suggestionPreferences || typeof suggestionPreferences !== 'object' || Array.isArray(suggestionPreferences)) suggestionPreferences = { sort: 'match', filter: 'all', max30: false, vegetarian: false, family: false, leftovers: false, offerMin2: true };
     if (!Array.isArray(manualShoppingItems)) manualShoppingItems = [];
     manualShoppingItems = manualShoppingItems.filter(item => item && typeof item.name === 'string' && item.name.trim()).map(item => ({ id: String(item.id || `manual-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`), name: item.name.trim() }));
@@ -945,18 +948,42 @@
       localStorage.setItem('angebotskueche.suggestionPreferences', JSON.stringify(suggestionPreferences));
     }
 
-    function suggestionSortValue(recipe, match) {
+    function recipeIdentity(recipe) {
+      return normalizeIngredient(recipe?.title || recipe?.name || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function dedupeRecipes(recipes) {
+      const seen = new Set();
+      return recipes.filter(recipe => {
+        const identity = recipeIdentity(recipe) || normalizeIngredient((recipe.ingredients || []).join(' '));
+        if (!identity || seen.has(identity)) return false;
+        seen.add(identity);
+        return true;
+      });
+    }
+
+    function rememberCurrentPlan() {
+      const identities = getCurrentPlanMeals().map(recipeIdentity).filter(Boolean);
+      recipeHistory = [...identities, ...recipeHistory.filter(identity => !identities.includes(identity))].slice(0, 20);
+      localStorage.setItem('angebotskueche.recipeHistory', JSON.stringify(recipeHistory));
+    }
+
+    function suggestionSortValue(recipe, match, currentPlanKeys = new Set()) {
       const rating = recipeRating(recipe);
       const recentMeals = getCurrentPlanMeals().slice(0, 5);
       const repeatedCategory = recentMeals.some(meal => meal.profile && recipe.category && meal.profile === recipe.category);
       const varietyBonus = repeatedCategory ? -12 : (recipe.category ? 5 : 0);
-      if (suggestionPreferences.sort === 'cheapest') return (100 - parseMoney(match.estimatedCost)) + match.score / 10 + rating * 2;
-      if (suggestionPreferences.sort === 'variety') return match.score + varietyBonus + rating * 2;
-      return match.score + varietyBonus + rating * 3;
+      const historyIndex = recipeHistory.indexOf(recipeIdentity(recipe));
+      const historyPenalty = historyIndex >= 0 ? Math.max(4, 24 - historyIndex * 2) : 0;
+      const currentPlanPenalty = currentPlanKeys.has(recipeIdentity(recipe)) ? 14 : 0;
+      if (suggestionPreferences.sort === 'cheapest') return (100 - parseMoney(match.estimatedCost)) + match.score / 10 + rating * 2 - historyPenalty - currentPlanPenalty;
+      if (suggestionPreferences.sort === 'variety') return match.score + varietyBonus + rating * 2 - historyPenalty - currentPlanPenalty;
+      return match.score + varietyBonus + rating * 3 - historyPenalty - currentPlanPenalty;
     }
 
     function getSuggestionCandidates() {
-      const candidates = getPlanCandidates().filter(recipe => !dismissedRecipes.includes(recipe.id));
+      const candidates = dedupeRecipes(getPlanCandidates()).filter(recipe => !dismissedRecipes.includes(recipe.id));
+      const currentPlanKeys = new Set(getCurrentPlanMeals().map(recipeIdentity));
       return candidates.map(recipe => ({ recipe, match: scoreRecipe(recipe) })).filter(({ recipe, match }) => {
         if (suggestionPreferences.filter === 'favorites' && !recipe.favorite) return false;
         if (suggestionPreferences.max30 && Number(recipe.time || 999) > 30) return false;
@@ -965,7 +992,7 @@
         if (suggestionPreferences.leftovers && !isLeftoverRecipe(recipe)) return false;
         if (suggestionPreferences.offerMin2 && match.matchedIngredients.length < 2) return false;
         return true;
-      }).sort((first, second) => suggestionSortValue(second.recipe, second.match) - suggestionSortValue(first.recipe, first.match));
+      }).sort((first, second) => suggestionSortValue(second.recipe, second.match, currentPlanKeys) - suggestionSortValue(first.recipe, first.match, currentPlanKeys));
     }
 
     function renderSuggestions() {
@@ -1151,9 +1178,12 @@
 
     function getPlanCandidates() {
       const favoriteCandidates = favorites.map(favoriteAsCandidate).filter(recipe => recipe.ingredients.length);
-      return [...favoriteCandidates, ...suggestionSeed]
+      return dedupeRecipes([...favoriteCandidates, ...suggestionSeed])
         .filter(recipe => !dismissedRecipes.includes(recipe.id))
-        .sort((a, b) => (scoreRecipe(b).score + (b.favorite ? 4 : 0)) - (scoreRecipe(a).score + (a.favorite ? 4 : 0)));
+        .sort((a, b) => {
+          const historyPenalty = recipe => { const index = recipeHistory.indexOf(recipeIdentity(recipe)); return index >= 0 ? Math.max(4, 24 - index * 2) : 0; };
+          return (scoreRecipe(b).score + (b.favorite ? 4 : 0) - historyPenalty(b)) - (scoreRecipe(a).score + (a.favorite ? 4 : 0) - historyPenalty(a));
+        });
     }
 
     function getPlanCandidateById(id, candidates = getPlanCandidates()) {
@@ -1483,11 +1513,11 @@
       try { await navigator.clipboard.writeText(setup); $('#bringConnectionStatus').textContent = 'Einrichtungstext kopiert. Nach dem Hinterlegen des Secrets kann der Workflow gestartet werden.'; showToast('Bring-Einrichtung kopiert.'); } catch { $('#bringConnectionStatus').textContent = setup; showToast('Kopieren nicht möglich – der Einrichtungstext steht jetzt hier.'); }
     }
 
-    const backupArrayKeys = ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems'];
+    const backupArrayKeys = ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems', 'recipeHistory'];
     const backupObjectKeys = ['shoppingChecks', 'liveOfferStatus', 'manualPlan', 'recipeRatings', 'suggestionPreferences'];
 
     function buildUserDataPayload() {
-      return { version: 1, exportedAt: new Date().toISOString(), settings: stored('angebotskueche.settings', settings), pantry: stored('angebotskueche.pantry', pantry), favorites: stored('angebotskueche.favorites', favorites), dismissedRecipes: stored('angebotskueche.dismissedRecipes', dismissedRecipes), pinnedRecipes: stored('angebotskueche.pinnedRecipes', pinnedRecipes), customOffers: stored('angebotskueche.customOffers', []), shoppingChecks: stored('angebotskueche.shoppingChecks', shoppingChecks), manualShoppingItems: stored('angebotskueche.manualShoppingItems', manualShoppingItems), liveOfferStatus: stored('angebotskueche.liveOfferStatus', liveOfferStatus), manualPlan: stored('angebotskueche.manualPlan', manualPlan), recipeRatings: stored('angebotskueche.recipeRatings', recipeRatings), suggestionPreferences: stored('angebotskueche.suggestionPreferences', suggestionPreferences) };
+      return { version: 1, exportedAt: new Date().toISOString(), settings: stored('angebotskueche.settings', settings), pantry: stored('angebotskueche.pantry', pantry), favorites: stored('angebotskueche.favorites', favorites), dismissedRecipes: stored('angebotskueche.dismissedRecipes', dismissedRecipes), pinnedRecipes: stored('angebotskueche.pinnedRecipes', pinnedRecipes), customOffers: stored('angebotskueche.customOffers', []), shoppingChecks: stored('angebotskueche.shoppingChecks', shoppingChecks), manualShoppingItems: stored('angebotskueche.manualShoppingItems', manualShoppingItems), recipeHistory: stored('angebotskueche.recipeHistory', recipeHistory), liveOfferStatus: stored('angebotskueche.liveOfferStatus', liveOfferStatus), manualPlan: stored('angebotskueche.manualPlan', manualPlan), recipeRatings: stored('angebotskueche.recipeRatings', recipeRatings), suggestionPreferences: stored('angebotskueche.suggestionPreferences', suggestionPreferences) };
     }
 
     function validateUserDataPayload(payload) {
@@ -1570,7 +1600,7 @@
      $('#shoppingModal').addEventListener('click', event => { if (event.target.id === 'shoppingModal') event.currentTarget.classList.remove('open'); });
      $('#saveShoppingItem').addEventListener('click', saveManualShoppingItem);
      $('#shoppingItemInput').addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); saveManualShoppingItem(); } });
-    $('#generatePlan').addEventListener('click', () => { renderPlan(); renderMarkets(); persistSettings(); showToast('Plan neu berechnet – Reste und Angebotsanker aktualisiert.'); });
+    $('#generatePlan').addEventListener('click', () => { rememberCurrentPlan(); renderPlan(); renderMarkets(); persistSettings(); showToast('Plan neu berechnet – Rezeptrotation und Angebotsanker aktualisiert.'); });
     $('#changePlan').addEventListener('click', () => { $('#peopleSelect').focus(); showToast('Passe Personen, Tage oder Marktlimit direkt oben im Plan an.'); });
     $('#daysSelect').addEventListener('change', () => { renderPlan(); persistSettings(); });
     $('#peopleSelect').addEventListener('change', () => { renderPlan(); persistSettings(); });
