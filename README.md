@@ -12,11 +12,8 @@ Der GitHub-Actions-Workflow `.github/workflows/lidl-offers.yml` öffnet den offi
 
 Manuell starten: GitHub → Actions → **Lidl-Angebote aktualisieren** oder **Aldi, Kaufland, EDEKA und Netto Angebote aktualisieren** → **Run workflow**.
 
-## Bring-Prospekte
+## KaufDA-Angebote
 
-Der Workflow `.github/workflows/bring-offers.yml` öffnet die Bring-Web-App in einem Playwright-Browser, wählt den konfigurierten Ort, lädt sichtbare Prospektbilder und liest Lebensmittelangebote per Tesseract-OCR aus. Er läuft sonntags und schreibt die erkannte Artikelzahl nach `generated/bring-offers.json`.
+Der GitHub-Actions-Workflow `.github/workflows/kaufda-offers.yml` liest die vollständigen Prospektseiten per Bild-URL und Tesseract-OCR aus. Er verarbeitet Aldi Süd Zellingen, EDEKA Traut Zellingen, Lidl Zellingen, Penny Zellingen und Kaufland Würzburg/Nürnberger Straße und schreibt die Ergebnisse nach `generated/*-offers.json`. Die App zeigt die je Markt erkannte Artikelzahl an.
 
-Für den eingeloggten Abruf muss im öffentlichen Repository unter **Settings → Secrets and variables → Actions** das Secret `BRING_STORAGE_STATE_B64` hinterlegt werden. Es enthält nur einen verschlüsselten Playwright-Storage-State, niemals das Passwort. Optional kann die Repository-Variable `BRING_BROCHURE_URLS` zeilenweise geteilte Bring-Prospektlinks enthalten. Ohne Sitzung oder Links bricht der Workflow kontrolliert ab und erzeugt keine erfundenen Angebote.
-
-Zum Erstellen der Sitzung lokal einmal `npm install --no-save playwright`, `npx playwright install chromium` und anschließend `node automation/bring-login.mjs` ausführen. Den Inhalt von `bring-storage-state.json` danach Base64-kodiert als Secret hinterlegen und die lokale Datei löschen. Die erkannte Artikelzahl erscheint im Marktstatus der App als „Artikel erkannt“.
-
+Der Workflow läuft wöchentlich und kann zusätzlich manuell über GitHub → Actions → **KaufDA-Angebote für Zellingen und Würzburg aktualisieren** → **Run workflow** gestartet werden. Wenn KaufDA seine Prospektstruktur ändert, bleibt der manuelle Angebotsimport in der App verfügbar.
