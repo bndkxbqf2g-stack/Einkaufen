@@ -58,7 +58,20 @@ function expandSharedUrl(value) {
   }
   for (const key of ['af_og_image', 'og_image', 'image']) {
     const candidate = decodeRepeated(parsed.searchParams.get(key));
-    if (candidate) images.push(candidate);
+    if (candidate) {
+      images.push(candidate);
+      try {
+        const imageUrl = new URL(candidate);
+        const match = imageUrl.pathname.match(/^(.*\/)(\d{5})(_[^/]+)$/i);
+        if (match) {
+          for (let page = 1; page <= 32; page += 1) {
+            if (String(page).padStart(5, '0') === match[2]) continue;
+            imageUrl.pathname = `${match[1]}${String(page).padStart(5, '0')}${match[3]}`;
+            images.push(imageUrl.toString());
+          }
+        }
+      } catch { /* only the direct image is usable when the CDN naming changes */ }
+    }
   }
   images.push(...extractImageUrls(original));
   return { pages: [...new Set(pages)], images: [...new Set(images)] };
