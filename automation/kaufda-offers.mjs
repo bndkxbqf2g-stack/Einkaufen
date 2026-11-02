@@ -23,7 +23,7 @@ function stripText(value) { return String(value || '').replace(/\s+/g, ' ').trim
 function likelyFood(value) {
   const normalized = stripText(value).toLowerCase();
   if (!normalized) return false;
-  if (/(rollator|dartscheibe|infrarot|kabine|bagger|werkzeug|garten|pflanz|blumen|bekleidung|wäsche|schuh|auto|akku|drucker|elektronik|spielzeug|matratze|schrank|lampe|möbel|pavillon|grillkohle|haushalt|spülmittel|waschmittel|reiniger|putz|schwamm|papier|taschentuch|toiletten|müllbeutel|folie|backpapier|kosmetik|shampoo|dusche|seife|zahnpasta|deo|rasierer|windel|tierfutter|katzen|hunde|vogel|aquarium|whisky|vodka|zigarette|klemmbaustein|treibstoff|bier|wein|sekt|schnaps|likör|spirituosen|alkohol|pflegespülung|spülung|tablette|arznei|medizin|schmerz|sodbrennen|spray|apotheke|veltliner|prosecco|cava|champagner|led|lichter|teelichter|fichte|geschenk|deko|verpackung|schneeanzug|anzug|winter|stiefel|handschuh|badewanne|häcksler|haar|haarmaske|cremebad|repair|argan|körperpflege|gesichtscreme|handcreme|tagescreme|nachtcreme|parfum|kosmetik|zubehör|werkzeug|maschine|batterie|akku|möbel|kissen|matratze|bettwäsche|geschirr|tasse|becher|pfanne|topf|schneidebrett|reise|rundreise|kreissäge|säge|sodabereiter|sprudelbereiter)/i.test(normalized)) return false;
+  if (/(rollator|dartscheibe|infrarot|kabine|bagger|werkzeug|garten|pflanz|blumen|bekleidung|wäsche|schuh|auto|akku|drucker|elektronik|spielzeug|matratze|schrank|lampe|möbel|pavillon|grillkohle|haushalt|spülmittel|waschmittel|reiniger|putz|schwamm|papier|taschentuch|toiletten|müllbeutel|folie|backpapier|kosmetik|shampoo|dusche|seife|zahnpasta|deo|rasierer|windel|tierfutter|katzen|hunde|vogel|aquarium|whisky|vodka|zigarette|klemmbaustein|treibstoff|bier|wein|sekt|schnaps|likör|spirituosen|alkohol|pflegespülung|spülung|tablette|arznei|medizin|schmerz|sodbrennen|spray|apotheke|veltliner|prosecco|cava|champagner|led|lichter|teelichter|fichte|geschenk|deko|verpackung|schneeanzug|anzug|winter|stiefel|handschuh|badewanne|häcksler|haar|haarmaske|cremebad|repair|argan|körperpflege|gesichtscreme|handcreme|tagescreme|nachtcreme|parfum|kosmetik|zubehör|werkzeug|maschine|batterie|akku|möbel|kissen|matratze|bettwäsche|geschirr|tasse|becher|pfanne|topf|schneidebrett|reise|rundreise|kreissäge|säge|reiskocher|kocher|sodabereiter|sprudelbereiter)/i.test(normalized)) return false;
   return /(brot|bröt|backwaren|mehl|zucker|reis|nudel|pasta|kartoff|gemüse|obst|salat|tomat|gurke|paprika|zwiebel|knoblauch|karotte|möhre|äpfel|apfel|banane|beere|dattel|clementin|porree|kaki|orange|zitrone|milch|joghurt|käse|butter|sahne|quark|eier?\b|fleisch|fond|hack|schnitzel|wurst|schinken|salami|hähn|pute|rind|schwein|filet|steak|kotelett|fisch|lachs|thun|pizza|suppe|sauce|soße|konserve|bohne|erbse|linse|öl|essig|senf|ketchup|marmelade|nutella|schokolade|chips|snack|keks|kaffee|tee|saft|wasser|cola|limonade|bier|wein|alkoholfrei|müsli|cornflakes|honig|süßwaren|nahrung|lebensmittel|hülsenfrucht|mandel|burger|cerealien|genießer|almighurt|fruchtgummi|saltletts|schoko|drink|meerrettich|garnele|garnelen|eierspätzle|spätzle|kapern|gulasch|rösti|maronen|filoncino|dessert|gänse|keule|wildlachs|backzutat|knödel|fudge|erdnuss)/i.test(normalized);
 }
 function priceFrom(value) { const match = String(value || '').match(/(?:ab\s*)?(\d{1,4}[,.]\d{2})\s*€/); return match ? `${match[1].replace('.', ',')} €` : '–'; }
@@ -55,10 +55,15 @@ async function cardOffers(page, validUntil, config) {
   const items = await page.locator('[aria-label*="zur Einkaufsliste hinzufügen"]').evaluateAll(inputs => inputs.map(input => {
     const label = input.getAttribute('aria-label') || '';
     let node = input;
-    for (let index = 0; index < 7 && node.parentElement; index += 1) {
+    let fallbackNode = input.parentElement;
+    for (let index = 0; index < 10 && node.parentElement; index += 1) {
       node = node.parentElement;
-      if ((node.innerText || '').match(/\d{1,4}[,.]\d{2}\s*€/)) break;
+      fallbackNode = node;
+      const text = node.innerText || '';
+      const prices = text.match(/(?:ab\s*)?\d{1,4}[,.]\d{2}\s*€/g) || [];
+      if (prices.length === 1 && text.length <= 420) break;
     }
+    node = fallbackNode;
     const name = label.replace(/\s+zur Einkaufsliste hinzufügen\s*$/i, '').trim();
     const text = node.innerText || '';
     const price = (text.match(/(?:ab\s*)?\d{1,4}[,.]\d{2}\s*€/) || [])[0] || '';
@@ -111,7 +116,9 @@ async function collectStructuredOffers(page, validUntil, config) {
   const targetCardCount = Number(config.expectedOfferCount || 0);
   const addVisibleCards = (items) => {
     for (const item of items) {
-      if (priceFrom(item.price) === '–' || !likelyFood(item.name)) continue;
+      const parsedPrice = priceFrom(item.price);
+      const numericPrice = Number(parsedPrice.replace(',', '.').replace(/[^0-9.]/g, ''));
+      if (parsedPrice === '–' || !Number.isFinite(numericPrice) || numericPrice > 100 || !likelyFood(item.name)) continue;
       if (!cardBelongsToConfig(item, config)) continue;
       const key = item.name.toLowerCase() + '|' + priceFrom(item.price) + '|' + config.store;
       const previous = unique.get(key);
