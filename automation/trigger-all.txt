@@ -1,2 +1,2 @@
-Alle Märkte mit KaufDA-Kartenbildern und Preis-Datenbank aktualisieren
-2026-11-02T12:00:41.584Z
+Alle Märkte mit KaufDA-Browserlogik parallel aktualisieren
+2026-11-02T12:05:33.902Z
