@@ -62,7 +62,7 @@ async function cardOffers(page, validUntil, config) {
     const text = node.innerText || '';
     const price = (text.match(/(?:ab\s*)?\d{1,4}[,.]\d{2}\s*€/) || [])[0] || '';
     return { name, price };
-  })).then(items => items.map(item => ({ ...item, validUntil, store: config.store })));
+  })).filter(item => likelyFood(item.name)).map(item => ({ ...item, validUntil, store: config.store })));
 }
 
 async function ocr(file) {
