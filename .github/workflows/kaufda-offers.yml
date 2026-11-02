@@ -18,6 +18,7 @@ on:
           - EDEKA
           - Lidl
           - Penny
+          - Netto
           - Kaufland
   schedule:
     - cron: '25 6 * * 1,4'
