@@ -66,6 +66,29 @@ async function cardOffers(page, validUntil, config) {
   return items.filter(item => likelyFood(item.name)).map(item => ({ ...item, validUntil, store: config.store }));
 }
 
+async function collectStructuredOffers(page, validUntil, config) {
+  const unique = new Map();
+  let stablePasses = 0;
+  for (let pass = 0; pass < 80; pass += 1) {
+    for (const item of await cardOffers(page, validUntil, config)) {
+      const key = `${item.name.toLowerCase()}|${priceFrom(item.price)}|${config.store}`;
+      if (priceFrom(item.price) !== '–') unique.set(key, item);
+    }
+    const before = unique.size;
+    await page.evaluate(() => window.scrollBy(0, Math.max(700, window.innerHeight * 0.85)));
+    await page.waitForTimeout(350);
+    for (const item of await cardOffers(page, validUntil, config)) {
+      const key = `${item.name.toLowerCase()}|${priceFrom(item.price)}|${config.store}`;
+      if (priceFrom(item.price) !== '–') unique.set(key, item);
+    }
+    if (unique.size === before) stablePasses += 1;
+    else stablePasses = 0;
+    if (stablePasses >= 4) break;
+  }
+  await page.evaluate(() => window.scrollTo(0, 0));
+  return [...unique.values()];
+}
+
 async function ocr(file) {
   const outputs = [];
   for (const psm of ['6', '11']) {
@@ -75,15 +98,23 @@ async function ocr(file) {
   return outputs.join('\n');
 }
 
-function configuredMarkets() {
-  const raw = String(process.env.KAUFDA_URLS || '').trim();
-  if (!raw) return defaultMarkets;
+function keyedOverrides(raw) {
   const overrides = new Map();
-  for (const line of raw.split(/\r?\n/).map(stripText).filter(Boolean)) {
+  for (const line of String(raw || '').split(/\r?\n/).map(stripText).filter(Boolean)) {
     const [key, url] = line.split(/\s*\|\s*/, 2);
     if (key && url) overrides.set(key.toLowerCase(), url);
   }
-  const markets = defaultMarkets.map(config => ({ ...config, url: overrides.get(config.key.toLowerCase()) || config.url }));
+  return overrides;
+}
+
+function configuredMarkets() {
+  const urlOverrides = keyedOverrides(process.env.KAUFDA_URLS);
+  const browserOverrides = keyedOverrides(process.env.KAUFDA_BROWSER_URLS);
+  const markets = defaultMarkets.map(config => ({
+    ...config,
+    url: urlOverrides.get(config.key.toLowerCase()) || config.url,
+    browserUrl: browserOverrides.get(config.key.toLowerCase()) || ''
+  }));
   const selected = String(process.env.KAUFDA_MARKET || 'all').trim().toLowerCase();
   if (!selected || selected === 'all') return markets;
   const filtered = markets.filter(config => config.key.toLowerCase() === selected);
@@ -93,21 +124,25 @@ function configuredMarkets() {
 
 async function scrapeMarket(page, config) {
   const offers = [];
-  await page.goto(config.url, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+  const sourceUrl = config.browserUrl || config.url;
+  await page.goto(sourceUrl, { waitUntil: 'domcontentloaded', timeout: 45_000 });
   await page.waitForTimeout(1_500);
   const pageText = await page.locator('body').innerText();
   const validUntil = validUntilFrom(pageText);
-  const structuredItems = await cardOffers(page, validUntil, config);
+  const structuredItems = await collectStructuredOffers(page, validUntil, config);
+  if (config.browserUrl && structuredItems.length === 0) {
+    throw new Error(`${config.key}: konfigurierte Browser-Angebotsseite lieferte keine Angebotskarten`);
+  }
   for (const item of structuredItems) {
     if (item.name.length >= 3 && likelyFood(item.name) && priceFrom(item.price) !== '–') offers.push({ name: item.name, store: config.store, price: priceFrom(item.price), saving: '–', icon: '🛒', category: 'Lebensmittel', packSize: '1 Packung', relevance: 80, note: 'KaufDA-Angebot', validUntil: item.validUntil });
   }
 
   // Aldi liefert die aktuellen Angebotskarten direkt strukturiert. OCR ist dort
   // nur noch ein Fallback, damit keine langen Vollseitenläufe nötig sind.
-  const useOcrFallback = config.key !== 'Aldi' || structuredItems.length < 10;
+  const useOcrFallback = !config.browserUrl && (config.key !== 'Aldi' || structuredItems.length < 10);
   if (!useOcrFallback) {
     const unique = [...new Map(offers.map(offer => [`${offer.name.toLowerCase()}|${offer.price}|${offer.store}`, offer])).values()];
-    const result = { market: config.market, store: config.store, location: config.location, sourceUrl: config.url, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-offer-cards-v4', recognizedCount: unique.length, offers: unique };
+    const result = { market: config.market, store: config.store, location: config.location, sourceUrl,, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-offer-cards-v4', recognizedCount: unique.length, offers: unique };
     await writeFile(resolve(outputDir, config.file), `${JSON.stringify(result, null, 2)}\\n`, 'utf8');
     console.log(`KaufDA: ${unique.length} ${config.key}-Angebote aus strukturierten Karten nach ${config.file} geschrieben`);
     return result;
@@ -161,14 +196,21 @@ async function scrapeMarket(page, config) {
     if (!seen.has(key)) { seen.add(key); unique.push(offer); }
   }
   if (!unique.length) throw new Error(`${config.key}: keine Lebensmittelangebote erkannt`);
-  const result = { market: config.market, store: config.store, location: config.location, sourceUrl: config.url, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-prospect-images-ocr-v3', recognizedCount: unique.length, offers: unique };
+  const result = { market: config.market, store: config.store, location: config.location, sourceUrl,, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-prospect-images-ocr-v3', recognizedCount: unique.length, offers: unique };
   await writeFile(resolve(outputDir, config.file), `${JSON.stringify(result, null, 2)}\n`, 'utf8');
   console.log(`KaufDA: ${unique.length} ${config.key}-Angebote nach ${config.file} geschrieben`);
   return result;
 }
 
+const storageStateFile = process.env.KAUFDA_STORAGE_STATE_B64 ? resolve(workdir, 'storage-state.json') : null;
+if (storageStateFile) await writeFile(storageStateFile, Buffer.from(process.env.KAUFDA_STORAGE_STATE_B64, 'base64'));
 const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({ viewport: { width: 1600, height: 2200 }, locale: 'de-DE' });
+const context = await browser.newContext({
+  ...(storageStateFile ? { storageState: storageStateFile } : {}),
+  viewport: { width: 1600, height: 2200 },
+  locale: 'de-DE'
+});
+const page = await context.newPage();
 try {
   await mkdir(outputDir, { recursive: true });
   const markets = configuredMarkets();
@@ -180,6 +222,6 @@ try {
   if (results.length < markets.length) throw new Error(`Nur ${results.length}/${markets.length} KaufDA-Märkte erfolgreich verarbeitet.`);
   console.log(`KaufDA: ${results.reduce((sum, result) => sum + result.recognizedCount, 0)} Angebote aus ${results.length} Märkten erkannt.`);
 } finally {
-  await page.close(); await browser.close(); await rm(workdir, { recursive: true, force: true });
+  await page.close(); await context.close(); await browser.close(); await rm(workdir, { recursive: true, force: true });
 }
 
