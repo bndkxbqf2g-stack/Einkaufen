@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { execFile } from 'node:child_process';
@@ -62,7 +62,9 @@ async function cardOffers(page, validUntil, config) {
     const name = label.replace(/\s+zur Einkaufsliste hinzufügen\s*$/i, '').trim();
     const text = node.innerText || '';
     const price = (text.match(/(?:ab\s*)?\d{1,4}[,.]\d{2}\s*€/) || [])[0] || '';
-    return { name, price, text };
+    const image = node.querySelector('img');
+    const imageUrl = image?.currentSrc || image?.src || image?.getAttribute('data-src') || image?.getAttribute('data-lazy-src') || '';
+    return { name, price, text, imageUrl };
   }));
   return items.map(item => ({ ...item, validUntil, store: config.store }));
 }
@@ -200,7 +202,7 @@ async function scrapeMarket(page, config) {
     throw new Error(`${config.key}: konfigurierte Browser-Angebotsseite lieferte keine Angebotskarten`);
   }
   for (const item of structuredItems) {
-    if (item.name.length >= 3 && likelyFood(item.name) && priceFrom(item.price) !== '–') offers.push({ name: item.name, store: config.store, price: priceFrom(item.price), saving: '–', icon: '🛒', category: 'Lebensmittel', packSize: '1 Packung', relevance: 80, note: 'KaufDA-Angebot', validUntil: item.validUntil });
+    if (item.name.length >= 3 && likelyFood(item.name) && priceFrom(item.price) !== '–') offers.push({ name: item.name, store: config.store, price: priceFrom(item.price), saving: '–', icon: '🛒', imageUrl: item.imageUrl || '', category: 'Lebensmittel', packSize: '1 Packung', relevance: 80, note: 'KaufDA-Angebot', validUntil: item.validUntil });
   }
 
   // Aldi liefert die aktuellen Angebotskarten direkt strukturiert. OCR ist dort
@@ -208,7 +210,7 @@ async function scrapeMarket(page, config) {
   const useOcrFallback = !config.browserUrl && (config.key !== 'Aldi' || structuredItems.length < 10);
   if (!useOcrFallback) {
     const unique = [...new Map(offers.map(offer => [`${offer.name.toLowerCase()}|${offer.price}|${offer.store}`, offer])).values()];
-    const result = { market: config.market, store: config.store, location: config.location, sourceUrl, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-offer-cards-v5', recognizedCount: unique.length, targetOfferCount: targetOfferCount || null, loadedOfferCardCount, targetReached, offers: unique };
+    const result = { market: config.market, store: config.store, location: config.location, sourceUrl, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-offer-cards-v6', recognizedCount: unique.length, targetOfferCount: targetOfferCount || null, loadedOfferCardCount, targetReached, offers: unique };
     await writeFile(resolve(outputDir, config.file), `${JSON.stringify(result, null, 2)}\n`, 'utf8');
     console.log(`KaufDA: ${unique.length} ${config.key}-Angebote aus strukturierten Karten nach ${config.file} geschrieben`);
     return result;
@@ -268,6 +270,47 @@ async function scrapeMarket(page, config) {
   return result;
 }
 
+async function updatePriceHistory(results) {
+  const historyFile = resolve(outputDir, 'price-history.json');
+  let previous = { version: 1, generatedAt: null, observations: [] };
+  try {
+    previous = JSON.parse(await readFile(historyFile, 'utf8'));
+  } catch { /* erster Lauf oder Datei noch nicht vorhanden */ }
+  const observations = Array.isArray(previous.observations) ? previous.observations : [];
+  const byKey = new Map(observations.map(item => [
+    `${item.market}|${String(item.name || '').toLowerCase()}|${item.price}|${item.validUntil}`,
+    item
+  ]));
+  for (const result of results) {
+    for (const offer of result.offers || []) {
+      const observation = {
+        market: result.market,
+        store: result.store,
+        location: result.location,
+        name: offer.name,
+        price: offer.price,
+        priceValue: Number(String(offer.price || '').replace(',', '.').replace(/[^0-9.]/g, '')) || null,
+        validUntil: offer.validUntil,
+        imageUrl: offer.imageUrl || '',
+        sourceUrl: result.sourceUrl,
+        observedAt: result.fetchedAt
+      };
+      const key = `${observation.market}|${observation.name.toLowerCase()}|${observation.price}|${observation.validUntil}`;
+      byKey.set(key, observation);
+    }
+  }
+  const merged = [...byKey.values()]
+    .sort((first, second) => String(first.observedAt).localeCompare(String(second.observedAt)))
+    .slice(-10000);
+  await writeFile(historyFile, `${JSON.stringify({
+    version: 1,
+    generatedAt: new Date().toISOString(),
+    observationCount: merged.length,
+    observations: merged
+  }, null, 2)}\n`, 'utf8');
+  console.log(`KaufDA: Preis-Datenbank mit ${merged.length} Beobachtungen geschrieben`);
+}
+
 const storageStateFile = process.env.KAUFDA_STORAGE_STATE_B64 ? resolve(workdir, 'storage-state.json') : null;
 if (storageStateFile) await writeFile(storageStateFile, Buffer.from(process.env.KAUFDA_STORAGE_STATE_B64, 'base64'));
 const browser = await chromium.launch({ headless: true });
@@ -286,6 +329,7 @@ try {
     catch (error) { console.error(`KaufDA-Fehler ${config.key}: ${error.message}`); }
   }
   if (results.length < markets.length) throw new Error(`Nur ${results.length}/${markets.length} KaufDA-Märkte erfolgreich verarbeitet.`);
+  await updatePriceHistory(results);
   console.log(`KaufDA: ${results.reduce((sum, result) => sum + result.recognizedCount, 0)} Angebote aus ${results.length} Märkten erkannt.`);
 } finally {
   await page.close(); await context.close(); await browser.close(); await rm(workdir, { recursive: true, force: true });
