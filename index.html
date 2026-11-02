@@ -165,6 +165,9 @@
     .section-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px; }
     .catalog { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
     .catalog-card { padding: 13px; border: 1px solid var(--line); border-radius: 14px; background: #fffefa; }
+    .catalog-media { height: 132px; display: grid; place-items: center; margin: -1px -1px 11px; border-radius: 12px; overflow: hidden; background: #eff2ec; }
+    .catalog-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .catalog-media-fallback { font-size: 42px; }
     .catalog-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
     .catalog-icon { width: 37px; height: 37px; display: grid; place-items: center; border-radius: 11px; background: var(--mint); font-size: 19px; }
     .discount { color: var(--coral); font-size: 11px; font-weight: 850; }
@@ -386,7 +389,7 @@
 
       <section class="page" id="page-offers">
         <div class="hero"><div><div class="eyebrow"><span></span> Angebotsradar</div><h1>Was lohnt sich<br><em style="font-style:normal;color:var(--coral)">diese Woche?</em></h1><p class="hero-copy">Alle relevanten Angebote aus deinen ausgewählten Märkten – normalisiert, bewertet und mit passenden Rezepten verbunden.</p></div><div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap"><button class="outline-button" id="refreshOfficialOffers">↻&nbsp; Offizielle Quellen prüfen</button><a class="outline-button" id="runKaufdaWorkflow" href="https://github.com/bndkxbqf2g-stack/Einkaufen/actions/workflows/kaufda-offers.yml" target="_blank" rel="noopener">KaufDA-Angebote starten ↗</a><button class="primary-button" id="openOfferImport">＋&nbsp; Angebote importieren</button></div></div>
-        <div class="panel"><div class="panel-header"><div><h2 class="panel-title">Angebote in deiner Nähe</h2><p class="panel-subtitle">Demo-Daten, bestätigte Live-Importe und eigene Importe · nur gültige Angebote</p></div><label class="filter">Markt <select id="offerFilter"><option value="all">Alle Märkte</option><option>Aldi</option><option value="Kaufland">Kaufland Würzburg</option><option>Lidl</option><option>EDEKA</option><option>Penny</option><option>Netto</option><option>Marktkauf Tüngersheim</option></select></label></div><div class="panel-body"><div class="catalog" id="offerCatalog"></div></div></div>
+        <div class="panel"><div class="panel-header"><div><h2 class="panel-title">Angebote in deiner Nähe</h2><p class="panel-subtitle">Aktuelle KaufDA-Karten mit Bild, Bezeichnung, Preis und Gültigkeit · nur Lebensmittelangebote</p></div><label class="filter">Markt <select id="offerFilter"><option value="all">Alle Märkte</option><option>Aldi</option><option value="Kaufland">Kaufland Würzburg</option><option>Lidl</option><option>EDEKA</option><option>Penny</option><option>Netto</option><option>Marktkauf Tüngersheim</option></select></label></div><div class="panel-body"><div class="catalog" id="offerCatalog"></div></div></div>
         <section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Datenquellen &amp; Filialstatus</h2><p class="panel-subtitle">Damit klar bleibt, woher ein Angebot kommt.</p></div><button class="text-button" id="openMarketsFromSources">Filialen wählen&nbsp;→</button></div><div class="panel-body"><div class="source-status-grid" id="sourceStatusList"></div><div class="source-note" style="margin-top:12px">KaufDA ist die bevorzugte Quelle für Aldi Zellingen, EDEKA Traut Zellingen, Lidl Zellingen, Penny Zellingen und Kaufland Würzburg/Nürnberger Straße. Die fünf Märkte werden per GitHub Actions geladen, mit strukturierten Angebotskarten und Prospekt-OCR geprüft; erkannte Artikel werden hier gezählt. KaufDA wird als einzige automatisierte Angebotsquelle verwendet. Über „KaufDA-Angebote starten“ öffnest du GitHub direkt für einen manuellen Lauf. Abgelaufene Angebote werden automatisch ausgeblendet.</div></div></section>
         <section class="panel" style="margin-top:18px"><div class="panel-header"><div><h2 class="panel-title">Importe pflegen</h2><p class="panel-subtitle">Ungültige oder abgelaufene Fallback-Daten bleiben nicht unbemerkt.</p></div><button class="outline-button" id="clearExpiredOffers" disabled>Abgelaufene entfernen</button></div><div class="panel-body"><div class="source-note" id="offerMaintenanceNote">Noch keine eigenen Angebote importiert.</div></div></section>
       </section>
@@ -638,6 +641,7 @@
         confidence: 'hoch',
         note: offer.note || 'offizielle Händlerseite',
         icon: offer.icon || '🛒',
+        imageUrl: offer.imageUrl || offer.image || '',
       })));
       offers = offers.filter(offer => !(offer.source === 'Offizieller Live-Import' && successfulMarkets.has(offer.store)));
       const knownKeys = new Set(offers.filter(isImportedOffer).map(offerImportKey));
@@ -1131,7 +1135,12 @@
     function renderOffers(filter = 'all') {
       const current = offers.filter(isOfferCurrent);
       const filtered = filter === 'all' ? current : current.filter(offer => offer.store === filter);
-      $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => { const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : ''; return `<div class="catalog-card"><div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(offer.icon)}</div><span class="discount">${escapeHtml(offer.saving)}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category)}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note)} · ${escapeHtml(offer.packSize || '1 Packung')}</span><span>${escapeHtml(offer.relevance)}% Match</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source)} · ${escapeHtml(offer.confidence)} sicher</div>${removeAction}</div>`; }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
+      $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => {
+        const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : '';
+        const imageUrl = /^https?:\\/\\//i.test(String(offer.imageUrl || '')) ? String(offer.imageUrl) : '';
+        const media = imageUrl ? `<div class="catalog-media"><img loading="lazy" src="${escapeHtml(imageUrl)}" alt="${escapeHtml(offer.name)}" /></div>` : `<div class="catalog-media"><div class="catalog-media-fallback">${escapeHtml(offer.icon || '🛒')}</div></div>`;
+        return `<div class="catalog-card">${media}<div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(offer.icon || '🛒')}</div><span class="discount">${escapeHtml(offer.saving || '–')}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category || 'Lebensmittel')}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note || 'KaufDA-Angebot')} · ${escapeHtml(offer.packSize || '1 Packung')}</span><span>${escapeHtml(offer.relevance || 80)}% Match</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source || 'Angebot')}</div>${removeAction}</div>`;
+      }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
       renderOfferMaintenance();
     }
 
