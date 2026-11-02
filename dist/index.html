@@ -509,7 +509,8 @@
     const stored = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } };
     const settings = stored('angebotskueche.settings', { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'] });
     function isAutomaticLiveOffer(offer) {
-      return offer && ['Offizieller Live-Import', 'Bring-OCR-Import'].includes(String(offer.source || '').trim());
+      const source = String(offer?.source || '').trim().toLowerCase();
+      return ['offizieller live-import', 'bring-ocr-import', 'live-import'].includes(source) || source.startsWith('kaufda');
     }
     let storedCustomOffers = stored('angebotskueche.customOffers', []);
     const automaticStoredOffers = Array.isArray(storedCustomOffers) ? storedCustomOffers.filter(isAutomaticLiveOffer) : [];
