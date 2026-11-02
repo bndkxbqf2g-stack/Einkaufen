@@ -1,6 +1,10 @@
 name: KaufDA-Angebote für Zellingen und Würzburg aktualisieren
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'automation/trigger-aldi.txt'
   workflow_dispatch:
     inputs:
       market:
@@ -41,7 +45,7 @@ jobs:
       - name: KaufDA-Angebote für alle Märkte auslesen
         env:
           KAUFDA_URLS: ${{ vars.KAUFDA_URLS }}
-          KAUFDA_MARKET: ${{ inputs.market || 'all' }}
+          KAUFDA_MARKET: ${{ github.event_name == 'push' && 'Aldi' || inputs.market || 'all' }}
         run: node automation/kaufda-offers.mjs
       - name: Angebotsdaten veröffentlichen
         run: |
