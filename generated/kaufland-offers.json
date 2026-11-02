@@ -3,10 +3,10 @@
   "store": "Kaufland",
   "location": "Würzburg · Nürnberger Straße 12",
   "sourceUrl": "https://www.kaufda.de/Wuerzburg/Kaufland/p-r2801",
-  "fetchedAt": "2026-11-02T09:53:20.137Z",
+  "fetchedAt": "2026-11-02T10:08:38.184Z",
   "validUntil": "14.11.2026",
   "parser": "kaufda-prospect-images-ocr-v3",
-  "recognizedCount": 179,
+  "recognizedCount": 118,
   "offers": [
     {
       "name": "Ristorante Pizza",
@@ -58,18 +58,6 @@
     },
     {
       "name": "Bayerischer Leberkäse",
-      "store": "Kaufland",
-      "price": "2,00 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "Eis",
       "store": "Kaufland",
       "price": "2,00 €",
       "saving": "–",
@@ -213,18 +201,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "(Gar iy ei",
-      "store": "Kaufland",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "MILCH-SCHNITTE",
       "store": "Kaufland",
       "price": "2,49 €",
@@ -273,18 +249,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "Weitere Infos in der Kaufland-App oder unter kaufland-xtra.de/produkte",
-      "store": "Kaufland",
-      "price": "28,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "Gültig bis .",
       "store": "Kaufland",
       "price": "28,11 €",
@@ -297,57 +261,9 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "mind. 10 Euro ein",
-      "store": "Kaufland",
-      "price": "28,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "Gültig vom . bis .",
       "store": "Kaufland",
       "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "a EA) GRATIS - MILKA Feine 3",
-      "store": "Kaufland",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "ER ie] dei Se",
-      "store": "Kaufland",
-      "price": "05,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": ". Rabott au K:BI0 und Reiley ontorand euchtes”",
-      "store": "Kaufland",
-      "price": "05,11 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -393,18 +309,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "Weitere Infos in der Kauflond-App oder unter koufland-xtrade/eoupons",
-      "store": "Kaufland",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "Gültig vom . bis",
       "store": "Kaufland",
       "price": "02,11 €",
@@ -417,31 +321,7 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "GRATIS - MILKA Feine",
-      "store": "Kaufland",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "Gültig vom . bis",
-      "store": "Kaufland",
-      "price": "05,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "wählte süße Teilchen -",
       "store": "Kaufland",
       "price": "05,11 €",
       "saving": "–",
@@ -465,30 +345,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "{ DEI IEDEM EINK AUE N",
-      "store": "Kaufland",
-      "price": "0,39 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "x BEI JEDEM EINKAUF 2",
-      "store": "Kaufland",
-      "price": "28,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "Gültig bis = Zu",
       "store": "Kaufland",
       "price": "28,11 €",
@@ -501,7 +357,7 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "{ DEI IEDEM EINK AUE N",
+      "name": "tse 4850-0 packung",
       "store": "Kaufland",
       "price": "28,11 €",
       "saving": "–",
@@ -513,31 +369,7 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "ya WC-Stein Power 5 oder Blauspüler (Gi",
-      "store": "Kaufland",
-      "price": "28,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "Weitere Infos in der Kaufland-App oder unter kaufland-xtra.de/produkte |",
-      "store": "Kaufland",
-      "price": "9,06 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "TB “7 a mind. 10 Euro ein =",
+      "name": "Y —\\ 130-175-9-Packung \\",
       "store": "Kaufland",
       "price": "9,06 €",
       "saving": "–",
@@ -561,42 +393,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "WC-Stein Power 5 oder Blauspüler",
-      "store": "Kaufland",
-      "price": "28,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "Euro ein",
-      "store": "Kaufland",
-      "price": "1,10 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "Weitere Infos in der Kaufland-App oder unter kaufland-xtra.de/produkte",
-      "store": "Kaufland",
-      "price": "1,10 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "LAD od lg [ und aromatisiertes",
       "store": "Kaufland",
       "price": "02,11 €",
@@ -610,18 +406,6 @@
     },
     {
       "name": "Rabatt auf TK-Obst,",
-      "store": "Kaufland",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "Weitere Infos in der Kaufland-App oder unter kaufland-xtra.de/coupons",
       "store": "Kaufland",
       "price": "02,11 €",
       "saving": "–",
@@ -657,18 +441,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "Gun a X (Ei es",
-      "store": "Kaufland",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "= Bal JAFERMASTG Ay < AREA! 39",
       "store": "Kaufland",
       "price": "0,89 €",
@@ -684,30 +456,6 @@
       "name": "iL so [Egg | N",
       "store": "Kaufland",
       "price": "0,89 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "ei.",
-      "store": "Kaufland",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "ei.",
-      "store": "Kaufland",
-      "price": "07,11 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -753,45 +501,9 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "wei",
-      "store": "Kaufland",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "BECKSTEINER",
-      "store": "Kaufland",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "RINDER- om |",
       "store": "Kaufland",
       "price": "1,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "tteieraon CB, a Eee",
-      "store": "Kaufland",
-      "price": "2,99 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -828,30 +540,6 @@
       "name": "ee eg em oa oo",
       "store": "Kaufland",
       "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "DURCH WURZEI",
-      "store": "Kaufland",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "DURCH WURZEI",
-      "store": "Kaufland",
-      "price": "0,99 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -1005,18 +693,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "[zei]",
-      "store": "Kaufland",
-      "price": "1,19 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "Klesterschinken",
       "store": "Kaufland",
       "price": "1,99 €",
@@ -1044,42 +720,6 @@
       "name": "Hähnchen.",
       "store": "Kaufland",
       "price": "0,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "RAR chwein",
-      "store": "Kaufland",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "RAR chwein",
-      "store": "Kaufland",
-      "price": "09,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "? ein",
-      "store": "Kaufland",
-      "price": "3,39 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -1152,30 +792,6 @@
       "name": "Bockwurst A N = A EEE",
       "store": "Kaufland",
       "price": "1,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "REINERT",
-      "store": "Kaufland",
-      "price": "1,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "REINERT",
-      "store": "Kaufland",
-      "price": "02,11 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -1269,18 +885,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "ME cm Wi Ei I =",
-      "store": "Kaufland",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "LAB MONTAG, .",
       "store": "Kaufland",
       "price": "13,99 €",
@@ -1353,18 +957,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "[EPR$2] vieLe WEITERE",
-      "store": "Kaufland",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "Pe AB MONTAG, .",
       "store": "Kaufland",
       "price": "02,11 €",
@@ -1377,31 +969,7 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "ISchweit c5 m",
-      "store": "Kaufland",
-      "price": "0,29 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "Int 2000 LEDs worm tlw, Zutung c.Em Lunge c 4",
-      "store": "Kaufland",
-      "price": "19,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "EIN KLICK, ALLES FINDEN: DER ONLINE-MARKTPLATZ Kaufland.de",
       "store": "Kaufland",
       "price": "19,99 €",
       "saving": "–",
@@ -1452,30 +1020,6 @@
       "name": "Tees ey = eo",
       "store": "Kaufland",
       "price": "816,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "EIN KLICK, ALLES FINDEN: DER ONLINE-MARKTPLATZ Kaufland.de",
-      "store": "Kaufland",
-      "price": "816,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "EIN KLICK, ALLES FINDEN: DER ON",
-      "store": "Kaufland",
-      "price": "6,99 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -1545,30 +1089,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "i= ob et bey || > Ei",
-      "store": "Kaufland",
-      "price": "17,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "i= ob et bey || > Ei",
-      "store": "Kaufland",
-      "price": "9,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "FR l; u",
       "store": "Kaufland",
       "price": "9,99 €",
@@ -1605,18 +1125,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "Arbeite-",
-      "store": "Kaufland",
-      "price": "29,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "AB DONNERSTAG, . =“",
       "store": "Kaufland",
       "price": "05,11 €",
@@ -1632,54 +1140,6 @@
       "name": "Se wag) ALD u | 199",
       "store": "Kaufland",
       "price": "05,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "EIN KLICK, ALLES FINDEN: DER ONLINE-MARKTPLATZ Kaufland.de",
-      "store": "Kaufland",
-      "price": "05,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "EIN KLICK, ALLES FINDEN: DER ONLI",
-      "store": "Kaufland",
-      "price": "12,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "EIN KLICK, ALLES FINDEN: DER ONLI",
-      "store": "Kaufland",
-      "price": "1,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "EIN KLICK, ALLES FINDEN: DER ONLI",
-      "store": "Kaufland",
-      "price": "14,99 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -1713,18 +1173,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "Ei = Mdlken Hin | WE scm",
-      "store": "Kaufland",
-      "price": "05,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "L Destiny Grewia",
       "store": "Kaufland",
       "price": "05,11 €",
@@ -1749,7 +1197,7 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "EINZUM fii",
+      "name": "ESTEN PREIS _ ‘=",
       "store": "Kaufland",
       "price": "05,11 €",
       "saving": "–",
@@ -1800,54 +1248,6 @@
       "name": "‘ag < “ PF Weihnachs-",
       "store": "Kaufland",
       "price": "05,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "eit nur f, f J ’ 5",
-      "store": "Kaufland",
-      "price": "412,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "Weihnachs-",
-      "store": "Kaufland",
-      "price": "05,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "Weihnachs-",
-      "store": "Kaufland",
-      "price": "12,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "Weihnachsstern",
-      "store": "Kaufland",
-      "price": "2,79 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -1929,105 +1329,9 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "Smee | 229 N Rei:",
-      "store": "Kaufland",
-      "price": "21,49 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "PREIS",
       "store": "Kaufland",
       "price": "71,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "Mlichrei",
-      "store": "Kaufland",
-      "price": "1,49 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "Weiche",
-      "store": "Kaufland",
-      "price": "1,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "Weiche",
-      "store": "Kaufland",
-      "price": "1,49 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "kauftand.de Fi EI",
-      "store": "Kaufland",
-      "price": "1,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "kauftand.de Fi EI",
-      "store": "Kaufland",
-      "price": "11,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "Weitere Infos unter kaufland.de/auszeichnungen",
-      "store": "Kaufland",
-      "price": "90,08 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "sei nur #",
-      "store": "Kaufland",
-      "price": "112,99 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -2097,45 +1401,9 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "NEU! Fotos direkt für den Druck in deiner Kaufland-Filiale vorbereiten.",
-      "store": "Kaufland",
-      "price": "0,19 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "‘alg bes a",
       "store": "Kaufland",
       "price": "0,19 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "'otos direkt für den Druck in deiner Kaufland-",
-      "store": "Kaufland",
-      "price": "0,19 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "VERSANDKOSTENFREI",
-      "store": "Kaufland",
-      "price": "05,20 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",

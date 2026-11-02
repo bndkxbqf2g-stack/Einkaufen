@@ -3,10 +3,10 @@
   "store": "EDEKA Traut",
   "location": "Zellingen",
   "sourceUrl": "https://www.kaufda.de/Zellingen/EDEKA/p-r107",
-  "fetchedAt": "2026-11-02T09:42:40.252Z",
+  "fetchedAt": "2026-11-02T09:59:01.975Z",
   "validUntil": "14.11.2026",
   "parser": "kaufda-prospect-images-ocr-v3",
-  "recognizedCount": 59,
+  "recognizedCount": 50,
   "offers": [
     {
       "name": "Käse",
@@ -45,33 +45,9 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "2024er Scheurebe Spätlese Goldene Geige",
-      "store": "EDEKA Traut",
-      "price": "7,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "Spessart Eier",
       "store": "EDEKA Traut",
       "price": "2,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "mrs.red Treibstoff Rotweincuvee",
-      "store": "EDEKA Traut",
-      "price": "4,99 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -141,18 +117,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "rami Fre uf EITUCKTar a",
-      "store": "EDEKA Traut",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "Angebote gültig von Montag, . bis Samstag, .2026",
       "store": "EDEKA Traut",
       "price": "02,11 €",
@@ -165,31 +129,7 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "zum App-Prei:",
-      "store": "EDEKA Traut",
-      "price": "02,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "BIS ZU 0 ARTIKEL DISCOUNTBILLIG Fira",
-      "store": "EDEKA Traut",
-      "price": "12,00 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "Fei",
       "store": "EDEKA Traut",
       "price": "12,00 €",
       "saving": "–",
@@ -393,18 +333,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "‚ Dein starkes e ! s",
-      "store": "EDEKA Traut",
-      "price": "22,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "Löse die Coupons bis .2026 ein ana",
       "store": "EDEKA Traut",
       "price": "22,11 €",
@@ -432,18 +360,6 @@
       "name": "a vom 2-73. 206 ag vom Gag om. - 06",
       "store": "EDEKA Traut",
       "price": "231,07 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "| Dein starkes",
-      "store": "EDEKA Traut",
-      "price": "22,11 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -525,18 +441,6 @@
       "validUntil": "14.11.2026"
     },
     {
-      "name": "sein",
-      "store": "EDEKA Traut",
-      "price": "1,20 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
       "name": "Frc! BIS ZU 0 ARTIKEL DISCOUNTBILLIG",
       "store": "EDEKA Traut",
       "price": "12,00 €",
@@ -600,18 +504,6 @@
       "name": "SCOUNTBILLIG",
       "store": "EDEKA Traut",
       "price": "12,00 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "14.11.2026"
-    },
-    {
-      "name": "\"weißer »J 1/4: ze",
-      "store": "EDEKA Traut",
-      "price": "16,50 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",

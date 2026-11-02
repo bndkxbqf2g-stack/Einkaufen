@@ -3,11 +3,23 @@
   "store": "Penny",
   "location": "Zellingen",
   "sourceUrl": "https://www.kaufda.de/Zellingen/Penny-Markt/p-r75",
-  "fetchedAt": "2026-11-02T09:49:41.881Z",
+  "fetchedAt": "2026-11-02T10:05:33.627Z",
   "validUntil": "09.11.2026",
   "parser": "kaufda-prospect-images-ocr-v3",
-  "recognizedCount": 120,
+  "recognizedCount": 89,
   "offers": [
+    {
+      "name": "Farmers Origins Kaffeekapseln",
+      "store": "Penny",
+      "price": "2,49 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
     {
       "name": "Krönung",
       "store": "Penny",
@@ -21,9 +33,9 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "Backfisch-Stäbchen",
+      "name": "Frische Hähnchen-Brustfilets",
       "store": "Penny",
-      "price": "2,49 €",
+      "price": "7,99 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -33,9 +45,9 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "Trio-Scheiben",
+      "name": "Deutsche Möhren",
       "store": "Penny",
-      "price": "1,29 €",
+      "price": "1,11 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -45,21 +57,9 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "Granatapfel",
+      "name": "Frische Geflügel-Hacksteaks",
       "store": "Penny",
-      "price": "0,89 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Paprika-Mix",
-      "store": "Penny",
-      "price": "1,69 €",
+      "price": "3,99 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -84,54 +84,6 @@
       "name": "Toastschinken",
       "store": "Penny",
       "price": "1,49 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Serrano-Schinken",
-      "store": "Penny",
-      "price": "2,49 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Salami",
-      "store": "Penny",
-      "price": "1,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Frischkäse",
-      "store": "Penny",
-      "price": "1,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Brotaufstrich",
-      "store": "Penny",
-      "price": "1,29 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -177,30 +129,6 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "Be, 189 weiner EM |",
-      "store": "Penny",
-      "price": "6,64 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Be, 189 weiner EM |",
-      "store": "Penny",
-      "price": "1,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
       "name": "(I, \\ Lecker und giinstig",
       "store": "Penny",
       "price": "0,69 €",
@@ -225,7 +153,7 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "‘mi Geigetraratehen",
+      "name": "BkcnenadnunG",
       "store": "Penny",
       "price": "0,69 €",
       "saving": "–",
@@ -309,18 +237,6 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "& Tomahawık Steak“ Aus Rind- und Schweinefleisch,",
-      "store": "Penny",
-      "price": "2,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
       "name": "Packung",
       "store": "Penny",
       "price": "1,00 €",
@@ -360,18 +276,6 @@
       "name": "Würstchen Bockwurst Men} ej: {hkg=)",
       "store": "Penny",
       "price": "6,65 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "I EEE EI FERN 3",
-      "store": "Penny",
-      "price": "2,11 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -453,18 +357,6 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "— (Snow Eis",
-      "store": "Penny",
-      "price": "2,49 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
       "name": "Br A. Vak pi ’ (fkgs2n",
       "store": "Penny",
       "price": "2,49 €",
@@ -513,30 +405,6 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "Limited Edition - jetzt in deinem PENNY Markt.",
-      "store": "Penny",
-      "price": "2,49 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "und Realitystar Leyla Heiter- jetzt auf 3",
-      "store": "Penny",
-      "price": "2,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
       "name": ". MG 7 & Mo, .-5a, . IV",
       "store": "Penny",
       "price": "2,11 €",
@@ -573,30 +441,6 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "se be sone emus reatoboeien Mame Mle eb ine Dee rene abet",
-      "store": "Penny",
-      "price": "1,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "se be sone emus reatoboeien Mame Mle eb ine Dee rene abet",
-      "store": "Penny",
-      "price": "7,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
       "name": "fesoog.",
       "store": "Penny",
       "price": "3,32 €",
@@ -609,45 +453,9 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "Kr: ei a hae Np | ea",
-      "store": "Penny",
-      "price": "2,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Kr: ei a hae Np | ea",
-      "store": "Penny",
-      "price": "21,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
       "name": "eg >",
       "store": "Penny",
       "price": "21,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "ei Co ed",
-      "store": "Penny",
-      "price": "2,29 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -717,42 +525,6 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "Eiko ese)",
-      "store": "Penny",
-      "price": "1,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Eiko ese)",
-      "store": "Penny",
-      "price": "1,79 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Kerzen eiteme.",
-      "store": "Penny",
-      "price": "2,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
       "name": "K1stg",
       "store": "Penny",
       "price": "2,99 €",
@@ -777,19 +549,7 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "tions. Weine = exklüsıy beilbennV:",
-      "store": "Penny",
-      "price": "2,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "tions. Weine = exklüsıy beilbennV:",
+      "name": "lng wid",
       "store": "Penny",
       "price": "7,11 €",
       "saving": "–",
@@ -897,30 +657,6 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "Eitopr",
-      "store": "Penny",
-      "price": "1,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Di a | eis",
-      "store": "Penny",
-      "price": "0,50 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
       "name": "for Mr u. Mitchreis",
       "store": "Penny",
       "price": "0,50 €",
@@ -933,45 +669,9 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "weich",
-      "store": "Penny",
-      "price": "16,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
       "name": "Angenehmer Preis",
       "store": "Penny",
       "price": "2,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "unsere Eigenmarke OMNIVIT.",
-      "store": "Penny",
-      "price": "3,99 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "won Eid SE",
-      "store": "Penny",
-      "price": "3,99 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -1005,21 +705,9 @@
       "validUntil": "09.11.2026"
     },
     {
-      "name": "u ei: : H =]",
+      "name": "| pg nam",
       "store": "Penny",
       "price": "1,29 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Fein sk",
-      "store": "Penny",
-      "price": "248,00 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -1044,42 +732,6 @@
       "name": "tig 12690]",
       "store": "Penny",
       "price": "1,79 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Fa. EI eine) qs",
-      "store": "Penny",
-      "price": "0,69 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Ei en) ‘a DD",
-      "store": "Penny",
-      "price": "0,69 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Ei is cae",
-      "store": "Penny",
-      "price": "0,69 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -1116,18 +768,6 @@
       "name": "Frül",
       "store": "Penny",
       "price": "1,29 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "© weihnachticher",
-      "store": "Penny",
-      "price": "5,09 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
@@ -1284,18 +924,6 @@
       "name": "i Markitticbe gd REISE :",
       "store": "Penny",
       "price": "5,11 €",
-      "saving": "–",
-      "icon": "🛒",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 76,
-      "note": "KaufDA-Prospekt · OCR",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": ". Ei ote =)",
-      "store": "Penny",
-      "price": "24,59 €",
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
