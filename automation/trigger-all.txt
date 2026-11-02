@@ -1,2 +1,2 @@
-Alle Märkte mit KaufDA-Browserlogik parallel aktualisieren
-2026-11-02T12:05:33.902Z
+Alle Märkte mit KaufDA-Lebensmittelfilter und Kartenbildern aktualisieren
+2026-11-02T12:09:41.400Z
