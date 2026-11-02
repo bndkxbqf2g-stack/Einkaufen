@@ -1740,8 +1740,12 @@
     configureGithubPages();
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
     renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
-    if (isGithubPagesHost) setTimeout(() => refreshOfficialOffers(), 350);
-    const APP_BUILD = '2026-11-02-mobile-recovery-5';
+    if (isGithubPagesHost) {
+      const refreshWhenIdle = () => refreshOfficialOffers();
+      if ('requestIdleCallback' in window) requestIdleCallback(refreshWhenIdle, { timeout: 5000 });
+      else setTimeout(refreshWhenIdle, 2500);
+    }
+    const APP_BUILD = '2026-11-02-mobile-recovery-6';
     try {
       if (localStorage.getItem('angebotskueche.appBuild') !== APP_BUILD) {
         localStorage.setItem('angebotskueche.appBuild', APP_BUILD);
