@@ -616,6 +616,7 @@
 
     async function refreshOfficialOffers() {
       const selected = sortedSelectedMarkets().filter(name => liveOfferMarkets.has(name)).slice(0, Number($('#marketsSelect').value || settings.markets || 2));
+      if (isGithubPagesHost && liveOfferMarkets.has('Bring') && !selected.includes('Bring')) selected.push('Bring');
       if (!selected.length) { showToast('Für die ausgewählten Märkte ist derzeit kein stabiler Live-Adapter verfügbar.'); return; }
       const button = $('#refreshOfficialOffers');
       button.disabled = true;
