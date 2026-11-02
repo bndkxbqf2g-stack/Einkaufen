@@ -2,7 +2,7 @@
   "market": "Lidl",
   "sourceUrl": "https://www.lidl.de/l/prospekte/aktionsprospekt-02-11-2026-07-11-2026-d34d64/ar/0?_ab=1&lf=HHZ",
   "store": "Zellingen",
-  "fetchedAt": "2026-11-02T08:55:58.553Z",
+  "fetchedAt": "2026-11-02T09:01:43.200Z",
   "validUntil": "07.11.2026",
   "parser": "lidl-playwright-v1",
   "offers": [
