@@ -511,7 +511,8 @@
     function isManualOffer(offer) {
       const source = String(offer?.source || '').trim().toLowerCase();
       const note = String(offer?.note || '').trim().toLowerCase();
-      return /manuell|eigener import|benutzer|custom|persönlich/.test(`${source} ${note}`);
+      const metadata = `${source} ${note}`;
+      return /manuell|eigener import|benutzer|custom|persönlich/.test(metadata) && !/(kaufda|bring|live|offiziell|workflow)/.test(metadata);
     }
     function isAutomaticLiveOffer(offer) {
       const source = String(offer?.source || '').trim().toLowerCase();
