@@ -166,7 +166,12 @@
     .catalog { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
     .catalog-card { padding: 13px; border: 1px solid var(--line); border-radius: 14px; background: #fffefa; }
     .catalog-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .catalog-icon { width: 37px; height: 37px; display: grid; place-items: center; border-radius: 11px; background: var(--mint); font-size: 19px; }
+    .catalog-icon { width: 37px; height: 37px; display: grid; place-items: center; overflow: hidden; border-radius: 11px; background: var(--mint); font-size: 19px; }
+    .catalog-icon.has-image { background: #fff; }
+    .catalog-icon img { width: 100%; height: 100%; display: block; object-fit: contain; border-radius: inherit; background: #fff; }
+    .catalog-icon img.is-broken { display: none; }
+    .catalog-icon .image-fallback { display: none; place-items: center; width: 100%; height: 100%; }
+    .catalog-icon:not(.has-image) .image-fallback { display: grid; }
     .discount { color: var(--coral); font-size: 11px; font-weight: 850; }
     .catalog-name { margin-top: 10px; font-size: 12px; font-weight: 850; }
     .catalog-meta { display: flex; justify-content: space-between; gap: 5px; margin-top: 5px; color: var(--ink-soft); font-size: 10px; }
@@ -503,7 +508,24 @@
     const appShareUrl = isGithubPagesHost ? `${window.location.origin}${window.location.pathname}` : 'https://bndkxbqf2g-stack.github.io/Einkaufen/';
     const stored = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } };
     const settings = stored('angebotskueche.settings', { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'] });
-    let offers = [...seedOffers, ...stored('angebotskueche.customOffers', [])].map(offer => ({ validUntil: defaultOfferEnd(), source: 'Demo-Import', confidence: 'mittel', packSize: '1 Packung', ...offer }));
+    function isAutomaticLiveOffer(offer) {
+      return offer && ['Offizieller Live-Import', 'Bring-OCR-Import'].includes(String(offer.source || '').trim());
+    }
+    let storedCustomOffers = stored('angebotskueche.customOffers', []);
+    const offerStorageVersion = Number(localStorage.getItem('angebotskueche.offerStorageVersion') || 0);
+    if (offerStorageVersion < 2 && Array.isArray(storedCustomOffers)) {
+      const automatic = storedCustomOffers.filter(isAutomaticLiveOffer);
+      const manual = storedCustomOffers.filter(offer => !isAutomaticLiveOffer(offer));
+      if (automatic.length) {
+        try {
+          localStorage.setItem('angebotskueche.legacyLiveOffers', JSON.stringify({ migratedAt: new Date().toISOString(), offers: automatic }));
+          localStorage.setItem('angebotskueche.customOffers', JSON.stringify(manual));
+          storedCustomOffers = manual;
+        } catch { /* Der alte Cache bleibt erhalten, wenn der lokale Speicher voll ist. */ }
+      }
+      localStorage.setItem('angebotskueche.offerStorageVersion', '2');
+    }
+    let offers = [...seedOffers, ...(Array.isArray(storedCustomOffers) ? storedCustomOffers : [])].map(offer => ({ validUntil: defaultOfferEnd(), source: 'Demo-Import', confidence: 'mittel', packSize: '1 Packung', ...offer }));
     let favorites = stored('angebotskueche.favorites', seededFavorites);
     let pantry = stored('angebotskueche.pantry', ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch']);
     let dismissedRecipes = stored('angebotskueche.dismissedRecipes', []);
@@ -611,7 +633,15 @@
     }
 
     function persistCustomOffers() {
-      localStorage.setItem('angebotskueche.customOffers', JSON.stringify(offers.filter(isImportedOffer)));
+      const seen = new Set();
+      const compact = offers.filter(isImportedOffer).filter(offer => {
+        if (!isAutomaticLiveOffer(offer)) return true;
+        const key = offerImportKey(offer);
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+      localStorage.setItem('angebotskueche.customOffers', JSON.stringify(compact));
     }
 
     function offerImportKey(offer) {
@@ -641,7 +671,6 @@
 
     async function refreshOfficialOffers() {
       const selected = sortedSelectedMarkets().filter(name => liveOfferMarkets.has(name)).slice(0, Number($('#marketsSelect').value || settings.markets || 2));
-      if (isGithubPagesHost && liveOfferMarkets.has('Bring') && !selected.includes('Bring')) selected.push('Bring');
       if (!selected.length) { showToast('Für die ausgewählten Märkte ist derzeit kein stabiler Live-Adapter verfügbar.'); return; }
       const button = $('#refreshOfficialOffers');
       button.disabled = true;
@@ -1199,10 +1228,22 @@
       $('#marketChoices').innerHTML = Object.entries(marketDetails).map(([name, details]) => `<label class="market-row" style="cursor:pointer"><div class="market-left"><input type="checkbox" value="${name}" data-market-choice ${selected.includes(name) ? 'checked' : ''}><div class="market-logo">${details.logo}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(details.distance)} entfernt</div></div></div><span class="market-count">${details.count} Treffer</span></label>`).join('');
     }
 
+    function offerImageUrl(offer) {
+      const url = String(offer?.imageUrl || offer?.image || '').trim();
+      return /^https?:\/\/[^\s"'<>]+$/i.test(url) && !/kaufda\.de\/images\/logo\.svg(?:\?|$)/i.test(url) ? url : '';
+    }
+
+    function renderOfferVisual(offer) {
+      const imageUrl = offerImageUrl(offer);
+      const fallback = escapeHtml(offer.icon || '🛒');
+      if (!imageUrl) return `<div class="catalog-icon"><span class="image-fallback">${fallback}</span></div>`;
+      return `<div class="catalog-icon has-image"><img data-offer-image src="${escapeHtml(imageUrl)}" alt="" loading="lazy" decoding="async"><span class="image-fallback" aria-hidden="true">${fallback}</span></div>`;
+    }
+
     function renderOffers(filter = 'all') {
       const current = offers.filter(isOfferCurrent);
       const filtered = filter === 'all' ? current : current.filter(offer => offer.store === filter);
-      $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => { const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : ''; return `<div class="catalog-card"><div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(offer.icon)}</div><span class="discount">${escapeHtml(offer.saving)}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category)}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note)} · ${escapeHtml(offer.packSize || '1 Packung')}</span><span>${escapeHtml(offer.relevance)}% Match</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source)} · ${escapeHtml(offer.confidence)} sicher</div>${removeAction}</div>`; }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
+      $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => { const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : ''; return `<div class="catalog-card"><div class="catalog-card-top">${renderOfferVisual(offer)}<span class="discount">${escapeHtml(offer.saving)}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category)}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note)} · ${escapeHtml(offer.packSize || '1 Packung')}</span><span>${escapeHtml(offer.relevance)}% Match</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source)} · ${escapeHtml(offer.confidence)} sicher</div>${removeAction}</div>`; }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
       renderOfferMaintenance();
     }
 
@@ -1625,6 +1666,12 @@
       const removeButton = event.target.closest('[data-remove-offer]');
       if (removeButton) removeImportedOffer(Number(removeButton.dataset.removeOffer));
     });
+    $('#offerCatalog').addEventListener('error', event => {
+      const image = event.target.closest('img[data-offer-image]');
+      if (!image) return;
+      image.classList.add('is-broken');
+      image.parentElement?.classList.remove('has-image');
+    }, true);
     $('#importOffers').addEventListener('click', () => {
       const rows = $('#offerInput').value.split('\n').map(row => row.trim()).filter(Boolean);
       const rejected = [];
