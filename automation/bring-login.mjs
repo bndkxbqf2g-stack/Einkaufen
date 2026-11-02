@@ -1,14 +1,6 @@
 import { firefox } from 'playwright';
 import { createInterface } from 'node:readline';
-import { existsSync } from 'node:fs';
-
-const firefoxCandidates = [
-  process.env.FIREFOX_PATH,
-  `${process.env.ProgramFiles || ''}\\Mozilla Firefox\\firefox.exe`,
-  `${process.env['ProgramFiles(x86)'] || ''}\\Mozilla Firefox\\firefox.exe`,
-  `${process.env.LOCALAPPDATA || ''}\\Mozilla Firefox\\firefox.exe`,
-].filter(Boolean);
-const firefoxPath = firefoxCandidates.find(existsSync);
+const firefoxPath = process.env.FIREFOX_PATH?.trim();
 const browser = await firefox.launch(firefoxPath ? { headless: false, executablePath: firefoxPath } : { headless: false });
 const context = await browser.newContext({ locale: 'de-DE' });
 const page = await context.newPage();
