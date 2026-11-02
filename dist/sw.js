@@ -1,4 +1,4 @@
-const CACHE_NAME = 'angebotskueche-shell-v3';
+const CACHE_NAME = 'angebotskueche-shell-v4';
 const APP_SHELL = ['./', './index.html', './manifest.json'];
 
 self.addEventListener('install', event => {
@@ -23,3 +23,4 @@ self.addEventListener('fetch', event => {
       .catch(() => caches.match(event.request).then(cached => cached || caches.match('./index.html')))
   );
 });
+
