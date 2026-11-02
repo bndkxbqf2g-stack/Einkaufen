@@ -1,2 +1,1 @@
-Refresh Aldi Süd food offers only.
-Use structured offer cards before OCR fallback.
+Stable KaufDA search URL test 2026-11-02T11:10:37.381Z
