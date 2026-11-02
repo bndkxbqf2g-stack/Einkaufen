@@ -51,7 +51,7 @@ function parseOcr(text, validUntil, config) {
 }
 
 async function cardOffers(page, validUntil, config) {
-  return page.locator('[aria-label*="zur Einkaufsliste hinzufügen"]').evaluateAll(inputs => inputs.map(input => {
+  const items = await page.locator('[aria-label*="zur Einkaufsliste hinzufügen"]').evaluateAll(inputs => inputs.map(input => {
     const label = input.getAttribute('aria-label') || '';
     let node = input;
     for (let index = 0; index < 7 && node.parentElement; index += 1) {
@@ -62,7 +62,8 @@ async function cardOffers(page, validUntil, config) {
     const text = node.innerText || '';
     const price = (text.match(/(?:ab\s*)?\d{1,4}[,.]\d{2}\s*€/) || [])[0] || '';
     return { name, price };
-  })).filter(item => likelyFood(item.name)).map(item => ({ ...item, validUntil, store: config.store }));
+  }));
+  return items.filter(item => likelyFood(item.name)).map(item => ({ ...item, validUntil, store: config.store }));
 }
 
 async function ocr(file) {
