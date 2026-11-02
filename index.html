@@ -1732,7 +1732,7 @@
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
     renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderOffers(); renderFavorites(); renderPantry(); renderSourceStatus();
     if (isGithubPagesHost) setTimeout(() => refreshOfficialOffers(), 0);
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=8', { updateViaCache: 'none' }).catch(() => {}));
   </script>
 </body>
 </html>
