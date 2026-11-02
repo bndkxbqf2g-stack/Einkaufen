@@ -511,12 +511,12 @@
     function isManualOffer(offer) {
       const source = String(offer?.source || '').trim().toLowerCase();
       const note = String(offer?.note || '').trim().toLowerCase();
-      return !source || /manuell|eigener import|benutzer|custom|persönlich/.test(`${source} ${note}`);
+      return /manuell|eigener import|benutzer|custom|persönlich/.test(`${source} ${note}`);
     }
     function isAutomaticLiveOffer(offer) {
       const source = String(offer?.source || '').trim().toLowerCase();
       const metadata = `${source} ${String(offer?.note || '').trim().toLowerCase()}`;
-      if (!source || source === 'demo-import' || isManualOffer(offer)) return false;
+      if (source === 'demo-import' || isManualOffer(offer)) return false;
       return ['offizieller live-import', 'bring-ocr-import', 'live-import'].includes(source) || source.startsWith('kaufda') || (String(offer?.confidence || '').toLowerCase().startsWith('hoch') && /(kaufda|bring|live|offiziell|workflow)/i.test(metadata)) || (source !== 'demo-import' && !isManualOffer(offer));
     }
     let storedCustomOffers = stored('angebotskueche.customOffers', []); stored('angebotskueche.customOffers', []);
