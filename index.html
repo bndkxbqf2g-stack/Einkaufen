@@ -486,16 +486,21 @@
     const isGithubPagesHost = window.location.hostname.endsWith('github.io');
     const appShareUrl = isGithubPagesHost ? `${window.location.origin}${window.location.pathname}` : 'https://bndkxbqf2g-stack.github.io/Einkaufen/';
     const stored = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } };
-    const settings = stored('angebotskueche.settings', { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'] });
-    let offers = [...seedOffers, ...stored('angebotskueche.customOffers', [])].map(offer => ({ validUntil: defaultOfferEnd(), source: 'Demo-Import', confidence: 'mittel', packSize: '1 Packung', ...offer }));
-    let favorites = stored('angebotskueche.favorites', seededFavorites);
-    let pantry = stored('angebotskueche.pantry', ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch']);
-    let dismissedRecipes = stored('angebotskueche.dismissedRecipes', []);
-    let pinnedRecipes = stored('angebotskueche.pinnedRecipes', []);
-    let shoppingChecks = stored('angebotskueche.shoppingChecks', {});
-    let manualShoppingItems = stored('angebotskueche.manualShoppingItems', []);
-    let manualPlan = stored('angebotskueche.manualPlan', {});
-    let recipeRatings = stored('angebotskueche.recipeRatings', {});
+    const storedArray = (key, fallback = []) => { const value = stored(key, fallback); return Array.isArray(value) ? value : fallback; };
+    const storedObject = (key, fallback = {}) => { const value = stored(key, fallback); return value && typeof value === 'object' && !Array.isArray(value) ? value : fallback; };
+    const settingsDefaults = { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'] };
+    const storedSettings = storedObject('angebotskueche.settings', settingsDefaults);
+    const settings = { ...settingsDefaults, ...storedSettings, selectedMarkets: Array.isArray(storedSettings.selectedMarkets) ? storedSettings.selectedMarkets : settingsDefaults.selectedMarkets };
+    const savedCustomOffers = storedArray('angebotskueche.customOffers', []);
+    let offers = [...seedOffers, ...savedCustomOffers.filter(offer => offer && typeof offer === 'object')].map(offer => ({ validUntil: defaultOfferEnd(), source: 'Demo-Import', confidence: 'mittel', packSize: '1 Packung', ...offer }));
+    let favorites = storedArray('angebotskueche.favorites', seededFavorites).filter(item => item && typeof item === 'object' && !Array.isArray(item));
+    let pantry = storedArray('angebotskueche.pantry', ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch']).filter(item => typeof item === 'string' && item.trim());
+    let dismissedRecipes = storedArray('angebotskueche.dismissedRecipes', []).filter(item => typeof item === 'string');
+    let pinnedRecipes = storedArray('angebotskueche.pinnedRecipes', []).filter(item => typeof item === 'string');
+    let shoppingChecks = storedObject('angebotskueche.shoppingChecks', {});
+    let manualShoppingItems = storedArray('angebotskueche.manualShoppingItems', []);
+    let manualPlan = storedObject('angebotskueche.manualPlan', {});
+    let recipeRatings = storedObject('angebotskueche.recipeRatings', {});
     if (!manualPlan || typeof manualPlan !== 'object' || Array.isArray(manualPlan)) manualPlan = {};
     if (!recipeRatings || typeof recipeRatings !== 'object' || Array.isArray(recipeRatings)) recipeRatings = {};
     if (!Array.isArray(manualShoppingItems)) manualShoppingItems = [];
@@ -1538,7 +1543,8 @@
 
     configureGithubPages();
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
-    renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderOffers(); renderFavorites(); renderPantry(); renderSourceStatus();
+    const initialRenderers = [['Plan', renderPlan], ['Rezeptvorschläge', renderSuggestions], ['Highlights', renderHighlights], ['Märkte', renderMarkets], ['Angebote', renderOffers], ['Favoriten', renderFavorites], ['Vorräte', renderPantry], ['Quellenstatus', renderSourceStatus]];
+    initialRenderers.forEach(([label, renderer]) => { try { renderer(); } catch (error) { console.error(`Angebotsküche: ${label} konnte nicht gerendert werden`, error); } });
     if (isGithubPagesHost) setTimeout(() => refreshOfficialOffers(), 0);
     if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
   </script>
