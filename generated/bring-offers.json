@@ -3,7 +3,7 @@
   "store": "Bring",
   "location": "Zellingen",
   "sourceUrl": "https://enjoy.getbring.com/ZAzR?deep_link_value=https%3A%2F%2Fdeeplink.getbring.com%2Fview%2Foffers%2Fbring-de%2Fbrn%3Abring-de%3Aoffersbrochure%3A242205%2F3&af_og_image=https%253A%252F%252Fofferscdn.bringapi.app%252Fcontent%252Foffers%252Fbring-de%252F103%252F242205%252F1793291348092%252F00004_1500x2101_acecd6b8-121a-4601-a858-e82e3c04787a.jpeg",
-  "fetchedAt": "2026-11-02T08:19:32.746Z",
+  "fetchedAt": "2026-11-02T08:22:20.918Z",
   "validUntil": "09.11.2026",
   "parser": "bring-playwright-ocr-v1",
   "recognizedCount": 15,
