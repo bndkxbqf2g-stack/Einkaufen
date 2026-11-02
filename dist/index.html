@@ -523,10 +523,17 @@
       if (source === 'demo-import' || isManualOffer(offer)) return false;
       return ['offizieller live-import', 'bring-ocr-import', 'live-import'].includes(source) || source.startsWith('kaufda') || (String(offer?.confidence || '').toLowerCase().startsWith('hoch') && /(kaufda|bring|live|offiziell|workflow)/i.test(metadata)) || (source !== 'demo-import' && !isManualOffer(offer));
     }
-    let storedCustomOffers = stored('angebotskueche.customOffers', []); stored('angebotskueche.customOffers', []);
-    const automaticStoredOffers = Array.isArray(storedCustomOffers) ? storedCustomOffers.filter(offer => !isManualOffer(offer)) : [];
+    let storedCustomOffers = stored('angebotskueche.customOffers', []);
+    const oversizedLegacyOfferCache = Array.isArray(storedCustomOffers) && storedCustomOffers.length > 500;
+    const legacyManualOffer = offer => {
+      const source = String(offer?.source || '').trim().toLowerCase();
+      const note = String(offer?.note || '').trim().toLowerCase();
+      const confidence = String(offer?.confidence || '').trim().toLowerCase();
+      return source === 'manueller import' && note.includes('manuell importiert') && confidence === 'niedrig';
+    };
+    const automaticStoredOffers = Array.isArray(storedCustomOffers) ? (oversizedLegacyOfferCache ? storedCustomOffers.filter(offer => !legacyManualOffer(offer)) : storedCustomOffers.filter(offer => !isManualOffer(offer))) : [];
     if (automaticStoredOffers.length) {
-      const manual = storedCustomOffers.filter(offer => !isAutomaticLiveOffer(offer));
+      const manual = oversizedLegacyOfferCache ? storedCustomOffers.filter(legacyManualOffer) : storedCustomOffers.filter(offer => !isAutomaticLiveOffer(offer));
       try {
         localStorage.setItem('angebotskueche.customOffers', JSON.stringify(manual));
         if (!localStorage.getItem('angebotskueche.legacyLiveOffers')) {
