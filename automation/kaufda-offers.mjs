@@ -28,11 +28,16 @@ function parseOcr(text, validUntil, config) {
   const lines = String(text || '').split(/\r?\n/).map(stripText).filter(Boolean);
   const offers = [];
   for (let index = 0; index < lines.length; index += 1) {
-    const window = [lines[index - 1], lines[index], lines[index + 1]].filter(Boolean).join(' ');
+    const contextLines = lines.slice(Math.max(0, index - 3), Math.min(lines.length, index + 3));
+    const window = contextLines.join(' ');
     const match = window.match(/(\d{1,4}[,.]\d{2})\s*€?/);
     if (!match) continue;
     let name = lines[index].replace(/\d{1,4}[,.]\d{2}\s*€?/g, '').replace(/-\s*\d{1,3}\s*%/g, '').trim();
-    if (name.length < 3 || /^\d/.test(name)) name = lines[index - 1] || lines[index + 1] || '';
+    if (name.length < 3 || /^\d/.test(name) || !likelyFood(name)) {
+      name = contextLines
+        .map(line => line.replace(/\d{1,4}[,.]\d{2}\s*€?/g, '').replace(/-\s*\d{1,3}\s*%/g, '').trim())
+        .find(line => line.length >= 3 && line.length <= 100 && !/^\d/.test(line) && !/(€|%|UVP|Angebot|Aktion|gültig|Seite|Woche)/i.test(line) && likelyFood(line)) || '';
+    }
     name = stripText(name);
     if (name.length < 3 || name.length > 100 || !likelyFood(name) || /^(angebot|aktion|uvp|je|ab|gültig)$/i.test(name)) continue;
     offers.push({ name, store: config.store, price: `${match[1].replace('.', ',')} €`, saving: '–', icon: '🛒', category: 'Lebensmittel', packSize: '1 Packung', relevance: 76, note: 'KaufDA-Prospekt · OCR', validUntil });
@@ -91,16 +96,38 @@ async function scrapeMarket(page, config) {
   }
   const viewer = new URL(page.url());
   if (/\/contentViewer\//i.test(viewer.pathname)) {
-    const maxPages = pageCountFrom(pageText);
-    for (let brochurePage = 1; brochurePage <= maxPages; brochurePage += 1) {
-      viewer.searchParams.set('page', String(brochurePage));
-      try {
-        await page.goto(viewer.toString(), { waitUntil: 'domcontentloaded', timeout: 15_000 });
-        await page.waitForTimeout(250);
-        const file = resolve(workdir, `${config.key.toLowerCase()}-${brochurePage}.png`);
-        await page.screenshot({ path: file, fullPage: true });
-        offers.push(...parseOcr(await ocr(file), validUntil, config));
-      } catch { /* einzelne Prospektseiten können fehlen */ }
+    await page.waitForTimeout(1_000);
+    const imageUrls = await page.locator('img').evaluateAll(images => images
+      .map(image => image.currentSrc || image.src || image.getAttribute('data-src') || '')
+      .filter(url => /content-media\.bonial\.biz\/.*zoomlarge_page_\d+\.jpg/i.test(url)));
+    const uniqueImageUrls = [...new Set(imageUrls)].sort((left, right) => {
+      const leftPage = Number(left.match(/zoomlarge_page_(\d+)\.jpg/i)?.[1] || 0);
+      const rightPage = Number(right.match(/zoomlarge_page_(\d+)\.jpg/i)?.[1] || 0);
+      return leftPage - rightPage;
+    });
+    if (uniqueImageUrls.length) {
+      console.log(`KaufDA: ${config.key} ${uniqueImageUrls.length} Prospektseiten gefunden`);
+      for (let pageIndex = 0; pageIndex < uniqueImageUrls.length; pageIndex += 1) {
+        try {
+          const response = await fetch(uniqueImageUrls[pageIndex], { headers: { 'user-agent': 'Angebotskueche KaufDA importer' } });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const file = resolve(workdir, `${config.key.toLowerCase()}-${pageIndex + 1}.jpg`);
+          await writeFile(file, Buffer.from(await response.arrayBuffer()));
+          offers.push(...parseOcr(await ocr(file), validUntil, config));
+        } catch { /* einzelne Prospektseiten können fehlen */ }
+      }
+    } else {
+      const maxPages = pageCountFrom(pageText);
+      for (let brochurePage = 1; brochurePage <= maxPages; brochurePage += 1) {
+        viewer.searchParams.set('page', String(brochurePage));
+        try {
+          await page.goto(viewer.toString(), { waitUntil: 'domcontentloaded', timeout: 15_000 });
+          await page.waitForTimeout(250);
+          const file = resolve(workdir, `${config.key.toLowerCase()}-${brochurePage}.png`);
+          await page.screenshot({ path: file, fullPage: true });
+          offers.push(...parseOcr(await ocr(file), validUntil, config));
+        } catch { /* einzelne Prospektseiten können fehlen */ }
+      }
     }
   }
 
@@ -111,7 +138,7 @@ async function scrapeMarket(page, config) {
     if (!seen.has(key)) { seen.add(key); unique.push(offer); }
   }
   if (!unique.length) throw new Error(`${config.key}: keine Lebensmittelangebote erkannt`);
-  const result = { market: config.market, store: config.store, location: config.location, sourceUrl: config.url, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-dom-ocr-v2', recognizedCount: unique.length, offers: unique };
+  const result = { market: config.market, store: config.store, location: config.location, sourceUrl: config.url, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-prospect-images-ocr-v3', recognizedCount: unique.length, offers: unique };
   await writeFile(resolve(outputDir, config.file), `${JSON.stringify(result, null, 2)}\n`, 'utf8');
   console.log(`KaufDA: ${unique.length} ${config.key}-Angebote nach ${config.file} geschrieben`);
   return result;
