@@ -1,6 +1,11 @@
 name: KaufDA-Angebote für Zellingen und Würzburg aktualisieren
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'automation/kaufda-offers.mjs'
+      - '.github/workflows/kaufda-offers.yml'
   workflow_dispatch:
   schedule:
     - cron: '25 6 * * 1,4'
