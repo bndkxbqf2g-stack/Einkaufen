@@ -3,7 +3,7 @@
   "store": "ALDI SÜD",
   "location": "Zellingen",
   "sourceUrl": "https://www.kaufda.de/Zellingen/ALDI-SUeD/p-r90",
-  "fetchedAt": "2026-11-02T09:25:15.091Z",
+  "fetchedAt": "2026-11-02T09:40:16.386Z",
   "validUntil": "15.11.2026",
   "parser": "kaufda-prospect-images-ocr-v3",
   "recognizedCount": 7,
