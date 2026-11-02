@@ -512,7 +512,10 @@
       const source = String(offer?.source || '').trim().toLowerCase();
       const note = String(offer?.note || '').trim().toLowerCase();
       const metadata = `${source} ${note}`;
-      return /manuell|eigener import|benutzer|custom|persönlich/.test(metadata) && !/(kaufda|bring|live|offiziell|workflow)/.test(metadata);
+      const manualMarker = /manuell|eigener import|benutzer|custom|persönlich/.test(metadata);
+      const automaticMarker = /(kaufda|bring|live|offiziell|workflow)/.test(metadata);
+      const confidence = String(offer?.confidence || '').trim().toLowerCase();
+      return manualMarker && !automaticMarker && (note.includes('manuell') || confidence === 'niedrig' || /benutzer|custom|persönlich/.test(source));
     }
     function isAutomaticLiveOffer(offer) {
       const source = String(offer?.source || '').trim().toLowerCase();
