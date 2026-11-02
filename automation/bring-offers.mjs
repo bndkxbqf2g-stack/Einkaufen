@@ -37,7 +37,10 @@ function decodeRepeated(value) {
 }
 
 function extractImageUrls(value) {
-  const text = String(value || '').replace(/&amp;/gi, '&');
+  const text = String(value || '')
+    .replace(/\\\//g, '/')
+    .replace(/\\u002f/gi, '/')
+    .replace(/&amp;/gi, '&');
   const matches = text.match(/https?:\/\/[^"'\s<>]+/gi) || [];
   return matches
     .map(decodeRepeated)
@@ -194,12 +197,21 @@ async function main() {
   const discoveredImages = new Set();
   const sourceUrls = [];
   const texts = [];
+  const responseBodies = [];
   page.on('response', response => {
     const contentType = String(response.headers()['content-type'] || '').toLowerCase();
-    if (!contentType.startsWith('image/')) return;
+    if (contentType.startsWith('image/')) {
+      try {
+        if (allowedImageHosts.test(new URL(response.url()).hostname)) discoveredImages.add(response.url());
+      } catch { /* response can be a non-URL internal resource */ }
+      return;
+    }
+    if (!/(json|javascript|text\/plain)/i.test(contentType) || !/(bring|offer|brochure|prospect)/i.test(response.url())) return;
     try {
-      if (allowedImageHosts.test(new URL(response.url()).hostname)) discoveredImages.add(response.url());
-    } catch { /* response can be a non-URL internal resource */ }
+      response.text().then(body => {
+        if (body && body.length <= 12_000_000) responseBodies.push(body);
+      }).catch(() => {});
+    } catch { /* response body may no longer be available */ }
   });
   try {
     if (sharedUrls.length) {
@@ -245,6 +257,7 @@ async function main() {
         }
       }
     }
+    for (const body of responseBodies) extractImageUrls(body).forEach(url => discoveredImages.add(url));
     const allText = texts.join('\n');
     const defaultStore = detectStore(allText);
     const validUntil = validUntilFromText(allText);
