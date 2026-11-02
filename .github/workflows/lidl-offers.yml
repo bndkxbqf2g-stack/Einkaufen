@@ -4,11 +4,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '15 4 * * 0'
-  push:
-    branches: [main]
-    paths-ignore:
-      - generated/lidl-offers.json
-
 permissions:
   contents: write
 
