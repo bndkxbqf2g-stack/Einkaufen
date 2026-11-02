@@ -97,8 +97,20 @@ async function scrapeMarket(page, config) {
   await page.waitForTimeout(1_500);
   const pageText = await page.locator('body').innerText();
   const validUntil = validUntilFrom(pageText);
-  for (const item of await cardOffers(page, validUntil, config)) {
+  const structuredItems = await cardOffers(page, validUntil, config);
+  for (const item of structuredItems) {
     if (item.name.length >= 3 && likelyFood(item.name) && priceFrom(item.price) !== '–') offers.push({ name: item.name, store: config.store, price: priceFrom(item.price), saving: '–', icon: '🛒', category: 'Lebensmittel', packSize: '1 Packung', relevance: 80, note: 'KaufDA-Angebot', validUntil: item.validUntil });
+  }
+
+  // Aldi liefert die aktuellen Angebotskarten direkt strukturiert. OCR ist dort
+  // nur noch ein Fallback, damit keine langen Vollseitenläufe nötig sind.
+  const useOcrFallback = config.key !== 'Aldi' || structuredItems.length < 10;
+  if (!useOcrFallback) {
+    const unique = [...new Map(offers.map(offer => [`${offer.name.toLowerCase()}|${offer.price}|${offer.store}`, offer])).values()];
+    const result = { market: config.market, store: config.store, location: config.location, sourceUrl: config.url, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-offer-cards-v4', recognizedCount: unique.length, offers: unique };
+    await writeFile(resolve(outputDir, config.file), `${JSON.stringify(result, null, 2)}\\n`, 'utf8');
+    console.log(`KaufDA: ${unique.length} ${config.key}-Angebote aus strukturierten Karten nach ${config.file} geschrieben`);
+    return result;
   }
 
   const openButton = page.getByRole('button', { name: /Prospekt öffnen/i }).first();
