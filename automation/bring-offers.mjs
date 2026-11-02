@@ -56,7 +56,18 @@ function expandSharedUrl(value) {
   for (const key of ['deep_link_value', 'af_web_dp']) {
     const candidate = decodeRepeated(parsed.searchParams.get(key));
     if (!candidate) continue;
-    try { pages.push(assertAllowedPageUrl(candidate)); } catch { /* ignore unrelated tracking values */ }
+    try {
+      const candidateUrl = new URL(assertAllowedPageUrl(candidate));
+      pages.push(candidateUrl.toString());
+      const pageMatch = candidateUrl.pathname.match(/^(.*\/)(\d+)$/);
+      if (pageMatch) {
+        for (let page = 1; page <= 32; page += 1) {
+          const pageUrl = new URL(candidateUrl.toString());
+          pageUrl.pathname = `${pageMatch[1]}${page}`;
+          pages.push(pageUrl.toString());
+        }
+      }
+    } catch { /* ignore unrelated tracking values */ }
     images.push(...extractImageUrls(candidate));
   }
   for (const key of ['af_og_image', 'og_image', 'image']) {
