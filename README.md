@@ -27,6 +27,6 @@ Aldi|https://...
 Lidl|https://...
 ```
 
-Der Workflow öffnet diese URL headless, scrollt bis keine neuen Karten mehr erscheinen und übernimmt nur Lebensmittelkarten. Die öffentliche Filialseite bleibt der sichere Standard, wenn keine Browser-URL konfiguriert ist. Für eine geschützte KaufDA-Seite kann optional ein exportierter Playwright-Storage-State als Base64 in das GitHub-Secret `KAUFDA_STORAGE_STATE_B64` gelegt werden. Cookies und Sitzungsdaten niemals committen oder als Repository-Variable speichern. Liefert die Browseransicht keine strukturierten Karten, bricht der Lauf sauber ab; die vorhandenen Daten bleiben erhalten und der manuelle Import bleibt verfügbar.
+Der Workflow öffnet diese URL headless, scrollt bis keine neuen Karten mehr erscheinen, bedient sichtbare Mehr-/Nächste-Angebote-Steuerungen und übernimmt nur Lebensmittelkarten. Die öffentliche Filialseite bleibt der sichere Standard, wenn keine Browser-URL konfiguriert ist. Für eine geschützte KaufDA-Seite kann optional ein exportierter Playwright-Storage-State als Base64 in das GitHub-Secret `KAUFDA_STORAGE_STATE_B64` gelegt werden. Cookies und Sitzungsdaten niemals committen oder als Repository-Variable speichern. Liefert die Browseransicht keine strukturierten Karten, bricht der Lauf sauber ab; die vorhandenen Daten bleiben erhalten und der manuelle Import bleibt verfügbar.
 
 Wenn KaufDA seine Seitenstruktur ändert, bleibt der manuelle Angebotsimport in der App verfügbar.
