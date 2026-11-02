@@ -147,14 +147,19 @@ async function collectPageAssets(page) {
 }
 
 async function downloadImage(url, file) {
-  const parsed = new URL(url);
-  if (parsed.protocol !== 'https:' || !allowedImageHosts.test(parsed.hostname)) return false;
-  const response = await fetch(parsed, { headers: { accept: 'image/*' } });
-  if (!response.ok || !String(response.headers.get('content-type') || '').startsWith('image/')) return false;
-  const buffer = Buffer.from(await response.arrayBuffer());
-  if (!buffer.length || buffer.length > 8_000_000) return false;
-  await writeFile(file, buffer);
-  return true;
+  let parsed;
+  try {
+    parsed = new URL(decodeRepeated(url));
+    if (parsed.protocol !== 'https:' || !allowedImageHosts.test(parsed.hostname)) return false;
+    const response = await fetch(parsed, { headers: { accept: 'image/*' } });
+    if (!response.ok || !String(response.headers.get('content-type') || '').startsWith('image/')) return false;
+    const buffer = Buffer.from(await response.arrayBuffer());
+    if (!buffer.length || buffer.length > 8_000_000) return false;
+    await writeFile(file, buffer);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function ocr(file) {
@@ -232,6 +237,7 @@ async function main() {
     const validUntil = validUntilFromText(allText);
     const offers = [];
     let imageIndex = 0;
+    console.log(`Bring: ${discoveredImages.size} mögliche Bildquellen gefunden`);
     for (const imageUrl of discoveredImages) {
       const imageFile = resolve(workdir, `brochure-${imageIndex += 1}.jpg`);
       if (!await downloadImage(imageUrl, imageFile)) continue;
