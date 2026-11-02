@@ -1450,7 +1450,7 @@
     function showPage(page) {
       $$('.nav-button').forEach(button => button.classList.toggle('active', button.dataset.page === page));
       $$('.page').forEach(section => section.classList.toggle('active', section.id === `page-${page}`));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo(0, 0);
     }
 
     function configureGithubPages() {
@@ -1536,15 +1536,6 @@
       reader.readAsText(file);
     }
 
-    function bindNavigationButton(button) {
-      const navigate = event => {
-        if (event.type === 'touchend') event.preventDefault();
-        if (button.dataset.page) showPage(button.dataset.page);
-      };
-      button.addEventListener('click', navigate);
-      button.addEventListener('touchend', navigate, { passive: false });
-    }
-    $$('.nav-button').forEach(bindNavigationButton);
     $$('[data-page-link]').forEach(button => button.addEventListener('click', () => showPage(button.dataset.pageLink)));
     $('#exportData').addEventListener('click', exportUserData);
     $('#importData').addEventListener('click', () => $('#dataFile').click());
@@ -1746,7 +1737,7 @@
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
     renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderOffers(); renderFavorites(); renderPantry(); renderSourceStatus();
     if (isGithubPagesHost) setTimeout(() => refreshOfficialOffers(), 0);
-    const APP_BUILD = '2026-11-02-mobile-recovery-3';
+    const APP_BUILD = '2026-11-02-mobile-recovery-4';
     try {
       if (localStorage.getItem('angebotskueche.appBuild') !== APP_BUILD) {
         localStorage.setItem('angebotskueche.appBuild', APP_BUILD);
@@ -1754,7 +1745,7 @@
         if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(registration => registration.update())).catch(() => {});
       }
     } catch {}
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=11', { updateViaCache: 'none' }).catch(() => {}));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=12', { updateViaCache: 'none' }).catch(() => {}));
   </script>
 </body>
 </html>
