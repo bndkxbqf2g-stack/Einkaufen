@@ -443,7 +443,7 @@
     <div class="modal"><div class="modal-header"><div><h2 id="ratingModalTitle">Wie war das Rezept?</h2><p id="ratingRecipeLabel">Deine Bewertung bleibt lokal gespeichert und hilft dir später bei der Auswahl.</p></div><button class="close" id="closeRatingModal" aria-label="Schließen">×</button></div><div class="rating-choice" id="ratingChoices"><button data-rating="1">★</button><button data-rating="2">★★</button><button data-rating="3">★★★</button><button data-rating="4">★★★★</button><button data-rating="5">★★★★★</button></div><div class="source-note" style="margin-top:10px">1 = nicht wieder · 5 = unbedingt wieder</div></div>
   </div>
   <div class="modal-backdrop" id="pantryModal" role="dialog" aria-modal="true" aria-labelledby="pantryModalTitle">
-    <div class="modal"><div class="modal-header"><div><h2 id="pantryModalTitle">Vorrat ergänzen</h2><p>Diese Zutat wird bei Angebotsmatches, Kosten und der Einkaufsliste als vorhanden behandelt.</p></div><button class="close" id="closePantryModal" aria-label="Schließen">×</button></div><label class="source-note" for="pantryInput">Zutat</label><input class="input" id="pantryInput" maxlength="60" placeholder="z. B. Haferflocken oder Tomatenmark" autocomplete="off"><div class="source-note" id="pantryStatus" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelPantryModal">Abbrechen</button><button class="primary-button" id="savePantryItem">Vorrat speichern</button></div></div>
+    <div class="modal"><div class="modal-header"><div><h2 id="pantryModalTitle">Vorräte schnell ergänzen</h2><p>Mehrere Zutaten mit Komma, Semikolon oder Enter trennen. Sie werden sofort als vorhanden behandelt – ähnlich wie bei Bring.</p></div><button class="close" id="closePantryModal" aria-label="Schließen">×</button></div><label class="source-note" for="pantryInput">Zutaten</label><input class="input" id="pantryInput" maxlength="500" placeholder="z. B. Reis, Nudeln, Eier oder Tomatenmark" autocomplete="off"><div class="source-note" id="pantryStatus" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelPantryModal">Fertig</button><button class="primary-button" id="savePantryItem">＋ Hinzufügen</button></div></div>
   </div>
   <div class="modal-backdrop" id="shoppingModal" role="dialog" aria-modal="true" aria-labelledby="shoppingModalTitle">
     <div class="modal"><div class="modal-header"><div><h2 id="shoppingModalTitle">Artikel ergänzen</h2><p>Zusätzliche Artikel bleiben lokal in deiner Einkaufsliste und werden ebenfalls gegen aktive Angebote geprüft.</p></div><button class="close" id="closeShoppingModal" aria-label="Schließen">×</button></div><label class="source-note" for="shoppingItemInput">Artikel</label><input class="input" id="shoppingItemInput" maxlength="60" placeholder="z. B. Tomaten oder Küchenrolle" autocomplete="off"><div class="source-note" id="shoppingItemStatus" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelShoppingModal">Abbrechen</button><button class="primary-button" id="saveShoppingItem">Zur Liste hinzufügen</button></div></div>
@@ -1543,15 +1543,26 @@
     }
 
     function savePantryItem() {
-      const candidate = $('#pantryInput').value.trim();
-      if (!candidate) { $('#pantryStatus').textContent = 'Bitte eine Zutat eingeben.'; $('#pantryInput').focus(); return; }
-      if (pantry.some(existing => normalizeIngredient(existing) === normalizeIngredient(candidate))) { $('#pantryStatus').textContent = `${candidate} ist bereits als Vorrat gespeichert.`; $('#pantryInput').focus(); return; }
-      pantry.push(candidate);
-      localStorage.setItem('angebotskueche.pantry', JSON.stringify(pantry));
-      renderPantry();
-      refreshPantryDependentViews();
-      closePantryModal();
-      showToast(`${candidate} als Vorrat gespeichert.`);
+      const candidates = parseManualIngredients($('#pantryInput').value).map(item => item.replace(/\s+/g, ' ').trim()).filter(Boolean);
+      if (!candidates.length) { $('#pantryStatus').textContent = 'Bitte mindestens eine Zutat eingeben.'; $('#pantryInput').focus(); return; }
+      const known = new Set(pantry.map(normalizeIngredient));
+      const added = [];
+      const duplicates = [];
+      candidates.forEach(candidate => {
+        const key = normalizeIngredient(candidate);
+        if (known.has(key)) duplicates.push(candidate);
+        else { known.add(key); added.push(candidate); }
+      });
+      if (added.length) {
+        pantry.push(...added);
+        localStorage.setItem('angebotskueche.pantry', JSON.stringify(pantry));
+        renderPantry();
+        refreshPantryDependentViews();
+      }
+      $('#pantryInput').value = '';
+      $('#pantryStatus').textContent = `${added.length} ${added.length === 1 ? 'Zutat' : 'Zutaten'} hinzugefügt${duplicates.length ? ` · ${duplicates.length} bereits vorhanden` : ''}.`;
+      $('#pantryInput').focus();
+      showToast(added.length ? `${added.length} ${added.length === 1 ? 'Vorrat' : 'Vorräte'} gespeichert.` : 'Alle eingegebenen Vorräte sind bereits gespeichert.');
     }
 
     function showPage(page) {
@@ -1851,7 +1862,7 @@
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
     let automaticOfferRefreshStarted = false;
     renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
-    const APP_BUILD = '2026-11-02-recipe-source-links-1';
+    const APP_BUILD = '2026-11-02-pantry-quick-entry-1';
     try {
       if (localStorage.getItem('angebotskueche.appBuild') !== APP_BUILD) {
         localStorage.setItem('angebotskueche.appBuild', APP_BUILD);
@@ -1859,7 +1870,7 @@
         if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(registration => registration.update())).catch(() => {});
       }
     } catch {}
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=17', { updateViaCache: 'none' }).catch(() => {}));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=18', { updateViaCache: 'none' }).catch(() => {}));
   </script>
 </body>
 </html>
