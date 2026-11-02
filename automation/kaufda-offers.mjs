@@ -66,6 +66,23 @@ async function cardOffers(page, validUntil, config) {
   return items.filter(item => likelyFood(item.name)).map(item => ({ ...item, validUntil, store: config.store }));
 }
 
+async function advanceOfferView(page) {
+  const buttons = page.getByRole('button', { name: /mehr angebote|weitere angebote|mehr anzeigen|nächste/i });
+  for (let index = 0; index < await buttons.count(); index += 1) {
+    const button = buttons.nth(index);
+    if (!(await button.isVisible().catch(() => false))) continue;
+    if (await button.isDisabled().catch(() => false)) continue;
+    const label = stripText(await button.innerText().catch(() => ''));
+    if (/prospekt|seite/i.test(label)) continue;
+    try {
+      await button.click({ timeout: 1_500 });
+      await page.waitForTimeout(500);
+      return true;
+    } catch { /* another visible control may be the correct pagination target */ }
+  }
+  return false;
+}
+
 async function collectStructuredOffers(page, validUntil, config) {
   const unique = new Map();
   let stablePasses = 0;
@@ -75,6 +92,7 @@ async function collectStructuredOffers(page, validUntil, config) {
       if (priceFrom(item.price) !== '–') unique.set(key, item);
     }
     const before = unique.size;
+    await advanceOfferView(page);
     await page.evaluate(() => window.scrollBy(0, Math.max(700, window.innerHeight * 0.85)));
     await page.waitForTimeout(350);
     for (const item of await cardOffers(page, validUntil, config)) {
