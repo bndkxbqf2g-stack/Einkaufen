@@ -6,17 +6,25 @@ import { promisify } from 'node:util';
 import { chromium } from 'playwright';
 
 const execFileAsync = promisify(execFile);
-const sourceUrl = process.env.KAUFDA_URL || 'https://www.kaufda.de/Thuengersheim/Netto-Marken-Discount/p-r9';
-const output = resolve(process.env.KAUFDA_OUTPUT || 'generated/netto-offers.json');
+const defaultMarkets = [
+  { key: 'Aldi', market: 'Aldi', store: 'ALDI SÜD', location: 'Zellingen', url: 'https://www.kaufda.de/Filialen/Zellingen/ALDI-SUeD-Wuerzburger-Strasse/v-f37322', file: 'aldi-offers.json' },
+  { key: 'EDEKA', market: 'EDEKA', store: 'EDEKA Traut', location: 'Zellingen', url: 'https://www.kaufda.de/Zellingen/EDEKA/p-r107', file: 'edeka-offers.json' },
+  { key: 'Lidl', market: 'Lidl', store: 'Lidl', location: 'Zellingen', url: 'https://www.kaufda.de/Zellingen/Lidl/p-r74', file: 'lidl-offers.json' },
+  { key: 'Penny', market: 'Penny', store: 'Penny', location: 'Zellingen', url: 'https://www.kaufda.de/Zellingen/Penny-Markt/p-r75', file: 'penny-offers.json' },
+  { key: 'Kaufland', market: 'Kaufland', store: 'Kaufland', location: 'Würzburg · Nürnberger Straße 12', url: 'https://www.kaufda.de/Wuerzburg/Kaufland/p-r2801', file: 'kaufland-offers.json' },
+];
+
+const outputDir = resolve(process.env.KAUFDA_OUTPUT_DIR || 'generated');
 const workdir = await mkdtemp(resolve(tmpdir(), 'angebotskueche-kaufda-'));
 const validUntilFallback = (() => { const date = new Date(); date.setUTCDate(date.getUTCDate() + 7); return `${String(date.getUTCDate()).padStart(2, '0')}.${String(date.getUTCMonth() + 1).padStart(2, '0')}.${date.getUTCFullYear()}`; })();
 
 function stripText(value) { return String(value || '').replace(/\s+/g, ' ').trim(); }
-function likelyFood(value) { return !/(rollator|dartscheibe|infrarot|kabine|bagger|werkzeug|garten|bekleidung|schuh|auto|akku|drucker|whisky|vodka|bier|wein|zigarette|tierfutter|katzen|möbel|pavillon|elektronik|spielzeug)/i.test(value); }
+function likelyFood(value) { return !/(rollator|dartscheibe|infrarot|kabine|bagger|werkzeug|garten|bekleidung|schuh|auto|akku|drucker|whisky|vodka|bier|wein|zigarette|tierfutter|katzen|möbel|pavillon|elektronik|spielzeug|matratze|schrank|lampe)/i.test(value); }
 function priceFrom(value) { const match = String(value || '').match(/(?:ab\s*)?(\d{1,4}[,.]\d{2})\s*€/); return match ? `${match[1].replace('.', ',')} €` : '–'; }
 function validUntilFrom(value) { const match = String(value || '').match(/(?:bis|gültig bis)\s+(\d{1,2})\.(\d{1,2})\.?/i); return match ? `${String(match[1]).padStart(2, '0')}.${String(match[2]).padStart(2, '0')}.${new Date().getUTCFullYear()}` : validUntilFallback; }
+function pageCountFrom(value) { const match = String(value || '').match(/(?:mit|insgesamt)\s+(\d{1,3})\s+Seiten/i); return Math.min(Math.max(Number(match?.[1] || 72), 1), 120); }
 
-function parseOcr(text, validUntil) {
+function parseOcr(text, validUntil, config) {
   const lines = String(text || '').split(/\r?\n/).map(stripText).filter(Boolean);
   const offers = [];
   for (let index = 0; index < lines.length; index += 1) {
@@ -27,12 +35,12 @@ function parseOcr(text, validUntil) {
     if (name.length < 3 || /^\d/.test(name)) name = lines[index - 1] || lines[index + 1] || '';
     name = stripText(name);
     if (name.length < 3 || name.length > 100 || !likelyFood(name) || /^(angebot|aktion|uvp|je|ab|gültig)$/i.test(name)) continue;
-    offers.push({ name, store: 'Netto Marken-Discount', price: `${match[1].replace('.', ',')} €`, saving: '–', icon: '🛒', category: 'Lebensmittel', packSize: '1 Packung', relevance: 76, note: 'KaufDA-Prospekt · OCR', validUntil });
+    offers.push({ name, store: config.store, price: `${match[1].replace('.', ',')} €`, saving: '–', icon: '🛒', category: 'Lebensmittel', packSize: '1 Packung', relevance: 76, note: 'KaufDA-Prospekt · OCR', validUntil });
   }
   return offers;
 }
 
-async function cardOffers(page, validUntil) {
+async function cardOffers(page, validUntil, config) {
   return page.locator('input[aria-label*="zur Einkaufsliste hinzufügen"]').evaluateAll(inputs => inputs.map(input => {
     const label = input.getAttribute('aria-label') || '';
     let node = input;
@@ -44,7 +52,7 @@ async function cardOffers(page, validUntil) {
     const text = node.innerText || '';
     const price = (text.match(/(?:ab\s*)?\d{1,4}[,.]\d{2}\s*€/) || [])[0] || '';
     return { name, price };
-  })).then(items => items.map(item => ({ ...item, validUntil })));
+  })).then(items => items.map(item => ({ ...item, validUntil, store: config.store })));
 }
 
 async function ocr(file) {
@@ -56,16 +64,25 @@ async function ocr(file) {
   return outputs.join('\n');
 }
 
-const browser = await chromium.launch({ headless: true });
-const page = await browser.newPage({ viewport: { width: 1600, height: 2200 }, locale: 'de-DE' });
-try {
-  await page.goto(sourceUrl, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+function configuredMarkets() {
+  const raw = String(process.env.KAUFDA_URLS || '').trim();
+  if (!raw) return defaultMarkets;
+  const overrides = new Map();
+  for (const line of raw.split(/\r?\n/).map(stripText).filter(Boolean)) {
+    const [key, url] = line.split(/\s*\|\s*/, 2);
+    if (key && url) overrides.set(key.toLowerCase(), url);
+  }
+  return defaultMarkets.map(config => ({ ...config, url: overrides.get(config.key.toLowerCase()) || config.url }));
+}
+
+async function scrapeMarket(page, config) {
+  const offers = [];
+  await page.goto(config.url, { waitUntil: 'domcontentloaded', timeout: 45_000 });
   await page.waitForTimeout(1_500);
   const pageText = await page.locator('body').innerText();
   const validUntil = validUntilFrom(pageText);
-  const offers = [];
-  for (const item of await cardOffers(page, validUntil)) {
-    if (item.name.length >= 3 && likelyFood(item.name) && item.price !== '–') offers.push({ name: item.name, store: 'Netto Marken-Discount', price: priceFrom(item.price), saving: '–', icon: '🛒', category: 'Lebensmittel', packSize: '1 Packung', relevance: 80, note: 'KaufDA-Angebot', validUntil: item.validUntil });
+  for (const item of await cardOffers(page, validUntil, config)) {
+    if (item.name.length >= 3 && likelyFood(item.name) && priceFrom(item.price) !== '–') offers.push({ name: item.name, store: config.store, price: priceFrom(item.price), saving: '–', icon: '🛒', category: 'Lebensmittel', packSize: '1 Packung', relevance: 80, note: 'KaufDA-Angebot', validUntil: item.validUntil });
   }
 
   const openButton = page.getByRole('button', { name: /Prospekt öffnen/i }).first();
@@ -73,17 +90,17 @@ try {
     try { await openButton.click({ timeout: 8_000 }); await page.waitForTimeout(1_000); } catch { /* structured offers are still usable */ }
   }
   const viewer = new URL(page.url());
-  const viewerId = /\/contentViewer\//i.test(viewer.pathname);
-  if (viewerId) {
-    for (let brochurePage = 1; brochurePage <= 72; brochurePage += 1) {
+  if (/\/contentViewer\//i.test(viewer.pathname)) {
+    const maxPages = pageCountFrom(pageText);
+    for (let brochurePage = 1; brochurePage <= maxPages; brochurePage += 1) {
       viewer.searchParams.set('page', String(brochurePage));
       try {
         await page.goto(viewer.toString(), { waitUntil: 'domcontentloaded', timeout: 15_000 });
         await page.waitForTimeout(250);
-        const file = resolve(workdir, `page-${brochurePage}.png`);
+        const file = resolve(workdir, `${config.key.toLowerCase()}-${brochurePage}.png`);
         await page.screenshot({ path: file, fullPage: true });
-        offers.push(...parseOcr(await ocr(file), validUntil));
-      } catch { /* a page can be unavailable or not part of the brochure */ }
+        offers.push(...parseOcr(await ocr(file), validUntil, config));
+      } catch { /* einzelne Prospektseiten können fehlen */ }
     }
   }
 
@@ -93,10 +110,25 @@ try {
     const key = `${offer.name.toLowerCase()}|${offer.price}|${offer.store}`;
     if (!seen.has(key)) { seen.add(key); unique.push(offer); }
   }
-  if (!unique.length) throw new Error('KaufDA wurde geöffnet, aber es wurden keine Lebensmittelangebote erkannt.');
-  await mkdir(resolve(output, '..'), { recursive: true });
-  await writeFile(output, `${JSON.stringify({ market: 'Netto', store: 'Netto Marken-Discount', location: 'Thüngersheim', sourceUrl, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-dom-ocr-v1', recognizedCount: unique.length, offers: unique }, null, 2)}\n`, 'utf8');
-  console.log(`KaufDA: ${unique.length} Netto-Angebote nach ${output} geschrieben`);
+  if (!unique.length) throw new Error(`${config.key}: keine Lebensmittelangebote erkannt`);
+  const result = { market: config.market, store: config.store, location: config.location, sourceUrl: config.url, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-dom-ocr-v2', recognizedCount: unique.length, offers: unique };
+  await writeFile(resolve(outputDir, config.file), `${JSON.stringify(result, null, 2)}\n`, 'utf8');
+  console.log(`KaufDA: ${unique.length} ${config.key}-Angebote nach ${config.file} geschrieben`);
+  return result;
+}
+
+const browser = await chromium.launch({ headless: true });
+const page = await browser.newPage({ viewport: { width: 1600, height: 2200 }, locale: 'de-DE' });
+try {
+  await mkdir(outputDir, { recursive: true });
+  const markets = configuredMarkets();
+  const results = [];
+  for (const config of markets) {
+    try { results.push(await scrapeMarket(page, config)); }
+    catch (error) { console.error(`KaufDA-Fehler ${config.key}: ${error.message}`); }
+  }
+  if (results.length < markets.length) throw new Error(`Nur ${results.length}/${markets.length} KaufDA-Märkte erfolgreich verarbeitet.`);
+  console.log(`KaufDA: ${results.reduce((sum, result) => sum + result.recognizedCount, 0)} Angebote aus ${results.length} Märkten erkannt.`);
 } finally {
   await page.close(); await browser.close(); await rm(workdir, { recursive: true, force: true });
 }
