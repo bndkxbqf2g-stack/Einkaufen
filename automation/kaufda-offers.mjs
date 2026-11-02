@@ -11,6 +11,7 @@ const defaultMarkets = [
   { key: 'EDEKA', market: 'EDEKA', store: 'EDEKA Traut', location: 'Zellingen', url: 'https://www.kaufda.de/Filialen/Zellingen/EDEKA-Frischemarkt-Trabold-Wuerzburger-Strasse-EDEKA/v-f1222263733', file: 'edeka-offers.json' },
   { key: 'Lidl', market: 'Lidl', store: 'Lidl', location: 'Zellingen', url: 'https://www.kaufda.de/Filialen/Zellingen/Lidl-Am-Guessgraben/v-f35595', file: 'lidl-offers.json' },
   { key: 'Penny', market: 'Penny', store: 'Penny', location: 'Zellingen', url: 'https://www.kaufda.de/Filialen/Zellingen/Penny-Am-Guessgraben/v-f4407435', file: 'penny-offers.json' },
+  { key: 'Netto', market: 'Netto', store: 'Netto Marken-Discount', location: 'Thüngersheim', url: 'https://www.kaufda.de/Filialen/Thuengersheim/Netto-Marken-Discount-Am-Strassacker-Netto-Marken-Discount/v-f600145626', file: 'netto-offers.json' },
   { key: 'Kaufland', market: 'Kaufland', store: 'Kaufland', location: 'Würzburg · Nürnberger Straße 12', url: 'https://www.kaufda.de/Filialen/Wuerzburg/Kaufland-Nuernberger-Strasse/v-f1690433206', file: 'kaufland-offers.json' },
 ];
 
