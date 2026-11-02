@@ -3,7 +3,7 @@
   "store": "ALDI SÜD",
   "location": "Zellingen",
   "sourceUrl": "https://www.kaufda.de/search?query=ALDI+S%C3%9CD&lat=49.901699199999996&lng=9.812895&city=Zellingen&zip=97225",
-  "fetchedAt": "2026-11-02T11:46:48.592Z",
+  "fetchedAt": "2026-11-02T11:56:18.619Z",
   "validUntil": "09.11.2026",
   "parser": "kaufda-offer-cards-v5",
   "recognizedCount": 87,
