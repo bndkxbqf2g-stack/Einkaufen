@@ -510,7 +510,8 @@
     const settings = stored('angebotskueche.settings', { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'] });
     function isAutomaticLiveOffer(offer) {
       const source = String(offer?.source || '').trim().toLowerCase();
-      return ['offizieller live-import', 'bring-ocr-import', 'live-import'].includes(source) || source.startsWith('kaufda');
+      const metadata = `${source} ${String(offer?.note || '').trim().toLowerCase()}`;
+      return ['offizieller live-import', 'bring-ocr-import', 'live-import'].includes(source) || source.startsWith('kaufda') || (String(offer?.confidence || '').toLowerCase() === 'hoch' && /(kaufda|bring|live|offiziell|workflow)/i.test(metadata));
     }
     let storedCustomOffers = stored('angebotskueche.customOffers', []);
     const automaticStoredOffers = Array.isArray(storedCustomOffers) ? storedCustomOffers.filter(isAutomaticLiveOffer) : [];
@@ -696,7 +697,7 @@
         note: offer.note || 'offizielle Händlerseite',
         icon: offer.icon || '🛒',
       })));
-      offers = offers.filter(offer => !(offer.source === 'Offizieller Live-Import' && successfulMarkets.has(offer.store)));
+      offers = offers.filter(offer => !isAutomaticLiveOffer(offer));
       const knownKeys = new Set(offers.filter(isImportedOffer).map(offerImportKey));
       const uniqueImported = imported.filter(offer => { const key = offerImportKey(offer); if (knownKeys.has(key)) return false; knownKeys.add(key); return true; });
       offers.push(...uniqueImported);
