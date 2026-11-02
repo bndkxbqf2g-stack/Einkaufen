@@ -83,7 +83,12 @@ function configuredMarkets() {
     const [key, url] = line.split(/\s*\|\s*/, 2);
     if (key && url) overrides.set(key.toLowerCase(), url);
   }
-  return defaultMarkets.map(config => ({ ...config, url: overrides.get(config.key.toLowerCase()) || config.url }));
+  const markets = defaultMarkets.map(config => ({ ...config, url: overrides.get(config.key.toLowerCase()) || config.url }));
+  const selected = String(process.env.KAUFDA_MARKET || 'all').trim().toLowerCase();
+  if (!selected || selected === 'all') return markets;
+  const filtered = markets.filter(config => config.key.toLowerCase() === selected);
+  if (!filtered.length) throw new Error(`Unbekannter KaufDA-Markt: ${process.env.KAUFDA_MARKET}`);
+  return filtered;
 }
 
 async function scrapeMarket(page, config) {
