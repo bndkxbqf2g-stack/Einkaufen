@@ -508,18 +508,26 @@
     const appShareUrl = isGithubPagesHost ? `${window.location.origin}${window.location.pathname}` : 'https://bndkxbqf2g-stack.github.io/Einkaufen/';
     const stored = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } };
     const settings = stored('angebotskueche.settings', { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'] });
+    function isManualOffer(offer) {
+      const source = String(offer?.source || '').trim().toLowerCase();
+      const note = String(offer?.note || '').trim().toLowerCase();
+      return !source || /manuell|eigener import|benutzer|custom|persönlich/.test(`${source} ${note}`);
+    }
     function isAutomaticLiveOffer(offer) {
       const source = String(offer?.source || '').trim().toLowerCase();
       const metadata = `${source} ${String(offer?.note || '').trim().toLowerCase()}`;
-      return ['offizieller live-import', 'bring-ocr-import', 'live-import'].includes(source) || source.startsWith('kaufda') || (String(offer?.confidence || '').toLowerCase() === 'hoch' && /(kaufda|bring|live|offiziell|workflow)/i.test(metadata));
+      if (!source || source === 'demo-import' || isManualOffer(offer)) return false;
+      return ['offizieller live-import', 'bring-ocr-import', 'live-import'].includes(source) || source.startsWith('kaufda') || (String(offer?.confidence || '').toLowerCase().startsWith('hoch') && /(kaufda|bring|live|offiziell|workflow)/i.test(metadata)) || (source !== 'demo-import' && !isManualOffer(offer));
     }
-    let storedCustomOffers = stored('angebotskueche.customOffers', []);
+    let storedCustomOffers = stored('angebotskueche.customOffers', []); stored('angebotskueche.customOffers', []);
     const automaticStoredOffers = Array.isArray(storedCustomOffers) ? storedCustomOffers.filter(isAutomaticLiveOffer) : [];
     if (automaticStoredOffers.length) {
       const manual = storedCustomOffers.filter(offer => !isAutomaticLiveOffer(offer));
       try {
-        if (!localStorage.getItem('angebotskueche.legacyLiveOffers')) localStorage.setItem('angebotskueche.legacyLiveOffers', JSON.stringify({ migratedAt: new Date().toISOString(), offers: automaticStoredOffers }));
         localStorage.setItem('angebotskueche.customOffers', JSON.stringify(manual));
+        if (!localStorage.getItem('angebotskueche.legacyLiveOffers')) {
+          try { localStorage.setItem('angebotskueche.legacyLiveOffers', JSON.stringify({ migratedAt: new Date().toISOString(), count: automaticStoredOffers.length, offers: automaticStoredOffers })); } catch { /* Das Archiv ist optional; der aktive Cache wurde bereits bereinigt. */ }
+        }
         localStorage.setItem('angebotskueche.offerStorageVersion', '2');
         storedCustomOffers = manual;
       } catch { /* Der alte Cache bleibt erhalten, wenn der lokale Speicher voll ist. */ }
@@ -557,6 +565,10 @@
     const generatedOfferFiles = { Aldi: 'aldi-offers.json', Kaufland: 'kaufland-offers.json', EDEKA: 'edeka-offers.json', Lidl: 'lidl-offers.json', Penny: 'penny-offers.json', Netto: 'netto-offers.json', Bring: 'bring-offers.json' };
     let liveOfferStatus = stored('angebotskueche.liveOfferStatus', {});
     if (!liveOfferStatus || typeof liveOfferStatus !== 'object' || Array.isArray(liveOfferStatus)) liveOfferStatus = {};
+    if (liveOfferStatus.Bring?.error) {
+      delete liveOfferStatus.Bring;
+      localStorage.setItem('angebotskueche.liveOfferStatus', JSON.stringify(liveOfferStatus));
+    }
     if (!Array.isArray(settings.selectedMarkets) || !settings.selectedMarkets.length) settings.selectedMarkets = ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'];
     favorites = favorites.map(item => {
       const builtIn = seededFavorites.find(seed => normalizeIngredient(seed.name) === normalizeIngredient(item.name));
