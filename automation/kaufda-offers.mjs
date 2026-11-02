@@ -319,19 +319,24 @@ const context = await browser.newContext({
   viewport: { width: 1600, height: 2200 },
   locale: 'de-DE'
 });
-const page = await context.newPage();
 try {
   await mkdir(outputDir, { recursive: true });
   const markets = configuredMarkets();
-  const results = [];
-  for (const config of markets) {
-    try { results.push(await scrapeMarket(page, config)); }
-    catch (error) { console.error(`KaufDA-Fehler ${config.key}: ${error.message}`); }
-  }
+  const results = (await Promise.all(markets.map(async config => {
+    const marketPage = await context.newPage();
+    try {
+      return await scrapeMarket(marketPage, config);
+    } catch (error) {
+      console.error(`KaufDA-Fehler ${config.key}: ${error.message}`);
+      return null;
+    } finally {
+      await marketPage.close();
+    }
+  }))).filter(Boolean);
   if (results.length < markets.length) throw new Error(`Nur ${results.length}/${markets.length} KaufDA-Märkte erfolgreich verarbeitet.`);
   await updatePriceHistory(results);
   console.log(`KaufDA: ${results.reduce((sum, result) => sum + result.recognizedCount, 0)} Angebote aus ${results.length} Märkten erkannt.`);
 } finally {
-  await page.close(); await context.close(); await browser.close(); await rm(workdir, { recursive: true, force: true });
+  await context.close(); await browser.close(); await rm(workdir, { recursive: true, force: true });
 }
 
