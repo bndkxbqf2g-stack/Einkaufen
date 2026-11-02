@@ -389,11 +389,11 @@
         <div class="hero"><div><div class="eyebrow"><span></span> Einkaufsliste</div><h1>Ein Plan,<br><em style="font-style:normal;color:var(--coral)">ein klarer Einkauf.</em></h1><p class="hero-copy">Die Liste entsteht aus deinem aktuellen Plan. Vorräte und Zutaten, die als Reste weiterverwendet werden, werden zusammengeführt – Angebote bleiben dem passenden Markt zugeordnet.</p></div><div class="shopping-actions"><button class="outline-button" id="clearShoppingChecks">Abhaken zurücksetzen</button><button class="outline-button" id="openShoppingItem">＋ Artikel ergänzen</button><button class="primary-button" id="shareShoppingList">↗&nbsp; Liste teilen</button></div></div>
         <div class="shopping-summary">
           <div class="shopping-stat"><div class="shopping-stat-label">Offene Artikel</div><div class="shopping-stat-value" id="shoppingOpenCount">0</div><div class="shopping-stat-note" id="shoppingOpenNote">wird aus dem Plan berechnet</div></div>
-          <div class="shopping-stat accent"><div class="shopping-stat-label">Angebotswert</div><div class="shopping-stat-value" id="shoppingOfferTotal">0,00 €</div><div class="shopping-stat-note" id="shoppingOfferNote">einmal pro Packung gerechnet</div></div>
+          <div class="shopping-stat accent"><div class="shopping-stat-label">Angebotswert</div><div class="shopping-stat-value" id="shoppingOfferTotal">0,00 €</div><div class="shopping-stat-note" id="shoppingOfferNote">größere Mengen bei Mehrfachnutzung</div></div>
           <div class="shopping-stat"><div class="shopping-stat-label">Ergänzen</div><div class="shopping-stat-value" id="shoppingMissingCount">0</div><div class="shopping-stat-note">nicht als Angebot hinterlegt</div></div>
         </div>
         <section class="panel">
-          <div class="panel-header"><div><h2 class="panel-title">Nach Markt sortiert</h2><p class="panel-subtitle">Ein Haken und ergänzte Artikel bleiben lokal gespeichert und werden beim nächsten Planwechsel neu abgeglichen.</p></div><div class="shopping-actions"><button class="outline-button" id="checkAllShopping">Alles abhaken</button><button class="text-button" id="refreshShoppingList">Liste aktualisieren</button></div></div>
+          <div class="panel-header"><div><h2 class="panel-title">Nach Markt sortiert</h2><p class="panel-subtitle">Mehrfach benötigte Zutaten werden als größerer Einkauf markiert und für spätere Restegerichte eingeplant.</p></div><div class="shopping-actions"><button class="outline-button" id="checkAllShopping">Alles abhaken</button><button class="text-button" id="refreshShoppingList">Liste aktualisieren</button></div></div>
           <div class="panel-body"><div class="source-note" id="shoppingHint" style="margin-bottom:13px"></div><div id="shoppingList"></div></div>
         </section>
       </section>
@@ -427,8 +427,8 @@
     <div class="modal"><div class="modal-header"><div><h2 id="settingsModalTitle">Verbindungen &amp; Einstellungen</h2><p>Bring wird über einen geschützten GitHub-Actions-Lauf eingebunden.</p></div><button class="close" id="closeSettings" aria-label="Schließen">×</button></div><section class="panel" style="margin:0 0 14px;box-shadow:none;border-color:var(--line)"><div class="panel-body" style="padding:15px"><div class="panel-title">Bring verbinden</div><p class="source-note" style="margin-top:8px">Die App speichert kein Bring-Passwort. Für die wöchentliche automatische Auslese meldest du dich einmal im lokalen Bring-Browser an. Die GitHub Action verwendet anschließend nur die verschlüsselte Sitzung.</p><div class="modal-actions" style="justify-content:flex-start;margin-top:14px"><a class="outline-button" href="https://web.getbring.com/" target="_blank" rel="noopener">Bring öffnen ↗</a><a class="outline-button" href="https://github.com/bndkxbqf2g-stack/Einkaufen/settings/secrets/actions" target="_blank" rel="noopener">GitHub-Secret ↗</a><button class="primary-button" id="copyBringSetup">Einrichtung kopieren</button></div><div class="source-note" id="bringConnectionStatus" style="margin-top:12px">Noch keine Bring-Sitzung bestätigt. Nach dem Einrichten zeigt der Marktstatus die Zahl der erkannten Artikel.</div></div></section><p class="source-note">Einrichtung: Im Repository-Ordner <strong>node automation/bring-login.mjs</strong> ausführen, anmelden, die erzeugte Datei als Base64-Secret <strong>BRING_STORAGE_STATE_B64</strong> hinterlegen und die lokale Sitzungsdatei danach löschen. Zugangsdaten niemals in der App oder im Repository speichern.</p><div class="modal-actions"><button class="outline-button" id="cancelSettings">Schließen</button></div></div>
   </div>
 
-  <div class="modal-backdrop" id="favoriteModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal"><div class="modal-header"><div><h2 id="modalTitle">Lieblingsrezept importieren</h2><p>Link optional: importiere von lecker.de oder Chefkoch, oder speichere eine eigene Zutatenliste direkt hier.</p></div><button class="close" id="closeModal" aria-label="Schließen">×</button></div><div class="meal-tags" style="margin:0 0 12px"><span class="tag muted">lecker.de</span><span class="tag muted">Chefkoch</span><span class="tag muted">manuell</span></div><input class="input" id="recipeName" placeholder="Rezeptname (optional bei Link)" maxlength="100"/><input class="input" id="recipeUrl" style="margin-top:9px" placeholder="https://www.lecker.de/… oder https://www.chefkoch.de/…" type="url"/><label class="source-note" style="display:block;margin-top:12px">Zutaten (mindestens eine bei manueller Eingabe)<textarea class="input textarea" id="recipeIngredients" style="margin-top:6px;min-height:90px" placeholder="eine Zutat pro Zeile, z. B. Kartoffeln&#10;Wiener Würstchen&#10;Zwiebel"></textarea></label><div class="source-note" id="importStatus" style="margin-top:10px"></div><div class="modal-actions"><button class="outline-button" id="cancelModal">Abbrechen</button><button class="primary-button" id="importRecipe">Rezept übernehmen</button></div></div>
+    <div class="modal-backdrop" id="favoriteModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal"><div class="modal-header"><div><h2 id="modalTitle">Lieblingsrezept importieren</h2><p>Link optional: Rezeptseiten werden plattformoffen übernommen. Strukturierte Zutaten werden automatisch gelesen; bei blockierter Seite kannst du sie direkt ergänzen.</p></div><button class="close" id="closeModal" aria-label="Schließen">×</button></div><div class="meal-tags" style="margin:0 0 12px"><span class="tag muted">beliebige Rezeptseite</span><span class="tag muted">JSON-LD</span><span class="tag muted">manuell</span></div><input class="input" id="recipeName" placeholder="Rezeptname (optional bei Link)" maxlength="100"/><input class="input" id="recipeUrl" style="margin-top:9px" placeholder="https://www.deine-rezeptseite.de/…" type="url"/><label class="source-note" style="display:block;margin-top:12px">Zutaten (optional bei erfolgreichem Import)<textarea class="input textarea" id="recipeIngredients" style="margin-top:6px;min-height:90px" placeholder="eine Zutat pro Zeile, z. B. Kartoffeln&#10;Wiener Würstchen&#10;Zwiebel"></textarea></label><div class="source-note" id="importStatus" style="margin-top:10px"></div><div class="modal-actions"><button class="outline-button" id="cancelModal">Abbrechen</button><button class="primary-button" id="importRecipe">Rezept übernehmen</button></div></div>
   </div>
   <div class="modal-backdrop" id="offerModal" role="dialog" aria-modal="true" aria-labelledby="offerModalTitle">
     <div class="modal"><div class="modal-header"><div><h2 id="offerModalTitle">Angebote ergänzen</h2><p>Manueller Fallback für Prospekte oder Quellen, die noch nicht automatisch ausgelesen werden können. Eine Zeile pro Angebot:</p></div><button class="close" id="closeOfferModal" aria-label="Schließen">×</button></div><textarea class="input textarea" id="offerInput" placeholder="Kartoffeln | Aldi | 1,99 € | -33% | Basis | 2,5 kg | TT.MM.JJJJ | Prospekt&#10;Hackfleisch | Lidl | 4,99 € | -20% | Hauptzutat | 500 g | TT.MM.JJJJ | Lidl-Prospekt"></textarea><div class="source-note" style="margin-top:8px">Für Lidl: <a href="https://www.lidl.de/c/online-prospekte/s10005610/" target="_blank" rel="noopener">offiziellen Prospekt öffnen</a>, Filiale auswählen und die Lebensmittelzeilen hier übernehmen. Format: Produkt | Markt | Preis | Rabatt | Kategorie | Packung | gültig bis | Quelle. Tabulator- und Semikolon-Zeilen werden ebenfalls erkannt.</div><div class="modal-actions"><button class="outline-button" id="cancelOfferModal">Abbrechen</button><button class="primary-button" id="importOffers">Angebote übernehmen</button></div></div>
@@ -894,7 +894,13 @@
         const offer = activeOffers.filter(candidate => offerMatchesIngredient(ingredient, candidate)).sort((first, second) => Number(second.relevance || 0) - Number(first.relevance || 0))[0] || null;
         items.set(key, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id });
       });
-      return [...items.values()].sort((first, second) => Number(Boolean(first.offer)) - Number(Boolean(second.offer)) || first.name.localeCompare(second.name, 'de'));
+      const people = Number($('#peopleSelect')?.value || settings.people || 2);
+      return [...items.values()].map(item => {
+        // Zutaten werden ohne Mengenangabe im Rezept geführt. Ein Vorkommen entspricht deshalb
+        // einer Basisportion für zwei Personen; bei 4 Personen werden zwei Packungen eingeplant.
+        const packCount = Math.max(1, Math.ceil((item.count * people) / 2));
+        return { ...item, packCount, reused: item.count > 1 };
+      }).sort((first, second) => Number(Boolean(first.offer)) - Number(Boolean(second.offer)) || first.name.localeCompare(second.name, 'de'));
     }
 
     function renderShoppingList() {
@@ -902,13 +908,14 @@
       const openItems = items.filter(item => !shoppingChecks[item.id]);
       const offerItems = items.filter(item => item.offer);
       const missingItems = items.filter(item => !item.offer);
-      const offerTotal = offerItems.reduce((sum, item) => sum + parseMoney(item.offer.price), 0);
+      const offerTotal = offerItems.reduce((sum, item) => sum + parseMoney(item.offer.price) * (item.packCount || 1), 0);
+      const reusedItems = items.filter(item => item.reused);
       $('#shoppingOpenCount').textContent = String(openItems.length);
       $('#shoppingOpenNote').textContent = `${items.length ? `${items.length - openItems.length} von ${items.length} ` : ''}abgehakt`;
       $('#shoppingOfferTotal').textContent = formatEuro(offerTotal);
-      $('#shoppingOfferNote').textContent = `${offerItems.length} Artikel aus aktiven Märkten`;
+      $('#shoppingOfferNote').textContent = `${offerItems.length} Artikel · Packungen für ${Number($('#peopleSelect').value || 2)} Personen`;
       $('#shoppingMissingCount').textContent = String(missingItems.length);
-      $('#shoppingHint').textContent = items.length ? `${openItems.length} offene Artikel · ${offerItems.length} mit Angebotsanker · Vorräte werden nicht angezeigt.` : 'Noch keine einkaufbaren Zutaten im aktuellen Plan.';
+      $('#shoppingHint').textContent = items.length ? `${openItems.length} offene Artikel · ${offerItems.length} mit Angebotsanker · ${reusedItems.length ? `${reusedItems.length} Zutaten für mehrere Gerichte eingeplant · größere Packungsmenge berücksichtigt` : 'noch keine Zutat mehrfach eingeplant'} · Vorräte werden nicht angezeigt.` : 'Noch keine einkaufbaren Zutaten im aktuellen Plan.';
       if (!items.length) { $('#shoppingList').innerHTML = '<div class="empty-state">Für den aktuellen Plan gibt es noch keine Einkaufsliste.</div>'; return; }
       const groups = new Map();
       items.forEach(item => { const label = item.offer?.store || 'Ergänzen'; if (!groups.has(label)) groups.set(label, []); groups.get(label).push(item); });
@@ -918,7 +925,7 @@
         if (second[0] === 'Ergänzen') return -1;
         return (marketOrder.indexOf(first[0]) === -1 ? 99 : marketOrder.indexOf(first[0])) - (marketOrder.indexOf(second[0]) === -1 ? 99 : marketOrder.indexOf(second[0]));
       });
-       $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group"><div class="shopping-group-title"><span>${escapeHtml(group === 'Ergänzen' ? 'Noch zu ergänzen' : marketDisplayName(group))}</span><span>${groupItems.length} Artikel</span></div><div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const useLabel = item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(item.offer.packSize || '1 Packung')} · ${escapeHtml(item.offer.saving || 'Angebot')}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
+       $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group"><div class="shopping-group-title"><span>${escapeHtml(group === 'Ergänzen' ? 'Noch zu ergänzen' : marketDisplayName(group))}</span><span>${groupItems.length} Artikel</span></div><div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const useLabel = item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; const packLabel = item.offer ? (item.packCount > 1 ? `${item.packCount} Packungen · ${item.offer.packSize || 'Packungsgröße'} · für ${Number($('#peopleSelect').value || 2)} Personen` : `${item.offer.packSize || '1 Packung'} · ${item.offer.saving || 'Angebot'}`) : ''; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.packCount > 1 ? `${item.packCount} × ${item.offer.price}` : item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(packLabel)}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
     }
 
     function openShoppingItemModal() {
@@ -1084,7 +1091,7 @@
       if (!pending.length) { showToast('Die Einkaufsliste ist bereits vollständig abgehakt.'); return; }
       const groups = new Map();
       pending.forEach(item => { const group = item.offer?.store || 'Noch zu ergänzen'; if (!groups.has(group)) groups.set(group, []); groups.get(group).push(item); });
-      const lines = [...groups.entries()].map(([group, items]) => `${marketDisplayName(group)}\n${items.map(item => `- ${item.name}${item.count > 1 ? ` · für ${item.count} Gerichte` : ''}${item.offer ? ` · ${item.offer.packSize || '1 Packung'} · ${item.offer.price}` : ' · ergänzen'}`).join('\n')}`).join('\n\n');
+      const lines = [...groups.entries()].map(([group, items]) => `${marketDisplayName(group)}\n${items.map(item => `- ${item.name}${item.count > 1 ? ` · für ${item.count} Gerichte` : ''}${item.offer ? ` · ${item.packCount || 1} × ${item.offer.packSize || '1 Packung'} · ${formatEuro(parseMoney(item.offer.price) * (item.packCount || 1))}` : ' · ergänzen'}`).join('\n')}`).join('\n\n');
       const text = `Angebotsküche · offene Einkaufsliste\n\n${lines}`;
       if (navigator.share) {
         try { await navigator.share({ title: 'Angebotsküche · Einkaufsliste', text, url: appShareUrl }); showToast('Einkaufsliste geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
@@ -1146,12 +1153,22 @@
 
     function applyLeftoverPlan(meals) {
       if ($('#leftoverToggle')?.checked === false) return meals.map(meal => ({ ...meal, reusedIngredients: [] }));
-      const seen = [];
+      const usage = meals.map((meal, mealIndex) => ({ mealIndex, ingredients: getMealIngredients(meal).filter(ingredient => !isPantryIngredient(ingredient)) }));
+      const relatedIngredients = (mealIndex, ingredient, direction) => usage.flatMap(entry => {
+        if (direction === 'before' && entry.mealIndex >= mealIndex) return [];
+        if (direction === 'after' && entry.mealIndex <= mealIndex) return [];
+        return entry.ingredients.filter(previous => ingredientsOverlap(ingredient, previous)).map(() => ingredient);
+      });
       return meals.map(meal => {
-        const ingredients = getMealIngredients(meal);
-        const reusedIngredients = ingredients.filter(ingredient => !isPantryIngredient(ingredient) && seen.some(previous => ingredientsOverlap(ingredient, previous))).slice(0, 3);
-        seen.push(...ingredients);
-        return reusedIngredients.length ? { ...meal, reusedIngredients, tags: [...new Set([...(meal.tags || []), 'Resteverwertung'])], note: `${meal.note} · ${reusedIngredients.join(' + ')} werden weiterverwendet` } : { ...meal, reusedIngredients: [] };
+        const mealIndex = meals.indexOf(meal);
+        const ingredients = usage[mealIndex]?.ingredients || [];
+        const reusedIngredients = [...new Set(ingredients.filter(ingredient => relatedIngredients(mealIndex, ingredient, 'before').length))].slice(0, 3);
+        const plannedLeftovers = [...new Set(ingredients.filter(ingredient => relatedIngredients(mealIndex, ingredient, 'after').length))].slice(0, 3);
+        const tags = [...(meal.tags || [])];
+        const noteParts = [meal.note];
+        if (plannedLeftovers.length) { tags.push('Rest für später'); noteParts.push(`${plannedLeftovers.join(' + ')} für spätere Gerichte zurücklegen`); }
+        if (reusedIngredients.length) { tags.push('Resteverwertung'); noteParts.push(`${reusedIngredients.join(' + ')} aus dem größeren Einkauf weiterverwenden`); }
+        return { ...meal, reusedIngredients, plannedLeftovers, tags: [...new Set(tags)], note: noteParts.join(' · ') };
       });
     }
 
@@ -1705,9 +1722,9 @@
       if (url) {
         let parsed;
         try { parsed = new URL(url); } catch { showToast('Bitte einen gültigen Rezeptlink einfügen.'); return; }
-        const host = parsed.hostname.toLowerCase();
-        source = host === 'lecker.de' || host.endsWith('.lecker.de') ? 'lecker.de' : host === 'chefkoch.de' || host.endsWith('.chefkoch.de') ? 'Chefkoch' : null;
-        if (!source) { showToast('Bitte einen Link von lecker.de oder Chefkoch verwenden.'); return; }
+        if (!['http:', 'https:'].includes(parsed.protocol)) { showToast('Bitte einen http(s)-Rezeptlink verwenden.'); return; }
+        const host = parsed.hostname.toLowerCase().replace(/^www\./, '');
+        source = host || 'Rezeptseite';
         $('#importStatus').textContent = `Lese strukturierte Rezeptdaten von ${source} …`;
         const slug = decodeURIComponent(parsed.pathname.split('/').filter(Boolean).pop() || '').replace(/\.(html?|php)$/i, '').replace(/[-_]+/g, ' ').trim();
         fallbackLabel = manualName || (slug ? slug.replace(/\b\w/g, letter => letter.toUpperCase()) : `Rezept von ${source}`);
@@ -1716,7 +1733,7 @@
       const ingredients = recipeData?.ingredients?.length ? recipeData.ingredients : manualIngredients;
       const ingredientLabel = recipeData?.ingredients?.length ? 'automatisch erkannt' : manualIngredients.length ? 'manuell ergänzt' : 'Analyse ausstehend';
       const name = recipeData?.name || fallbackLabel;
-      favorites.push({ name, icon: source === 'Chefkoch' ? '👩‍🍳' : '🥘', source, match: ingredients.length ? 'Zutaten erkannt – wird gegen Angebote geprüft' : 'Link gespeichert – Zutatenanalyse ausstehend', score: 0, note: ingredients.length ? `${source} · ${ingredients.length} Zutaten · ${ingredientLabel}` : `${source} · Analyse ausstehend`, ingredients, url });
+      favorites.push({ name, icon: source === 'chefkoch.de' ? '👩‍🍳' : '🥘', source, match: ingredients.length ? 'Zutaten erkannt – wird gegen Angebote geprüft' : 'Link gespeichert – Zutatenanalyse ausstehend', score: 0, note: ingredients.length ? `${source} · ${ingredients.length} Zutaten · ${ingredientLabel}` : `${source} · Analyse ausstehend`, ingredients, url });
       localStorage.setItem('angebotskueche.favorites', JSON.stringify(favorites));
       renderFavorites(); renderSuggestions(); renderPlan();
       $('#favoriteModal').classList.remove('open');
@@ -1724,7 +1741,7 @@
       $('#recipeUrl').value = '';
       $('#recipeIngredients').value = '';
       $('#importStatus').textContent = '';
-      showToast(ingredients.length ? `${source}-Rezept mit ${ingredients.length} Zutaten importiert.` : `${source}-Rezept gespeichert – die Quelle blockiert den direkten Browserimport.`);
+      showToast(ingredients.length ? `${source}-Rezept mit ${ingredients.length} Zutaten importiert.` : `${source}-Rezept gespeichert – Zutaten bitte ergänzen, falls die Seite den Browserzugriff blockiert.`);
     });
     $('#addPantry').addEventListener('click', openPantryModal);
     $('#closePantryModal').addEventListener('click', closePantryModal);
