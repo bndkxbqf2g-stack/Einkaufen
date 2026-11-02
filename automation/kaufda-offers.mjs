@@ -123,7 +123,7 @@ async function collectStructuredOffers(page, validUntil, config) {
     if (unique.size === before && atBottom) stablePasses += 1;
     else stablePasses = 0;
     if (targetCardCount && loadedCardCount >= targetCardCount) break;
-    if (stablePasses >= requiredStablePasses) break;
+    if (!targetCardCount && stablePasses >= requiredStablePasses) break;
   }
   await page.evaluate(() => window.scrollTo(0, 0));
   return [...unique.values()];
