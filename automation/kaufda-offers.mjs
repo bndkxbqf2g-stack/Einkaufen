@@ -103,9 +103,11 @@ function cardBelongsToConfig(item, config) {
 async function collectStructuredOffers(page, validUntil, config) {
   const unique = new Map();
   let stablePasses = 0;
+  let noCardGrowthPasses = 0;
   const browserScroll = Boolean(config.browserUrl);
   const maxPasses = browserScroll ? 400 : 80;
   const requiredStablePasses = browserScroll ? 20 : 4;
+  const maximumNoGrowthPasses = browserScroll ? 24 : 6;
   const targetCardCount = Number(config.expectedOfferCount || 0);
   const addVisibleCards = (items) => {
     for (const item of items) {
@@ -119,6 +121,7 @@ async function collectStructuredOffers(page, validUntil, config) {
   for (let pass = 0; pass < maxPasses; pass += 1) {
     addVisibleCards(await cardOffers(page, validUntil, config));
     const before = unique.size;
+    const cardsBeforeScroll = await page.locator('[aria-label*="zur Einkaufsliste hinzufügen"]').count();
     await advanceOfferView(page);
     if (browserScroll) {
       await page.mouse.wheel(0, 500);
@@ -131,7 +134,10 @@ async function collectStructuredOffers(page, validUntil, config) {
     const atBottom = await page.evaluate(() => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 32);
     if (unique.size === before && atBottom) stablePasses += 1;
     else stablePasses = 0;
+    if (loadedCardCount <= cardsBeforeScroll) noCardGrowthPasses += 1;
+    else noCardGrowthPasses = 0;
     if (targetCardCount && loadedCardCount >= targetCardCount) break;
+    if (targetCardCount && noCardGrowthPasses >= maximumNoGrowthPasses) break;
     if (!targetCardCount && stablePasses >= requiredStablePasses) break;
   }
   await page.evaluate(() => window.scrollTo(0, 0));
