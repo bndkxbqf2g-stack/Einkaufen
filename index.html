@@ -442,6 +442,9 @@
   <div class="modal-backdrop" id="ratingModal" role="dialog" aria-modal="true" aria-labelledby="ratingModalTitle">
     <div class="modal"><div class="modal-header"><div><h2 id="ratingModalTitle">Wie war das Rezept?</h2><p id="ratingRecipeLabel">Deine Bewertung bleibt lokal gespeichert und hilft dir später bei der Auswahl.</p></div><button class="close" id="closeRatingModal" aria-label="Schließen">×</button></div><div class="rating-choice" id="ratingChoices"><button data-rating="1">★</button><button data-rating="2">★★</button><button data-rating="3">★★★</button><button data-rating="4">★★★★</button><button data-rating="5">★★★★★</button></div><div class="source-note" style="margin-top:10px">1 = nicht wieder · 5 = unbedingt wieder</div></div>
   </div>
+  <div class="modal-backdrop" id="recipeDetailModal" role="dialog" aria-modal="true" aria-labelledby="recipeDetailTitle">
+    <div class="modal"><div class="modal-header"><div><h2 id="recipeDetailTitle">Rezept</h2><p id="recipeDetailMeta"></p></div><button class="close" id="closeRecipeDetail" aria-label="Schließen">×</button></div><div class="meal-tags" id="recipeDetailTags"></div><section class="panel" style="margin:12px 0 0;box-shadow:none;border-color:var(--line)"><div class="panel-body" style="padding:14px"><div class="panel-title">Zutaten</div><div class="suggestion-ingredients" id="recipeDetailIngredients" style="margin-top:10px"></div></div></section><section class="panel" style="margin:12px 0 0;box-shadow:none;border-color:var(--line)"><div class="panel-body" style="padding:14px"><div class="panel-title">Zubereitung</div><p id="recipeDetailInstructions" style="margin:9px 0 0"></p></div></section><div class="source-note" id="recipeDetailSource" style="margin-top:12px"></div><div class="modal-actions"><button class="outline-button" id="cancelRecipeDetail">Schließen</button><button class="primary-button" id="recipeDetailChoose">Für heute wählen</button></div></div>
+  </div>
   <div class="modal-backdrop" id="pantryModal" role="dialog" aria-modal="true" aria-labelledby="pantryModalTitle">
     <div class="modal"><div class="modal-header"><div><h2 id="pantryModalTitle">Vorräte schnell ergänzen</h2><p>Mehrere Zutaten mit Komma, Semikolon oder Enter trennen. Sie werden sofort als vorhanden behandelt – ähnlich wie bei Bring.</p></div><button class="close" id="closePantryModal" aria-label="Schließen">×</button></div><label class="source-note" for="pantryInput">Zutaten</label><input class="input" id="pantryInput" maxlength="500" placeholder="z. B. Reis, Nudeln, Eier oder Tomatenmark" autocomplete="off"><div class="source-note" id="pantryStatus" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelPantryModal">Fertig</button><button class="primary-button" id="savePantryItem">＋ Hinzufügen</button></div></div>
   </div>
@@ -811,7 +814,7 @@
         <article class="day-card ${index === 0 ? 'today' : ''}">
           <div class="day-date">${index === 0 ? '<span class="today-tag">Heute</span>' : ''}<span class="day-name">${escapeHtml(meal.day)}</span><small>${escapeHtml(meal.date)}</small></div>
           <div class="meal-row"><div class="meal-emoji ${meal.kind === 'warm' ? 'warm' : ''}">${escapeHtml(meal.emoji)}</div><div class="meal-info"><div class="meal-type">${meal.kind === 'warm' ? 'Warmes Hauptgericht' : 'Abendessen'}${meal.manual ? '<span class="manual-choice">· deine Auswahl</span>' : ''}</div><div class="meal-title">${escapeHtml(meal.title)}</div><div class="meal-meta"><span>für <b>${people} Personen</b></span><span>ca. <b>${(cost * multiplier).toFixed(2).replace('.', ',')} €</b></span><span>${escapeHtml(marketDisplayString(meal.store))}</span></div><div class="meal-tags">${tags.map((tag, tagIndex) => `<span class="tag ${tagIndex === 1 ? 'yellow' : ''}">${escapeHtml(tag)}</span>`).join('')}</div><div class="recipe-preview"><span class="recipe-preview-label">Rezept · Zutaten</span><div class="recipe-preview-list">${getMealIngredients(meal).slice(0, 6).map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('') || '<span class="source-note">Zutaten noch nicht hinterlegt</span>'}</div></div></div></div>
-          <div class="day-score"><div class="score"><span class="score-ring" style="background:conic-gradient(var(--green-2) 0 ${meal.score}%, #e1ece2 ${meal.score}% 100%)"><span>${meal.score}</span></span> Match</div><div class="day-actions"><button class="text-button meal-detail" data-title="${escapeHtml(meal.title)}" data-note="${escapeHtml(meal.note)}">Details&nbsp;→</button><button class="small-button" data-choose-day="${index}">Rezept wählen</button>${meal.manual ? `<button class="small-button remove" data-clear-day="${index}">Auswahl lösen</button>` : ''}<button class="small-button" data-rate-meal="${index}">${rating ? `Bewertet: ${'★'.repeat(rating)}` : 'Gekocht? Bewerten'}</button></div></div>
+          <div class="day-score"><div class="score"><span class="score-ring" style="background:conic-gradient(var(--green-2) 0 ${meal.score}%, #e1ece2 ${meal.score}% 100%)"><span>${meal.score}</span></span> Match</div><div class="day-actions"><button class="text-button meal-detail" data-day-index="${index}" data-title="${escapeHtml(meal.title)}" data-note="${escapeHtml(meal.note)}">Details&nbsp;→</button><button class="small-button" data-choose-day="${index}">Rezept wählen</button>${meal.manual ? `<button class="small-button remove" data-clear-day="${index}">Auswahl lösen</button>` : ''}<button class="small-button" data-rate-meal="${index}">${rating ? `Bewertet: ${'★'.repeat(rating)}` : 'Gekocht? Bewerten'}</button></div></div>
         </article>`; }).join('') + (evening ? `<div class="day-card" style="background:#f4f8f1;border-style:dashed"><div class="day-date"><span class="day-name">Abends</span><small>optional</small></div><div class="meal-row"><div class="meal-emoji">🍞</div><div class="meal-info"><div class="meal-type">Leichtes Abendessen</div><div class="meal-title">${leftovers ? 'Brotzeit oder Restetag' : 'Brotzeit mit Vorräten'}</div><div class="meal-meta"><span>kein extra Angebotsstopp nötig</span></div></div></div><div class="day-score"><span class="tag muted">flexibel</span></div></div>` : '');
       renderPlanSuggestions();
       decoratePlanSourceLinks(visible);
@@ -832,7 +835,7 @@
         link.dataset.recipeSource = 'true';
         link.className = 'source-note';
         link.href = url;
-        link.target = '_blank';
+        link.target = '_self';
         link.rel = 'noopener';
         link.textContent = 'Originalrezept öffnen ↗';
         link.style.display = 'inline-block';
@@ -1086,6 +1089,32 @@
         link.style.display = 'inline-block';
         card.querySelector('.suggestion-detail')?.before(link);
       });
+    }
+
+    let recipeDetailRecipe = null;
+    let recipeDetailDayIndex = null;
+
+    function openRecipeDetail(recipe, dayIndex = null) {
+      if (!recipe) return;
+      recipeDetailRecipe = recipe;
+      recipeDetailDayIndex = dayIndex === null || dayIndex === undefined ? null : Number(dayIndex);
+      const ingredients = getMealIngredients(recipe).length ? getMealIngredients(recipe) : (recipe.ingredients || []);
+      const match = scoreRecipe(recipe);
+      const source = recipeSourceUrl(recipe);
+      $('#recipeDetailTitle').textContent = recipe.title || 'Rezept';
+      $('#recipeDetailMeta').textContent = `${recipe.time || '–'} Min. · ${recipe.difficulty || 'leicht'} · ca. ${match.estimatedCost || formatEuro(parseMoney(recipe.cost || 0))}${match.stores?.length ? ` · ${match.stores.map(marketDisplayName).join(' + ')}` : ''}`;
+      $('#recipeDetailTags').innerHTML = [...(recipe.tags || []), match.matchedIngredients?.length ? `${match.matchedIngredients.length} Angebotszutaten` : 'Angebots-Match ausstehend'].map((tag, index) => `<span class="tag ${index === 0 && recipe.vegetarian ? '' : 'yellow'}">${escapeHtml(tag)}</span>`).join('');
+      $('#recipeDetailIngredients').innerHTML = ingredients.length ? ingredients.map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('') : '<span class="source-note">Für dieses Rezept sind noch keine Zutaten hinterlegt.</span>';
+      $('#recipeDetailInstructions').textContent = recipe.instructions || 'Kurze Zubereitung ist für dieses Rezept noch nicht hinterlegt.';
+      $('#recipeDetailSource').innerHTML = source ? `<a class="outline-button" href="${escapeHtml(source)}" target="_self" rel="noopener">Originalrezept öffnen ↗</a>` : 'Eigenes Rezept aus Angebotsküche · Zutaten und Zubereitung werden lokal gespeichert.';
+      $('#recipeDetailChoose').textContent = recipeDetailDayIndex === null ? 'Für heute wählen' : 'Für diesen Tag wählen';
+      $('#recipeDetailModal').classList.add('open');
+    }
+
+    function closeRecipeDetail() {
+      $('#recipeDetailModal').classList.remove('open');
+      recipeDetailRecipe = null;
+      recipeDetailDayIndex = null;
     }
 
     async function shareRecipe(id) {
@@ -1750,7 +1779,12 @@
       const choose = event.target.closest('[data-choose-day]');
       const clear = event.target.closest('[data-clear-day]');
       const rate = event.target.closest('[data-rate-meal]');
-      if (detail) showToast(`${detail.dataset.title}: ${detail.dataset.note}.`);
+      if (detail) {
+        const dayIndex = Number(detail.dataset.dayIndex);
+        const meal = getCurrentPlanMeals()[dayIndex];
+        const candidate = getPlanCandidates().find(item => normalizeIngredient(item.title) === normalizeIngredient(meal?.title));
+        openRecipeDetail({ ...(candidate || {}), ...(meal || {}), ingredients: getMealIngredients(meal).length ? getMealIngredients(meal) : (candidate?.ingredients || []) }, dayIndex);
+      }
       if (choose) {
         const meal = getCurrentPlanMeals()[Number(choose.dataset.chooseDay)];
         const recipe = getPlanCandidates().find(candidate => candidate.title === meal?.title);
@@ -1759,6 +1793,17 @@
       }
       if (clear) { clearDayAssignment(clear.dataset.clearDay); renderPlan(); renderSuggestions(); showToast('Die manuelle Tagesauswahl wurde gelöst.'); }
       if (rate) { const meal = getCurrentPlanMeals()[Number(rate.dataset.rateMeal)]; if (meal) openRatingModal(meal); }
+    });
+    $('#closeRecipeDetail').addEventListener('click', closeRecipeDetail);
+    $('#cancelRecipeDetail').addEventListener('click', closeRecipeDetail);
+    $('#recipeDetailModal').addEventListener('click', event => { if (event.target.id === 'recipeDetailModal') closeRecipeDetail(); });
+    $('#recipeDetailChoose').addEventListener('click', () => {
+      if (!recipeDetailRecipe) return;
+      if (recipeDetailDayIndex === null) {
+        if (assignRecipeToDay(recipeDetailRecipe.id, 0)) { closeRecipeDetail(); renderPlan(); renderSuggestions(); showToast(`${recipeDetailRecipe.title} für heute ausgewählt.`); }
+        return;
+      }
+      if (assignRecipeToDay(recipeDetailRecipe.id, recipeDetailDayIndex)) { closeRecipeDetail(); renderPlan(); renderSuggestions(); showToast(`${recipeDetailRecipe.title} für diesen Tag ausgewählt.`); }
     });
     $('#closeAssignModal').addEventListener('click', closeAssignModal);
     $('#cancelAssignModal').addEventListener('click', closeAssignModal);
@@ -1862,7 +1907,7 @@
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
     let automaticOfferRefreshStarted = false;
     renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
-    const APP_BUILD = '2026-11-02-pantry-quick-entry-1';
+    const APP_BUILD = '2026-11-02-recipe-details-1';
     try {
       if (localStorage.getItem('angebotskueche.appBuild') !== APP_BUILD) {
         localStorage.setItem('angebotskueche.appBuild', APP_BUILD);
@@ -1870,7 +1915,7 @@
         if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(registration => registration.update())).catch(() => {});
       }
     } catch {}
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=18', { updateViaCache: 'none' }).catch(() => {}));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=19', { updateViaCache: 'none' }).catch(() => {}));
   </script>
 </body>
 </html>
