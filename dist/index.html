@@ -1453,7 +1453,13 @@
     function showPage(page) {
       $$('.nav-button').forEach(button => button.classList.toggle('active', button.dataset.page === page));
       $$('.page').forEach(section => section.classList.toggle('active', section.id === `page-${page}`));
-      if (page === 'offers') renderOffers($('#offerFilter').value);
+      if (page === 'offers') {
+        renderOffers($('#offerFilter').value);
+        if (isGithubPagesHost && !automaticOfferRefreshStarted) {
+          automaticOfferRefreshStarted = true;
+          setTimeout(() => refreshOfficialOffers(), 0);
+        }
+      }
       window.scrollTo(0, 0);
     }
 
@@ -1739,13 +1745,9 @@
 
     configureGithubPages();
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
+    let automaticOfferRefreshStarted = false;
     renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
-    if (isGithubPagesHost) {
-      const refreshWhenIdle = () => refreshOfficialOffers();
-      if ('requestIdleCallback' in window) requestIdleCallback(refreshWhenIdle, { timeout: 5000 });
-      else setTimeout(refreshWhenIdle, 2500);
-    }
-    const APP_BUILD = '2026-11-02-mobile-recovery-6';
+    const APP_BUILD = '2026-11-02-mobile-recovery-7';
     try {
       if (localStorage.getItem('angebotskueche.appBuild') !== APP_BUILD) {
         localStorage.setItem('angebotskueche.appBuild', APP_BUILD);
