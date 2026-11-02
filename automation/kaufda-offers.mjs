@@ -41,7 +41,7 @@ function parseOcr(text, validUntil, config) {
 }
 
 async function cardOffers(page, validUntil, config) {
-  return page.locator('input[aria-label*="zur Einkaufsliste hinzufügen"]').evaluateAll(inputs => inputs.map(input => {
+  return page.locator('[aria-label*="zur Einkaufsliste hinzufügen"]').evaluateAll(inputs => inputs.map(input => {
     const label = input.getAttribute('aria-label') || '';
     let node = input;
     for (let index = 0; index < 7 && node.parentElement; index += 1) {
