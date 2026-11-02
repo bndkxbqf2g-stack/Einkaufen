@@ -159,12 +159,20 @@ function configuredMarkets() {
   return filtered;
 }
 
+async function readOfferTargetCount(page) {
+  const labels = await page.getByRole('button', { name: /^Angebote\b/i }).allInnerTexts().catch(() => []);
+  const label = labels.find(value => /Angebote\s*\d+/i.test(value)) || '';
+  return Number(label.match(/Angebote\s*(\d+)/i)?.[1] || 0);
+}
+
 async function scrapeMarket(page, config) {
   const offers = [];
   const sourceUrl = config.browserUrl || config.url;
+  let targetOfferCount = 0;
   await page.goto(sourceUrl, { waitUntil: 'domcontentloaded', timeout: 45_000 });
   await page.waitForTimeout(1_500);
   if (config.browserUrl && /\/search(?:\?|$)/i.test(page.url())) {
+    targetOfferCount = await readOfferTargetCount(page);
     const offersButton = page.getByRole('button', { name: /^Angebote\b/i }).first();
     if (await offersButton.count()) {
       try { await offersButton.click({ timeout: 8_000 }); await page.waitForTimeout(1_000); } catch { /* search results may already be expanded */ }
@@ -173,6 +181,11 @@ async function scrapeMarket(page, config) {
   const pageText = await page.locator('body').innerText();
   const validUntil = validUntilFrom(pageText);
   const structuredItems = await collectStructuredOffers(page, validUntil, config);
+  const loadedOfferCardCount = await page.locator('[aria-label*="zur Einkaufsliste hinzufügen"]').count();
+  const targetReached = !targetOfferCount || loadedOfferCardCount >= targetOfferCount;
+  if (config.browserUrl) {
+    console.log(`KaufDA: ${config.key} Karten geladen ${loadedOfferCardCount}/${targetOfferCount || 'unbekannt'}${targetReached ? ' (Ziel erreicht)' : ' (Ziel noch nicht erreicht; KaufDA kann weitere Karten nachladen)'}`);
+  }
   if (config.browserUrl && structuredItems.length === 0) {
     throw new Error(`${config.key}: konfigurierte Browser-Angebotsseite lieferte keine Angebotskarten`);
   }
@@ -185,7 +198,7 @@ async function scrapeMarket(page, config) {
   const useOcrFallback = !config.browserUrl && (config.key !== 'Aldi' || structuredItems.length < 10);
   if (!useOcrFallback) {
     const unique = [...new Map(offers.map(offer => [`${offer.name.toLowerCase()}|${offer.price}|${offer.store}`, offer])).values()];
-    const result = { market: config.market, store: config.store, location: config.location, sourceUrl, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-offer-cards-v4', recognizedCount: unique.length, offers: unique };
+    const result = { market: config.market, store: config.store, location: config.location, sourceUrl, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-offer-cards-v5', recognizedCount: unique.length, targetOfferCount: targetOfferCount || null, loadedOfferCardCount, targetReached, offers: unique };
     await writeFile(resolve(outputDir, config.file), `${JSON.stringify(result, null, 2)}\n`, 'utf8');
     console.log(`KaufDA: ${unique.length} ${config.key}-Angebote aus strukturierten Karten nach ${config.file} geschrieben`);
     return result;
@@ -239,7 +252,7 @@ async function scrapeMarket(page, config) {
     if (!seen.has(key)) { seen.add(key); unique.push(offer); }
   }
   if (!unique.length) throw new Error(`${config.key}: keine Lebensmittelangebote erkannt`);
-  const result = { market: config.market, store: config.store, location: config.location, sourceUrl, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-prospect-images-ocr-v3', recognizedCount: unique.length, offers: unique };
+  const result = { market: config.market, store: config.store, location: config.location, sourceUrl, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-prospect-images-ocr-v3', recognizedCount: unique.length, targetOfferCount: targetOfferCount || null, loadedOfferCardCount, targetReached, offers: unique };
   await writeFile(resolve(outputDir, config.file), `${JSON.stringify(result, null, 2)}\n`, 'utf8');
   console.log(`KaufDA: ${unique.length} ${config.key}-Angebote nach ${config.file} geschrieben`);
   return result;
