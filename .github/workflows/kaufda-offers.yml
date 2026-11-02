@@ -1,4 +1,4 @@
-name: KaufDA-Netto-Angebote für Thüngersheim aktualisieren
+name: KaufDA-Angebote für Zellingen und Würzburg aktualisieren
 
 on:
   workflow_dispatch:
@@ -11,6 +11,7 @@ permissions:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 35
     steps:
       - name: Repository auschecken
         uses: actions/checkout@v4
@@ -24,21 +25,21 @@ jobs:
           sudo apt-get install -y tesseract-ocr tesseract-ocr-deu
           npm install --no-save playwright
           npx playwright install --with-deps chromium
-      - name: KaufDA-Angebote auslesen
+      - name: KaufDA-Angebote für alle Märkte auslesen
         env:
-          KAUFDA_URL: ${{ vars.KAUFDA_URL }}
+          KAUFDA_URLS: ${{ vars.KAUFDA_URLS }}
         run: node automation/kaufda-offers.mjs
       - name: Angebotsdaten veröffentlichen
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add generated/netto-offers.json
+          git add generated/aldi-offers.json generated/edeka-offers.json generated/lidl-offers.json generated/penny-offers.json generated/kaufland-offers.json
           if git diff --cached --quiet; then
             echo "Keine Änderungen an den KaufDA-Angeboten."
             exit 0
           fi
-          git commit -m "Update KaufDA Netto offers for Thüngersheim"
+          git commit -m "Update KaufDA offers for Zellingen and Würzburg"
           for attempt in 1 2 3; do
             if git pull --rebase origin main && git push; then exit 0; fi
             git rebase --abort || true
