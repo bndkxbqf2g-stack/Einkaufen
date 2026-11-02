@@ -3,7 +3,7 @@
   "store": "EDEKA Traut",
   "location": "Zellingen",
   "sourceUrl": "https://www.kaufda.de/Zellingen/EDEKA/p-r107",
-  "fetchedAt": "2026-11-02T09:59:01.975Z",
+  "fetchedAt": "2026-11-02T10:24:19.420Z",
   "validUntil": "14.11.2026",
   "parser": "kaufda-prospect-images-ocr-v3",
   "recognizedCount": 50,
