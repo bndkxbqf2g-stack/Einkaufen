@@ -41,7 +41,7 @@ jobs:
           fi
           git commit -m "Update KaufDA offers for Zellingen and Würzburg"
           for attempt in 1 2 3; do
-            if git pull --rebase origin main && git push; then exit 0; fi
+            if git pull --rebase -X theirs origin main && git push; then exit 0; fi
             git rebase --abort || true
             sleep 3
           done
