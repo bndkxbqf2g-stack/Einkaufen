@@ -555,6 +555,13 @@
     let manualPlan = stored('angebotskueche.manualPlan', {});
     let recipeRatings = stored('angebotskueche.recipeRatings', {});
     let suggestionPreferences = stored('angebotskueche.suggestionPreferences', { sort: 'match', filter: 'all', max30: false, vegetarian: false, family: false, leftovers: false, offerMin2: true });
+    if (!Array.isArray(favorites)) favorites = seededFavorites;
+    favorites = favorites.filter(item => item && typeof item === 'object' && typeof item.name === 'string' && item.name.trim());
+    if (!Array.isArray(pantry)) pantry = ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch'];
+    if (!Array.isArray(dismissedRecipes)) dismissedRecipes = [];
+    if (!Array.isArray(pinnedRecipes)) pinnedRecipes = [];
+    dismissedRecipes = dismissedRecipes.filter(item => typeof item === 'string');
+    pinnedRecipes = pinnedRecipes.filter(item => typeof item === 'string');
     if (!manualPlan || typeof manualPlan !== 'object' || Array.isArray(manualPlan)) manualPlan = {};
     if (!recipeRatings || typeof recipeRatings !== 'object' || Array.isArray(recipeRatings)) recipeRatings = {};
     if (!suggestionPreferences || typeof suggestionPreferences !== 'object' || Array.isArray(suggestionPreferences)) suggestionPreferences = { sort: 'match', filter: 'all', max30: false, vegetarian: false, family: false, leftovers: false, offerMin2: true };
@@ -766,14 +773,14 @@
       const variety = calculateVariety(visible);
       $('#varietyScore').textContent = `${variety.score} %`;
       $('#varietyNote').textContent = `${variety.profiles} Profile · ${variety.vegetarian} vegetarisch`;
-      const pinnedLabels = visible.filter(meal => meal.tags.includes('vorgemerkt')).map(meal => meal.title);
+      const pinnedLabels = visible.filter(meal => Array.isArray(meal.tags) && meal.tags.includes('vorgemerkt')).map(meal => meal.title);
       $('#pinnedNote').textContent = pinnedLabels.length ? `Vorgemerkt und bevorzugt: ${pinnedLabels.join(' · ')}.` : 'Noch keine zusätzlichen Rezepte vorgemerkt.';
       const reused = [...new Set(visible.flatMap(meal => meal.reusedIngredients || []))];
       $('#leftoverNote').textContent = reused.length ? `Restelogik aktiv: ${reused.slice(0, 3).join(' · ')} werden in mehreren Gerichten weiterverwendet.` : 'Noch keine sinnvolle Zutatenüberschneidung für die Resteverwertung erkannt.';
-      $('#dayList').innerHTML = visible.map((meal, index) => { const rating = recipeRatings[mealRatingKey(meal)]?.rating; return `
+      $('#dayList').innerHTML = visible.map((meal, index) => { const tags = Array.isArray(meal.tags) ? meal.tags : []; const cost = parseMoney(meal.cost); const rating = recipeRatings[mealRatingKey(meal)]?.rating; return `
         <article class="day-card ${index === 0 ? 'today' : ''}">
           <div class="day-date">${index === 0 ? '<span class="today-tag">Heute</span>' : ''}<span class="day-name">${escapeHtml(meal.day)}</span><small>${escapeHtml(meal.date)}</small></div>
-          <div class="meal-row"><div class="meal-emoji ${meal.kind === 'warm' ? 'warm' : ''}">${escapeHtml(meal.emoji)}</div><div class="meal-info"><div class="meal-type">${meal.kind === 'warm' ? 'Warmes Hauptgericht' : 'Abendessen'}${meal.manual ? '<span class="manual-choice">· deine Auswahl</span>' : ''}</div><div class="meal-title">${escapeHtml(meal.title)}</div><div class="meal-meta"><span>für <b>${people} Personen</b></span><span>ca. <b>${(parseFloat(meal.cost.replace(',', '.')) * multiplier).toFixed(2).replace('.', ',')} €</b></span><span>${escapeHtml(marketDisplayString(meal.store))}</span></div><div class="meal-tags">${meal.tags.map((tag, tagIndex) => `<span class="tag ${tagIndex === 1 ? 'yellow' : ''}">${escapeHtml(tag)}</span>`).join('')}</div><div class="recipe-preview"><span class="recipe-preview-label">Rezept · Zutaten</span><div class="recipe-preview-list">${getMealIngredients(meal).slice(0, 6).map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('') || '<span class="source-note">Zutaten noch nicht hinterlegt</span>'}</div></div></div></div>
+          <div class="meal-row"><div class="meal-emoji ${meal.kind === 'warm' ? 'warm' : ''}">${escapeHtml(meal.emoji)}</div><div class="meal-info"><div class="meal-type">${meal.kind === 'warm' ? 'Warmes Hauptgericht' : 'Abendessen'}${meal.manual ? '<span class="manual-choice">· deine Auswahl</span>' : ''}</div><div class="meal-title">${escapeHtml(meal.title)}</div><div class="meal-meta"><span>für <b>${people} Personen</b></span><span>ca. <b>${(cost * multiplier).toFixed(2).replace('.', ',')} €</b></span><span>${escapeHtml(marketDisplayString(meal.store))}</span></div><div class="meal-tags">${tags.map((tag, tagIndex) => `<span class="tag ${tagIndex === 1 ? 'yellow' : ''}">${escapeHtml(tag)}</span>`).join('')}</div><div class="recipe-preview"><span class="recipe-preview-label">Rezept · Zutaten</span><div class="recipe-preview-list">${getMealIngredients(meal).slice(0, 6).map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('') || '<span class="source-note">Zutaten noch nicht hinterlegt</span>'}</div></div></div></div>
           <div class="day-score"><div class="score"><span class="score-ring" style="background:conic-gradient(var(--green-2) 0 ${meal.score}%, #e1ece2 ${meal.score}% 100%)"><span>${meal.score}</span></span> Match</div><div class="day-actions"><button class="text-button meal-detail" data-title="${escapeHtml(meal.title)}" data-note="${escapeHtml(meal.note)}">Details&nbsp;→</button><button class="small-button" data-choose-day="${index}">Rezept wählen</button>${meal.manual ? `<button class="small-button remove" data-clear-day="${index}">Auswahl lösen</button>` : ''}<button class="small-button" data-rate-meal="${index}">${rating ? `Bewertet: ${'★'.repeat(rating)}` : 'Gekocht? Bewerten'}</button></div></div>
         </article>`; }).join('') + (evening ? `<div class="day-card" style="background:#f4f8f1;border-style:dashed"><div class="day-date"><span class="day-name">Abends</span><small>optional</small></div><div class="meal-row"><div class="meal-emoji">🍞</div><div class="meal-info"><div class="meal-type">Leichtes Abendessen</div><div class="meal-title">${leftovers ? 'Brotzeit oder Restetag' : 'Brotzeit mit Vorräten'}</div><div class="meal-meta"><span>kein extra Angebotsstopp nötig</span></div></div></div><div class="day-score"><span class="tag muted">flexibel</span></div></div>` : '');
       renderPlanSuggestions();
@@ -1077,7 +1084,7 @@
     }
 
     function getMealIngredients(meal) {
-      return meal.ingredients || planIngredientMap[meal.title] || [];
+      return Array.isArray(meal?.ingredients) ? meal.ingredients : planIngredientMap[meal?.title] || [];
     }
 
     function ingredientsOverlap(first, second) {
@@ -1197,7 +1204,7 @@
         const recipe = getPlanCandidateById(recipeId, planCandidates);
         if (!recipe || !Number.isInteger(index) || index < 0 || index >= days || selected[index]) return;
         const meal = suggestionAsMeal(recipe, index);
-        selected[index] = { ...meal, manual: true, tags: [...meal.tags, 'manuell gewählt'] };
+        selected[index] = { ...meal, manual: true, tags: [...(Array.isArray(meal.tags) ? meal.tags : []), 'manuell gewählt'] };
         usedIds.add(recipe.id);
         usedTitles.add(recipe.title);
         usedMains.add(meal.main);
