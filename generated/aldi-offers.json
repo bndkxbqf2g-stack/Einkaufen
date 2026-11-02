@@ -2,11 +2,11 @@
   "market": "Aldi",
   "store": "ALDI SÜD",
   "location": "Zellingen",
-  "sourceUrl": "https://www.kaufda.de/Zellingen/ALDI-SUeD/p-r90",
-  "fetchedAt": "2026-11-02T10:50:30.416Z",
-  "validUntil": "15.11.2026",
+  "sourceUrl": "https://www.kaufda.de/search?query=ALDI+S%C3%9CD&lat=49.901699199999996&lng=9.812895&city=Zellingen&zip=97225",
+  "fetchedAt": "2026-11-02T11:11:30.817Z",
+  "validUntil": "09.11.2026",
   "parser": "kaufda-offer-cards-v4",
-  "recognizedCount": 14,
+  "recognizedCount": 40,
   "offers": [
     {
       "name": "Salami",
@@ -18,7 +18,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
     },
     {
       "name": "Geflügelfond",
@@ -30,7 +30,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
     },
     {
       "name": "Datteln",
@@ -42,7 +42,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
     },
     {
       "name": "Himbeeren",
@@ -54,7 +54,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
     },
     {
       "name": "Clementinen",
@@ -66,7 +66,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
     },
     {
       "name": "Porree",
@@ -78,7 +78,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
     },
     {
       "name": "Kaki",
@@ -90,7 +90,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
     },
     {
       "name": "Bio Zitronen",
@@ -102,7 +102,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
     },
     {
       "name": "Äpfel süß-säuerlich",
@@ -114,7 +114,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
     },
     {
       "name": "Speisekartoffeln",
@@ -126,7 +126,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
     },
     {
       "name": "Grobe Bratwurst",
@@ -138,7 +138,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
     },
     {
       "name": "Schnitzel",
@@ -150,7 +150,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
     },
     {
       "name": "Filetsteak",
@@ -162,7 +162,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
     },
     {
       "name": "Koteletts",
@@ -174,7 +174,319 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "15.11.2026"
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Rinder-Hackfleisch",
+      "store": "ALDI SÜD",
+      "price": "4,59 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Hähnchensteaks",
+      "store": "ALDI SÜD",
+      "price": "4,99 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Puten-Schnitzel „Wiener Art“",
+      "store": "ALDI SÜD",
+      "price": "4,99 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Butterkekse",
+      "store": "ALDI SÜD",
+      "price": "1,19 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Frischkäsezubereitung",
+      "store": "ALDI SÜD",
+      "price": "1,11 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Pflegespülung",
+      "store": "ALDI SÜD",
+      "price": "4,99 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Coca-Cola",
+      "store": "ALDI SÜD",
+      "price": "1,19 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Pizza",
+      "store": "ALDI SÜD",
+      "price": "1,66 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Feiner Weichkäse",
+      "store": "ALDI SÜD",
+      "price": "1,79 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Bio-Honig",
+      "store": "ALDI SÜD",
+      "price": "2,89 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Schmelzkäse",
+      "store": "ALDI SÜD",
+      "price": "0,99 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Apfelmus",
+      "store": "ALDI SÜD",
+      "price": "0,89 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Kaffee-Pads",
+      "store": "ALDI SÜD",
+      "price": "1,89 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Passierte Tomaten",
+      "store": "ALDI SÜD",
+      "price": "0,45 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Kartoffelknödel",
+      "store": "ALDI SÜD",
+      "price": "1,29 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Hafermast Gänsebrust mit Knochen",
+      "store": "ALDI SÜD",
+      "price": "17,99 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Farmers Origins Kaffeekapseln",
+      "store": "ALDI SÜD",
+      "price": "2,49 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Krönung",
+      "store": "ALDI SÜD",
+      "price": "5,99 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Frische Hähnchen-Brustfilets",
+      "store": "ALDI SÜD",
+      "price": "7,99 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Wala® Aconit Schmerzöl",
+      "store": "ALDI SÜD",
+      "price": "17,09 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Pantoprazol - 1 A Pharma® 20 mg bei Sodbrennen magensaftresistente Tabletten",
+      "store": "ALDI SÜD",
+      "price": "5,88 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "WICK AngiMed Mentholgeschmack 2 mg/ml + 0,5 mg / ml Spray zur Anwendung in der Mundhöhle",
+      "store": "ALDI SÜD",
+      "price": "13,99 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Hafermast Gänsekeulen",
+      "store": "ALDI SÜD",
+      "price": "17,59 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Wildlachsfilet im Blätterteig",
+      "store": "ALDI SÜD",
+      "price": "1,99 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Grüner Veltliner Freundeskreis",
+      "store": "ALDI SÜD",
+      "price": "2,69 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
+    },
+    {
+      "name": "Fond",
+      "store": "ALDI SÜD",
+      "price": "0,89 €",
+      "saving": "–",
+      "icon": "🛒",
+      "category": "Lebensmittel",
+      "packSize": "1 Packung",
+      "relevance": 80,
+      "note": "KaufDA-Angebot",
+      "validUntil": "09.11.2026"
     }
   ]
 }
