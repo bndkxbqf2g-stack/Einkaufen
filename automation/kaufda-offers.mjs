@@ -142,8 +142,8 @@ async function scrapeMarket(page, config) {
   const useOcrFallback = !config.browserUrl && (config.key !== 'Aldi' || structuredItems.length < 10);
   if (!useOcrFallback) {
     const unique = [...new Map(offers.map(offer => [`${offer.name.toLowerCase()}|${offer.price}|${offer.store}`, offer])).values()];
-    const result = { market: config.market, store: config.store, location: config.location, sourceUrl,, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-offer-cards-v4', recognizedCount: unique.length, offers: unique };
-    await writeFile(resolve(outputDir, config.file), `${JSON.stringify(result, null, 2)}\\n`, 'utf8');
+    const result = { market: config.market, store: config.store, location: config.location, sourceUrl, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-offer-cards-v4', recognizedCount: unique.length, offers: unique };
+    await writeFile(resolve(outputDir, config.file), `${JSON.stringify(result, null, 2)}\n`, 'utf8');
     console.log(`KaufDA: ${unique.length} ${config.key}-Angebote aus strukturierten Karten nach ${config.file} geschrieben`);
     return result;
   }
@@ -196,7 +196,7 @@ async function scrapeMarket(page, config) {
     if (!seen.has(key)) { seen.add(key); unique.push(offer); }
   }
   if (!unique.length) throw new Error(`${config.key}: keine Lebensmittelangebote erkannt`);
-  const result = { market: config.market, store: config.store, location: config.location, sourceUrl,, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-prospect-images-ocr-v3', recognizedCount: unique.length, offers: unique };
+  const result = { market: config.market, store: config.store, location: config.location, sourceUrl, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-prospect-images-ocr-v3', recognizedCount: unique.length, offers: unique };
   await writeFile(resolve(outputDir, config.file), `${JSON.stringify(result, null, 2)}\n`, 'utf8');
   console.log(`KaufDA: ${unique.length} ${config.key}-Angebote nach ${config.file} geschrieben`);
   return result;
