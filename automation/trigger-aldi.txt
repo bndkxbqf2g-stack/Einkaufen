@@ -1,1 +1,2 @@
 Refresh Aldi Süd food offers only.
+Include all structured food cards.
