@@ -3,7 +3,7 @@
   "store": "Kaufland",
   "location": "Würzburg · Nürnberger Straße 12",
   "sourceUrl": "https://www.kaufda.de/Wuerzburg/Kaufland/p-r2801",
-  "fetchedAt": "2026-11-02T10:48:07.952Z",
+  "fetchedAt": "2026-11-02T10:59:11.220Z",
   "validUntil": "14.11.2026",
   "parser": "kaufda-prospect-images-ocr-v3",
   "recognizedCount": 120,

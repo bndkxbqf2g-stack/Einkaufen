@@ -3,7 +3,7 @@
   "store": "Penny",
   "location": "Zellingen",
   "sourceUrl": "https://www.kaufda.de/Zellingen/Penny-Markt/p-r75",
-  "fetchedAt": "2026-11-02T10:45:49.327Z",
+  "fetchedAt": "2026-11-02T10:56:50.571Z",
   "validUntil": "09.11.2026",
   "parser": "kaufda-prospect-images-ocr-v3",
   "recognizedCount": 89,
