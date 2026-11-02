@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'automation/trigger-aldi.txt'
+      - 'automation/trigger-netto.txt'
   workflow_dispatch:
     inputs:
       market:
@@ -48,7 +49,7 @@ jobs:
           KAUFDA_URLS: ${{ vars.KAUFDA_URLS }}
           KAUFDA_BROWSER_URLS: ${{ vars.KAUFDA_BROWSER_URLS }}
           KAUFDA_STORAGE_STATE_B64: ${{ secrets.KAUFDA_STORAGE_STATE_B64 }}
-          KAUFDA_MARKET: ${{ github.event_name == 'push' && 'Aldi' || inputs.market || 'all' }}
+          KAUFDA_MARKET: ${{ github.event_name == 'push' && (contains(github.event.head_commit.message, 'Netto') && 'Netto' || 'Aldi') || inputs.market || 'all' }}
         run: node automation/kaufda-offers.mjs
       - name: Angebotsdaten veröffentlichen
         run: |
