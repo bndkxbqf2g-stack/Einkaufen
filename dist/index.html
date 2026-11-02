@@ -532,8 +532,8 @@
       return source === 'manueller import' && note.includes('manuell importiert') && confidence === 'niedrig';
     };
     const automaticStoredOffers = Array.isArray(storedCustomOffers) ? (oversizedLegacyOfferCache ? storedCustomOffers.filter(offer => !legacyManualOffer(offer)) : storedCustomOffers.filter(offer => !isManualOffer(offer))) : [];
-    if (automaticStoredOffers.length) {
-      const manual = oversizedLegacyOfferCache ? storedCustomOffers.filter(legacyManualOffer) : storedCustomOffers.filter(offer => !isAutomaticLiveOffer(offer));
+    if (oversizedLegacyOfferCache || automaticStoredOffers.length) {
+      const manual = oversizedLegacyOfferCache ? [] : storedCustomOffers.filter(offer => !isAutomaticLiveOffer(offer));
       try {
         localStorage.setItem('angebotskueche.customOffers', JSON.stringify(manual));
         if (!localStorage.getItem('angebotskueche.legacyLiveOffers')) {
