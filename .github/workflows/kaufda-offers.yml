@@ -25,13 +25,17 @@ on:
   schedule:
     - cron: '25 6 * * 1,4'
 
+concurrency:
+  group: kaufda-offers
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 15
     steps:
       - name: Repository auschecken
         uses: actions/checkout@v4
