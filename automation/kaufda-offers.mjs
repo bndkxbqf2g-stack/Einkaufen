@@ -23,7 +23,7 @@ function stripText(value) { return String(value || '').replace(/\s+/g, ' ').trim
 function likelyFood(value) {
   const normalized = stripText(value).toLowerCase();
   if (!normalized) return false;
-  if (/(rollator|dartscheibe|infrarot|kabine|bagger|werkzeug|garten|pflanz|blumen|bekleidung|wäsche|schuh|auto|akku|drucker|elektronik|spielzeug|matratze|schrank|lampe|möbel|pavillon|grillkohle|haushalt|spülmittel|waschmittel|reiniger|putz|schwamm|papier|taschentuch|toiletten|müllbeutel|folie|backpapier|kosmetik|shampoo|dusche|seife|zahnpasta|deo|rasierer|windel|tierfutter|katzen|hunde|vogel|aquarium|whisky|vodka|zigarette|klemmbaustein|treibstoff|bier|wein|sekt|schnaps|likör|spirituosen|alkohol|pflegespülung|spülung|tablette|arznei|medizin|schmerz|sodbrennen|spray|apotheke|veltliner|prosecco|cava|champagner|led|lichter|teelichter|fichte|geschenk|deko|verpackung|schneeanzug|anzug|winter|stiefel|handschuh)/i.test(normalized)) return false;
+  if (/(rollator|dartscheibe|infrarot|kabine|bagger|werkzeug|garten|pflanz|blumen|bekleidung|wäsche|schuh|auto|akku|drucker|elektronik|spielzeug|matratze|schrank|lampe|möbel|pavillon|grillkohle|haushalt|spülmittel|waschmittel|reiniger|putz|schwamm|papier|taschentuch|toiletten|müllbeutel|folie|backpapier|kosmetik|shampoo|dusche|seife|zahnpasta|deo|rasierer|windel|tierfutter|katzen|hunde|vogel|aquarium|whisky|vodka|zigarette|klemmbaustein|treibstoff|bier|wein|sekt|schnaps|likör|spirituosen|alkohol|pflegespülung|spülung|tablette|arznei|medizin|schmerz|sodbrennen|spray|apotheke|veltliner|prosecco|cava|champagner|led|lichter|teelichter|fichte|geschenk|deko|verpackung|schneeanzug|anzug|winter|stiefel|handschuh|badewanne|häcksler|haar|haarmaske|cremebad|repair|argan|körperpflege|gesichtscreme|handcreme|tagescreme|nachtcreme|parfum|kosmetik|zubehör|werkzeug|maschine|batterie|akku|möbel|kissen|matratze|bettwäsche|geschirr|tasse|becher|pfanne|topf|schneidebrett)/i.test(normalized)) return false;
   return /(brot|bröt|backwaren|mehl|zucker|reis|nudel|pasta|kartoff|gemüse|obst|salat|tomat|gurke|paprika|zwiebel|knoblauch|karotte|möhre|äpfel|apfel|banane|beere|dattel|clementin|porree|kaki|orange|zitrone|milch|joghurt|käse|butter|sahne|quark|eier?\b|fleisch|fond|hack|schnitzel|wurst|schinken|salami|hähn|pute|rind|schwein|filet|steak|kotelett|fisch|lachs|thun|pizza|suppe|sauce|soße|konserve|bohne|erbse|linse|öl|essig|senf|ketchup|marmelade|nutella|schokolade|chips|snack|keks|kaffee|tee|saft|wasser|cola|limonade|bier|wein|alkoholfrei|müsli|cornflakes|honig|süßwaren|nahrung|lebensmittel|hülsenfrucht|mandel|burger|cerealien|genießer|almighurt|fruchtgummi|saltletts|schoko|drink|meerrettich|garnele|garnelen|eierspätzle|spätzle|kapern|gulasch|rösti|maronen|filoncino|dessert|gänse|keule|wildlachs|backzutat|knödel|fudge|erdnuss)/i.test(normalized);
 }
 function priceFrom(value) { const match = String(value || '').match(/(?:ab\s*)?(\d{1,4}[,.]\d{2})\s*€/); return match ? `${match[1].replace('.', ',')} €` : '–'; }
@@ -63,7 +63,7 @@ async function cardOffers(page, validUntil, config) {
     const text = node.innerText || '';
     const price = (text.match(/(?:ab\s*)?\d{1,4}[,.]\d{2}\s*€/) || [])[0] || '';
     const image = node.querySelector('img');
-    const imageUrl = image?.currentSrc || image?.src || image?.getAttribute('data-src') || image?.getAttribute('data-lazy-src') || '';
+    const imageUrl = image?.currentSrc || image?.getAttribute('src') || image?.getAttribute('data-src') || image?.getAttribute('data-lazy-src') || image?.getAttribute('data-original') || image?.getAttribute('srcset')?.split(',')[0]?.trim().split(' ')[0] || '';
     return { name, price, text, imageUrl };
   }));
   return items.map(item => ({ ...item, validUntil, store: config.store }));
@@ -112,7 +112,8 @@ async function collectStructuredOffers(page, validUntil, config) {
       if (priceFrom(item.price) === '–' || !likelyFood(item.name)) continue;
       if (!cardBelongsToConfig(item, config)) continue;
       const key = item.name.toLowerCase() + '|' + priceFrom(item.price) + '|' + config.store;
-      unique.set(key, item);
+      const previous = unique.get(key);
+      if (!previous || (!previous.imageUrl && item.imageUrl)) unique.set(key, item);
     }
   };
   for (let pass = 0; pass < maxPasses; pass += 1) {
@@ -276,7 +277,7 @@ async function updatePriceHistory(results) {
   try {
     previous = JSON.parse(await readFile(historyFile, 'utf8'));
   } catch { /* erster Lauf oder Datei noch nicht vorhanden */ }
-  const observations = Array.isArray(previous.observations) ? previous.observations : [];
+  const observations = (Array.isArray(previous.observations) ? previous.observations : []).filter(item => likelyFood(item.name));
   const byKey = new Map(observations.map(item => [
     `${item.market}|${String(item.name || '').toLowerCase()}|${item.price}|${item.validUntil}`,
     item
