@@ -3,7 +3,7 @@ name: KaufDA-Angebote für Zellingen und Würzburg aktualisieren
 on:
   workflow_dispatch:
   schedule:
-    - cron: '25 6 * * 1'
+    - cron: '25 6 * * 1,4'
 
 permissions:
   contents: write
@@ -46,4 +46,3 @@ jobs:
             sleep 3
           done
           exit 1
-
