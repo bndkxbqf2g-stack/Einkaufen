@@ -524,7 +524,7 @@
       return ['offizieller live-import', 'bring-ocr-import', 'live-import'].includes(source) || source.startsWith('kaufda') || (String(offer?.confidence || '').toLowerCase().startsWith('hoch') && /(kaufda|bring|live|offiziell|workflow)/i.test(metadata)) || (source !== 'demo-import' && !isManualOffer(offer));
     }
     let storedCustomOffers = stored('angebotskueche.customOffers', []); stored('angebotskueche.customOffers', []);
-    const automaticStoredOffers = Array.isArray(storedCustomOffers) ? storedCustomOffers.filter(offer => !isManualOffer(offer) && String(offer?.source || '').trim().toLowerCase() !== 'demo-import') : [];
+    const automaticStoredOffers = Array.isArray(storedCustomOffers) ? storedCustomOffers.filter(offer => !isManualOffer(offer)) : [];
     if (automaticStoredOffers.length) {
       const manual = storedCustomOffers.filter(offer => !isAutomaticLiveOffer(offer));
       try {
