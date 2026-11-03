@@ -246,6 +246,49 @@
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 17px; }
     .toast { position: fixed; right: 22px; bottom: 22px; z-index: 20; max-width: 320px; padding: 12px 15px; border-radius: 12px; color: white; background: var(--green); box-shadow: 0 14px 30px rgba(23,49,44,.23); font-size: 12px; font-weight: 700; transform: translateY(20px); opacity: 0; pointer-events: none; transition: .22s ease; }
     .toast.show { transform: translateY(0); opacity: 1; }
+    /* Premium clarity pass: stronger hierarchy, calmer surfaces and clearer actions. */
+    :root { --paper: #f2f5f0; --card: #ffffff; --line: #dfe7e0; --green: #123f35; --green-2: #2b7861; --ink-soft: #62756e; --coral: #e87251; --shadow: 0 16px 42px rgba(18,63,53,.08); }
+    body { background: radial-gradient(circle at 84% -10%, #e2f0e7 0, transparent 30%), var(--paper); }
+    .sidebar { background: linear-gradient(180deg, #123f35 0%, #0d362f 100%); box-shadow: 8px 0 28px rgba(10,42,35,.08); }
+    .brand-mark { box-shadow: 0 8px 20px rgba(245,201,75,.24); }
+    .main { max-width: 1540px; width: 100%; }
+    .topbar { padding-bottom: 14px; border-bottom: 1px solid rgba(223,231,224,.8); }
+    .hero { padding: 25px 26px; border: 1px solid #dbe8dd; border-radius: 24px; background: linear-gradient(115deg, rgba(255,255,255,.95), rgba(241,249,241,.93)); box-shadow: 0 14px 34px rgba(18,63,53,.06); }
+    .hero-copy { max-width: 650px; }
+    h1 { font-size: clamp(31px, 4vw, 52px); }
+    .stats { margin-top: 18px; }
+    .stat, .panel, .shopping-stat, .favorite-card, .suggestion-card { box-shadow: 0 8px 24px rgba(18,63,53,.045); }
+    .stat { transition: transform .18s ease, box-shadow .18s ease; }
+    .stat:hover { transform: translateY(-2px); box-shadow: 0 13px 28px rgba(18,63,53,.09); }
+    .panel { border-color: #dbe5de; }
+    .panel-header { padding-top: 22px; }
+    .panel-title { font-size: 18px; }
+    .day-card { border-color: #dfe8e0; background: rgba(255,255,255,.92); }
+    .day-card.today { border-color: #f1c8b2; background: linear-gradient(105deg, #fffaf4, #ffffff); }
+    .meal-title, .suggestion-title, .catalog-name { letter-spacing: -.035em; }
+    .day-actions .small-button, .suggestion-actions .small-button { min-height: 32px; }
+    .small-button.primary, .primary-button { background: linear-gradient(135deg, #2f8067, #246b56); border-color: #246b56; box-shadow: 0 7px 16px rgba(43,120,97,.18); }
+    .primary-button { background: linear-gradient(135deg, #ed805e, #df6849); border: 0; }
+    .outline-button, .small-button { background: rgba(255,255,255,.82); }
+    .outline-button:hover, .small-button:hover { box-shadow: 0 4px 12px rgba(18,63,53,.08); }
+    .tag { border: 1px solid rgba(43,120,97,.08); }
+    .suggestion-detail { border: 1px solid #e1eee3; }
+    .favorite-card .catalog-icon { background: linear-gradient(135deg, #ffe2d0, #f7c8b2); }
+    .modal { border: 1px solid #dce8df; box-shadow: 0 30px 90px rgba(10,42,35,.25); }
+    @media (max-width: 560px) {
+      .sidebar { padding: 9px 10px; box-shadow: 0 6px 22px rgba(10,42,35,.18); }
+      .brand-mark { width: 36px; height: 36px; }
+      .nav { flex: 1; justify-content: flex-end; overflow-x: auto; padding-left: 8px; }
+      .nav-button { width: 42px; height: 42px; border-radius: 13px; }
+      .nav-button.active { background: rgba(255,255,255,.19); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+      .hero { padding: 20px 16px; border-radius: 20px; }
+      .hero .primary-button, .hero .outline-button { min-height: 42px; }
+      .stats { margin-top: 14px; }
+      .panel { border-radius: 20px; }
+      .day-card { border-radius: 17px; padding: 13px 11px; }
+      .modal-backdrop { padding: 12px; align-items: end; }
+      .modal { max-height: calc(100dvh - 24px); overflow-y: auto; border-radius: 22px 22px 16px 16px; padding: 18px; }
+    }
     @media (max-width: 1120px) {
       .app-shell { grid-template-columns: 76px 1fr; }
       .sidebar { padding: 22px 12px; align-items: center; }
@@ -501,10 +544,21 @@
     ];
 
     const seededFavorites = [
-      { name: 'Lasagne al forno', icon: '🍝', source: 'Chefkoch', match: 'Hackfleisch im Angebot bei Lidl', score: 74, note: 'Lieblingsrezept · 90 Min.', time: 90, familyFriendly: true, category: 'Ofengericht', ingredients: ['Hackfleisch', 'Lasagneplatten', 'Tomaten', 'Gouda'], instructions: 'Sauce kochen, mit Lasagneplatten schichten und mit Käse überbacken.' },
-      { name: 'Paprika-Reis-Pfanne', icon: '🍚', source: 'lecker.de', match: 'Paprika im Angebot bei Kaufland Würzburg', score: 86, note: 'Lieblingsrezept · 30 Min.', time: 30, vegetarian: true, familyFriendly: true, category: 'Pfannengericht', ingredients: ['Paprika', 'Reis', 'Tomaten', 'Gouda'], instructions: 'Paprika anbraten, Reis und Tomaten zugeben und mit Käse vollenden.' },
-      { name: 'Kartoffelgratin', icon: '🥔', source: 'Chefkoch', match: 'Kartoffeln + Käse im Angebot', score: 97, note: 'Lieblingsrezept · 55 Min.', time: 55, vegetarian: true, familyFriendly: true, category: 'Ofengericht', ingredients: ['Kartoffeln', 'Gouda', 'Sahne', 'Zwiebel'], instructions: 'Kartoffeln schichten, mit Sahne und Käse übergießen und goldbraun backen.' },
-      { name: 'Shakshuka', icon: '🍅', source: 'lecker.de', match: 'Eier im Angebot bei Kaufland Würzburg', score: 71, note: 'Lieblingsrezept · 35 Min.', time: 35, vegetarian: true, familyFriendly: true, category: 'Pfannengericht', ingredients: ['Eier', 'Tomaten', 'Paprika', 'Brot'], instructions: 'Tomaten und Paprika köcheln, Eier hineingeben und stocken lassen.' }
+      { name: 'Lasagne al forno', icon: '🍝', source: 'Eigene Lieblingsessen', match: 'Hackfleisch und Käse im Angebot', score: 88, note: 'Lieblingsessen · 90 Min.', time: 90, familyFriendly: true, category: 'Ofengericht', ingredients: ['Hackfleisch', 'Lasagneplatten', 'Tomaten', 'Gouda'], instructions: 'Hackfleisch-Tomatensauce kochen, mit Lasagneplatten schichten und mit Käse überbacken.', builtIn: true },
+      { name: 'Spaghetti Bolognese', icon: '🍝', source: 'Eigene Lieblingsessen', match: 'Hackfleisch und Tomaten im Angebot', score: 90, note: 'Lieblingsessen · 45 Min.', time: 45, familyFriendly: true, category: 'Pasta', ingredients: ['Hackfleisch', 'Spaghetti', 'Tomaten', 'Zwiebel'], instructions: 'Hackfleisch mit Zwiebel anbraten, Tomatensauce köcheln lassen und mit Spaghetti servieren.', builtIn: true },
+      { name: 'Schnitzel mit Pommes', icon: '🍽️', source: 'Eigene Lieblingsessen', match: 'Schnitzel und Kartoffelprodukte im Angebot', score: 82, note: 'Lieblingsessen · 35 Min.', time: 35, familyFriendly: true, category: 'Pfannengericht', ingredients: ['Schnitzel', 'Pommes', 'Zitrone'], instructions: 'Schnitzel panieren und goldbraun braten. Pommes im Ofen oder Airfryer zubereiten und mit Zitrone servieren.', builtIn: true },
+      { name: 'Nudelauflauf mit Schinken und Käse', icon: '🧀', source: 'Eigene Lieblingsessen', match: 'Nudeln und Käse im Angebot', score: 84, note: 'Lieblingsessen · 45 Min.', time: 45, familyFriendly: true, category: 'Ofengericht', ingredients: ['Nudeln', 'Schinken', 'Gouda', 'Sahne'], instructions: 'Nudeln vorkochen, mit Schinken und Sahnesauce mischen, mit Käse bestreuen und überbacken.', builtIn: true },
+      { name: 'Gekochtes Rindfleisch mit Meerrettich und Nudeln', icon: '🥩', source: 'Eigene Lieblingsessen', match: 'Rindfleisch im Angebot', score: 76, note: 'Lieblingsessen · 120 Min.', time: 120, familyFriendly: true, category: 'Sonntagsgericht', ingredients: ['Rindfleisch', 'Meerrettich', 'Nudeln', 'Möhren'], instructions: 'Rindfleisch mit Suppengemüse weich kochen, in Scheiben schneiden und mit Meerrettichsauce und Nudeln servieren.', builtIn: true },
+      { name: 'Hawaii-Toast', icon: '🍍', source: 'Eigene Lieblingsessen', match: 'Schinken, Käse oder Ananas im Angebot', score: 73, note: 'Lieblingsessen · 20 Min.', time: 20, familyFriendly: true, category: 'Schnelles Gericht', ingredients: ['Toastbrot', 'Schinken', 'Ananas', 'Gouda'], instructions: 'Toast mit Schinken, Ananas und Käse belegen und im Ofen überbacken.', builtIn: true },
+      { name: 'Feta-Gemüse-Pfanne', icon: '🥘', source: 'Eigene Lieblingsessen', match: 'Gemüse und Feta im Angebot', score: 79, note: 'Lieblingsessen · 25 Min.', time: 25, vegetarian: true, familyFriendly: true, category: 'Pfannengericht', ingredients: ['Feta', 'Paprika', 'Zucchini', 'Tomaten'], instructions: 'Gemüse kräftig anbraten, würzen und Feta darüberbröseln. Kurz schmelzen lassen.', builtIn: true },
+      { name: 'Hackfleisch-Eintopf', icon: '🍲', source: 'Eigene Lieblingsessen', match: 'Hackfleisch und Gemüse im Angebot', score: 83, note: 'Lieblingsessen · 50 Min.', time: 50, familyFriendly: true, category: 'Eintopf', ingredients: ['Hackfleisch', 'Kartoffeln', 'Möhren', 'Tomaten'], instructions: 'Hackfleisch anbraten, Gemüse und Tomaten zugeben und alles in Brühe weich köcheln. Eine Portion für später zurückstellen.', leftoverFriendly: true, builtIn: true },
+      { name: 'Fischstäbchen mit Kartoffeln', icon: '🐟', source: 'Eigene Lieblingsessen', match: 'Fisch und Kartoffeln im Angebot', score: 78, note: 'Lieblingsessen · 30 Min.', time: 30, familyFriendly: true, category: 'Fisch', ingredients: ['Fischstäbchen', 'Kartoffeln', 'Erbsen'], instructions: 'Kartoffeln kochen, Fischstäbchen knusprig backen und mit Erbsen servieren.', builtIn: true },
+      { name: 'Bordelaise-Fisch mit Kartoffeln', icon: '🐟', source: 'Eigene Lieblingsessen', match: 'Fischfilet und Kartoffeln im Angebot', score: 80, note: 'Lieblingsessen · 35 Min.', time: 35, familyFriendly: true, category: 'Fisch', ingredients: ['Bordelaise-Fisch', 'Kartoffeln', 'Brokkoli'], instructions: 'Fisch im Ofen garen, Kartoffeln kochen oder als Spalten backen und mit Gemüse servieren.', builtIn: true },
+      { name: 'Pizza selbst belegt', icon: '🍕', source: 'Eigene Lieblingsessen', match: 'Käse, Tomaten und Belag im Angebot', score: 81, note: 'Lieblingsessen · 45 Min.', time: 45, familyFriendly: true, category: 'Pizza', ingredients: ['Pizzateig', 'Tomatensauce', 'Gouda', 'Salami'], instructions: 'Teig ausrollen, mit Tomatensauce bestreichen, nach Wunsch belegen und knusprig backen.', builtIn: true },
+      { name: 'Fertigpizza mit Beilagensalat', icon: '🍕', source: 'Eigene Lieblingsessen', match: 'Fertigpizza im Angebot', score: 75, note: 'Lieblingsessen · 20 Min.', time: 20, familyFriendly: true, category: 'Schnelles Gericht', ingredients: ['Fertigpizza', 'Salat', 'Tomaten'], instructions: 'Fertigpizza nach Packungsangabe backen und mit einem schnellen Salat ergänzen.', builtIn: true },
+      { name: 'Paprika-Reis-Pfanne', icon: '🍚', source: 'Eigene Lieblingsessen', match: 'Paprika im Angebot', score: 86, note: 'Lieblingsessen · 30 Min.', time: 30, vegetarian: true, familyFriendly: true, category: 'Pfannengericht', ingredients: ['Paprika', 'Reis', 'Tomaten', 'Gouda'], instructions: 'Paprika anbraten, Reis und Tomaten zugeben und mit Käse vollenden.', builtIn: true },
+      { name: 'Kartoffelgratin', icon: '🥔', source: 'Eigene Lieblingsessen', match: 'Kartoffeln und Käse im Angebot', score: 97, note: 'Lieblingsessen · 55 Min.', time: 55, vegetarian: true, familyFriendly: true, category: 'Ofengericht', ingredients: ['Kartoffeln', 'Gouda', 'Sahne', 'Zwiebel'], instructions: 'Kartoffeln schichten, mit Sahne und Käse übergießen und goldbraun backen.', builtIn: true },
+      { name: 'Shakshuka', icon: '🍅', source: 'Eigene Lieblingsessen', match: 'Eier im Angebot', score: 71, note: 'Lieblingsessen · 35 Min.', time: 35, vegetarian: true, familyFriendly: true, category: 'Pfannengericht', ingredients: ['Eier', 'Tomaten', 'Paprika', 'Brot'], instructions: 'Tomaten und Paprika köcheln, Eier hineingeben und stocken lassen.', builtIn: true }
     ];
 
     function defaultOfferEnd() {
@@ -617,6 +671,13 @@
       if (!builtIn) return item;
       return { ...builtIn, ...item, ingredients: Array.isArray(item.ingredients) && item.ingredients.length ? item.ingredients : builtIn.ingredients, time: item.time || builtIn.time, vegetarian: item.vegetarian ?? builtIn.vegetarian, familyFriendly: item.familyFriendly ?? builtIn.familyFriendly, category: item.category || builtIn.category, difficulty: item.difficulty || builtIn.difficulty, instructions: item.instructions || builtIn.instructions };
     });
+    const existingFavoriteNames = new Set(favorites.map(item => normalizeIngredient(item.name)));
+    let addedFavoriteDefaults = false;
+    seededFavorites.forEach(seed => {
+      const key = normalizeIngredient(seed.name);
+      if (!existingFavoriteNames.has(key)) { favorites.push({ ...seed }); existingFavoriteNames.add(key); addedFavoriteDefaults = true; }
+    });
+    if (addedFavoriteDefaults) localStorage.setItem('angebotskueche.favorites', JSON.stringify(favorites));
 
     function marketDisplayName(name) {
       return marketDisplayNames[name] || name;
@@ -1907,7 +1968,7 @@
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
     let automaticOfferRefreshStarted = false;
     renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
-    const APP_BUILD = '2026-11-02-recipe-details-1';
+    const APP_BUILD = '2026-11-03-favorites-visual-refresh-1';
     try {
       if (localStorage.getItem('angebotskueche.appBuild') !== APP_BUILD) {
         localStorage.setItem('angebotskueche.appBuild', APP_BUILD);
@@ -1915,7 +1976,7 @@
         if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(registration => registration.update())).catch(() => {});
       }
     } catch {}
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=19', { updateViaCache: 'none' }).catch(() => {}));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=20', { updateViaCache: 'none' }).catch(() => {}));
   </script>
 </body>
 </html>
