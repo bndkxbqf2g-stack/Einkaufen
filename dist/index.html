@@ -275,32 +275,30 @@
     .suggestion-detail { border: 1px solid #e1eee3; }
     .favorite-card .catalog-icon { background: linear-gradient(135deg, #ffe2d0, #f7c8b2); }
     .modal { border: 1px solid #dce8df; box-shadow: 0 30px 90px rgba(10,42,35,.25); }
-    .recipe-reader { width: min(820px, 100%); max-height: min(92dvh, 900px); overflow-y: auto; padding: 0; background: #fcfdf9; }
-    .reader-header { padding: 20px 24px 0; }
-    .reader-header-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--green-2); font-size: 10px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    .recipe-reader { width: min(660px, 100%); max-height: min(94dvh, 930px); overflow-y: auto; padding: 0; background: #fffefa; }
+    .reader-header { padding: 18px 30px 0; }
+    .reader-header-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--green-2); font-size: 12px; font-weight: 800; }
+    .reader-back { padding: 5px 8px; border: 1px solid #efc9b5; border-radius: 3px; color: var(--green-2); background: #fffefa; font-size: 12px; font-weight: 800; }
     .reader-header-bar .close { flex: 0 0 auto; }
-    .reader-hero { display: flex; align-items: center; gap: 15px; padding: 22px 0 20px; }
-    .reader-icon { width: 66px; height: 66px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 19px; background: linear-gradient(135deg, #ffe2d0, #f7c8b2); font-size: 34px; }
+    .reader-hero { display: flex; align-items: center; gap: 15px; padding: 24px 0 20px; }
+    .reader-icon { width: 58px; height: 58px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 16px; background: #f7d6c1; font-size: 29px; }
     .reader-eyebrow { margin-bottom: 5px; color: var(--green-2); font-size: 10px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
     .reader-hero h2 { margin: 0; font-size: clamp(25px, 4vw, 38px); line-height: 1.02; letter-spacing: -.06em; }
     .reader-meta { margin: 8px 0 0; color: var(--ink-soft); font-size: 12px; }
-    .reader-layout { display: grid; grid-template-columns: minmax(0, 1fr) 215px; gap: 24px; padding: 22px 24px 24px; border-top: 1px solid var(--line); }
-    .reader-section + .reader-section { margin-top: 28px; }
-    .reader-section-title { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; color: var(--green); font-size: 11px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
-    .reader-section-title::before { content: ''; width: 20px; height: 3px; border-radius: 3px; background: var(--yellow); }
-    .reader-ingredients { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-    .reader-ingredient { display: flex; align-items: flex-start; gap: 8px; padding: 9px 10px; border: 1px solid #e4ece5; border-radius: 10px; color: var(--ink); background: #f5f9f4; font-size: 12px; line-height: 1.35; }
-    .reader-ingredient span:first-child { color: var(--green-2); font-weight: 900; }
-    .reader-steps { display: grid; gap: 14px; }
-    .reader-step { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; }
-    .reader-step-number { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; color: white; background: var(--green-2); font-size: 11px; font-weight: 900; }
-    .reader-step p { margin: 3px 0 0; color: var(--ink); font-size: 13px; line-height: 1.6; }
-    .reader-sidebar { display: grid; align-content: start; gap: 12px; }
-    .reader-fact { padding: 13px; border-radius: 14px; background: #f1f8f0; }
-    .reader-fact-label { color: var(--ink-soft); font-size: 10px; font-weight: 750; }
-    .reader-fact-value { margin-top: 5px; color: var(--green); font-size: 17px; font-weight: 900; }
-    .reader-sidebar .meal-tags { margin: 0; }
-    .reader-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 15px 24px 20px; border-top: 1px solid var(--line); }
+    .reader-layout { display: block; padding: 26px 30px 12px; border-top: 1px solid var(--line); }
+    .reader-section + .reader-section { margin-top: 34px; }
+    .reader-section-title { display: flex; align-items: center; gap: 9px; margin-bottom: 15px; color: var(--ink); font-family: Georgia, 'Times New Roman', serif; font-size: 27px; font-weight: 500; letter-spacing: -.04em; }
+    .reader-section-title::before { content: ''; width: 7px; height: 29px; border-radius: 5px; background: #f0d27a; }
+    .reader-ingredients { display: grid; gap: 7px; }
+    .reader-ingredient { display: flex; align-items: flex-start; gap: 10px; padding: 0; border: 0; color: var(--ink); background: transparent; font-size: 14px; line-height: 1.45; }
+    .reader-ingredient span:first-child { color: var(--coral); font-size: 18px; line-height: 1.1; }
+    .reader-ingredient span:last-child { font-weight: 650; }
+    .reader-steps { display: grid; gap: 18px; }
+    .reader-step { display: grid; grid-template-columns: 37px minmax(0, 1fr); gap: 10px; align-items: start; }
+    .reader-step-number { padding-top: 3px; color: var(--coral); font-family: Georgia, 'Times New Roman', serif; font-size: 13px; font-weight: 700; letter-spacing: .08em; }
+    .reader-step p { margin: 0; color: var(--ink); font-size: 14px; font-weight: 650; line-height: 1.6; }
+    .reader-sidebar { display: none; }
+    .reader-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 15px 30px 22px; border-top: 1px solid var(--line); }
     .reader-source { color: var(--green-2); font-size: 11px; font-weight: 800; }
     @media (max-width: 560px) {
       .sidebar { padding: 9px 10px; box-shadow: 0 6px 22px rgba(10,42,35,.18); }
@@ -316,12 +314,11 @@
       .modal-backdrop { padding: 12px; align-items: end; }
       .modal { max-height: calc(100dvh - 24px); overflow-y: auto; border-radius: 22px 22px 16px 16px; padding: 18px; }
       .recipe-reader { padding: 0; }
-      .reader-header { padding: 16px 18px 0; }
-      .reader-layout { grid-template-columns: 1fr; gap: 18px; padding: 18px; }
-      .reader-sidebar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .reader-sidebar .meal-tags { grid-column: 1 / -1; }
+      .reader-header { padding: 15px 18px 0; }
+      .reader-hero { padding: 20px 0 17px; }
+      .reader-layout { padding: 22px 18px 10px; }
       .reader-footer { padding: 13px 18px 18px; }
-      .reader-ingredients { grid-template-columns: 1fr; }
+      .reader-section-title { font-size: 25px; }
     }
     @media (max-width: 1120px) {
       .app-shell { grid-template-columns: 76px 1fr; }
@@ -520,7 +517,7 @@
     <div class="modal"><div class="modal-header"><div><h2 id="ratingModalTitle">Wie war das Rezept?</h2><p id="ratingRecipeLabel">Deine Bewertung bleibt lokal gespeichert und hilft dir später bei der Auswahl.</p></div><button class="close" id="closeRatingModal" aria-label="Schließen">×</button></div><div class="rating-choice" id="ratingChoices"><button data-rating="1">★</button><button data-rating="2">★★</button><button data-rating="3">★★★</button><button data-rating="4">★★★★</button><button data-rating="5">★★★★★</button></div><div class="source-note" style="margin-top:10px">1 = nicht wieder · 5 = unbedingt wieder</div></div>
   </div>
   <div class="modal-backdrop" id="recipeDetailModal" role="dialog" aria-modal="true" aria-labelledby="recipeDetailTitle">
-    <div class="modal recipe-reader"><div class="reader-header"><div class="reader-header-bar"><span>Rezept-Reader</span><button class="close" id="closeRecipeDetail" aria-label="Schließen">×</button></div><div class="reader-hero"><div class="reader-icon" id="recipeDetailIcon">🍽️</div><div><div class="reader-eyebrow" id="recipeDetailType">Warmes Hauptgericht</div><h2 id="recipeDetailTitle">Rezept</h2><p class="reader-meta" id="recipeDetailMeta"></p></div></div></div><div class="reader-layout"><main><section class="reader-section"><div class="reader-section-title">Zutaten</div><div class="reader-ingredients" id="recipeDetailIngredients"></div></section><section class="reader-section"><div class="reader-section-title">Zubereitung</div><div class="reader-steps" id="recipeDetailInstructions"></div></section></main><aside class="reader-sidebar"><div class="reader-fact"><div class="reader-fact-label">Angebots-Match</div><div class="reader-fact-value" id="recipeDetailMatch">–</div></div><div class="reader-fact"><div class="reader-fact-label">Geschätzte Packungskosten</div><div class="reader-fact-value" id="recipeDetailCost">–</div></div><div class="meal-tags" id="recipeDetailTags"></div></aside></div><div class="reader-footer"><div class="reader-source" id="recipeDetailSource"></div><div class="modal-actions" style="margin-top:0"><button class="outline-button" id="cancelRecipeDetail">Schließen</button><button class="primary-button" id="recipeDetailChoose">Für heute wählen</button></div></div></div>
+    <div class="modal recipe-reader"><div class="reader-header"><div class="reader-header-bar"><button class="reader-back" id="cancelRecipeDetail">← Sammlung</button><span>Rezept-Reader</span><button class="close" id="closeRecipeDetail" aria-label="Schließen">×</button></div><div class="reader-hero"><div class="reader-icon" id="recipeDetailIcon">🍽️</div><div><div class="reader-eyebrow" id="recipeDetailType">Warmes Hauptgericht</div><h2 id="recipeDetailTitle">Rezept</h2><p class="reader-meta" id="recipeDetailMeta"></p><div class="meal-tags" id="recipeDetailTags"></div></div></div></div><div class="reader-layout"><main><section class="reader-section"><div class="reader-section-title">Zutaten</div><div class="reader-ingredients" id="recipeDetailIngredients"></div></section><section class="reader-section"><div class="reader-section-title">Zubereitung</div><div class="reader-steps" id="recipeDetailInstructions"></div></section></main><span id="recipeDetailMatch" hidden></span><span id="recipeDetailCost" hidden></span></div><div class="reader-footer"><div class="reader-source" id="recipeDetailSource"></div><div class="modal-actions" style="margin-top:0"><button class="primary-button" id="recipeDetailChoose">Für heute wählen</button></div></div></div>
   </div>
   <div class="modal-backdrop" id="pantryModal" role="dialog" aria-modal="true" aria-labelledby="pantryModalTitle">
     <div class="modal"><div class="modal-header"><div><h2 id="pantryModalTitle">Vorräte schnell ergänzen</h2><p>Mehrere Zutaten mit Komma, Semikolon oder Enter trennen. Sie werden sofort als vorhanden behandelt – ähnlich wie bei Bring.</p></div><button class="close" id="closePantryModal" aria-label="Schließen">×</button></div><label class="source-note" for="pantryInput">Zutaten</label><input class="input" id="pantryInput" maxlength="500" placeholder="z. B. Reis, Nudeln, Eier oder Tomatenmark" autocomplete="off"><div class="source-note" id="pantryStatus" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelPantryModal">Fertig</button><button class="primary-button" id="savePantryItem">＋ Hinzufügen</button></div></div>
@@ -1219,7 +1216,7 @@
       $('#recipeDetailMatch').textContent = match.matchedIngredients?.length ? `${match.matchedIngredients.length} Zutat${match.matchedIngredients.length === 1 ? '' : 'en'} im Angebot` : 'Noch offen';
       $('#recipeDetailCost').textContent = match.estimatedCost || formatEuro(parseMoney(recipe.cost || 0));
       $('#recipeDetailTags').innerHTML = [...(recipe.tags || []), match.matchedIngredients?.length ? `${match.matchedIngredients.length} Angebotszutaten` : 'Angebots-Match ausstehend'].map((tag, index) => `<span class="tag ${index === 0 && recipe.vegetarian ? '' : 'yellow'}">${escapeHtml(tag)}</span>`).join('');
-      $('#recipeDetailIngredients').innerHTML = ingredients.length ? ingredients.map(ingredient => `<div class="reader-ingredient"><span>✓</span><span>${escapeHtml(ingredient)}</span></div>`).join('') : '<span class="source-note">Für dieses Rezept sind noch keine Zutaten hinterlegt.</span>';
+      $('#recipeDetailIngredients').innerHTML = ingredients.length ? ingredients.map(ingredient => `<div class="reader-ingredient"><span>•</span><span>${escapeHtml(ingredient)}</span></div>`).join('') : '<span class="source-note">Für dieses Rezept sind noch keine Zutaten hinterlegt.</span>';
       $('#recipeDetailInstructions').innerHTML = instructionSteps.map((step, index) => `<div class="reader-step"><span class="reader-step-number">${index + 1}</span><p>${escapeHtml(step)}</p></div>`).join('');
       $('#recipeDetailSource').innerHTML = source ? `<a class="reader-source" href="${escapeHtml(source)}" target="_self" rel="noopener">Originalrezept öffnen ↗</a>` : 'Eigenes Rezept · lokal gespeichert';
       $('#recipeDetailChoose').textContent = recipeDetailDayIndex === null ? 'Für heute wählen' : 'Für diesen Tag wählen';
@@ -1567,8 +1564,8 @@
         const known = {
           'gaumenfreundin.de/gnocchi-kuerbis-auflauf-mit-lauch-vegetarisch': {
             name: 'Gnocchi-Kürbis-Auflauf mit Lauch',
-            ingredients: ['Hokkaido-Kürbis', 'rote Zwiebel', 'Knoblauch', 'Lauch', 'Olivenöl', 'Tomatenmark', 'Gemüsebrühe', 'Frischkäse', 'Gnocchi', 'Salz', 'Pfeffer', 'Curry', 'Muskat', 'Mozzarella'],
-            instructions: 'Kürbis, Zwiebel, Knoblauch und Lauch vorbereiten. Zwiebel und Knoblauch anbraten, Tomatenmark, Brühe, Kürbis und Lauch zugeben und köcheln lassen. Frischkäse und Gewürze unterheben, mit Gnocchi in eine Form geben, Mozzarella darüberstreuen und 30 Minuten bei 200 °C backen.',
+            ingredients: ['500 g Hokkaido-Kürbis', '1 rote Zwiebel', '1 Knoblauchzehe', '1 Stange Lauch', '1 EL Olivenöl', '2 EL Tomatenmark', '300 ml Gemüsebrühe', '200 g Frischkäse', '500 g Gnocchi Kühltheke', 'Salz und Pfeffer', 'Curry', 'Muskat', '80 g geriebener Mozzarella'],
+            instructions: 'Kürbis in kleine Würfel schneiden. Zwiebel und Knoblauch klein hacken. Lauch in Ringe schneiden.\nBackofen auf 200 Grad Ober- und Unterhitze vorheizen.\nOlivenöl in einer großen Pfanne erhitzen und Zwiebeln und Knoblauch anbraten. Tomatenmark unterheben und kurz rösten. Gemüsebrühe einrühren und Kürbiswürfel und Lauch zugeben. Zugedeckt 10 Minuten bei mittlerer Hitze köcheln lassen.\nFrischkäse unterheben und alles mit Salz, Pfeffer, Muskat und Curry würzen.\nGnocchi in eine Auflaufform geben, die Kürbissauce darüber verteilen und mit Mozzarella bestreuen. 25 bis 30 Minuten goldbraun backen.',
             time: 55,
             vegetarian: true,
             familyFriendly: true,
@@ -2138,7 +2135,7 @@
     let automaticOfferRefreshStarted = false;
     renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
     setTimeout(() => refreshPendingRecipeImports().catch(() => {}), 250);
-    const APP_BUILD = '2026-11-03-recipe-reader-1';
+    const APP_BUILD = '2026-11-03-recipe-reader-3';
     try {
       if (localStorage.getItem('angebotskueche.appBuild') !== APP_BUILD) {
         localStorage.setItem('angebotskueche.appBuild', APP_BUILD);
@@ -2146,7 +2143,7 @@
         if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(registration => registration.update())).catch(() => {});
       }
     } catch {}
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=24', { updateViaCache: 'none' }).catch(() => {}));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=26', { updateViaCache: 'none' }).catch(() => {}));
   </script>
 </body>
 </html>
