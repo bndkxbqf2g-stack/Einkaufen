@@ -1649,6 +1649,82 @@
       $('#favoriteCatalog').innerHTML = favorites.map((item, index) => { const match = getFavoriteMatch(item); const pinned = pinnedRecipes.includes(`favorite-${index}`); const evidence = match.requiredIngredients.length ? `${match.matchedIngredients.length}/${match.requiredIngredients.length} Angebotszutaten` : 'Zutatenanalyse ausstehend'; const actions = `${item.ingredients?.length ? `<button class="small-button ${pinned ? '' : 'primary'}" data-plan-favorite="${index}">${pinned ? '✓ Im Plan vorgemerkt' : '＋ Für Plan merken'}</button><button class="small-button" data-share-favorite="${index}">↗ Teilen</button>` : ''}${isBuiltInFavorite(item) ? '' : `<button class="small-button remove" data-remove-favorite="${index}">Rezept entfernen</button>`}`; return `<div class="favorite-card"><div><div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(item.icon)}</div><span class="favorite-match">${match.score ? `${escapeHtml(match.score)}% Match` : 'Import vorgemerkt'}</span></div><div class="catalog-name">${escapeHtml(item.name)}</div><div class="catalog-meta"><span>${escapeHtml(item.note)}</span><span>${escapeHtml(item.source || 'Quelle offen')}</span></div><div class="source-note">${escapeHtml(evidence)} · Vorrat wird nicht gewertet</div>${item.ingredients?.length ? `<div class="catalog-meta"><span>${escapeHtml(item.ingredients.length)} Zutaten erkannt</span></div>` : ''}${item.url ? `<a class="source-note" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Quelle öffnen ↗</a>` : ''}</div><div class="favorite-match">${escapeHtml(match.text)}</div>${actions ? `<div class="suggestion-actions">${actions}</div>` : ''}</div>`; }).join('');
     }
 
+    let editingFavoriteIndex = null;
+
+    function decorateFavoriteImportActions() {
+      const cards = [...document.querySelectorAll('#favoriteCatalog .favorite-card')];
+      favorites.forEach((item, index) => {
+        if (!item.url || (Array.isArray(item.ingredients) && item.ingredients.length)) return;
+        const card = cards.find(candidate => candidate.querySelector('.catalog-name')?.textContent === item.name);
+        if (!card || card.querySelector('[data-retry-favorite]')) return;
+        const evidence = [...card.querySelectorAll('.source-note')].find(node => node.textContent.includes('Zutatenanalyse ausstehend'));
+        if (evidence) evidence.textContent = 'Noch keine Zutaten erkannt · erneut laden oder ergänzen';
+        const actions = card.querySelector('.suggestion-actions') || card.appendChild(Object.assign(document.createElement('div'), { className: 'suggestion-actions' }));
+        actions.insertAdjacentHTML('afterbegin', `<button class="small-button primary" data-retry-favorite="${index}">↻ Zutaten erneut laden</button><button class="small-button" data-edit-favorite="${index}">✎ Zutaten ergänzen</button>`);
+      });
+    }
+
+    const renderFavoritesWithImportActions = renderFavorites;
+    renderFavorites = function renderFavoritesWithImportActionsWrapper() {
+      renderFavoritesWithImportActions();
+      decorateFavoriteImportActions();
+    };
+
+    function openFavoriteEditor(index) {
+      const item = favorites[index];
+      if (!item) return;
+      editingFavoriteIndex = index;
+      $('#modalTitle').textContent = 'Lieblingsrezept ergänzen';
+      $('#importRecipe').textContent = 'Rezept speichern';
+      $('#recipeName').value = item.name || '';
+      $('#recipeUrl').value = item.url || '';
+      $('#recipeIngredients').value = Array.isArray(item.ingredients) ? item.ingredients.join('\n') : '';
+      $('#importStatus').textContent = 'Ergänze fehlende Zutaten zeilenweise oder starte die Analyse erneut.';
+      $('#favoriteModal').classList.add('open');
+    }
+
+    async function retryFavorite(index) {
+      const item = favorites[index];
+      if (!item?.url) return;
+      showToast('Zutatenanalyse wird erneut versucht …');
+      const recipeData = await readRecipeFromSource(item.url);
+      if (!recipeData?.ingredients?.length) {
+        favorites[index] = { ...item, recipeRetryAt: new Date(Date.now() + recipeRetryIntervalMs).toISOString() };
+        localStorage.setItem('angebotskueche.favorites', JSON.stringify(favorites));
+        showToast('Die Seite liefert weiterhin keine auslesbaren Zutaten. Ergänze sie bitte manuell.');
+        openFavoriteEditor(index);
+        return;
+      }
+      favorites[index] = { ...item, name: recipeData.name || item.name, ingredients: recipeData.ingredients, time: recipeData.time || item.time, vegetarian: recipeData.vegetarian ?? item.vegetarian, familyFriendly: recipeData.familyFriendly ?? item.familyFriendly, category: recipeData.category || item.category, difficulty: recipeData.difficulty || item.difficulty, instructions: recipeData.instructions || item.instructions, note: `${item.source || 'Rezeptseite'} · ${recipeData.ingredients.length} Zutaten · automatisch erkannt`, match: 'Zutaten erkannt – wird gegen Angebote geprüft', recipeRetryAt: null };
+      localStorage.setItem('angebotskueche.favorites', JSON.stringify(favorites));
+      renderFavorites(); renderSuggestions(); renderPlan();
+      showToast(`${recipeData.ingredients.length} Zutaten erkannt und gespeichert.`);
+    }
+
+    const recipeRetryIntervalMs = 7 * 24 * 60 * 60 * 1000;
+
+    async function refreshPendingRecipeImports() {
+      const now = Date.now();
+      let changed = false;
+      let recovered = 0;
+      for (let index = 0; index < favorites.length; index += 1) {
+        const item = favorites[index];
+        if (!item?.url || (Array.isArray(item.ingredients) && item.ingredients.length)) continue;
+        const retryAt = item.recipeRetryAt ? new Date(item.recipeRetryAt).getTime() : 0;
+        if (retryAt > now) continue;
+        const recipeData = await readRecipeFromSource(item.url);
+        favorites[index] = { ...item, recipeRetryAt: new Date(now + recipeRetryIntervalMs).toISOString() };
+        changed = true;
+        if (!recipeData?.ingredients?.length) continue;
+        favorites[index] = { ...favorites[index], name: recipeData.name || item.name, ingredients: recipeData.ingredients, time: recipeData.time || item.time, vegetarian: recipeData.vegetarian ?? item.vegetarian, familyFriendly: recipeData.familyFriendly ?? item.familyFriendly, category: recipeData.category || item.category, difficulty: recipeData.difficulty || item.difficulty, instructions: recipeData.instructions || item.instructions, note: `${item.source || 'Rezeptseite'} · ${recipeData.ingredients.length} Zutaten · automatisch erkannt`, match: 'Zutaten erkannt – wird gegen Angebote geprüft', recipeRetryAt: null };
+        recovered += 1;
+      }
+      if (!changed) return;
+      localStorage.setItem('angebotskueche.favorites', JSON.stringify(favorites));
+      renderFavorites(); renderSuggestions(); renderPlan();
+      if (recovered) showToast(`${recovered} importiertes Rezept automatisch analysiert.`);
+    }
+
     function refreshPantryDependentViews() {
       renderPlan();
       renderSuggestions();
@@ -1850,8 +1926,12 @@
     $('#favoriteCatalog').addEventListener('click', event => {
       const share = event.target.closest('[data-share-favorite]');
       const plan = event.target.closest('[data-plan-favorite]');
-       const remove = event.target.closest('[data-remove-favorite]');
+      const retry = event.target.closest('[data-retry-favorite]');
+      const edit = event.target.closest('[data-edit-favorite]');
+      const remove = event.target.closest('[data-remove-favorite]');
       if (share) shareFavorite(Number(share.dataset.shareFavorite));
+      if (retry) retryFavorite(Number(retry.dataset.retryFavorite));
+      if (edit) openFavoriteEditor(Number(edit.dataset.editFavorite));
       if (plan) {
         const id = `favorite-${plan.dataset.planFavorite}`;
         pinnedRecipes = pinnedRecipes.includes(id) ? pinnedRecipes.filter(item => item !== id) : [...pinnedRecipes, id];
@@ -1859,7 +1939,7 @@
         renderFavorites(); renderPlan();
         showToast(pinnedRecipes.includes(id) ? 'Lieblingsrezept für den Plan vorgemerkt.' : 'Lieblingsrezept aus den Vormerkungen entfernt.');
       }
-       if (remove) {
+      if (remove) {
          const index = Number(remove.dataset.removeFavorite);
          const item = favorites[index];
          if (!item || isBuiltInFavorite(item) || !window.confirm(`${item.name} aus deinen Lieblingsrezepten entfernen?`)) return;
@@ -1924,9 +2004,9 @@
     $('#closeRatingModal').addEventListener('click', closeRatingModal);
     $('#ratingModal').addEventListener('click', event => { if (event.target.id === 'ratingModal') closeRatingModal(); });
     $('#ratingChoices').addEventListener('click', event => { const choice = event.target.closest('[data-rating]'); if (choice) saveRecipeRating(choice.dataset.rating); });
-    $('#openFavorite').addEventListener('click', () => $('#favoriteModal').classList.add('open'));
-    $('#closeModal').addEventListener('click', () => $('#favoriteModal').classList.remove('open'));
-    $('#cancelModal').addEventListener('click', () => $('#favoriteModal').classList.remove('open'));
+    $('#openFavorite').addEventListener('click', () => { editingFavoriteIndex = null; $('#modalTitle').textContent = 'Lieblingsrezept importieren'; $('#importRecipe').textContent = 'Rezept übernehmen'; $('#favoriteModal').classList.add('open'); });
+    $('#closeModal').addEventListener('click', () => { editingFavoriteIndex = null; $('#favoriteModal').classList.remove('open'); });
+    $('#cancelModal').addEventListener('click', () => { editingFavoriteIndex = null; $('#favoriteModal').classList.remove('open'); });
     $('#favoriteModal').addEventListener('click', event => { if (event.target.id === 'favoriteModal') event.currentTarget.classList.remove('open'); });
     $('#importRecipe').addEventListener('click', async () => {
       const manualName = $('#recipeName').value.trim();
@@ -1950,7 +2030,9 @@
       const ingredients = recipeData?.ingredients?.length ? recipeData.ingredients : manualIngredients;
       const ingredientLabel = recipeData?.ingredients?.length ? 'automatisch erkannt' : manualIngredients.length ? 'manuell ergänzt' : 'Analyse ausstehend';
       const name = recipeData?.name || fallbackLabel;
-      favorites.push({ name, icon: source === 'chefkoch.de' ? '👩‍🍳' : '🥘', source, match: ingredients.length ? 'Zutaten erkannt – wird gegen Angebote geprüft' : 'Link gespeichert – Zutatenanalyse ausstehend', score: 0, note: ingredients.length ? `${source} · ${ingredients.length} Zutaten · ${ingredientLabel}` : `${source} · Analyse ausstehend`, ingredients, url, time: recipeData?.time || 45, vegetarian: Boolean(recipeData?.vegetarian), familyFriendly: recipeData?.familyFriendly !== false, category: recipeData?.category || 'Lieblingsrezept', difficulty: recipeData?.difficulty || 'variabel', instructions: recipeData?.instructions || '' });
+      const importedFavorite = { name, icon: source === 'chefkoch.de' ? '👩‍🍳' : '🥘', source, match: ingredients.length ? 'Zutaten erkannt – wird gegen Angebote geprüft' : 'Link gespeichert – Zutatenanalyse ausstehend', score: 0, note: ingredients.length ? `${source} · ${ingredients.length} Zutaten · ${ingredientLabel}` : `${source} · Analyse ausstehend`, ingredients, url, time: recipeData?.time || 45, vegetarian: Boolean(recipeData?.vegetarian), familyFriendly: recipeData?.familyFriendly !== false, category: recipeData?.category || 'Lieblingsrezept', difficulty: recipeData?.difficulty || 'variabel', instructions: recipeData?.instructions || '', recipeRetryAt: null };
+      if (editingFavoriteIndex !== null && favorites[editingFavoriteIndex]) favorites[editingFavoriteIndex] = { ...favorites[editingFavoriteIndex], ...importedFavorite };
+      else favorites.push(importedFavorite);
       localStorage.setItem('angebotskueche.favorites', JSON.stringify(favorites));
       renderFavorites(); renderSuggestions(); renderPlan();
       $('#favoriteModal').classList.remove('open');
@@ -1958,6 +2040,10 @@
       $('#recipeUrl').value = '';
       $('#recipeIngredients').value = '';
       $('#importStatus').textContent = '';
+      editingFavoriteIndex = null;
+      $('#modalTitle').textContent = 'Lieblingsrezept importieren';
+      $('#importRecipe').textContent = 'Rezept übernehmen';
+      if (!ingredients.length && url) setTimeout(() => refreshPendingRecipeImports().catch(() => {}), 250);
       showToast(ingredients.length ? `${source}-Rezept mit ${ingredients.length} Zutaten importiert.` : `${source}-Rezept gespeichert – Zutaten bitte ergänzen, falls die Seite den Browserzugriff blockiert.`);
     });
     $('#addPantry').addEventListener('click', openPantryModal);
@@ -2011,7 +2097,8 @@
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
     let automaticOfferRefreshStarted = false;
     renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
-    const APP_BUILD = '2026-11-03-recipe-import-fallback-1';
+    setTimeout(() => refreshPendingRecipeImports().catch(() => {}), 250);
+    const APP_BUILD = '2026-11-03-recipe-auto-retry-1';
     try {
       if (localStorage.getItem('angebotskueche.appBuild') !== APP_BUILD) {
         localStorage.setItem('angebotskueche.appBuild', APP_BUILD);
@@ -2019,7 +2106,7 @@
         if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(registration => registration.update())).catch(() => {});
       }
     } catch {}
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=22', { updateViaCache: 'none' }).catch(() => {}));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=23', { updateViaCache: 'none' }).catch(() => {}));
   </script>
 </body>
 </html>
