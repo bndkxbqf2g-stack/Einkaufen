@@ -942,7 +942,7 @@
         const assignedDay = Object.entries(manualPlan).find(([, id]) => id === recipe.id)?.[0];
         const ingredients = (recipe.ingredients || []).slice(0, 4);
         const favorite = isRecipeFavorite(recipe);
-        return `<article class="plan-suggestion-card"><div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(recipe.emoji)}</div><span class="favorite-match">${escapeHtml(match.score)}%</span></div><div class="catalog-name">${escapeHtml(recipe.title)}</div><div class="meal-tags"><span class="tag ${recipe.favorite ? '' : 'yellow'}">${recipe.favorite ? 'Lieblingsessen' : 'Kreativer Vorschlag'}</span></div><div class="suggestion-reason">${escapeHtml(match.reason || 'Passender Angebotsanker')}</div><div class="suggestion-ingredients">${ingredients.map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('')}</div>${assignedDay !== undefined ? `<div class="manual-choice">Für Tag ${Number(assignedDay) + 1} ausgewählt</div>` : ''}<div class="suggestion-actions"><button class="small-button primary" data-assign-recipe="${escapeHtml(recipe.id)}">${assignedDay !== undefined ? 'Tag ändern' : 'Für Tag auswählen'}</button><button class="small-button ${favorite ? '' : 'primary'}" data-favorite-recipe="${escapeHtml(recipe.id)}">${favorite ? '✓ In Favoriten' : '♡ Favorit'}</button></div></article>`;
+        return `<article class="plan-suggestion-card"><div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(recipe.emoji)}</div><span class="favorite-match">${escapeHtml(match.score)}%</span></div><div class="catalog-name">${escapeHtml(recipe.title)}</div><div class="meal-tags"><span class="tag ${recipe.favorite ? '' : 'yellow'}">${recipe.favorite ? 'Lieblingsessen' : 'Kreativer Vorschlag'}</span></div><div class="suggestion-reason">${escapeHtml(match.reason || 'Passender Angebotsanker')}</div><div class="suggestion-ingredients">${ingredients.map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('')}</div>${assignedDay !== undefined ? `<div class="manual-choice">Für Tag ${Number(assignedDay) + 1} ausgewählt</div>` : ''}<div class="suggestion-actions"><button class="small-button" data-detail-recipe="${escapeHtml(recipe.id)}">Details →</button><button class="small-button primary" data-assign-recipe="${escapeHtml(recipe.id)}">${assignedDay !== undefined ? 'Tag ändern' : 'Für Tag auswählen'}</button><button class="small-button ${favorite ? '' : 'primary'}" data-favorite-recipe="${escapeHtml(recipe.id)}">${favorite ? '✓ In Favoriten' : '♡ Favorit'}</button><button class="small-button remove" data-dismiss-recipe="${escapeHtml(recipe.id)}">Ausblenden</button></div></article>`;
       }).join('') : '<div class="empty-state">Für deine Auswahl sind gerade keine Rezeptvorschläge verfügbar.</div>';
     }
 
@@ -1113,16 +1113,16 @@
     }
 
     function suggestionSortValue(recipe, match, currentPlanKeys = new Set()) {
-      const rating = recipeRating(recipe);
+      const qualityBonus = recipeQualityBonus(recipe);
       const recentMeals = getCurrentPlanMeals().slice(0, 5);
       const repeatedCategory = recentMeals.some(meal => meal.profile && recipe.category && meal.profile === recipe.category);
       const varietyBonus = repeatedCategory ? -12 : (recipe.category ? 5 : 0);
       const historyIndex = recipeHistory.indexOf(recipeIdentity(recipe));
       const historyPenalty = historyIndex >= 0 ? Math.max(4, 24 - historyIndex * 2) : 0;
       const currentPlanPenalty = currentPlanKeys.has(recipeIdentity(recipe)) ? 14 : 0;
-      if (suggestionPreferences.sort === 'cheapest') return (100 - parseMoney(match.estimatedCost)) + match.score / 10 + rating * 2 - historyPenalty - currentPlanPenalty;
-      if (suggestionPreferences.sort === 'variety') return match.score + varietyBonus + rating * 2 - historyPenalty - currentPlanPenalty;
-      return match.score + varietyBonus + rating * 3 - historyPenalty - currentPlanPenalty;
+      if (suggestionPreferences.sort === 'cheapest') return (100 - parseMoney(match.estimatedCost)) + match.score / 10 + qualityBonus - historyPenalty - currentPlanPenalty;
+      if (suggestionPreferences.sort === 'variety') return match.score + varietyBonus + qualityBonus - historyPenalty - currentPlanPenalty;
+      return match.score + varietyBonus + qualityBonus - historyPenalty - currentPlanPenalty;
     }
 
     function blendSuggestionResults(ranked) {
@@ -1178,8 +1178,9 @@
         const favorite = isRecipeFavorite(recipe);
         const evidence = match.requiredIngredients.length ? `${match.matchedIngredients.length} von ${match.requiredIngredients.length} Zutaten im Angebot` : 'Zutatenanalyse ausstehend';
         const rating = recipeRating(recipe);
+        const qualityLabel = recipeQualityLabel(recipe);
         const markets = match.stores.length ? match.stores.map(marketDisplayName).join(' + ') : 'kein aktiver Markt';
-        return `<article class="suggestion-card"><div class="suggestion-head"><div><div class="catalog-icon">${escapeHtml(recipe.emoji)}</div><div class="suggestion-title">${escapeHtml(recipe.title)}</div></div><span class="favorite-match">${escapeHtml(match.score)}% Match</span></div><div class="suggestion-reason">${escapeHtml(match.reason || 'Noch kein direkter Angebotsanker')}</div><div class="suggestion-detail"><div><strong>${escapeHtml(evidence)}</strong> · Vorräte nicht gewertet</div><div class="suggestion-cost"><span>ca. ${escapeHtml(match.estimatedCost)} für die Angebots-Packungen</span><span>${escapeHtml(markets)}</span></div></div><div class="meal-tags">${(recipe.tags || []).map((tag, index) => `<span class="tag ${index === 0 && recipe.vegetarian ? '' : 'yellow'}">${escapeHtml(tag)}</span>`).join('')}</div><div class="suggestion-ingredients">${(recipe.ingredients || []).map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('')}</div><div class="suggestion-detail"><div><strong>${escapeHtml(recipe.time || '–')} Min. · ${escapeHtml(recipe.difficulty || 'leicht')} · ${escapeHtml(recipe.familyFriendly ? 'familiengeeignet' : 'für Erwachsene')}</strong></div><div class="suggestion-instructions">${escapeHtml(recipe.instructions || 'Kurze Zubereitung ist für dieses Rezept noch nicht hinterlegt.')}</div>${rating ? `<div class="suggestion-rating">Deine Bewertung: ${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}</div>` : ''}</div><div class="suggestion-actions"><button class="small-button primary" data-today-recipe="${escapeHtml(recipe.id)}">Für heute wählen</button><button class="small-button" data-assign-recipe="${escapeHtml(recipe.id)}">Tag auswählen</button><button class="small-button ${favorite ? '' : 'primary'}" data-favorite-recipe="${escapeHtml(recipe.id)}">${favorite ? '✓ In Favoriten' : '♡ Favorit speichern'}</button><button class="small-button ${pinned ? '' : 'primary'}" data-plan-recipe="${escapeHtml(recipe.id)}">${pinned ? '✓ Vorgemerkt' : '＋ Für Plan vormerken'}</button><button class="small-button" data-rate-recipe="${escapeHtml(recipe.id)}">${rating ? 'Bewertung ändern' : 'Gekocht? Bewerten'}</button><button class="small-button" data-share-recipe="${escapeHtml(recipe.id)}">↗ Teilen</button><button class="small-button remove" data-dismiss-recipe="${escapeHtml(recipe.id)}">Nicht mehr vorschlagen</button></div></article>`;
+        return `<article class="suggestion-card"><div class="suggestion-head"><div><div class="catalog-icon">${escapeHtml(recipe.emoji)}</div><div class="suggestion-title">${escapeHtml(recipe.title)}</div></div><span class="favorite-match">${escapeHtml(match.score)}% Match</span></div><div class="suggestion-reason">${escapeHtml(match.reason || 'Noch kein direkter Angebotsanker')}</div><div class="suggestion-detail"><div><strong>${escapeHtml(evidence)}</strong> · Vorräte nicht gewertet</div><div class="suggestion-cost"><span>ca. ${escapeHtml(match.estimatedCost)} für die Angebots-Packungen</span><span>${escapeHtml(markets)}</span></div></div><div class="meal-tags">${(recipe.tags || []).map((tag, index) => `<span class="tag ${index === 0 && recipe.vegetarian ? '' : 'yellow'}">${escapeHtml(tag)}</span>`).join('')}</div><div class="suggestion-ingredients">${(recipe.ingredients || []).map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('')}</div><div class="suggestion-detail"><div><strong>${escapeHtml(recipe.time || '–')} Min. · ${escapeHtml(recipe.difficulty || 'leicht')} · ${escapeHtml(recipe.familyFriendly ? 'familiengeeignet' : 'für Erwachsene')}</strong></div><div class="suggestion-instructions">${escapeHtml(recipe.instructions || 'Kurze Zubereitung ist für dieses Rezept noch nicht hinterlegt.')}</div>${qualityLabel ? `<div class="suggestion-rating">${escapeHtml(qualityLabel)}</div>` : ''}${rating ? `<div class="suggestion-rating">Deine Bewertung: ${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}</div>` : ''}</div><div class="suggestion-actions"><button class="small-button primary" data-detail-recipe="${escapeHtml(recipe.id)}">Details →</button><button class="small-button primary" data-today-recipe="${escapeHtml(recipe.id)}">Für heute wählen</button><button class="small-button" data-assign-recipe="${escapeHtml(recipe.id)}">Tag auswählen</button><button class="small-button ${favorite ? '' : 'primary'}" data-favorite-recipe="${escapeHtml(recipe.id)}">${favorite ? '✓ In Favoriten' : '♡ Favorit speichern'}</button><button class="small-button ${pinned ? '' : 'primary'}" data-plan-recipe="${escapeHtml(recipe.id)}">${pinned ? '✓ Vorgemerkt' : '＋ Für Plan vormerken'}</button><button class="small-button" data-rate-recipe="${escapeHtml(recipe.id)}">${rating ? 'Bewertung ändern' : 'Gekocht? Bewerten'}</button><button class="small-button" data-share-recipe="${escapeHtml(recipe.id)}">↗ Teilen</button><button class="small-button remove" data-dismiss-recipe="${escapeHtml(recipe.id)}">Nicht mehr vorschlagen</button></div></article>`;
       }).join('');
       $$('#suggestionGrid .suggestion-card').forEach(card => {
         const title = card.querySelector('.suggestion-title')?.textContent || '';
@@ -1215,7 +1216,7 @@
       $('#recipeDetailMeta').textContent = `${recipe.time || '–'} Min. · ${recipe.difficulty || 'leicht'} · ca. ${match.estimatedCost || formatEuro(parseMoney(recipe.cost || 0))}${match.stores?.length ? ` · ${match.stores.map(marketDisplayName).join(' + ')}` : ''}`;
       $('#recipeDetailMatch').textContent = match.matchedIngredients?.length ? `${match.matchedIngredients.length} Zutat${match.matchedIngredients.length === 1 ? '' : 'en'} im Angebot` : 'Noch offen';
       $('#recipeDetailCost').textContent = match.estimatedCost || formatEuro(parseMoney(recipe.cost || 0));
-      $('#recipeDetailTags').innerHTML = [...(recipe.tags || []), match.matchedIngredients?.length ? `${match.matchedIngredients.length} Angebotszutaten` : 'Angebots-Match ausstehend'].map((tag, index) => `<span class="tag ${index === 0 && recipe.vegetarian ? '' : 'yellow'}">${escapeHtml(tag)}</span>`).join('');
+      $('#recipeDetailTags').innerHTML = [...(recipe.tags || []), match.matchedIngredients?.length ? `${match.matchedIngredients.length} Angebotszutaten` : 'Angebots-Match ausstehend', recipeQualityLabel(recipe)].filter(Boolean).map((tag, index) => `<span class="tag ${index === 0 && recipe.vegetarian ? '' : 'yellow'}">${escapeHtml(tag)}</span>`).join('');
       $('#recipeDetailIngredients').innerHTML = ingredients.length ? ingredients.map(ingredient => `<div class="reader-ingredient"><span>•</span><span>${escapeHtml(ingredient)}</span></div>`).join('') : '<span class="source-note">Für dieses Rezept sind noch keine Zutaten hinterlegt.</span>';
       $('#recipeDetailInstructions').innerHTML = instructionSteps.map((step, index) => `<div class="reader-step"><span class="reader-step-number">${index + 1}</span><p>${escapeHtml(step)}</p></div>`).join('');
       $('#recipeDetailSource').innerHTML = source ? `<a class="reader-source" href="${escapeHtml(source)}" target="_self" rel="noopener">Originalrezept öffnen ↗</a>` : 'Eigenes Rezept · lokal gespeichert';
@@ -1388,7 +1389,7 @@
 
     function favoriteAsCandidate(item, index) {
       const ingredients = Array.isArray(item.ingredients) ? item.ingredients : [];
-      return { id: `favorite-${index}`, title: item.name, emoji: item.icon || '♡', score: item.score || 0, store: '', reason: 'Lieblingsrezept', time: item.time || 45, vegetarian: Boolean(item.vegetarian), familyFriendly: Boolean(item.familyFriendly), category: item.category || 'Lieblingsrezept', difficulty: item.difficulty || 'variabel', tags: ['Lieblingsrezept', ...(item.vegetarian ? ['vegetarisch'] : [])], ingredients, instructions: item.instructions || 'Zutaten vorbereiten, nach deinem gespeicherten Rezept zubereiten und abschmecken.', leftoverFriendly: Boolean(item.leftoverFriendly), favorite: true, source: item.source };
+      return { id: `favorite-${index}`, title: item.name, emoji: item.icon || '♡', score: item.score || 0, store: '', reason: 'Lieblingsrezept', time: item.time || 45, vegetarian: Boolean(item.vegetarian), familyFriendly: Boolean(item.familyFriendly), category: item.category || 'Lieblingsrezept', difficulty: item.difficulty || 'variabel', tags: ['Lieblingsrezept', ...(item.vegetarian ? ['vegetarisch'] : [])], ingredients, instructions: item.instructions || 'Zutaten vorbereiten, nach deinem gespeicherten Rezept zubereiten und abschmecken.', leftoverFriendly: Boolean(item.leftoverFriendly), favorite: true, source: item.source, url: item.url, externalRating: item.externalRating, externalRatingCount: item.externalRatingCount, ratingSource: item.ratingSource };
     }
 
     function getPlanCandidates() {
@@ -1413,7 +1414,7 @@
       const recipe = getPlanCandidateById(recipeId);
       if (!recipe) return;
       if (isRecipeFavorite(recipe)) { showToast(`${recipe.title} ist bereits in deinen Favoriten.`); return; }
-      favorites.push({ name: recipe.title, icon: recipe.emoji || '🥘', source: recipe.source || 'Angebotsküche', match: recipe.reason || 'Aus deinen Rezeptvorschlägen', score: recipe.score || 0, note: `${recipe.time || 30} Min. · aus Rezeptvorschlag`, time: recipe.time, vegetarian: Boolean(recipe.vegetarian), familyFriendly: Boolean(recipe.familyFriendly), category: recipe.category, difficulty: recipe.difficulty, instructions: recipe.instructions, leftoverFriendly: Boolean(recipe.leftoverFriendly), ingredients: [...(recipe.ingredients || [])] });
+      favorites.push({ name: recipe.title, icon: recipe.emoji || '🥘', source: recipe.source || 'Angebotsküche', match: recipe.reason || 'Aus deinen Rezeptvorschlägen', score: recipe.score || 0, note: `${recipe.time || 30} Min. · aus Rezeptvorschlag`, time: recipe.time, vegetarian: Boolean(recipe.vegetarian), familyFriendly: Boolean(recipe.familyFriendly), category: recipe.category, difficulty: recipe.difficulty, instructions: recipe.instructions, leftoverFriendly: Boolean(recipe.leftoverFriendly), ingredients: [...(recipe.ingredients || [])], url: recipe.url, externalRating: recipe.externalRating, externalRatingCount: recipe.externalRatingCount, ratingSource: recipe.ratingSource });
       localStorage.setItem('angebotskueche.favorites', JSON.stringify(favorites));
       renderFavorites();
       renderSuggestions();
@@ -1537,6 +1538,17 @@
       return typeof value === 'string' ? value : '';
     }
 
+    function parseAggregateRating(value) {
+      const rating = Array.isArray(value) ? value.find(item => item && typeof item === 'object') : value;
+      if (!rating) return null;
+      const rawValue = Number(String(rating.ratingValue ?? '').replace(',', '.'));
+      const best = Number(String(rating.bestRating ?? 5).replace(',', '.')) || 5;
+      if (!Number.isFinite(rawValue) || rawValue <= 0 || best <= 0) return null;
+      const normalized = Math.max(0, Math.min(5, rawValue / best * 5));
+      const rawCount = Number(String(rating.ratingCount ?? rating.reviewCount ?? 0).replace(/[^0-9.,]/g, '').replace(',', '.'));
+      return { value: Math.round(normalized * 10) / 10, count: Number.isFinite(rawCount) ? Math.max(0, Math.round(rawCount)) : 0 };
+    }
+
     function parseRecipeJsonLd(html) {
       try {
         const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -1553,7 +1565,8 @@
         if (!recipe) return null;
         const ingredients = Array.isArray(recipe.recipeIngredient) ? recipe.recipeIngredient.map(item => String(item).trim()).filter(Boolean) : [];
         if (!ingredients.length) return null;
-        return { name: recipe.name, ingredients, instructions: recipeInstructionsText(recipe.recipeInstructions), time: Number(String(recipe.totalTime || '').match(/\d+/)?.[0] || 0) || undefined, vegetarian: /vegetarian|vegan/i.test(JSON.stringify(recipe.keywords || '')), familyFriendly: true };
+        const aggregateRating = parseAggregateRating(recipe.aggregateRating);
+        return { name: recipe.name, ingredients, instructions: recipeInstructionsText(recipe.recipeInstructions), time: Number(String(recipe.totalTime || '').match(/\d+/)?.[0] || 0) || undefined, vegetarian: /vegetarian|vegan/i.test(JSON.stringify(recipe.keywords || '')), familyFriendly: true, category: recipe.recipeCategory || undefined, externalRating: aggregateRating?.value, externalRatingCount: aggregateRating?.count, ratingSource: aggregateRating ? 'Rezeptseite · Schema.org' : undefined };
       } catch { return null; }
     }
 
@@ -1628,6 +1641,27 @@
       return Number.isFinite(Number(rating)) ? Number(rating) : 0;
     }
 
+    function externalRecipeRating(recipe) {
+      const value = Number(recipe?.externalRating);
+      if (!Number.isFinite(value) || value <= 0) return null;
+      return { value: Math.max(0, Math.min(5, value)), count: Math.max(0, Number(recipe.externalRatingCount) || 0), source: recipe.ratingSource || 'Rezeptseite' };
+    }
+
+    function recipeQualityBonus(recipe) {
+      const personal = recipeRating(recipe);
+      const external = externalRecipeRating(recipe);
+      const personalBonus = personal ? (personal - 3) * 3 : 0;
+      const externalBonus = external ? (external.value - 3) * (external.count >= 10 ? 1.8 : 1) : 0;
+      return personalBonus + externalBonus;
+    }
+
+    function recipeQualityLabel(recipe) {
+      const external = externalRecipeRating(recipe);
+      if (!external) return '';
+      const count = external.count ? ` (${external.count} Bewertungen)` : '';
+      return `★ ${external.value.toFixed(1).replace('.', ',')}${count} · ${external.source}`;
+    }
+
     function getRecipeMatchDetails(recipe) {
       const requiredIngredients = (recipe.ingredients || []).filter(ingredient => !isPantryIngredient(ingredient));
       const activeOffers = getActiveOffers();
@@ -1644,7 +1678,7 @@
       const matchedNames = matchedIngredients.slice(0, 3);
       const scoreBase = requiredIngredients.length ? Math.round((matchedIngredients.length / requiredIngredients.length) * 70) : 0;
       const offerBonus = matchedIngredients.length >= 2 ? 20 : matchedIngredients.length ? 8 : 0;
-      const ratingBonus = recipeRating(recipe) ? (recipeRating(recipe) - 3) * 3 : 0;
+      const ratingBonus = recipeQualityBonus(recipe);
       const score = Math.max(0, Math.min(99, Math.round(25 + scoreBase + offerBonus + ratingBonus)));
       const reason = matchedNames.length ? `${matchedNames.join(' + ')} im Angebot` : (recipe.reason || 'Noch kein direkter Angebotsanker');
       return { score, reason, store: stores.length ? stores.join(' + ') : recipe.store, stores, matchedIngredients, matchedOffers, requiredIngredients, estimatedCost: estimateMatchCost(matchedOffers, recipe) };
@@ -1683,7 +1717,7 @@
     }
 
     function renderFavorites() {
-      $('#favoriteCatalog').innerHTML = favorites.map((item, index) => { const match = getFavoriteMatch(item); const pinned = pinnedRecipes.includes(`favorite-${index}`); const evidence = match.requiredIngredients.length ? `${match.matchedIngredients.length}/${match.requiredIngredients.length} Angebotszutaten` : 'Zutatenanalyse ausstehend'; const actions = `${item.ingredients?.length ? `<button class="small-button ${pinned ? '' : 'primary'}" data-plan-favorite="${index}">${pinned ? '✓ Im Plan vorgemerkt' : '＋ Für Plan merken'}</button><button class="small-button" data-share-favorite="${index}">↗ Teilen</button>` : ''}${isBuiltInFavorite(item) ? '' : `<button class="small-button remove" data-remove-favorite="${index}">Rezept entfernen</button>`}`; return `<div class="favorite-card"><div><div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(item.icon)}</div><span class="favorite-match">${match.score ? `${escapeHtml(match.score)}% Match` : 'Import vorgemerkt'}</span></div><div class="catalog-name">${escapeHtml(item.name)}</div><div class="catalog-meta"><span>${escapeHtml(item.note)}</span><span>${escapeHtml(item.source || 'Quelle offen')}</span></div><div class="source-note">${escapeHtml(evidence)} · Vorrat wird nicht gewertet</div>${item.ingredients?.length ? `<div class="catalog-meta"><span>${escapeHtml(item.ingredients.length)} Zutaten erkannt</span></div>` : ''}${item.url ? `<a class="source-note" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Quelle öffnen ↗</a>` : ''}</div><div class="favorite-match">${escapeHtml(match.text)}</div>${actions ? `<div class="suggestion-actions">${actions}</div>` : ''}</div>`; }).join('');
+      $('#favoriteCatalog').innerHTML = favorites.map((item, index) => { const match = getFavoriteMatch(item); const pinned = pinnedRecipes.includes(`favorite-${index}`); const evidence = match.requiredIngredients.length ? `${match.matchedIngredients.length}/${match.requiredIngredients.length} Angebotszutaten` : 'Zutatenanalyse ausstehend'; const ratingLabel = recipeQualityLabel({ externalRating: item.externalRating, externalRatingCount: item.externalRatingCount, ratingSource: item.ratingSource }); const actions = `${item.ingredients?.length ? `<button class="small-button ${pinned ? '' : 'primary'}" data-plan-favorite="${index}">${pinned ? '✓ Im Plan vorgemerkt' : '＋ Für Plan merken'}</button><button class="small-button" data-share-favorite="${index}">↗ Teilen</button>` : ''}${isBuiltInFavorite(item) ? '' : `<button class="small-button remove" data-remove-favorite="${index}">Rezept entfernen</button>`}`; return `<div class="favorite-card"><div><div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(item.icon)}</div><span class="favorite-match">${match.score ? `${escapeHtml(match.score)}% Match` : 'Import vorgemerkt'}</span></div><div class="catalog-name">${escapeHtml(item.name)}</div><div class="catalog-meta"><span>${escapeHtml(item.note)}</span><span>${escapeHtml(item.source || 'Quelle offen')}</span></div><div class="source-note">${escapeHtml(evidence)} · Vorrat wird nicht gewertet</div>${ratingLabel ? `<div class="suggestion-rating">${escapeHtml(ratingLabel)}</div>` : ''}${item.ingredients?.length ? `<div class="catalog-meta"><span>${escapeHtml(item.ingredients.length)} Zutaten erkannt</span></div>` : ''}${item.url ? `<a class="source-note" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Quelle öffnen ↗</a>` : ''}</div><div class="favorite-match">${escapeHtml(match.text)}</div>${actions ? `<div class="suggestion-actions">${actions}</div>` : ''}</div>`; }).join('');
     }
 
     let editingFavoriteIndex = null;
@@ -1732,7 +1766,7 @@
         openFavoriteEditor(index);
         return;
       }
-      favorites[index] = { ...item, name: recipeData.name || item.name, ingredients: recipeData.ingredients, time: recipeData.time || item.time, vegetarian: recipeData.vegetarian ?? item.vegetarian, familyFriendly: recipeData.familyFriendly ?? item.familyFriendly, category: recipeData.category || item.category, difficulty: recipeData.difficulty || item.difficulty, instructions: recipeData.instructions || item.instructions, note: `${item.source || 'Rezeptseite'} · ${recipeData.ingredients.length} Zutaten · automatisch erkannt`, match: 'Zutaten erkannt – wird gegen Angebote geprüft', recipeRetryAt: null };
+      favorites[index] = { ...item, name: recipeData.name || item.name, ingredients: recipeData.ingredients, time: recipeData.time || item.time, vegetarian: recipeData.vegetarian ?? item.vegetarian, familyFriendly: recipeData.familyFriendly ?? item.familyFriendly, category: recipeData.category || item.category, difficulty: recipeData.difficulty || item.difficulty, instructions: recipeData.instructions || item.instructions, externalRating: recipeData.externalRating ?? item.externalRating, externalRatingCount: recipeData.externalRatingCount ?? item.externalRatingCount, ratingSource: recipeData.ratingSource || item.ratingSource, note: `${item.source || 'Rezeptseite'} · ${recipeData.ingredients.length} Zutaten · automatisch erkannt`, match: 'Zutaten erkannt – wird gegen Angebote geprüft', recipeRetryAt: null };
       localStorage.setItem('angebotskueche.favorites', JSON.stringify(favorites));
       renderFavorites(); renderSuggestions(); renderPlan();
       showToast(`${recipeData.ingredients.length} Zutaten erkannt und gespeichert.`);
@@ -1753,7 +1787,7 @@
         favorites[index] = { ...item, recipeRetryAt: new Date(now + recipeRetryIntervalMs).toISOString() };
         changed = true;
         if (!recipeData?.ingredients?.length) continue;
-        favorites[index] = { ...favorites[index], name: recipeData.name || item.name, ingredients: recipeData.ingredients, time: recipeData.time || item.time, vegetarian: recipeData.vegetarian ?? item.vegetarian, familyFriendly: recipeData.familyFriendly ?? item.familyFriendly, category: recipeData.category || item.category, difficulty: recipeData.difficulty || item.difficulty, instructions: recipeData.instructions || item.instructions, note: `${item.source || 'Rezeptseite'} · ${recipeData.ingredients.length} Zutaten · automatisch erkannt`, match: 'Zutaten erkannt – wird gegen Angebote geprüft', recipeRetryAt: null };
+        favorites[index] = { ...favorites[index], name: recipeData.name || item.name, ingredients: recipeData.ingredients, time: recipeData.time || item.time, vegetarian: recipeData.vegetarian ?? item.vegetarian, familyFriendly: recipeData.familyFriendly ?? item.familyFriendly, category: recipeData.category || item.category, difficulty: recipeData.difficulty || item.difficulty, instructions: recipeData.instructions || item.instructions, externalRating: recipeData.externalRating ?? item.externalRating, externalRatingCount: recipeData.externalRatingCount ?? item.externalRatingCount, ratingSource: recipeData.ratingSource || item.ratingSource, note: `${item.source || 'Rezeptseite'} · ${recipeData.ingredients.length} Zutaten · automatisch erkannt`, match: 'Zutaten erkannt – wird gegen Angebote geprüft', recipeRetryAt: null };
         recovered += 1;
       }
       if (!changed) return;
@@ -1946,6 +1980,7 @@
     $('#suggestionGrid').addEventListener('click', event => {
       const dismiss = event.target.closest('[data-dismiss-recipe]');
       const share = event.target.closest('[data-share-recipe]');
+      const detail = event.target.closest('[data-detail-recipe]');
       const plan = event.target.closest('[data-plan-recipe]');
       const assign = event.target.closest('[data-assign-recipe]');
       const today = event.target.closest('[data-today-recipe]');
@@ -1953,13 +1988,14 @@
       const favorite = event.target.closest('[data-favorite-recipe]');
       if (dismiss) { dismissedRecipes = [...new Set([...dismissedRecipes, dismiss.dataset.dismissRecipe])]; pinnedRecipes = pinnedRecipes.filter(item => item !== dismiss.dataset.dismissRecipe); localStorage.setItem('angebotskueche.dismissedRecipes', JSON.stringify(dismissedRecipes)); localStorage.setItem('angebotskueche.pinnedRecipes', JSON.stringify(pinnedRecipes)); renderSuggestions(); renderPlan(); showToast('Rezept ausgeblendet und künftig nicht mehr vorgeschlagen.'); }
       if (share) shareRecipe(share.dataset.shareRecipe);
+      if (detail) { const recipe = getPlanCandidateById(detail.dataset.detailRecipe); if (recipe) openRecipeDetail(recipe); }
       if (assign) openAssignModal(assign.dataset.assignRecipe);
       if (today) { const id = today.dataset.todayRecipe; if (assignRecipeToDay(id, 0)) { renderPlan(); renderSuggestions(); showToast(`${getPlanCandidateById(id)?.title || 'Rezept'} für heute ausgewählt.`); } }
       if (rate) { const recipe = getPlanCandidateById(rate.dataset.rateRecipe); if (recipe) openRatingModal({ recipeId: recipe.id, title: recipe.title }); }
       if (favorite) saveRecipeToFavorites(favorite.dataset.favoriteRecipe);
       if (plan) { const id = plan.dataset.planRecipe; pinnedRecipes = pinnedRecipes.includes(id) ? pinnedRecipes.filter(item => item !== id) : [...pinnedRecipes, id]; localStorage.setItem('angebotskueche.pinnedRecipes', JSON.stringify(pinnedRecipes)); renderSuggestions(); renderPlan(); showToast(pinnedRecipes.includes(id) ? 'Rezept für die nächste Planberechnung vorgemerkt.' : 'Rezept aus den Vormerkungen entfernt.'); }
     });
-    $('#planSuggestionStrip').addEventListener('click', event => { const assign = event.target.closest('[data-assign-recipe]'); const favorite = event.target.closest('[data-favorite-recipe]'); if (assign) openAssignModal(assign.dataset.assignRecipe); if (favorite) saveRecipeToFavorites(favorite.dataset.favoriteRecipe); });
+    $('#planSuggestionStrip').addEventListener('click', event => { const detail = event.target.closest('[data-detail-recipe]'); const assign = event.target.closest('[data-assign-recipe]'); const favorite = event.target.closest('[data-favorite-recipe]'); const dismiss = event.target.closest('[data-dismiss-recipe]'); if (detail) { const recipe = getPlanCandidateById(detail.dataset.detailRecipe); if (recipe) openRecipeDetail(recipe); } if (assign) openAssignModal(assign.dataset.assignRecipe); if (favorite) saveRecipeToFavorites(favorite.dataset.favoriteRecipe); if (dismiss) { dismissedRecipes = [...new Set([...dismissedRecipes, dismiss.dataset.dismissRecipe])]; pinnedRecipes = pinnedRecipes.filter(item => item !== dismiss.dataset.dismissRecipe); localStorage.setItem('angebotskueche.dismissedRecipes', JSON.stringify(dismissedRecipes)); localStorage.setItem('angebotskueche.pinnedRecipes', JSON.stringify(pinnedRecipes)); renderSuggestions(); renderPlan(); showToast('Vorschlag ausgeblendet. Du kannst ihn oben wieder zurückholen.'); } });
     $('#favoriteCatalog').addEventListener('click', event => {
       const share = event.target.closest('[data-share-favorite]');
       const plan = event.target.closest('[data-plan-favorite]');
@@ -2067,7 +2103,7 @@
       const ingredients = recipeData?.ingredients?.length ? recipeData.ingredients : manualIngredients;
       const ingredientLabel = recipeData?.ingredients?.length ? 'automatisch erkannt' : manualIngredients.length ? 'manuell ergänzt' : 'Analyse ausstehend';
       const name = recipeData?.name || fallbackLabel;
-      const importedFavorite = { name, icon: source === 'chefkoch.de' ? '👩‍🍳' : '🥘', source, match: ingredients.length ? 'Zutaten erkannt – wird gegen Angebote geprüft' : 'Link gespeichert – Zutatenanalyse ausstehend', score: 0, note: ingredients.length ? `${source} · ${ingredients.length} Zutaten · ${ingredientLabel}` : `${source} · Analyse ausstehend`, ingredients, url, time: recipeData?.time || 45, vegetarian: Boolean(recipeData?.vegetarian), familyFriendly: recipeData?.familyFriendly !== false, category: recipeData?.category || 'Lieblingsrezept', difficulty: recipeData?.difficulty || 'variabel', instructions: recipeData?.instructions || '', recipeRetryAt: null };
+      const importedFavorite = { name, icon: source === 'chefkoch.de' ? '👩‍🍳' : '🥘', source, match: ingredients.length ? 'Zutaten erkannt – wird gegen Angebote geprüft' : 'Link gespeichert – Zutatenanalyse ausstehend', score: 0, note: ingredients.length ? `${source} · ${ingredients.length} Zutaten · ${ingredientLabel}` : `${source} · Analyse ausstehend`, ingredients, url, time: recipeData?.time || 45, vegetarian: Boolean(recipeData?.vegetarian), familyFriendly: recipeData?.familyFriendly !== false, category: recipeData?.category || 'Lieblingsrezept', difficulty: recipeData?.difficulty || 'variabel', instructions: recipeData?.instructions || '', externalRating: recipeData?.externalRating, externalRatingCount: recipeData?.externalRatingCount, ratingSource: recipeData?.ratingSource, recipeRetryAt: null };
       if (editingFavoriteIndex !== null && favorites[editingFavoriteIndex]) favorites[editingFavoriteIndex] = { ...favorites[editingFavoriteIndex], ...importedFavorite };
       else favorites.push(importedFavorite);
       localStorage.setItem('angebotskueche.favorites', JSON.stringify(favorites));
@@ -2135,7 +2171,7 @@
     let automaticOfferRefreshStarted = false;
     renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
     setTimeout(() => refreshPendingRecipeImports().catch(() => {}), 250);
-    const APP_BUILD = '2026-11-03-recipe-reader-3';
+    const APP_BUILD = '2026-11-03-smart-recipe-selection-1';
     try {
       if (localStorage.getItem('angebotskueche.appBuild') !== APP_BUILD) {
         localStorage.setItem('angebotskueche.appBuild', APP_BUILD);
@@ -2143,7 +2179,7 @@
         if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(registration => registration.update())).catch(() => {});
       }
     } catch {}
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=26', { updateViaCache: 'none' }).catch(() => {}));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=27', { updateViaCache: 'none' }).catch(() => {}));
   </script>
 </body>
 </html>
