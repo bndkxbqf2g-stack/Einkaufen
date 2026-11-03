@@ -906,13 +906,12 @@
     }
 
     function renderPlanSuggestions() {
-      const candidates = getPlanCandidates().slice(0, 3);
-      $('#planSuggestionStrip').innerHTML = candidates.length ? candidates.map(recipe => {
-        const match = scoreRecipe(recipe);
+      const candidates = getSuggestionCandidates().slice(0, 3);
+      $('#planSuggestionStrip').innerHTML = candidates.length ? candidates.map(({ recipe, match }) => {
         const assignedDay = Object.entries(manualPlan).find(([, id]) => id === recipe.id)?.[0];
         const ingredients = (recipe.ingredients || []).slice(0, 4);
         const favorite = isRecipeFavorite(recipe);
-        return `<article class="plan-suggestion-card"><div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(recipe.emoji)}</div><span class="favorite-match">${escapeHtml(match.score)}%</span></div><div class="catalog-name">${escapeHtml(recipe.title)}</div><div class="suggestion-reason">${escapeHtml(match.reason || 'Passender Angebotsanker')}</div><div class="suggestion-ingredients">${ingredients.map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('')}</div>${assignedDay !== undefined ? `<div class="manual-choice">Für Tag ${Number(assignedDay) + 1} ausgewählt</div>` : ''}<div class="suggestion-actions"><button class="small-button primary" data-assign-recipe="${escapeHtml(recipe.id)}">${assignedDay !== undefined ? 'Tag ändern' : 'Für Tag auswählen'}</button><button class="small-button ${favorite ? '' : 'primary'}" data-favorite-recipe="${escapeHtml(recipe.id)}">${favorite ? '✓ In Favoriten' : '♡ Favorit'}</button></div></article>`;
+        return `<article class="plan-suggestion-card"><div class="catalog-card-top"><div class="catalog-icon">${escapeHtml(recipe.emoji)}</div><span class="favorite-match">${escapeHtml(match.score)}%</span></div><div class="catalog-name">${escapeHtml(recipe.title)}</div><div class="meal-tags"><span class="tag ${recipe.favorite ? '' : 'yellow'}">${recipe.favorite ? 'Lieblingsessen' : 'Kreativer Vorschlag'}</span></div><div class="suggestion-reason">${escapeHtml(match.reason || 'Passender Angebotsanker')}</div><div class="suggestion-ingredients">${ingredients.map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('')}</div>${assignedDay !== undefined ? `<div class="manual-choice">Für Tag ${Number(assignedDay) + 1} ausgewählt</div>` : ''}<div class="suggestion-actions"><button class="small-button primary" data-assign-recipe="${escapeHtml(recipe.id)}">${assignedDay !== undefined ? 'Tag ändern' : 'Für Tag auswählen'}</button><button class="small-button ${favorite ? '' : 'primary'}" data-favorite-recipe="${escapeHtml(recipe.id)}">${favorite ? '✓ In Favoriten' : '♡ Favorit'}</button></div></article>`;
       }).join('') : '<div class="empty-state">Für deine Auswahl sind gerade keine Rezeptvorschläge verfügbar.</div>';
     }
 
@@ -1095,10 +1094,24 @@
       return match.score + varietyBonus + rating * 3 - historyPenalty - currentPlanPenalty;
     }
 
+    function blendSuggestionResults(ranked) {
+      const favoritesFirst = ranked.filter(item => item.recipe.favorite);
+      const creativeFirst = ranked.filter(item => !item.recipe.favorite);
+      if (!favoritesFirst.length || !creativeFirst.length) return ranked;
+      const mixed = [];
+      let favoriteIndex = 0;
+      let creativeIndex = 0;
+      while (favoriteIndex < favoritesFirst.length || creativeIndex < creativeFirst.length) {
+        if (favoriteIndex < favoritesFirst.length) mixed.push(favoritesFirst[favoriteIndex++]);
+        for (let count = 0; count < 2 && creativeIndex < creativeFirst.length; count += 1) mixed.push(creativeFirst[creativeIndex++]);
+      }
+      return mixed;
+    }
+
     function getSuggestionCandidates() {
       const candidates = dedupeRecipes(getPlanCandidates()).filter(recipe => !dismissedRecipes.includes(recipe.id));
       const currentPlanKeys = new Set(getCurrentPlanMeals().map(recipeIdentity));
-      return candidates.map(recipe => ({ recipe, match: scoreRecipe(recipe) })).filter(({ recipe, match }) => {
+      const ranked = candidates.map(recipe => ({ recipe, match: scoreRecipe(recipe) })).filter(({ recipe, match }) => {
         if (suggestionPreferences.filter === 'favorites' && !recipe.favorite) return false;
         if (suggestionPreferences.max30 && Number(recipe.time || 999) > 30) return false;
         if (suggestionPreferences.vegetarian && !recipe.vegetarian) return false;
@@ -1107,6 +1120,7 @@
         if (suggestionPreferences.offerMin2 && match.matchedIngredients.length < 2) return false;
         return true;
       }).sort((first, second) => suggestionSortValue(second.recipe, second.match, currentPlanKeys) - suggestionSortValue(first.recipe, first.match, currentPlanKeys));
+      return blendSuggestionResults(ranked);
     }
 
     function renderSuggestions() {
@@ -1968,7 +1982,7 @@
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
     let automaticOfferRefreshStarted = false;
     renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
-    const APP_BUILD = '2026-11-03-favorites-visual-refresh-1';
+    const APP_BUILD = '2026-11-03-favorites-creative-mix-1';
     try {
       if (localStorage.getItem('angebotskueche.appBuild') !== APP_BUILD) {
         localStorage.setItem('angebotskueche.appBuild', APP_BUILD);
@@ -1976,7 +1990,7 @@
         if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(registration => registration.update())).catch(() => {});
       }
     } catch {}
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=20', { updateViaCache: 'none' }).catch(() => {}));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=21', { updateViaCache: 'none' }).catch(() => {}));
   </script>
 </body>
 </html>
