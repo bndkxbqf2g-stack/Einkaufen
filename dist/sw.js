@@ -1,4 +1,4 @@
-const CACHE_NAME = 'angebotskueche-shell-v24';
+const CACHE_NAME = 'angebotskueche-shell-v26';
 const APP_SHELL = ['./index.html', './manifest.json'];
 
 self.addEventListener('install', event => {
