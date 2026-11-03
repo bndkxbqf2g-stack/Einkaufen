@@ -3,7 +3,9 @@ const manifest = __MANIFEST__;
 const serviceWorker = __SERVICE_WORKER__;
 
 const MAX_RECIPE_BYTES = 1_500_000;
-const RECIPE_HOSTS = ['lecker.de', 'chefkoch.de'];
+// Plattformoffener Import: nur bekannte Rezeptseiten werden serverseitig gelesen.
+// Das verhindert, dass der Parser zu einem offenen URL-Proxy wird.
+const RECIPE_HOSTS = ['lecker.de', 'chefkoch.de', 'gaumenfreundin.de', 'eat.de', 'essen-und-trinken.de', 'kitchenstories.com', 'springlane.de', 'einfachbacken.de', 'kochkarussell.com', 'familienkost.de', 'rewe.de', 'edeka.de'];
 const MAX_OFFER_BYTES = 2_500_000;
 const MAX_SYNC_BYTES = 600_000;
 const OFFER_SOURCES = {
@@ -36,7 +38,7 @@ function syncUserId(request) {
 function validSyncPayload(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload) || payload.version !== 1) return false;
   const arrays = ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems'];
-  const objects = ['settings', 'shoppingChecks', 'liveOfferStatus', 'manualPlan', 'recipeRatings'];
+  const objects = ['settings', 'shoppingChecks', 'liveOfferStatus', 'manualPlan', 'recipeRatings', 'suggestionPreferences'];
   if (arrays.some(key => payload[key] !== undefined && (!Array.isArray(payload[key]) || payload[key].length > 5000))) return false;
   if (objects.some(key => payload[key] !== undefined && (!payload[key] || typeof payload[key] !== 'object' || Array.isArray(payload[key])))) return false;
   return true;
@@ -98,6 +100,17 @@ function findRecipe(value) {
   return null;
 }
 
+function parseAggregateRating(value) {
+  const rating = Array.isArray(value) ? value.find(item => item && typeof item === 'object') : value;
+  if (!rating) return null;
+  const rawValue = Number(String(rating.ratingValue ?? '').replace(',', '.'));
+  const best = Number(String(rating.bestRating ?? 5).replace(',', '.')) || 5;
+  if (!Number.isFinite(rawValue) || rawValue <= 0 || best <= 0) return null;
+  const normalized = Math.max(0, Math.min(5, rawValue / best * 5));
+  const rawCount = Number(String(rating.ratingCount ?? rating.reviewCount ?? 0).replace(/[^0-9.,]/g, '').replace(',', '.'));
+  return { value: Math.round(normalized * 10) / 10, count: Number.isFinite(rawCount) ? Math.max(0, Math.round(rawCount)) : 0 };
+}
+
 function parseRecipeJsonLd(html) {
   const blocks = [];
   const pattern = /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
@@ -109,7 +122,10 @@ function parseRecipeJsonLd(html) {
       if (!recipe) continue;
       const ingredients = recipe.recipeIngredient.map(item => String(item).trim()).filter(Boolean).slice(0, 120);
       const name = String(recipe.name || '').trim();
-      if (name && ingredients.length) return { name, ingredients };
+      if (name && ingredients.length) {
+        const aggregateRating = parseAggregateRating(recipe.aggregateRating);
+        return { name, ingredients, instructions: Array.isArray(recipe.recipeInstructions) ? recipe.recipeInstructions.map(item => typeof item === 'string' ? item : item?.text || '').filter(Boolean).join(' ') : String(recipe.recipeInstructions || ''), time: Number(String(recipe.totalTime || '').match(/\d+/)?.[0] || 0) || undefined, vegetarian: /vegetarian|vegan/i.test(JSON.stringify(recipe.keywords || '')), familyFriendly: true, category: recipe.recipeCategory || undefined, externalRating: aggregateRating?.value, externalRatingCount: aggregateRating?.count, ratingSource: aggregateRating ? 'Rezeptseite · Schema.org' : undefined };
+      }
     } catch {}
   }
   return null;
@@ -143,7 +159,7 @@ async function readText(response, maxBytes = MAX_RECIPE_BYTES) {
 async function parseRecipe(request) {
   const value = new URL(request.url).searchParams.get('url');
   const target = recipeUrl(value);
-  if (!value || !target) return json({ error: 'Nur HTTPS-Links von lecker.de oder Chefkoch sind erlaubt.' }, 400, request);
+  if (!value || !target) return json({ error: 'Nur HTTPS-Links von bekannten Rezeptseiten sind erlaubt.' }, 400, request);
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 8_000);
   try {
