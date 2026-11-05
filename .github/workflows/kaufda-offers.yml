@@ -60,6 +60,8 @@ jobs:
           KAUFDA_STORAGE_STATE_B64: ${{ secrets.KAUFDA_STORAGE_STATE_B64 }}
           KAUFDA_MARKET: ${{ github.event_name == 'push' && (contains(github.event.head_commit.message, 'Alle Märkte') && 'all' || contains(github.event.head_commit.message, 'EDEKA') && 'EDEKA' || contains(github.event.head_commit.message, 'Lidl') && 'Lidl' || contains(github.event.head_commit.message, 'Penny') && 'Penny' || contains(github.event.head_commit.message, 'Netto') && 'Netto' || contains(github.event.head_commit.message, 'Kaufland') && 'Kaufland' || contains(github.event.head_commit.message, 'Aldi') && 'Aldi' || 'Aldi') || inputs.market || 'all' }}
         run: node automation/kaufda-offers.mjs
+      - name: Angebotsdaten validieren
+        run: node scripts/validate-generated-offers.mjs generated/aldi-offers.json generated/edeka-offers.json generated/lidl-offers.json generated/penny-offers.json generated/netto-offers.json generated/kaufland-offers.json
       - name: Angebotsdaten veröffentlichen
         run: |
           set -euo pipefail
