@@ -26,7 +26,7 @@ Die vorhandenen Prüfungen wurden auf dem isolierten Stand ausgeführt:
 - `node scripts/validate-worker.mjs` – Worker-Artefakt- und Rezept-Endpunkt-Prüfungen bestanden.
 - `node --check worker/index.js` – Syntaxprüfung bestanden.
 - `git diff --check` – keine Whitespace-Fehler festgestellt.
-- Offene Pull Requests im GitHub-Zielrepository: keine.
+- Offener Pull Request im GitHub-Zielrepository: Draft [#1](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/1) für diese Dokumentationsänderung; kein Merge.
 - Manueller Testlauf des vorgesehenen Entwicklungsablaufs: erfolgreich bis zur geprüften Automationseinrichtung; der erste echte automatisierte Entwicklungsdurchlauf steht noch aus.
 
 Diese Prüfungen belegen noch keine fachliche Vollständigkeit aller KaufDA-Karten oder des Wochenbudgets. Diese Einschränkung bleibt bestehen.
@@ -43,6 +43,7 @@ Diese Prüfungen belegen noch keine fachliche Vollständigkeit aller KaufDA-Kart
 - Für lokale Dateien müssen der Laptop eingeschaltet und die Codex-Desktop-App ausgeführt sein. Die Einkaufen-Webapp selbst muss nicht geöffnet sein.
 - Pausieren oder beenden: Codex-Desktop-App → geplante Automationen → „Einkaufen – tägliche Weiterentwicklung“ → **Pause** bzw. **Delete**. Ein laufender Durchlauf muss zusätzlich abgebrochen werden, wenn er sofort stoppen soll.
 - Die Ausführung bleibt auf den isolierten Worktree und den Branch `codex/daily-development` begrenzt; es gibt keinen automatischen Merge und keine App-Veröffentlichung.
+- Der GitHub-Draft-PR enthält nur Dokumentation (`AGENTS.md` und `docs/PROJEKTSTATUS.md`); App-Funktionen und Design bleiben unverändert.
 
 ## Priorisierte Aufgaben mit Abschlusskriterien
 
