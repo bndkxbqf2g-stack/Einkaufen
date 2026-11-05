@@ -3,10 +3,10 @@
   "store": "ALDI SÜD",
   "location": "Zellingen",
   "sourceUrl": "https://www.kaufda.de/search?query=ALDI+S%C3%9CD&lat=49.901699199999996&lng=9.812895&city=Zellingen&zip=97225",
-  "fetchedAt": "2026-11-02T12:28:33.755Z",
-  "validUntil": "09.11.2026",
+  "fetchedAt": "2026-11-05T14:52:34.835Z",
+  "validUntil": "12.11.2026",
   "parser": "kaufda-offer-cards-v6",
-  "recognizedCount": 88,
+  "recognizedCount": 87,
   "targetOfferCount": 410,
   "loadedOfferCardCount": 428,
   "targetReached": true,
@@ -22,33 +22,33 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Geflügelfond",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "0,89 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Datteln",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "0,69 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Himbeeren",
@@ -61,7 +61,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Clementinen",
@@ -74,20 +74,20 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Porree",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "0,45 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Kaki",
@@ -100,7 +100,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Bio Zitronen",
@@ -113,7 +113,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Äpfel süß-säuerlich",
@@ -121,12 +121,12 @@
       "price": "1,39 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Speisekartoffeln",
@@ -139,72 +139,72 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Grobe Bratwurst",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "2,29 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Schnitzel",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "2,99 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Filetsteak",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "9,49 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Koteletts",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "4,29 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Rinder-Hackfleisch",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "4,59 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Hähnchensteaks",
@@ -217,7 +217,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Puten-Schnitzel „Wiener Art“",
@@ -230,72 +230,72 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Chicken Burger",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "5,79 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Cerealien",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "2,79 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Genießer-Teller",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "1,29 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Butterkekse",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "1,19 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Backzutaten",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "0,99 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Frischkäsezubereitung",
@@ -308,33 +308,33 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Almighurt",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "0,29 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Fruchtgummi",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "0,99 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Coca-Cola",
@@ -347,46 +347,46 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Saltletts",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "1,11 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Pizza",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "1,66 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Feiner Weichkäse",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "1,79 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Bio-Honig",
@@ -399,98 +399,98 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Schmelzkäse",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "0,99 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Apfelmus",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "0,89 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Kaffee-Pads",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "1,89 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "H-Schoko-Drink",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "0,69 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Meerrettich",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "0,89 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Passierte Tomaten",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "0,45 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Eismeer Garnelen",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "1,69 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Eierspätzle",
@@ -503,176 +503,163 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Kartoffelknödel",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "1,29 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Bio-Kapern",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "2,19 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Hafermast Gänsebrust mit Knochen",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "17,99 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
-    },
-    {
-      "name": "Farmers Origins Kaffeekapseln",
-      "store": "ALDI SÜD",
-      "price": "1,39 €",
-      "saving": "–",
-      "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
-      "category": "Lebensmittel",
-      "packSize": "1 Packung",
-      "relevance": 80,
-      "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Hafermast Gänsekeulen",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "17,59 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Hirsch-Edelgulasch",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "8,49 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Rösti-Sterne",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "1,49 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Maronen",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "2,69 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Wildlachsfilet im Blätterteig",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "1,99 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Filoncino",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "1,49 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Eis-Dessert",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "1,99 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Fond",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "0,89 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Riesengarnelen",
       "store": "ALDI SÜD",
-      "price": "1,39 €",
+      "price": "4,89 €",
       "saving": "–",
       "icon": "🛒",
-      "imageUrl": "https://web-assets.kaufda.de/images/logo.svg",
+      "imageUrl": "",
       "category": "Lebensmittel",
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Milchreis",
@@ -685,7 +672,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Käse-Scheiben",
@@ -698,7 +685,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Extra Weniger Zucker oder Zero",
@@ -711,7 +698,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Meersalz Butter",
@@ -724,7 +711,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Ganze Bohne oder Filterkaffee",
@@ -737,7 +724,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Hülsenfrüchte",
@@ -750,7 +737,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Risotto Reis",
@@ -763,7 +750,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Lachsfilet",
@@ -776,7 +763,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Griechisches natives Olivenöl extra",
@@ -789,7 +776,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Kochbeutel Original-Langkorn-Reis",
@@ -802,7 +789,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Saftige Kokostörtchen",
@@ -815,7 +802,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Gänsebrustfilet",
@@ -828,7 +815,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "kinder Schokolade",
@@ -841,7 +828,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Koch-Hinterschinken",
@@ -854,7 +841,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Gulasch",
@@ -867,7 +854,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Pasta-Soße",
@@ -880,7 +867,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Ländertee",
@@ -893,7 +880,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Puten-Miniflets",
@@ -906,7 +893,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Lachsfilet-Portionen",
@@ -919,7 +906,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Hähnchen-Brustfilet-Teilstücke",
@@ -932,7 +919,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Milch Mäuse",
@@ -945,7 +932,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Crunchips",
@@ -958,7 +945,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Zitronat oder Orangeat",
@@ -971,7 +958,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Mandeln Gehackt",
@@ -984,7 +971,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Vanillin-Zucker",
@@ -997,7 +984,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Mandeln",
@@ -1010,7 +997,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Raspelschokolade",
@@ -1023,7 +1010,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Milch-Schokoladenstreusel",
@@ -1036,7 +1023,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Schoko-Tröpfchen oder -Chunks",
@@ -1049,7 +1036,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Frischkäse",
@@ -1062,7 +1049,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Joghurt",
@@ -1075,7 +1062,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Schmelzkäsescheiben",
@@ -1088,7 +1075,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Joghurt",
@@ -1101,7 +1088,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Joghurt",
@@ -1114,7 +1101,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Premium-Joghurt",
@@ -1127,7 +1114,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Reine Buttermilch",
@@ -1140,7 +1127,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     },
     {
       "name": "Käse-Aufschnitt",
@@ -1153,7 +1140,7 @@
       "packSize": "1 Packung",
       "relevance": 80,
       "note": "KaufDA-Angebot",
-      "validUntil": "09.11.2026"
+      "validUntil": "12.11.2026"
     }
   ]
 }
