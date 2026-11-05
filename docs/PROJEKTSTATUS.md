@@ -23,11 +23,15 @@ Zweck: belegbarer Arbeitsstand, Automationsstatus und nächste überprüfbare Sc
 Die vorhandenen Prüfungen wurden auf dem isolierten Stand ausgeführt:
 
 - `node automation/lidl-parser.test.mjs` – Lidl-Parser-Prüfungen bestanden.
+- `node scripts/validate-generated-offers.test.mjs` – Payload-Validator-Prüfungen bestanden.
+- `node scripts/validate-generated-offers.mjs generated/aldi-offers.json generated/edeka-offers.json generated/kaufland-offers.json generated/netto-offers.json generated/penny-offers.json` – 153 gültige Angebote geprüft.
+- Der bekannte leere Lidl-Datensatz wurde mit demselben Validator kontrolliert abgewiesen; er kann dadurch nicht veröffentlicht werden.
 - `node scripts/validate-worker.mjs` – Worker-Artefakt- und Rezept-Endpunkt-Prüfungen bestanden.
 - `node --check worker/index.js` – Syntaxprüfung bestanden.
 - `git diff --check` – keine Whitespace-Fehler festgestellt.
-- Offener Pull Request im GitHub-Zielrepository: Draft [#1](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/1) für diese Dokumentationsänderung; kein Merge.
-- Manueller Testlauf des vorgesehenen Entwicklungsablaufs: erfolgreich bis zur geprüften Automationseinrichtung; der erste echte automatisierte Entwicklungsdurchlauf steht noch aus.
+- Offener Pull Request im GitHub-Zielrepository: Draft [#1](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/1) für Dokumentation und gemeinsame Angebotsdaten-Validierung; kein Merge.
+- Einmaliger 20-Minuten-Entwicklungslauf am 05.11.2026: zentrale Angebots-Payload-Prüfung ergänzt, in die drei vorhandenen Angebots-Workflows eingehängt und erfolgreich getestet.
+- Der erste echte Lauf der täglichen Codex-Automation um 19:00 Uhr steht noch aus.
 
 Diese Prüfungen belegen noch keine fachliche Vollständigkeit aller KaufDA-Karten oder des Wochenbudgets. Diese Einschränkung bleibt bestehen.
 
@@ -43,7 +47,7 @@ Diese Prüfungen belegen noch keine fachliche Vollständigkeit aller KaufDA-Kart
 - Für lokale Dateien müssen der Laptop eingeschaltet und die Codex-Desktop-App ausgeführt sein. Die Einkaufen-Webapp selbst muss nicht geöffnet sein.
 - Pausieren oder beenden: Codex-Desktop-App → geplante Automationen → „Einkaufen – tägliche Weiterentwicklung“ → **Pause** bzw. **Delete**. Ein laufender Durchlauf muss zusätzlich abgebrochen werden, wenn er sofort stoppen soll.
 - Die Ausführung bleibt auf den isolierten Worktree und den Branch `codex/daily-development` begrenzt; es gibt keinen automatischen Merge und keine App-Veröffentlichung.
-- Der GitHub-Draft-PR enthält nur Dokumentation (`AGENTS.md` und `docs/PROJEKTSTATUS.md`); App-Funktionen und Design bleiben unverändert.
+- Der GitHub-Draft-PR enthält Dokumentation plus die zentrale Angebots-Payload-Prüfung in den drei Angebots-Workflows; App-Funktionen und Design bleiben unverändert.
 
 ## Priorisierte Aufgaben mit Abschlusskriterien
 
@@ -63,7 +67,7 @@ Diese Prüfungen belegen noch keine fachliche Vollständigkeit aller KaufDA-Kart
 
 ## Nächster Lauf
 
-Der erste automatisierte Entwicklungslauf darf nur eine zusammenhängende Verbesserung aus Aufgabe 1 bearbeiten. Er muss zunächst Status, offene Pull Requests und den letzten Lauf prüfen, maximal 60 Minuten laufen, höchstens zwei gezielte Reparaturversuche machen, relevante Tests ausführen und Ergebnis sowie nächsten Schritt hier dokumentieren. Es gibt keinen automatischen Merge und keine Veröffentlichung der App.
+Der nächste automatisierte Entwicklungslauf darf nur eine zusammenhängende Verbesserung aus Aufgabe 1 bearbeiten. Er muss zunächst Status, offene Pull Requests und den letzten Lauf prüfen, maximal 60 Minuten laufen, höchstens zwei gezielte Reparaturversuche machen, relevante Tests ausführen und Ergebnis sowie nächsten Schritt hier dokumentieren. Die Payload-Prüfung ist jetzt die gemeinsame Schutzschicht; als nächster fachlicher Schritt bleibt die getrennte Kostenbasis. Es gibt keinen automatischen Merge und keine Veröffentlichung der App.
 
 ## Verweise
 
