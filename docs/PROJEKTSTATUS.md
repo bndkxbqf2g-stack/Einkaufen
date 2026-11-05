@@ -31,6 +31,8 @@ Die vorhandenen Prüfungen wurden auf dem isolierten Stand ausgeführt:
 - `git diff --check` – keine Whitespace-Fehler festgestellt.
 - Offener Pull Request im GitHub-Zielrepository: Draft [#1](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/1) für Dokumentation und gemeinsame Angebotsdaten-Validierung; kein Merge.
 - Einmaliger 20-Minuten-Entwicklungslauf am 05.11.2026: zentrale Angebots-Payload-Prüfung ergänzt, in die drei vorhandenen Angebots-Workflows eingehängt und erfolgreich getestet.
+- Sofortiger App-Entwicklungslauf am 05.11.2026: Die Einkaufsliste behandelt Preisstatus „unbekannt“ nicht mehr als 0 €, weist den bekannten Angebotsbetrag ausdrücklich als Teilbetrag aus und benennt Preisunsicherheiten.
+- Für die Änderung bestanden `node scripts/shopping-cost-model.test.mjs`, `node scripts/validate-generated-offers.test.mjs`, `node automation/lidl-parser.test.mjs`, `node scripts/validate-worker.mjs` sowie Inline-Syntax- und `git diff --check`-Prüfungen.
 - Der erste echte Lauf der täglichen Codex-Automation um 19:00 Uhr steht noch aus.
 
 Diese Prüfungen belegen noch keine fachliche Vollständigkeit aller KaufDA-Karten oder des Wochenbudgets. Diese Einschränkung bleibt bestehen.
@@ -67,7 +69,7 @@ Diese Prüfungen belegen noch keine fachliche Vollständigkeit aller KaufDA-Kart
 
 ## Nächster Lauf
 
-Der nächste automatisierte Entwicklungslauf darf nur eine zusammenhängende Verbesserung aus Aufgabe 1 bearbeiten. Er muss zunächst Status, offene Pull Requests und den letzten Lauf prüfen, maximal 60 Minuten laufen, höchstens zwei gezielte Reparaturversuche machen, relevante Tests ausführen und Ergebnis sowie nächsten Schritt hier dokumentieren. Die Payload-Prüfung ist jetzt die gemeinsame Schutzschicht; als nächster fachlicher Schritt bleibt die getrennte Kostenbasis. Es gibt keinen automatischen Merge und keine Veröffentlichung der App.
+Der nächste automatisierte Entwicklungslauf darf nur eine zusammenhängende Verbesserung aus Aufgabe 1 bearbeiten. Er muss zunächst Status, offene Pull Requests und den letzten Lauf prüfen, maximal 60 Minuten laufen, höchstens zwei gezielte Reparaturversuche machen, relevante Tests ausführen und Ergebnis sowie nächsten Schritt hier dokumentieren. Die Payload-Prüfung und die erkennbare Teilbetragslogik sind jetzt Schutzschichten; als nächster fachlicher Schritt bleibt die getrennte Monatsbudget- und Kassenbasis. Es gibt keinen automatischen Merge und keine Veröffentlichung der App.
 
 ## Verweise
 
