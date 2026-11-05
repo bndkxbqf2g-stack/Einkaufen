@@ -463,7 +463,7 @@
         <div class="hero"><div><div class="eyebrow"><span></span> Einkaufsliste</div><h1>Ein Plan,<br><em style="font-style:normal;color:var(--coral)">ein klarer Einkauf.</em></h1><p class="hero-copy">Die Liste entsteht aus deinem aktuellen Plan. Vorräte und Zutaten, die als Reste weiterverwendet werden, werden zusammengeführt – Angebote bleiben dem passenden Markt zugeordnet.</p></div><div class="shopping-actions"><button class="outline-button" id="clearShoppingChecks">Abhaken zurücksetzen</button><button class="outline-button" id="openShoppingItem">＋ Artikel ergänzen</button><button class="primary-button" id="shareShoppingList">↗&nbsp; Liste teilen</button></div></div>
         <div class="shopping-summary">
           <div class="shopping-stat"><div class="shopping-stat-label">Offene Artikel</div><div class="shopping-stat-value" id="shoppingOpenCount">0</div><div class="shopping-stat-note" id="shoppingOpenNote">wird aus dem Plan berechnet</div></div>
-          <div class="shopping-stat accent"><div class="shopping-stat-label">Angebotswert</div><div class="shopping-stat-value" id="shoppingOfferTotal">0,00 €</div><div class="shopping-stat-note" id="shoppingOfferNote">größere Mengen bei Mehrfachnutzung</div></div>
+          <div class="shopping-stat accent"><div class="shopping-stat-label">Bekannter Angebotsbetrag</div><div class="shopping-stat-value" id="shoppingOfferTotal">0,00 €</div><div class="shopping-stat-note" id="shoppingOfferNote">nur bepreiste Angebots-Packungen</div></div>
           <div class="shopping-stat"><div class="shopping-stat-label">Ergänzen</div><div class="shopping-stat-value" id="shoppingMissingCount">0</div><div class="shopping-stat-note">nicht als Angebot hinterlegt</div></div>
         </div>
         <section class="panel">
@@ -1045,14 +1045,16 @@
       const openItems = items.filter(item => !shoppingChecks[item.id]);
       const offerItems = items.filter(item => item.offer);
       const missingItems = items.filter(item => !item.offer);
-      const offerTotal = offerItems.reduce((sum, item) => sum + parseMoney(item.offer.price) * (item.packCount || 1), 0);
+      const pricedOfferItems = offerItems.filter(item => parseKnownMoney(item.offer.price) !== null);
+      const unknownPriceOfferItems = offerItems.filter(item => parseKnownMoney(item.offer.price) === null);
+      const offerTotal = pricedOfferItems.reduce((sum, item) => sum + parseKnownMoney(item.offer.price) * (item.packCount || 1), 0);
       const reusedItems = items.filter(item => item.reused);
       $('#shoppingOpenCount').textContent = String(openItems.length);
       $('#shoppingOpenNote').textContent = `${items.length ? `${items.length - openItems.length} von ${items.length} ` : ''}abgehakt`;
       $('#shoppingOfferTotal').textContent = formatEuro(offerTotal);
-      $('#shoppingOfferNote').textContent = `${offerItems.length} Artikel · Packungen für ${Number($('#peopleSelect').value || 2)} Personen`;
+      $('#shoppingOfferNote').textContent = `${pricedOfferItems.length} bepreist${unknownPriceOfferItems.length ? ` · ${unknownPriceOfferItems.length} Preis unbekannt` : ''} · Packungen für ${Number($('#peopleSelect').value || 2)} Personen`;
       $('#shoppingMissingCount').textContent = String(missingItems.length);
-      $('#shoppingHint').textContent = items.length ? `${openItems.length} offene Artikel · ${offerItems.length} mit Angebotsanker · ${reusedItems.length ? `${reusedItems.length} Zutaten für mehrere Gerichte eingeplant · größere Packungsmenge berücksichtigt` : 'noch keine Zutat mehrfach eingeplant'} · Vorräte werden nicht angezeigt.` : 'Noch keine einkaufbaren Zutaten im aktuellen Plan.';
+      $('#shoppingHint').textContent = items.length ? `${openItems.length} offene Artikel · ${offerItems.length} mit Angebotsanker · ${unknownPriceOfferItems.length ? `${unknownPriceOfferItems.length} Angebotsanker ohne Preisstatus · nicht geschätzt` : 'alle Angebotsanker bepreist'} · ${reusedItems.length ? `${reusedItems.length} Zutaten für mehrere Gerichte eingeplant · größere Packungsmenge berücksichtigt` : 'noch keine Zutat mehrfach eingeplant'} · Vorräte werden nicht angezeigt.` : 'Noch keine einkaufbaren Zutaten im aktuellen Plan.';
       if (!items.length) { $('#shoppingList').innerHTML = '<div class="empty-state">Für den aktuellen Plan gibt es noch keine Einkaufsliste.</div>'; return; }
       const groups = new Map();
       items.forEach(item => { const label = item.offer?.store || 'Ergänzen'; if (!groups.has(label)) groups.set(label, []); groups.get(label).push(item); });
@@ -1374,6 +1376,13 @@
     function parseMoney(value) {
       const match = String(value || '').match(/\d+(?:[,.]\d{1,2})?/);
       return match ? Number(match[0].replace(',', '.')) : 0;
+    }
+
+    function parseKnownMoney(value) {
+      const text = String(value || '').trim();
+      if (!text || /^(?:–|-|unbekannt|k\.a\.)$/i.test(text)) return null;
+      const parsed = parseMoney(text);
+      return parsed > 0 ? parsed : null;
     }
 
     function formatEuro(value) {
