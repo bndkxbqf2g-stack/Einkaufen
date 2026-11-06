@@ -23,7 +23,18 @@ test('parses only explicit positive euro amounts', () => {
   assert.equal(parseKnownMoney('2,49 €/kg'), null);
   assert.equal(parseKnownMoney('2,49 € / 100 g'), null);
   assert.equal(parseKnownMoney('2,49 € pro kg'), null);
+  assert.equal(parseKnownMoney('2,49 € pro Kilogramm'), null);
+  assert.equal(parseKnownMoney('1,99 € pro Liter'), null);
+  assert.equal(parseKnownMoney('1,99 € pro 1 Liter'), null);
+  assert.equal(parseKnownMoney('1,99 € je Liter'), null);
+  assert.equal(parseKnownMoney('1,99 € / Liter'), null);
+  assert.equal(parseKnownMoney('0,39 € je 100 Milliliter'), null);
+  assert.equal(parseKnownMoney('0,39 € je 100 Gramm'), null);
   assert.equal(parseKnownMoney('2,49 € (500 g Packung)'), 2.49);
+  assert.equal(parseKnownMoney('2,49 € je 500 g Packung'), 2.49);
+  assert.equal(parseKnownMoney('2,49 € pro 500 g Packung'), 2.49);
+  assert.equal(parseKnownMoney('2,49 € je 500 ml Flasche'), 2.49);
+  assert.equal(parseKnownMoney('2,49 € (1 kg = 4,98 €/kg)'), 2.49);
   assert.equal(parseKnownMoney(''), null);
   assert.equal(parseKnownMoney('not a price'), null);
   assert.equal(parseKnownMoney('–'), null);

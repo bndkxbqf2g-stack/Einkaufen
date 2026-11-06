@@ -1441,7 +1441,9 @@
       const match = text.match(/(?:^|[^\d])(\d+(?:[.,]\d{1,2})?)\s*€/);
       if (!match) return null;
       const suffix = text.slice(match.index + match[0].length);
-      const unitDenominator = /(?:\/|(?:pro|je|per))\s*(?:\d+(?:[.,]\d+)?\s*)?(?:kg|g|l|ml|cl|dl|stk|stück|st\.?|portion(?:en)?)(?=\b|[\s,.)]|$)/iu;
+      const unitDenominator = suffix.match(/^(?:\s*\/\s*|\s*(?:pro|je|per)\s+)(?:\d+(?:[.,]\d+)?\s*)?(?:kilogramm|kg|gramm|g|milliliter|ml|liter|l|zentiliter|cl|deziliter|dl|stk|stück|st\.?|portion(?:en)?)(?=\b|[\s,.)]|$)/iu);
+      const packageContext = unitDenominator && /^\s+(?:pack(?:ungen|ung|g)|flaschen?|dosen?|beutel|netze?|schalen?|gl(?:as|äser|aeser)|becher|tüten?|kartons?|rollen?)\b/iu.test(suffix.slice(unitDenominator[0].length));
+      if (unitDenominator && !packageContext) return null;
       if (unitDenominator.test(suffix)) return null;
       const amount = Number(match[1].replace(',', '.'));
       return Number.isFinite(amount) && amount > 0 ? amount : null;
