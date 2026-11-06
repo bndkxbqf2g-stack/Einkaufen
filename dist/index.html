@@ -1764,7 +1764,34 @@
       return variants;
     }
 
-    const safeCompoundIngredientStems = new Set(['butter', 'mehl', 'tomat', 'tomate', 'tomaten']);
+    // Allow only known product-family compounds; arbitrary substrings create false matches.
+    const safeCompoundIngredientPatterns = {
+      butter: /^(?:sußrahm|krauter)?butter$/,
+      mehl: /^(?:weizen|dinkel|roggen|vollkorn)?mehl$/,
+      tomat: /^(?:(?:cherry|cocktail|fleisch|honig|mini|pflaumen|rispen|roma)){0,2}tomaten?$/,
+      tomate: /^(?:(?:cherry|cocktail|fleisch|honig|mini|pflaumen|rispen|roma)){0,2}tomaten?$/,
+      tomaten: /^(?:(?:cherry|cocktail|fleisch|honig|mini|pflaumen|rispen|roma)){0,2}tomaten?$/,
+      paprika: /^spitzpaprika$/,
+      kartoffel: /^speisekartoffeln?$/,
+      kartoffeln: /^speisekartoffeln?$/,
+      sahne: /^(?:schlag|koch)sahne$/,
+      hahnchen: /^(?:mais)?hahnchen(?:steaks?|brust(?:filet|filetroulade)?|schenkel|schnitzel)$/,
+      joghurt: /^(?:frucht|sahne|fein|vanille|erdbeer)?joghurt$/,
+      hackfleisch: /^(?:rinder|schweine|gemischtes)?hackfleisch$/,
+      brot: /^(?:bauern|dinkel|eiweiß|kaiser|roggen|roggenmisch|saaten|steinofen|vollkorn|weizen)brot(?:chen)?$/,
+      schinken: /^(?:(?:koch|hinter|landgrafen|saft|toast|virginiapfeffer|pfeffer|edel|delikatess)?schinken|schinken(?:wurfel|speck))$/,
+      schnitzel: /^(?:hahnchen|minuten)?schnitzel$/,
+      salami: /^(?:delikatess|edel|geflugel|hutten)salami$/,
+      salat: /^(?:blatt|eisberg|feld)salat$/,
+      kurbis: /^speisekurbis$/,
+      mohren: /^snackmohren$/,
+      nudel: /^eiernudeln?$/,
+      nudeln: /^eiernudeln?$/,
+      frischkase: /^frischkasezubereitung$/,
+    };
+    const unsafeCompoundOfferContexts = {
+      salami: /pizza/,
+    };
 
     function offerEndDate(value) {
       const match = String(value || '').match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
@@ -1787,10 +1814,16 @@
 
     function offerMatchesIngredient(ingredient, offer) {
       const words = normalizeIngredient(ingredient).split(/\s+/).filter(word => word.length >= 4);
-      const offerWords = normalizeIngredient(offer.name).split(/\s+/).filter(word => word.length >= 4);
+      const normalizedOffer = normalizeIngredient(offer.name);
+      const offerWords = normalizedOffer.split(/\s+/).filter(word => word.length >= 4);
       return words.some(word => {
         const variants = ingredientWordVariants(word);
-        return offerWords.some(offerWord => [...variants].some(variant => offerWord === variant || (safeCompoundIngredientStems.has(variant) && offerWord.endsWith(variant))));
+        return offerWords.some(offerWord => [...variants].some(variant => {
+          if (offerWord === variant) return true;
+          const pattern = safeCompoundIngredientPatterns[variant];
+          const excludedContext = unsafeCompoundOfferContexts[variant];
+          return Boolean(pattern && pattern.test(offerWord) && !excludedContext?.test(normalizedOffer));
+        }));
       });
     }
 
