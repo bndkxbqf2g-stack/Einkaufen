@@ -2,7 +2,7 @@
   "market": "Kaufland",
   "sourceUrl": "https://filiale.kaufland.de/angebote.html",
   "store": "Region Zellingen",
-  "fetchedAt": "2026-11-06T17:24:20.692Z",
+  "fetchedAt": "2026-11-06T18:18:41.564Z",
   "validUntil": "07.11.2026",
   "parser": "kaufland-github-actions-v1",
   "offers": [
@@ -12,7 +12,7 @@
       "saving": "-25%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "500-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -34,7 +34,7 @@
       "saving": "-29%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "2-kg",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -45,7 +45,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "225-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -56,7 +56,7 @@
       "saving": "-49%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "410-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -78,7 +78,7 @@
       "saving": "-51%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "200-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -89,7 +89,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "250-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -100,7 +100,7 @@
       "saving": "-50%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "150-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -111,7 +111,7 @@
       "saving": "-56%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "195-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -122,7 +122,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "85-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -133,7 +133,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "400-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -144,7 +144,7 @@
       "saving": "-40%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "500-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -155,7 +155,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "150-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -166,7 +166,7 @@
       "saving": "-18%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "1-l",
+      "packSize": "1 l",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -177,7 +177,7 @@
       "saving": "-48%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "1-l",
+      "packSize": "1 Packung",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -188,7 +188,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "0,5-l",
+      "packSize": "1 l",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -199,7 +199,7 @@
       "saving": "-43%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "0,5-l",
+      "packSize": "1 l",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -210,7 +210,7 @@
       "saving": "-43%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "0,33-l",
+      "packSize": "1 l",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -221,7 +221,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "0,5-l",
+      "packSize": "1 l",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -232,7 +232,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "85-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -243,7 +243,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "400-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -265,7 +265,7 @@
       "saving": "-15%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "100-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -287,7 +287,7 @@
       "saving": "-25%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "226-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -298,7 +298,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "250-ml",
+      "packSize": "1 l",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -309,7 +309,7 @@
       "saving": "-24%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "400-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -331,7 +331,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "0,33-l",
+      "packSize": "1 l",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -342,7 +342,7 @@
       "saving": "-23%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "1,25-l",
+      "packSize": "1 l",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -364,7 +364,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "24-St",
+      "packSize": "1 Packung",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -375,7 +375,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "0,75-l",
+      "packSize": "1 l",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -386,7 +386,7 @@
       "saving": "-35%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "0,5-l",
+      "packSize": "1 l",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -397,7 +397,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "63-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -408,7 +408,7 @@
       "saving": "-28%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "500-ml",
+      "packSize": "1 l",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -419,7 +419,7 @@
       "saving": "-22%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "0,33-l",
+      "packSize": "1 l",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -430,7 +430,7 @@
       "saving": "–",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "100-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -441,7 +441,7 @@
       "saving": "-39%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "225-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -452,7 +452,7 @@
       "saving": "-20%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "250-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -463,7 +463,7 @@
       "saving": "-25%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "40-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -474,7 +474,7 @@
       "saving": "-22%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "200-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -485,7 +485,7 @@
       "saving": "-25%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "340-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -496,7 +496,7 @@
       "saving": "-10%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "200-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -507,7 +507,7 @@
       "saving": "-16%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "300-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -518,7 +518,7 @@
       "saving": "-20%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "200-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -529,7 +529,7 @@
       "saving": "-26%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "1-l",
+      "packSize": "1 Packung",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
@@ -540,7 +540,7 @@
       "saving": "-20%",
       "icon": "🛒",
       "category": "Lebensmittel",
-      "packSize": "150-g",
+      "packSize": "1 kg",
       "relevance": 78,
       "note": "offizielle Händlerseite",
       "validUntil": "07.11.2026"
