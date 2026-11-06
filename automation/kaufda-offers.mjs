@@ -18,7 +18,6 @@ const defaultMarkets = [
 
 const outputDir = resolve(process.env.KAUFDA_OUTPUT_DIR || 'generated');
 const workdir = await mkdtemp(resolve(tmpdir(), 'angebotskueche-kaufda-'));
-const validUntilFallback = (() => { const date = new Date(); date.setUTCDate(date.getUTCDate() + 7); return `${String(date.getUTCDate()).padStart(2, '0')}.${String(date.getUTCMonth() + 1).padStart(2, '0')}.${date.getUTCFullYear()}`; })();
 
 function stripText(value) { return String(value || '').replace(/\s+/g, ' ').trim(); }
 function likelyFood(value) {
@@ -28,7 +27,7 @@ function likelyFood(value) {
   return /(brot|bröt|backwaren|mehl|zucker|reis|nudel|pasta|kartoff|gemüse|obst|salat|tomat|gurke|paprika|zwiebel|knoblauch|karotte|möhre|äpfel|apfel|banane|beere|dattel|clementin|porree|kaki|orange|zitrone|milch|joghurt|käse|butter|sahne|quark|eier?\b|fleisch|fond|hack|schnitzel|wurst|schinken|salami|hähn|pute|rind|schwein|filet|steak|kotelett|fisch|lachs|thun|pizza|suppe|sauce|soße|konserve|bohne|erbse|linse|öl|essig|senf|ketchup|marmelade|nutella|schokolade|chips|snack|keks|kaffee|tee|saft|wasser|cola|limonade|bier|wein|alkoholfrei|müsli|cornflakes|honig|süßwaren|nahrung|lebensmittel|hülsenfrucht|mandel|burger|cerealien|genießer|almighurt|fruchtgummi|saltletts|schoko|drink|meerrettich|garnele|garnelen|eierspätzle|spätzle|kapern|gulasch|rösti|maronen|filoncino|dessert|gänse|keule|wildlachs|backzutat|knödel|fudge|erdnuss)/i.test(normalized);
 }
 function priceFrom(value) { const match = String(value || '').match(/(?:ab\s*)?(\d{1,4}[,.]\d{2})\s*€/); return match ? `${match[1].replace('.', ',')} €` : '–'; }
-function validUntilFrom(value) { const match = String(value || '').match(/(?:bis|gültig bis)\s+(\d{1,2})\.(\d{1,2})\.?/i); return match ? `${String(match[1]).padStart(2, '0')}.${String(match[2]).padStart(2, '0')}.${new Date().getUTCFullYear()}` : validUntilFallback; }
+function validUntilFrom(value) { const match = String(value || '').match(/(?:bis|gültig bis)\s+(\d{1,2})\.(\d{1,2})\.?/i); return match ? `${String(match[1]).padStart(2, '0')}.${String(match[2]).padStart(2, '0')}.${new Date().getUTCFullYear()}` : null; }
 function pageCountFrom(value) { const match = String(value || '').match(/(?:mit|insgesamt)\s+(\d{1,3})\s+Seiten/i); return Math.min(Math.max(Number(match?.[1] || 72), 1), 120); }
 
 function parseOcr(text, validUntil, config) {
