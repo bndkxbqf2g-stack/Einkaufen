@@ -20,10 +20,35 @@ test('parses only explicit positive euro amounts', () => {
   assert.equal(parseKnownMoney('1.99 €'), 1.99);
   assert.equal(parseKnownMoney('ab 0,79 €'), 0.79);
   assert.equal(parseKnownMoney('0,00 €'), null);
+  assert.equal(parseKnownMoney('2,49 €/kg'), null);
+  assert.equal(parseKnownMoney('2,49 € / 100 g'), null);
+  assert.equal(parseKnownMoney('2,49 € pro kg'), null);
+  assert.equal(parseKnownMoney('2,49 € pro Kilogramm'), null);
+  assert.equal(parseKnownMoney('1,99 € pro Liter'), null);
+  assert.equal(parseKnownMoney('1,99 € pro 1 Liter'), null);
+  assert.equal(parseKnownMoney('1,99 € je Liter'), null);
+  assert.equal(parseKnownMoney('1,99 € / Liter'), null);
+  assert.equal(parseKnownMoney('0,39 € je 100 Milliliter'), null);
+  assert.equal(parseKnownMoney('0,39 € je 100 Gramm'), null);
+  assert.equal(parseKnownMoney('2,49 € (500 g Packung)'), 2.49);
+  assert.equal(parseKnownMoney('2,49 € je 500 g Packung'), 2.49);
+  assert.equal(parseKnownMoney('2,49 € pro 500 g Packung'), 2.49);
+  assert.equal(parseKnownMoney('2,49 € je 500 ml Flasche'), 2.49);
+  assert.equal(parseKnownMoney('2,49 € (1 kg = 4,98 €/kg)'), 2.49);
   assert.equal(parseKnownMoney(''), null);
   assert.equal(parseKnownMoney('not a price'), null);
   assert.equal(parseKnownMoney('–'), null);
   assert.equal(parseKnownMoney('Preis unbekannt'), null);
+});
+
+test('keeps unit-price denominators out of known purchase amounts', () => {
+  const result = calculateOfferAmount([
+    { id: 'unit-price', packCount: 2, offer: { price: '2,49 €/kg' } },
+  ]);
+
+  assert.equal(result.totalCents, 0);
+  assert.deepEqual(result.knownItems, []);
+  assert.deepEqual(result.unknownItems.map(item => item.id), ['unit-price']);
 });
 
 test('calculates known offer amounts in cents and keeps unknown positions separate', () => {
