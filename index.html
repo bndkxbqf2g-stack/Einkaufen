@@ -1075,10 +1075,10 @@
       const openItems = items.filter(item => !shoppingChecks[item.id]);
       const offerItems = items.filter(item => item.offer);
       const missingItems = items.filter(item => !item.offer);
-      const pricedOfferItems = offerItems.map(item => ({ item, unitPrice: parseKnownMoney(item.offer.price) }));
-      const knownOfferItems = pricedOfferItems.filter(entry => entry.unitPrice !== null);
-      const unknownOfferItems = pricedOfferItems.filter(entry => entry.unitPrice === null);
-      const offerTotal = knownOfferItems.reduce((sum, entry) => sum + entry.unitPrice * (entry.item.packCount || 1), 0);
+      const offerSummary = calculateOfferAmount(offerItems);
+      const knownOfferItems = offerSummary.knownItems;
+      const unknownOfferItems = offerSummary.unknownItems;
+      const offerTotal = offerSummary.total;
       const reusedItems = items.filter(item => item.reused);
       $('#shoppingOpenCount').textContent = String(openItems.length);
       $('#shoppingOpenNote').textContent = `${items.length ? `${items.length - openItems.length} von ${items.length} ` : ''}abgehakt`;
@@ -1423,6 +1423,24 @@
       if (!match) return null;
       const amount = Number(match[1].replace(',', '.'));
       return Number.isFinite(amount) && amount > 0 ? amount : null;
+    }
+
+    function calculateOfferAmount(items) {
+      let totalCents = 0;
+      const knownItems = [];
+      const unknownItems = [];
+      for (const item of Array.isArray(items) ? items : []) {
+        const unitPrice = parseKnownMoney(item?.offer?.price);
+        const rawPackCount = Number(item?.packCount);
+        const packCount = Number.isFinite(rawPackCount) && rawPackCount > 0 ? Math.ceil(rawPackCount) : 1;
+        if (unitPrice === null) {
+          unknownItems.push(item);
+          continue;
+        }
+        knownItems.push(item);
+        totalCents += Math.round(unitPrice * 100) * packCount;
+      }
+      return { total: totalCents / 100, totalCents, knownItems, unknownItems };
     }
 
     function formatEuro(value) {
