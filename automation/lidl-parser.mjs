@@ -9,15 +9,9 @@ function formatDate(day, month, year) {
   return `${String(day).padStart(2, '0')}.${String(month).padStart(2, '0')}.${year}`;
 }
 
-function fallbackDate() {
-  const date = new Date();
-  date.setUTCDate(date.getUTCDate() + 7);
-  return formatDate(date.getUTCDate(), date.getUTCMonth() + 1, date.getUTCFullYear());
-}
-
 export function extractValidUntil(text) {
   const match = String(text || '').match(DATE_PATTERN);
-  if (!match) return fallbackDate();
+  if (!match) return null;
   const year = Number(match[6] || match[3] || new Date().getUTCFullYear());
   return formatDate(Number(match[4]), Number(match[5]), year);
 }

@@ -18,6 +18,7 @@ const validSnapshot = {
 test('rejects empty and inconsistent offer snapshots', () => {
   assert.throws(() => validateOfferSnapshot({ ...validSnapshot, offers: [], recognizedCount: 0 }), /Leerer Angebotssnapshot/);
   assert.throws(() => validateOfferSnapshot({ ...validSnapshot, recognizedCount: 2 }), /recognizedCount/);
+  assert.throws(() => validateOfferSnapshot({ ...validSnapshot, validUntil: '' }), /gültiges Feld "validUntil"/);
   assert.throws(() => validateOfferSnapshot({ ...validSnapshot, offers: [{ name: 'Kartoffeln', price: '–', validUntil: '' }] }), /validUntil/);
 });
 

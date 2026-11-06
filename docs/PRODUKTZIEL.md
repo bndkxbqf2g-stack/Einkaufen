@@ -77,7 +77,7 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 - Persönliche Bewertungen werden lokal gespeichert. Externe Bewertungen werden nur übernommen, wenn eine importierte Rezeptseite sie strukturiert liefert; eine Qualitätsbewertung aller Vorschläge ist nicht garantiert.
 - Rezeptimport ist für strukturierte Rezeptseiten und begrenzte Backend-Hosts vorgesehen. Die automatische Online-Suche nach neuen, gut bewerteten Rezepten ist nicht vorhanden.
 - KaufDA meldet bei Lidl `targetOfferCount=1000`, `loadedOfferCardCount=1004` und 211 erkannte Lebensmittelangebote. `targetReached` belegt nur das Nachladen der Karten und nicht, dass alle Angebote vollständig oder korrekt klassifiziert wurden.
-- Ein zentraler Contract verhindert leere Snapshots, Seitenmetadaten als Produkte und Preise ohne expliziten Eurobetrag. Für die offiziellen Händlerquellen wird kein Angebotsende mehr aus einem pauschalen 7-Tage-Wert erfunden. Die Vollständigkeit gegen belastbare Soll-Zahlen je Markt oder Prospekt ist noch offen.
+- Ein zentraler Contract verhindert leere Snapshots, Seitenmetadaten als Produkte und Preise ohne expliziten Eurobetrag. Angebotsenden dürfen weder für Händler- noch für KaufDA-/Lidl-Abrufe pauschal auf „heute + 7 Tage“ geschätzt werden. Die Vollständigkeit gegen belastbare Soll-Zahlen je Markt oder Prospekt ist noch offen.
 
 ### Noch nicht vorhanden
 
@@ -108,7 +108,7 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 
 ## Laufender Entwicklungsstand und nächster Schritt
 
-Der erste kleine Schritt der Datenbasis ist umgesetzt: Snapshot-Validierung, atomare Veröffentlichung und Regressionstests schützen den letzten gültigen Stand. Ein automatischer Abruf am 06.11.2026 zeigte zusätzlich, dass Händler-Metadaten als Produktangebote fehlklassifiziert werden konnten; solche Einträge werden nun abgewiesen, und Angebotsenden müssen aus der Quelle stammen. Die Marktdatenansicht nutzt den Quellzeitpunkt statt des Geräteabrufs und weist Gültigkeit sowie fehlende Zeitangaben aus. Als Nächstes wird die Vollständigkeitsmessung pro Markt untersucht, ohne aus bloßen Karten-Ladezielen vollständige Prospekte abzuleiten. Danach folgt das vereinheitlichte Kostenmodell, bevor weitere Rezeptquellen oder KI angebunden werden.
+Der erste kleine Schritt der Datenbasis ist umgesetzt: Snapshot-Validierung, atomare Veröffentlichung und Regressionstests schützen den letzten gültigen Stand. Automatische Abrufe am 06.11.2026 zeigten, dass Händler-Metadaten als Produktangebote fehlklassifiziert und Gültigkeitsdaten pauschal geschätzt werden konnten. Solche Metadaten werden nun abgewiesen; KaufDA-, Lidl- und Händler-Snapshots benötigen ein in der Quelle belegtes Angebotsende. Die Marktdatenansicht nutzt den Quellzeitpunkt statt des Geräteabrufs und weist Gültigkeit sowie fehlende Zeitangaben aus. Als Nächstes wird die Vollständigkeitsmessung pro Markt untersucht, ohne aus bloßen Karten-Ladezielen vollständige Prospekte abzuleiten. Danach folgt das vereinheitlichte Kostenmodell, bevor weitere Rezeptquellen oder KI angebunden werden.
 
 Überprüfbare Erfolgskriterien:
 
