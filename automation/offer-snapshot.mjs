@@ -41,6 +41,15 @@ function fetchedAtDateOrdinal(value) {
   return date.year * 10000 + date.month * 100 + date.day;
 }
 
+function isSecureSourceUrl(value) {
+  try {
+    const url = new URL(String(value || '').trim());
+    return url.protocol === 'https:' && Boolean(url.hostname) && !url.username && !url.password;
+  } catch {
+    return false;
+  }
+}
+
 export function validateOfferSnapshot(snapshot) {
   if (!snapshot || typeof snapshot !== 'object' || Array.isArray(snapshot)) {
     throw new Error('Angebotssnapshot muss ein Objekt sein.');
@@ -50,6 +59,10 @@ export function validateOfferSnapshot(snapshot) {
     if (typeof snapshot[field] !== 'string' || !snapshot[field].trim()) {
       throw new Error(`Angebotssnapshot ohne gültiges Feld "${field}".`);
     }
+  }
+
+  if (!isSecureSourceUrl(snapshot.sourceUrl)) {
+    throw new Error('Angebotssnapshot: "sourceUrl" muss eine vollständige HTTPS-Adresse ohne Zugangsdaten sein.');
   }
 
   if (!isValidCalendarDate(snapshot.validUntil)) {

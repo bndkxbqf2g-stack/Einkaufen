@@ -22,6 +22,16 @@ test('rejects empty and inconsistent offer snapshots', () => {
   assert.throws(() => validateOfferSnapshot({ ...validSnapshot, offers: [{ name: 'Kartoffeln', price: '–', validUntil: '' }] }), /validUntil/);
 });
 
+test('requires a complete HTTPS source URL without embedded credentials', () => {
+  for (const sourceUrl of ['javascript:alert(1)', 'http://example.test/offers', 'https://user:secret@example.test/offers', '/offers']) {
+    assert.throws(
+      () => validateOfferSnapshot({ ...validSnapshot, sourceUrl }),
+      /sourceUrl.*HTTPS-Adresse ohne Zugangsdaten/
+    );
+  }
+  assert.doesNotThrow(() => validateOfferSnapshot(validSnapshot));
+});
+
 test('rejects page metadata and prices that do not contain an explicit euro amount', () => {
   assert.throws(
     () => validateOfferSnapshot({ ...validSnapshot, offers: [{ name: 'Verfügbar seit', price: '02,11 €', validUntil: '12.11.2026' }] }),
