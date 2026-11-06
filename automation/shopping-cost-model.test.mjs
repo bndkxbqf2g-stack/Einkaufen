@@ -22,6 +22,8 @@ test('parses only explicit positive euro amounts', () => {
   assert.equal(parseKnownMoney('-1,99 €'), null);
   assert.equal(parseKnownMoney('−1,99 €'), null);
   assert.equal(parseKnownMoney('– 1,99 €'), null);
+  assert.equal(parseKnownMoney('1.234 €'), null);
+  assert.equal(parseKnownMoney('1,234 €'), null);
   assert.equal(parseKnownMoney('2,49 € - 0,50 €'), 2.49);
   assert.equal(parseKnownMoney('0,00 €'), null);
   assert.equal(parseKnownMoney('2,49 €/kg'), null);
@@ -63,6 +65,17 @@ test('does not count a negative euro amount as a purchasable offer price', () =>
   assert.equal(result.totalCents, 0);
   assert.deepEqual(result.knownItems, []);
   assert.deepEqual(result.unknownItems.map(item => item.id), ['negative']);
+});
+
+test('does not extract a partial price from an ambiguous three-decimal amount', () => {
+  const result = calculateOfferAmount([
+    { id: 'ambiguous-dot', packCount: 1, offer: { price: '1.234 €' } },
+    { id: 'ambiguous-comma', packCount: 1, offer: { price: '1,234 €' } },
+  ]);
+
+  assert.equal(result.totalCents, 0);
+  assert.deepEqual(result.knownItems, []);
+  assert.deepEqual(result.unknownItems.map(item => item.id), ['ambiguous-dot', 'ambiguous-comma']);
 });
 
 test('calculates known offer amounts in cents and keeps unknown positions separate', () => {
