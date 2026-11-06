@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { offerPackSize } from './offer-normalization.mjs';
 import { writeOfferSnapshot } from './offer-snapshot.mjs';
 
 const markets = {
@@ -63,11 +64,6 @@ function offerSaving(text) {
   return match ? match[0].replace(/\s+/g, '') : '–';
 }
 
-function offerPackSize(text) {
-  const match = String(text || '').match(/\b\d+(?:[.,]\d+)?\s*-?\s*(?:kg|g|l|ml|St\.?|Stück)\b/i);
-  return match ? match[0].replace(/\s+/g, ' ').trim() : '1 Packung';
-}
-
 function offerName(text) {
   return String(text || '')
     .replace(/^angebot:\s*/i, '')
@@ -87,7 +83,7 @@ function normalizeOfferText(text, validUntil) {
   const name = offerName(text);
   const price = offerPrice(text);
   if (!name || name.length < 3 || !price || /\bverfügbar\s+(?:ab|seit)\b/i.test(name) || !likelyFood(name)) return null;
-  return { name, price, saving: offerSaving(text), icon: '🛒', category: 'Lebensmittel', packSize: offerPackSize(text), relevance: 78, note: 'offizielle Händlerseite', validUntil };
+  return { name, price, saving: offerSaving(text), icon: '🛒', category: 'Lebensmittel', packSize: offerPackSize(name, text), relevance: 78, note: 'offizielle Händlerseite', validUntil };
 }
 
 function uniqueOffers(values, validUntil) {
