@@ -1340,8 +1340,7 @@
       pending.forEach(item => { const group = item.offer?.store || 'Noch zu ergänzen'; if (!groups.has(group)) groups.set(group, []); groups.get(group).push(item); });
       const lines = [...groups.entries()].map(([group, items]) => `${marketDisplayName(group)}\n${items.map(item => {
         const packCount = item.packCount || 1;
-        const unitPrice = item.offer ? parseKnownMoney(item.offer.price) : null;
-        const amountLabel = item.offer ? (unitPrice === null ? 'Preis unbekannt' : formatEuro(unitPrice * packCount)) : 'ergänzen';
+        const amountLabel = item.offer ? shoppingShareAmountLabel(item) : 'ergänzen';
         return `- ${item.name}${item.count > 1 ? ` · für ${item.count} Gerichte` : ''}${item.offer ? ` · ${packCount} × ${item.offer.packSize || '1 Packung'} · ${amountLabel}` : ` · ${amountLabel}`}`;
       }).join('\n')}`).join('\n\n');
       const text = `Angebotsküche · offene Einkaufsliste\n\n${lines}`;
@@ -1452,6 +1451,11 @@
         totalCents += Math.round(unitPrice * 100) * packCount;
       }
       return { total: totalCents / 100, totalCents, knownItems, unknownItems };
+    }
+
+    function shoppingShareAmountLabel(item) {
+      const amount = calculateOfferAmount([item]);
+      return amount.knownItems.length ? formatEuro(amount.total) : 'Preis unbekannt';
     }
 
     function formatEuro(value) {
