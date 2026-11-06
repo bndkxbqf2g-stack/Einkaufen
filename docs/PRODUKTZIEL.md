@@ -103,13 +103,13 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 
 ## Drei wichtigste belegte Verbesserungen
 
-1. **Datenvollständigkeit je Markt herstellen:** Leere/ungültige Snapshot-Veröffentlichungen und das Löschen nicht aktualisierter Marktangebote sind jetzt abgesichert. Als Nächstes braucht es pro Markt eine belastbare Vollständigkeitsmessung; erkannte Anzahl und das Ende des Lazy-Load-Ziels allein reichen dafür nicht.
-2. **Kostenmodell vereinheitlichen:** Kassenbetrag, Verbrauchskosten, Vorratsrest, reguläre Vergleichspreise und Fahrtkosten müssen getrennt berechnet und anschließend für das 400-€-Monatsziel zusammengeführt werden.
+1. **Datenvollständigkeit je Markt herstellen:** Leere/ungültige Snapshot-Veröffentlichungen und das Löschen nicht aktualisierter Marktangebote sind abgesichert. Der neue Report trennt Ladefortschritt und Gesamtvollständigkeit; belastbare Quell-Sollzahlen je Markt/Prospekt fehlen weiterhin.
+2. **Kostenmodell vereinheitlichen:** Unbekannte Angebotspreise werden nicht mehr als 0 € gerechnet. Kassenbetrag, Verbrauchskosten, Vorratsrest, reguläre Vergleichspreise und Fahrtkosten müssen noch getrennt berechnet und anschließend für das 400-€-Monatsziel zusammengeführt.
 3. **Wochenumfang erweitern:** Die Planung muss neben warmen Hauptgerichten auch Frühstück, Brotzeit, Snacks und Getränke für Martin, Steffi und ausgewählte Kindertage berücksichtigen, ohne die bestehende persönliche Auswahl zu verlieren.
 
 ## Laufender Entwicklungsstand und nächster Schritt
 
-Der erste kleine Schritt der Datenbasis ist umgesetzt: Snapshot-Validierung, sichere HTTPS-Quelladressen, Plausibilitätsprüfung der Kalenderdaten, Ablehnung bereits abgelaufener Angebote, atomare Veröffentlichung und Regressionstests schützen den letzten gültigen Stand. Automatische Abrufe am 06.11.2026 zeigten, dass Händler-Metadaten als Produktangebote fehlklassifiziert und Gültigkeitsdaten pauschal geschätzt werden konnten. Solche Metadaten werden nun abgewiesen; KaufDA-, Lidl- und Händler-Snapshots benötigen ein in der Quelle belegtes Angebotsende. Die Marktdatenansicht nutzt den Quellzeitpunkt statt des Geräteabrufs und weist Gültigkeit sowie fehlende Zeitangaben aus. Als Nächstes wird die Vollständigkeitsmessung pro Markt untersucht, ohne aus bloßen Karten-Ladezielen vollständige Prospekte abzuleiten. Danach folgt das vereinheitlichte Kostenmodell, bevor weitere Rezeptquellen oder KI angebunden werden.
+Der erste kleine Schritt der Datenbasis ist umgesetzt: Snapshot-Validierung, sichere HTTPS-Quelladressen, Plausibilitätsprüfung der Kalenderdaten, Ablehnung bereits abgelaufener Angebote, atomare Veröffentlichung und Regressionstests schützen den letzten gültigen Stand. Automatische Abrufe am 06.11.2026 zeigten, dass Händler-Metadaten als Produktangebote fehlklassifiziert und Gültigkeitsdaten pauschal geschätzt werden konnten. Solche Metadaten werden nun abgewiesen; KaufDA-, Lidl- und Händler-Snapshots benötigen ein in der Quelle belegtes Angebotsende. Die Marktdatenansicht nutzt den Quellzeitpunkt statt des Geräteabrufs und weist Gültigkeit sowie fehlende Zeitangaben aus. Die Marktübersicht trennt inzwischen Ladeziele von Prospekt-Gesamtvollständigkeit; ohne ausdrücklich belegte Quell-Sollzahl bleibt Letztere unbekannt. Das Kostenmodell weist bekannte Angebotspreise getrennt von unbekannten aus. Als Nächstes folgen direkte Regressionstests für Packungs-/Preissummen, anschließend die Erweiterung des Wochenumfangs auf Frühstück, Brotzeit, Snacks und Getränke, bevor weitere Rezeptquellen oder KI angebunden werden.
 
 Überprüfbare Erfolgskriterien:
 
@@ -129,3 +129,9 @@ Angelegt bzw. ergänzt am 05.11.2026:
 - `docs/SUPABASE.md` – separates Supabase-Projekt, sichere Haushaltssync-Grundlage, lokale App-Anbindung und offene Release-Schritte.
 - `docs/FREIGABEN.md` – gebündelte Entscheidungen, die vor größeren Architektur-, Daten- oder Kostenänderungen benötigt werden.
 
+### Fortschritt 06.11.2026 – parallele Umsetzung
+
+- PR #13 (evidenzbasierter Markt-/Prospektvollständigkeitsbericht) wurde nach 10 gezielten und 44 Automationstests sowie grüner CI per Squash gemergt. Ladeziele gelten nicht als Prospekt-Gesamtzahlen; Standort-Queryparameter werden aus Report-URLs entfernt. GitHub-Pages-Deployment war erfolgreich.
+- PR #14 (unbekannte Angebotspreise nicht als 0 € werten) wurde nach 36 relevanten Tests, grünem Worker-Build/-Check und grüner CI per Squash gemergt. GitHub-Pages-Deployment war erfolgreich.
+- Folgepakete laufen parallel und isoliert: Service-Worker-Offline-Regressionsprüfungen sowie direkte Ergebnis-Tests für Einkaufswert/Packungszahlen. Keine Nutzerdaten-, Datenbank- oder Tarifänderung ist Teil davon.
+- Nächste Produktstufe bleibt der vollständige durchgängige Wochen-Warenkorb: Kassenbetrag, Vorräte und Verbrauchskosten verbinden; danach Mahlzeitenauswahl für Frühstück, Brotzeit, Snacks und Getränke ausbauen.

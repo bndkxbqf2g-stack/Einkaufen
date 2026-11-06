@@ -36,3 +36,10 @@ freigegeben oder entschieden wurden.
 - Die Auth Site-URL und Redirect-Allowlist wurden laut Nutzer auf die
   Produktionsadresse gesetzt; die Werte konnten über die getrennte
   Codex-Browsersitzung nicht unabhängig ausgelesen werden.
+
+## Abgleich der laufenden Codex-Arbeitsstränge (06.11.2026)
+
+- Angebotsvollständigkeitsbericht: PR #13 nach Review und grüner CI gemergt. Ladeziele werden nicht mehr als vollständiger Prospekt ausgegeben; Standort-Queryparameter fehlen in Report-URLs. Keine zusätzliche Nutzerentscheidung erforderlich.
+- Einkaufs-/Kostenmodell: PR #14 nach 36/36 relevanten Tests, grünem Worker-Build/-Check und grüner CI gemergt. Unbekannte Preise werden getrennt ausgewiesen und nicht als 0 € gerechnet. Keine zusätzliche Nutzerentscheidung erforderlich.
+- Laufende Folgepakete: Offline-/Service-Worker-Regressionstests und direkte Einkaufswert-/Packungs-Summen-Tests. Dafür ist aktuell weder eine neue Nutzerentscheidung noch eine kostenpflichtige/externe Ressource erforderlich.
+- Neue Entscheidungen zu Kosten, Nutzerdaten, Cloud, Rechten oder Produktumfang werden hier vor ihrer Umsetzung gesammelt.
