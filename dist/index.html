@@ -1753,6 +1753,19 @@
       return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9äöüß ]/g, ' ');
     }
 
+    function ingredientWordVariants(word) {
+      const variants = new Set([word]);
+      if (word.length >= 5 && word.endsWith('n')) variants.add(word.slice(0, -1));
+      if (word.length >= 5 && word.endsWith('en')) variants.add(word.slice(0, -2));
+      if (word.length >= 5 && word.endsWith('e')) variants.add(word.slice(0, -1));
+      for (const variant of [...variants]) {
+        if (variant.length >= 5 && (variant.endsWith('e') || variant.endsWith('el'))) variants.add(`${variant}n`);
+      }
+      return variants;
+    }
+
+    const safeCompoundIngredientStems = new Set(['butter', 'mehl', 'tomat', 'tomate', 'tomaten']);
+
     function offerEndDate(value) {
       const match = String(value || '').match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
       if (!match) return null;
@@ -1774,8 +1787,11 @@
 
     function offerMatchesIngredient(ingredient, offer) {
       const words = normalizeIngredient(ingredient).split(/\s+/).filter(word => word.length >= 4);
-      const offerName = normalizeIngredient(offer.name);
-      return words.some(word => offerName.includes(word) || (word.endsWith('en') && offerName.includes(word.slice(0, -2))) || (word.endsWith('e') && offerName.includes(word.slice(0, -1))));
+      const offerWords = normalizeIngredient(offer.name).split(/\s+/).filter(word => word.length >= 4);
+      return words.some(word => {
+        const variants = ingredientWordVariants(word);
+        return offerWords.some(offerWord => [...variants].some(variant => offerWord === variant || (safeCompoundIngredientStems.has(variant) && offerWord.endsWith(variant))));
+      });
     }
 
     function recipeRating(recipe) {
