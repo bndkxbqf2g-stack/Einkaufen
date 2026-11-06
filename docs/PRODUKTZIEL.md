@@ -68,6 +68,8 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 
 ### Teilweise umgesetzt oder fehleranfällig
 
+- Die Einkaufsliste weist zusätzlich je Markt die bekannte Angebotssumme der ausdrücklich bepreisten Positionen und die Anzahl unbekannter Preise aus. Das bleibt ein Angebots-Zwischenwert auf Basis angenäherter Packungsbedarfe – kein vollständiger Kassenbetrag; fehlende Artikel, Vorräte und Fahrtkosten sind nicht enthalten.
+
 - Der UI-Plan ist weiterhin auf warme Hauptgerichte plus optionalen Abendblock ausgerichtet. Frühstück, Brotzeit, Snacks und Getränke sind noch kein gleichwertiger Teil des Wochenbudgets.
 - Die Planung verwendet aktive, ausgewählte Märkte und das eingestellte Marktlimit; sie führt nicht nachweisbar alle bekannten Märkte in einer Gesamtoptimierung zusammen.
 - Die Einkaufsliste führt Angebotsartikel und fehlende Artikel zusammen, berechnet aber nicht den vollständigen Kassenbetrag des gesamten Einkaufs.
@@ -111,6 +113,8 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 
 Der erste kleine Schritt der Datenbasis ist umgesetzt: Snapshot-Validierung, sichere HTTPS-Quelladressen, Plausibilitätsprüfung der Kalenderdaten, Ablehnung bereits abgelaufener Angebote, atomare Veröffentlichung und Regressionstests schützen den letzten gültigen Stand. Automatische Abrufe am 06.11.2026 zeigten, dass Händler-Metadaten als Produktangebote fehlklassifiziert und Gültigkeitsdaten pauschal geschätzt werden konnten. Solche Metadaten werden nun abgewiesen; KaufDA-, Lidl- und Händler-Snapshots benötigen ein in der Quelle belegtes Angebotsende. Die Marktdatenansicht nutzt den Quellzeitpunkt statt des Geräteabrufs und weist Gültigkeit sowie fehlende Zeitangaben aus. Die Marktübersicht trennt inzwischen Ladeziele von Prospekt-Gesamtvollständigkeit; ohne ausdrücklich belegte Quell-Sollzahl bleibt Letztere unbekannt. Das Kostenmodell weist bekannte Angebotspreise getrennt von unbekannten aus. Als Nächstes folgen direkte Regressionstests für Packungs-/Preissummen, anschließend die Erweiterung des Wochenumfangs auf Frühstück, Brotzeit, Snacks und Getränke, bevor weitere Rezeptquellen oder KI angebunden werden.
 
+Der neue Markt-Zwischensummen-Hinweis wird ausschließlich aus ausdrücklichen Angebotspreisen und den bisherigen angenäherten Packungszahlen berechnet. Unbekannte Preise werden separat gezählt, nicht zu 0 € addiert; fehlende Artikel bleiben ohne erfundenen Preis. Der nächste sichere Schritt ist ein nachvollziehbarer Vergleich konkurrierender Angebotskandidaten. Eine Mehrstopp-Empfehlung wartet auf den noch offenen Startwert der Nettoersparnis-Schwelle und eine Fahrtkostenbasis.
+
 Überprüfbare Erfolgskriterien:
 
 - Jeder veröffentlichte Snapshot hat `offers.length > 0`, Quelle, Abrufzeitpunkt und quellenbelegte Gültigkeit; Seitenmetadaten und Preise ohne Eurobetrag werden abgewiesen. Ein fehlerhafter Lauf ersetzt keine gültige Datei.
@@ -135,5 +139,8 @@ Angelegt bzw. ergänzt am 05.11.2026:
 - PR #14 (unbekannte Angebotspreise nicht als 0 € werten) wurde nach 36 relevanten Tests, grünem Worker-Build/-Check und grüner CI per Squash gemergt. GitHub-Pages-Lauf erfolgreich.
 - PR #16 ergänzt ausschließlich Service-Worker-Regressionstests: 5 fokussierte und 51 Automationstests grün; `sw.js` blieb unverändert. PR gemergt, GitHub-Pages-Lauf erfolgreich.
 - PR #17 ergänzt einen centgenauen Helfer für bekannte Angebotsbeträge (`1,20 € × 3 = 3,60 €`) und Tests für unbekannte Preise. 47 Tests, Worker-Build/-Check und CI grün; PR gemergt, GitHub-Pages-Lauf erfolgreich.
-- Zwei Folgepakete laufen parallel: A prüft eine Pfadsteuerung, damit Test-/Dokumentationsänderungen weiterhin validiert werden, aber keinen unnötigen Deploy-Job auslösen; B ergänzt optionalen, rückwärtskompatiblen Mahlzeitenzweck an Rezepten. Keine automatische Änderung vorhandener Nutzerdaten.
-- Nächster Produktschritt bleibt die durchgängige Wochenplanung: Mengen, Vorräte, Kassenbetrag und Mahlzeiten für Frühstück, Brotzeit, Snacks und Getränke zusammenführen.
+- PR #19 ergänzt optionale Rezept-Mahlzeitenzwecke (Hauptgericht, Frühstück, Brotzeit, Snack, Getränk, Flexibel), ohne vorhandene Rezepte umzuschreiben. 55 Tests, Worker-Build/-Validierung und CI grün; am 06.11.2026 per Squash gemergt. Der automatische GitHub-Pages-Lauf #42284984325 war erfolgreich.
+- PR #20 verwendet beim Teilen der Einkaufsliste dieselbe centgenaue Preislogik; unbekannte Preise bleiben als solche sichtbar. Lokal und in CI 57/57 Tests sowie Worker-Prüfungen grün; am 06.11.2026 per Squash gemergt. Der automatische Pages-Deploy #42286814419 war erfolgreich.
+- Ein isolierter Folgebranch ergänzt bekannte Angebotssummen je Markt und zählt unbekannte Preise separat. Auf dem aktuellen `main` 58/58 Automationstests, Worker-Validierung, Root/dist-Gleichheit und Diff-Prüfung grün; PR/CI-Abgleich folgt.
+- Chat A pausiert die Deploy-Pfadsteuerung auf Wunsch im verwalteten Worktree; Änderungen sind gespeichert, nicht committet und nicht als PR eingereicht. Workflow #127 validierte und übersprang den Deploy-Job.
+- Nächster Produktschritt: konkurrierende Angebotskandidaten nachvollziehbar vergleichen. Der vollständige Kassenbetrag bleibt offen, bis reguläre Preise, belastbare Mengen/Vorräte und bestätigte Ausgaben getrennt vorliegen; Mehrstopp-Empfehlungen warten auf einen Startwert für die Nettoersparnis-Schwelle und eine bestätigte Fahrtkostenbasis.
