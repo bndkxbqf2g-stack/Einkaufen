@@ -1,6 +1,6 @@
 # Gebündelte Freigaben und externe Voraussetzungen
 
-Stand: 06.11.2026
+Stand: 07.11.2026
 
 Kleine, rückwärtsverträgliche Programmier- und Testschritte laufen weiter. Die
 folgenden Punkte werden gesammelt und erst umgesetzt, wenn sie ausdrücklich
@@ -71,7 +71,7 @@ freigegeben oder entschieden wurden.
 - PR #26 ergänzt ausschließlich den gebündelten Freigabepunkt 9 zur Speicherung tatsächlicher Einkaufsdaten; lokal 69/69 Tests grün und am 06.11.2026 gemergt. Keine Kassen-, Beleg- oder Nutzerdaten erfasst.
 - Die erste zusätzliche Mahlzeiten-Erweiterung ist weiter durch Freigabepunkt 8 begrenzt: Das optionale `mealPurpose` ist vorhanden, aber keinem zusätzlichen Planungsslot zugeordnet. Die frühere Read-only-Prüfung ergab keine Migrationserfordernis für einen kleinen Frühstücks-Pilot; Auswahl pro Tag/Person bleibt bis zur Entscheidung offen.
 - Chat B wurde auf Nutzerwunsch nach Übergabe seines Matcher-Schritts pausiert. Sein Branch und Worktree bleiben erhalten; der Hauptchat prüft und übernimmt die fachliche Abdeckung in einem separaten Worktree. Keine Änderung an Nutzer-, Supabase- oder Angebotsdaten; für diesen sicheren Code-Schritt ist keine zusätzliche Freigabe erforderlich.
-- PR #27 verbessert den Zutaten-Angebotsabgleich anhand belegter Produktfamilien und Regressionstests. Lokal sowie in PR-CI (Run #42308889988) 74/74 Tests, Worker-Build und Worker-Validierung grün; der Deploy-Job wurde im PR übersprungen. Keine zusätzliche Freigabe und keine Supabase-, Nutzerdaten- oder Angebotsdatenänderung.
+- PR #27 verbessert den Zutaten-Angebotsabgleich anhand belegter Produktfamilien und Regressionstests. Die abschließende PR-CI (Run #42309440579) bestätigte 74/74 Tests, Worker-Build und Worker-Validierung; der Deploy-Job wurde im PR übersprungen. Am 07.11.2026 per Squash in Merge-Commit `55c0d8d28da9191b5f4b6409b281f88078be1bfa` gemergt; Pages-Deploy #42309573224 und Root-Sync #42309573166 erfolgreich. Keine zusätzliche Freigabe und keine Supabase-, Nutzerdaten- oder Angebotsdatenänderung.
 - Chat A ist auf Wunsch pausiert. Die Deploy-Pfadsteuerung bleibt uncommittet im verwalteten Worktree; keine Deploy-, Auth- oder Datenbankänderungen wurden ausgeführt.
 - Die zusätzliche Marktstopp-Schwelle und Fahrtkostenbasis werden als spätere Nutzerentscheidung gesammelt. Bis dahin bleibt automatische Routen-/Mehrstoppoptimierung deaktiviert.
 - Neue Entscheidungen zu Kosten, Nutzerdaten, Cloud, Rechten oder Produktumfang werden hier vor ihrer Umsetzung gesammelt.
