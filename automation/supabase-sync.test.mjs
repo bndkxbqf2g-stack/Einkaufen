@@ -121,6 +121,35 @@ test('keeps the static app inline script syntactically valid', () => {
   assert.doesNotThrow(() => new vm.Script(inlineScript[1]));
 });
 
+test('source freshness uses the timestamp reported by the offer source', () => {
+  const declaration = html.match(/function normalizeSourceTimestamp\(value\) \{[\s\S]*?\n    \}/);
+  assert.ok(declaration, 'source timestamp normalizer is present');
+  const normalizeSourceTimestamp = vm.runInNewContext(`(${declaration[0]})`);
+
+  assert.equal(normalizeSourceTimestamp('2026-11-05T14:57:27.423Z'), '2026-11-05T14:57:27.423Z');
+  assert.equal(normalizeSourceTimestamp('not-a-timestamp'), '');
+  assert.equal(normalizeSourceTimestamp(undefined), '');
+  assert.match(html, /normalizeSourceTimestamp\(result\.payload\.fetchedAt\)/);
+  assert.match(html, /Datenstand unbekannt/);
+});
+
+test('retains stored offers for unrefreshed and failed markets', () => {
+  const declaration = html.match(/function retainUnrefreshedAutomaticOffers\(currentOffers, refreshedMarkets\) \{[\s\S]*?\n    \}/);
+  assert.ok(declaration, 'market offer retention helper is present');
+  const retain = vm.runInNewContext(`(${declaration[0]})`, {
+    isAutomaticLiveOffer: offer => offer.automatic,
+    canonicalMarketName: market => String(market).toLowerCase(),
+  });
+  const current = [
+    { store: 'Aldi', name: 'old Aldi offer', automatic: true },
+    { store: 'Lidl', name: 'last Lidl offer', automatic: true },
+    { store: 'Aldi', name: 'manual Aldi note', automatic: false },
+  ];
+
+  const retained = Array.from(retain(current, new Set(['aldi'])));
+  assert.deepEqual(retained.map(offer => offer.name), ['last Lidl offer', 'manual Aldi note']);
+});
+
 test('requires confirmation before the first local upload and uses revision zero', async () => {
   const harness = createSyncHarness();
   await harness.initialize();

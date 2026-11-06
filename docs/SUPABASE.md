@@ -40,7 +40,7 @@ Die CLI-Konfiguration exponiert nur `public` und `graphql_public`; `app_private`
 ist nicht als Data-API-Schema eingetragen. Neue Tabellen im lokalen Setup sind
 nicht automatisch exponiert. Siehe [supabase/config.toml](../supabase/config.toml).
 
-## App-Anbindung (lokal implementiert, noch nicht veröffentlicht)
+## App-Anbindung (implementiert und auf GitHub Pages veröffentlicht)
 
 [`supabase-sync.js`](../supabase-sync.js) bindet die gepinnte Version
 `@supabase/supabase-js@2.119.0` bei Bedarf über jsDelivr ein, wenn Einstellungen
@@ -67,16 +67,17 @@ Supabase-/CDN-Antworten sowie der private D1-Endpunkt `/api/sync` werden nicht
 vom Service Worker abgefangen oder gecached. Der App-Worker liefert
 `supabase-sync.js` ebenfalls aus.
 
-Die Supabase Auth Site-URL und Redirect-Allowlist wurden nicht verändert oder
-verifiziert. Vor bestätigungspflichtigen E-Mail-Registrierungen muss die
-Site-URL im Dashboard auf die veröffentlichte App-Adresse
-`https://bndkxbqf2g-stack.github.io/Einkaufen/` geprüft/gesetzt werden. Es wurde
-kein eigener SMTP-Dienst eingerichtet. Die Anmeldung meldet, wenn die
-E-Mail-Bestätigung noch aussteht.
+Der Nutzer hat am 06.11.2026 bestätigt, die Supabase Auth Site-URL und
+Redirect-Allowlist auf `https://bndkxbqf2g-stack.github.io/Einkaufen/` gesetzt zu
+haben. Die Dashboardwerte waren über die getrennte Codex-Browsersitzung nicht
+unabhängig auslesbar. Ein echter Anmelde-/Bestätigungslauf in der App steht
+deshalb weiterhin aus. Es wurde kein eigener SMTP-Dienst eingerichtet. Die
+Anmeldung meldet, wenn die E-Mail-Bestätigung noch aussteht.
 
-Es gab kein Deployment und keine Übernahme vorhandener `localStorage`- oder
-D1-Daten. Das Supabase-Projekt enthält weiterhin keine Haushalte oder
-App-Zustände.
+Der Supabase-Integrationscommit wurde am 06.11.2026 auf GitHub Pages veröffentlicht;
+Validierung, Worker-Prüfung und Deployment liefen erfolgreich ([GitHub-Actions-Lauf](https://github.com/bndkxbqf2g-stack/Einkaufen/actions/runs/42249870124)).
+Vorhandene `localStorage`- oder D1-Daten wurden nicht übernommen. Zum Zeitpunkt
+der letzten Projektprüfung enthielt Supabase keine Haushalte oder App-Zustände.
 
 ## Migrationen
 
@@ -96,11 +97,10 @@ Tabellen; das ist erwartbar, bis die App die Haushaltsabfragen ausführt.
   und den fehlenden Service-Role-Key ab.
 - Der Worker-Test prüft, dass `supabase-sync.js` ausgeliefert und die neue
   Service-Worker-Version eingebettet wird.
-- GitHub-Pages-Deployment wartet auf Worker-Build, automatische Tests und
-  Endpunkt-Validierung.
-- Eine echte Anmeldung/Registrierung benötigt persönliche Zugangsdaten und
-  konnte deshalb nicht mit einem Testnutzer durchgespielt werden. Vor produktiver
-  Anmeldung Auth-Site-URL im Dashboard prüfen.
-- Offen bleiben Einladungen, Offline-Queue/Konflikt-UX über mehrere Geräte,
-  End-to-End-Test mit einem vom Nutzer angelegten Konto sowie ausdrücklich
-  freigegebenes Deployment. Es wurden keine App-Daten migriert.
+- GitHub-Pages-Deployment des Supabase-Integrationsstands ist erfolgreich.
+- Ein echter End-to-End-Anmelde-/Registrierungslauf benötigt ein Testkonto und
+  steht noch aus. Die Auth-URLs wurden laut Nutzer im Dashboard gesetzt, aber
+  über die verfügbare Projekt-API nicht unabhängig verifiziert.
+- Offen bleiben Einladungen, Offline-Queue/Konflikt-UX über mehrere Geräte und
+  der End-to-End-Test mit einem vom Nutzer angelegten Konto. Es wurden keine
+  App-Daten migriert.

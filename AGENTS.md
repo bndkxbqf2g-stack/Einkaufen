@@ -6,4 +6,5 @@
 - Relevante Tests und CI-Prüfungen werden durchgeführt; Ergebnisse und Grenzen werden wahrheitsgemäß berichtet.
 - Gewöhnliche technische Entscheidungen werden innerhalb dieses Ziels selbstständig getroffen.
 - Erreichten Stand und nächsten sinnvollen Schritt knapp in der Projektdokumentation festhalten.
+- Notwendige Freigaben gebündelt in `docs/FREIGABEN.md` fortschreiben; unabhängige, sichere Programmierarbeit nicht unnötig anhalten.
 

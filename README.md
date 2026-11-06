@@ -7,9 +7,9 @@ GitHub-Pages-Version: https://bndkxbqf2g-stack.github.io/Einkaufen/
 ## Backend
 
 Das separate Supabase-Projekt ist als sichere Haushalts-/Sync-Grundlage eingerichtet
-und lokal mit Anmeldung sowie revisionsgeschützter Haushaltssynchronisierung verbunden.
-Lokale Daten und der optionale D1-Sync bleiben erhalten; es gab noch kein Deployment
-und keine Datenübernahme. Details: [Supabase-Setup](docs/SUPABASE.md).
+mit Anmeldung sowie revisionsgeschützter Haushaltssynchronisierung verbunden und auf
+GitHub Pages veröffentlicht. Lokale Daten und der optionale D1-Sync bleiben erhalten;
+es gab keine automatische Datenübernahme. Details: [Supabase-Setup](docs/SUPABASE.md).
 
 GitHub Actions aktualisieren automatisch die Angebotsdateien für Aldi, Kaufland, EDEKA, Lidl und Netto. Wenn eine Händlerseite vorübergehend blockiert oder strukturell geändert ist, bleibt der letzte gültige Stand erhalten und der manuelle Import in der App verfügbar.
 
