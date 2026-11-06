@@ -52,6 +52,24 @@ test('accepts supported date-only formats and rejects impossible calendar dates'
   );
 });
 
+test('rejects snapshots and offers already expired at their recorded fetch time', () => {
+  assert.throws(
+    () => validateOfferSnapshot({ ...validSnapshot, validUntil: '05.11.2026' }),
+    /"validUntil" liegt vor dem Abrufzeitpunkt/
+  );
+  assert.throws(
+    () => validateOfferSnapshot({
+      ...validSnapshot,
+      offers: [{ name: 'Kartoffeln', price: '1,99 €', validUntil: '2026-11-05' }],
+    }),
+    /Angebot 1 ist bereits vor dem Abrufzeitpunkt abgelaufen/
+  );
+  assert.throws(
+    () => validateOfferSnapshot({ ...validSnapshot, fetchedAt: '31.02.2026' }),
+    /gültiger ISO-8601-UTC-Zeitpunkt/
+  );
+});
+
 test('does not replace the last good file when a snapshot is invalid', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'angebot-snapshot-test-'));
   const output = join(directory, 'offers.json');
