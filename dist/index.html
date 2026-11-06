@@ -212,8 +212,9 @@
     .shopping-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .shopping-groups { display: grid; gap: 18px; }
     .shopping-group { overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: #fffefa; }
-    .shopping-group-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 13px; color: var(--green); background: #f4f8f1; font-size: 12px; font-weight: 850; }
+    .shopping-group-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 11px 13px; color: var(--green); background: #f4f8f1; font-size: 12px; font-weight: 850; }
     .shopping-group-title span { color: var(--ink-soft); font-size: 10px; font-weight: 700; }
+    .shopping-group-title span:last-child { margin-left: auto; text-align: right; }
     .shopping-items { display: grid; }
     .shopping-item { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 12px 13px; border-top: 1px solid var(--line); }
     .shopping-item:first-child { border-top: 0; }
@@ -1081,6 +1082,13 @@
       }).sort((first, second) => Number(Boolean(first.offer)) - Number(Boolean(second.offer)) || first.name.localeCompare(second.name, 'de'));
     }
 
+    function renderShoppingGroupHeader(group, groupItems) {
+      const offerSummary = formatShoppingGroupOfferSummary(group, groupItems);
+      const itemNote = `${groupItems.length} Artikel${offerSummary ? ` · ${offerSummary}` : ''}`;
+      const marketName = group === 'Ergänzen' ? 'Noch zu ergänzen' : marketDisplayName(group);
+      return `<div class="shopping-group-title"><span>${escapeHtml(marketName)}</span><span>${escapeHtml(itemNote)}</span></div>`;
+    }
+
     function renderShoppingList() {
       const items = getShoppingItems();
       const openItems = items.filter(item => !shoppingChecks[item.id]);
@@ -1107,7 +1115,7 @@
         if (second[0] === 'Ergänzen') return -1;
         return (marketOrder.indexOf(first[0]) === -1 ? 99 : marketOrder.indexOf(first[0])) - (marketOrder.indexOf(second[0]) === -1 ? 99 : marketOrder.indexOf(second[0]));
       });
-       $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group"><div class="shopping-group-title"><span>${escapeHtml(group === 'Ergänzen' ? 'Noch zu ergänzen' : marketDisplayName(group))}</span><span>${groupItems.length} Artikel</span></div><div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const useLabel = item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; const packLabel = item.offer ? (item.packCount > 1 ? `${item.packCount} Packungen · ${item.offer.packSize || 'Packungsgröße'} · für ${Number($('#peopleSelect').value || 2)} Personen` : `${item.offer.packSize || '1 Packung'} · ${item.offer.saving || 'Angebot'}`) : ''; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.packCount > 1 ? `${item.packCount} × ${item.offer.price}` : item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(packLabel)}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
+       $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group">${renderShoppingGroupHeader(group, groupItems)}<div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const useLabel = item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; const packLabel = item.offer ? (item.packCount > 1 ? `${item.packCount} Packungen · ${item.offer.packSize || 'Packungsgröße'} · für ${Number($('#peopleSelect').value || 2)} Personen` : `${item.offer.packSize || '1 Packung'} · ${item.offer.saving || 'Angebot'}`) : ''; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.packCount > 1 ? `${item.packCount} × ${item.offer.price}` : item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(packLabel)}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
     }
 
     function openShoppingItemModal() {
@@ -1456,6 +1464,15 @@
     function shoppingShareAmountLabel(item) {
       const amount = calculateOfferAmount([item]);
       return amount.knownItems.length ? formatEuro(amount.total) : 'Preis unbekannt';
+    }
+
+    function formatShoppingGroupOfferSummary(group, items) {
+      if (group === 'Ergänzen') return '';
+      const summary = calculateOfferAmount(items);
+      const details = [];
+      if (summary.knownItems.length) details.push(`Bekannte Angebotssumme ${formatEuro(summary.total)}`);
+      if (summary.unknownItems.length) details.push(`${summary.unknownItems.length} Preis${summary.unknownItems.length === 1 ? '' : 'e'} unbekannt`);
+      return details.join(' · ');
     }
 
     function formatEuro(value) {

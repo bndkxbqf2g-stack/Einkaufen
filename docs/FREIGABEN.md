@@ -28,6 +28,11 @@ freigegeben oder entschieden wurden.
    an ihn übermittelten Daten, Kostenlimit und Fallback-Verhalten. Bis dahin
    bleiben Vorschläge und Preis-/Mengenberechnungen lokal und deterministisch.
 
+7. **Zusätzlicher Marktstopp** – den Startwert der erforderlichen Nettoersparnis
+   sowie die Berechnungsbasis der Fahrtkosten festlegen. Die Schwelle soll
+   einstellbar sein; bis zur Entscheidung werden keine zusätzlichen Stopps
+   automatisch empfohlen und keine Fahrtkosten geschätzt.
+
 ## Benötigt später Nutzeraktion, keine Zugangsdaten im Chat
 
 - Für den echten Auth-End-to-End-Test wird ein vom Nutzer angelegtes
@@ -40,5 +45,9 @@ freigegeben oder entschieden wurden.
 ## Abgleich der laufenden Codex-Arbeitsstränge (06.11.2026)
 
 - PRs #13, #14, #16 und #17 wurden nach Review und jeweils grüner CI gemergt. Sie ergänzen konservative Markt-/Prospekt-Evidenz, sichere bekannte Preisbeträge, centgenaue Summen und Service-Worker-Regressionstests. Keine zusätzliche Nutzerentscheidung erforderlich.
-- Aktuell laufen zwei getrennte Folgepakete: Workflow-Pfadsteuerung für unnötige Deploy-Jobs und optionale Rezept-Mahlzeitenzwecke ohne Migration vorhandener Daten. Dafür ist aktuell weder eine neue Nutzerentscheidung noch eine kostenpflichtige/externe Ressource erforderlich.
+- PR #19 ergänzt optionale Rezept-Mahlzeitenzwecke ohne Migration vorhandener Daten. CI war grün; am 06.11.2026 per Squash gemergt, automatischer Pages-Lauf #42284984325 erfolgreich.
+- PR #20 vereinheitlicht den Centbetrag im Teilen der Einkaufsliste mit der bestehenden Angebotslogik. Lokal und in CI 57/57 Tests sowie Worker-Prüfungen grün; am 06.11.2026 per Squash gemergt, automatischer Pages-Deploy #42286814419 erfolgreich.
+- Ein isolierter Branch ergänzt bekannte Angebotssummen je Markt; unbekannte Preise bleiben separat. Auf dem aktuellen main 58/58 Tests und Worker-Prüfungen grün; PR und CI-Abgleich stehen noch aus.
+- Chat A ist auf Wunsch pausiert. Die Deploy-Pfadsteuerung bleibt uncommittet im verwalteten Worktree; keine Deploy-, Auth- oder Datenbankänderungen wurden ausgeführt.
+- Die zusätzliche Marktstopp-Schwelle und Fahrtkostenbasis werden als spätere Nutzerentscheidung gesammelt. Bis dahin bleibt automatische Routen-/Mehrstoppoptimierung deaktiviert.
 - Neue Entscheidungen zu Kosten, Nutzerdaten, Cloud, Rechten oder Produktumfang werden hier vor ihrer Umsetzung gesammelt.
