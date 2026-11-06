@@ -154,6 +154,11 @@ test('reports card load goals without claiming the prospect is complete', () => 
   assert.match(html, /targetOfferCount: Number\(result\.payload\.targetOfferCount/);
 });
 
+test('labels the shopping offer subtotal as an estimate and names what is excluded', () => {
+  assert.match(html, /Geschätzter Angebotswert/);
+  assert.match(html, /Packungsbedarf ist angenähert; fehlende Artikel und Vorräte sind im Angebotswert nicht enthalten/);
+});
+
 test('retains stored offers for unrefreshed and failed markets', () => {
   const declaration = html.match(/function retainUnrefreshedAutomaticOffers\(currentOffers, refreshedMarkets\) \{[\s\S]*?\n    \}/);
   assert.ok(declaration, 'market offer retention helper is present');

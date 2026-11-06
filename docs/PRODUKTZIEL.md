@@ -71,7 +71,7 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 - Der UI-Plan ist weiterhin auf warme Hauptgerichte plus optionalen Abendblock ausgerichtet. Frühstück, Brotzeit, Snacks und Getränke sind noch kein gleichwertiger Teil des Wochenbudgets.
 - Die Planung verwendet aktive, ausgewählte Märkte und das eingestellte Marktlimit; sie führt nicht nachweisbar alle bekannten Märkte in einer Gesamtoptimierung zusammen.
 - Die Einkaufsliste führt Angebotsartikel und fehlende Artikel zusammen, berechnet aber nicht den vollständigen Kassenbetrag des gesamten Einkaufs.
-- Die sichtbaren Plankosten stammen aus Rezept-/Planwerten, während der Angebotswert der Einkaufsliste nur gematchte Angebots-Packungen summiert. Diese Werte sind nicht als dieselbe Kostenart gekennzeichnet.
+- Die sichtbaren Plankosten stammen aus Rezept-/Planwerten, während der Einkauf nur gematchte Angebots-Packungen summiert. Die App kennzeichnet diesen Zwischenwert nun als Schätzung und weist darauf hin, dass fehlende Artikel und Vorräte nicht enthalten sind; ein vollständiger Kassenbetrag fehlt weiterhin.
 - Monatsbudget, bestätigte Ausgaben, verbleibendes Budget, Resttage und Fahrtkosten sind nicht als durchgängiges Rechenmodell verbunden.
 - Vorräte werden als Artikelliste ohne belastbare Mengen geführt. Packungsbedarf wird aus Zutatenvorkommen und Personenzahl angenähert; eine konsistente Vorratsreservierung ist nicht belegt.
 - Persönliche Bewertungen werden lokal gespeichert. Externe Bewertungen werden nur übernommen, wenn eine importierte Rezeptseite sie strukturiert liefert; eine Qualitätsbewertung aller Vorschläge ist nicht garantiert.
