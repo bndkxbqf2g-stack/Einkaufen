@@ -15,7 +15,10 @@ assert.equal((await worker.fetch(new Request('https://example.test/api/sync'))).
 const manifest = await worker.fetch(new Request('https://example.test/manifest.json'));
 assert.equal(JSON.parse(await manifest.text()).short_name, 'Angebotsküche');
 const serviceWorker = await worker.fetch(new Request('https://example.test/sw.js'));
-assert.match(await serviceWorker.text(), /angebotskueche-shell-v3/);
+assert.match(await serviceWorker.text(), /angebotskueche-shell-v28/);
+const supabaseSync = await worker.fetch(new Request('https://example.test/supabase-sync.js'));
+assert.equal(supabaseSync.status, 200);
+assert.match(await supabaseSync.text(), /save_household_state/);
 const rejected = await worker.fetch(new Request('https://example.test/api/recipe?url=https%3A%2F%2Fexample.com%2Frezept'));
 assert.equal(rejected.status, 400);
 const previousFetch = globalThis.fetch;
@@ -30,7 +33,9 @@ globalThis.fetch = async request => {
 };
 try {
   const parsed = await worker.fetch(new Request('https://example.test/api/recipe?url=https%3A%2F%2Fwww.chefkoch.de%2Frezepte%2Ftest'));
-  assert.deepEqual(await parsed.json(), { name: 'Test-Curry', ingredients: ['Paprika', 'Öl'] });
+  const parsedRecipe = await parsed.json();
+  assert.equal(parsedRecipe.name, 'Test-Curry');
+  assert.deepEqual(parsedRecipe.ingredients, ['Paprika', 'Öl']);
   const offers = await worker.fetch(new Request('https://example.test/api/offers?market=Kaufland'));
   assert.equal(offers.status, 200);
   const offerPayload = await offers.json();

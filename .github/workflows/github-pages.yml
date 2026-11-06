@@ -6,20 +6,62 @@ on:
     paths:
       - 'dist/**'
       - 'generated/**'
-      - '.github/workflows/github-pages.yml'
+      - 'worker/**'
+      - 'scripts/**'
+      - 'automation/**'
+      - 'supabase/**'
+      - 'supabase-sync.js'
+      - 'index.html'
+      - '.github/workflows/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'dist/**'
+      - 'generated/**'
+      - 'worker/**'
+      - 'scripts/**'
+      - 'automation/**'
+      - 'supabase/**'
+      - 'supabase-sync.js'
+      - 'index.html'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build worker bundle
+        run: node scripts/build-worker.mjs
+
+      - name: Run automated tests
+        run: node --test automation/*.test.mjs
+
+      - name: Validate worker endpoints
+        run: node scripts/validate-worker.mjs
+
   deploy:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

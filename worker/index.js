@@ -1,6 +1,7 @@
 const page = __PAGE__;
 const manifest = __MANIFEST__;
 const serviceWorker = __SERVICE_WORKER__;
+const supabaseSync = __SUPABASE_SYNC__;
 
 const MAX_RECIPE_BYTES = 1_500_000;
 // Plattformoffener Import: nur bekannte Rezeptseiten werden serverseitig gelesen.
@@ -378,6 +379,7 @@ export default {
     if (url.pathname === '/api/sync' && (request.method === 'GET' || request.method === 'PUT')) return syncCloud(request, env);
     if (url.pathname === '/manifest.json') return new Response(manifest, { headers: { 'content-type': 'application/manifest+json; charset=utf-8' } });
     if (url.pathname === '/sw.js') return new Response(serviceWorker, { headers: { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-cache' } });
+    if (url.pathname === '/supabase-sync.js') return new Response(supabaseSync, { headers: { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'public, max-age=3600' } });
     if (url.pathname !== '/') return new Response('Not found', { status: 404 });
     return new Response(page, { headers: { 'content-type': 'text/html; charset=utf-8' } });
   },
