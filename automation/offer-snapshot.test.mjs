@@ -21,6 +21,17 @@ test('rejects empty and inconsistent offer snapshots', () => {
   assert.throws(() => validateOfferSnapshot({ ...validSnapshot, offers: [{ name: 'Kartoffeln', price: '–', validUntil: '' }] }), /validUntil/);
 });
 
+test('rejects page metadata and prices that do not contain an explicit euro amount', () => {
+  assert.throws(
+    () => validateOfferSnapshot({ ...validSnapshot, offers: [{ name: 'Verfügbar seit', price: '02,11 €', validUntil: '12.11.2026' }] }),
+    /Angebotsmetadaten/
+  );
+  assert.throws(
+    () => validateOfferSnapshot({ ...validSnapshot, offers: [{ name: 'Kartoffeln', price: 'ab 1,99', validUntil: '12.11.2026' }] }),
+    /kein eindeutiger Eurobetrag/
+  );
+});
+
 test('does not replace the last good file when a snapshot is invalid', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'angebot-snapshot-test-'));
   const output = join(directory, 'offers.json');
@@ -29,6 +40,10 @@ test('does not replace the last good file when a snapshot is invalid', async () 
   try {
     await writeFile(output, previous, 'utf8');
     await assert.rejects(writeOfferSnapshot(output, { ...validSnapshot, offers: [], recognizedCount: 0 }), /Leerer Angebotssnapshot/);
+    await assert.rejects(
+      writeOfferSnapshot(output, { ...validSnapshot, offers: [{ name: 'Verfügbar seit', price: '02,11 €', validUntil: '12.11.2026' }] }),
+      /Angebotsmetadaten/
+    );
     assert.equal(await readFile(output, 'utf8'), previous);
     assert.deepEqual(await readdir(directory), ['offers.json']);
   } finally {
