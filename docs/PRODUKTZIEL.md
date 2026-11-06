@@ -131,7 +131,9 @@ Angelegt bzw. ergänzt am 05.11.2026:
 
 ### Fortschritt 06.11.2026 – parallele Umsetzung
 
-- PR #13 (evidenzbasierter Markt-/Prospektvollständigkeitsbericht) wurde nach 10 gezielten und 44 Automationstests sowie grüner CI per Squash gemergt. Ladeziele gelten nicht als Prospekt-Gesamtzahlen; Standort-Queryparameter werden aus Report-URLs entfernt. GitHub-Pages-Deployment war erfolgreich.
-- PR #14 (unbekannte Angebotspreise nicht als 0 € werten) wurde nach 36 relevanten Tests, grünem Worker-Build/-Check und grüner CI per Squash gemergt. GitHub-Pages-Deployment war erfolgreich.
-- Folgepakete laufen parallel und isoliert: Service-Worker-Offline-Regressionsprüfungen sowie direkte Ergebnis-Tests für Einkaufswert/Packungszahlen. Keine Nutzerdaten-, Datenbank- oder Tarifänderung ist Teil davon.
-- Nächste Produktstufe bleibt der vollständige durchgängige Wochen-Warenkorb: Kassenbetrag, Vorräte und Verbrauchskosten verbinden; danach Mahlzeitenauswahl für Frühstück, Brotzeit, Snacks und Getränke ausbauen.
+- PR #13 (evidenzbasierter Markt-/Prospektvollständigkeitsbericht) wurde nach 10 gezielten und 44 Automationstests sowie grüner CI per Squash gemergt. Ladeziele gelten nicht als Prospekt-Gesamtzahlen; Standort-Queryparameter werden aus Report-URLs entfernt. GitHub-Pages-Lauf erfolgreich.
+- PR #14 (unbekannte Angebotspreise nicht als 0 € werten) wurde nach 36 relevanten Tests, grünem Worker-Build/-Check und grüner CI per Squash gemergt. GitHub-Pages-Lauf erfolgreich.
+- PR #16 ergänzt ausschließlich Service-Worker-Regressionstests: 5 fokussierte und 51 Automationstests grün; `sw.js` blieb unverändert. PR gemergt, GitHub-Pages-Lauf erfolgreich.
+- PR #17 ergänzt einen centgenauen Helfer für bekannte Angebotsbeträge (`1,20 € × 3 = 3,60 €`) und Tests für unbekannte Preise. 47 Tests, Worker-Build/-Check und CI grün; PR gemergt, GitHub-Pages-Lauf erfolgreich.
+- Zwei Folgepakete laufen parallel: A prüft eine Pfadsteuerung, damit Test-/Dokumentationsänderungen weiterhin validiert werden, aber keinen unnötigen Deploy-Job auslösen; B ergänzt optionalen, rückwärtskompatiblen Mahlzeitenzweck an Rezepten. Keine automatische Änderung vorhandener Nutzerdaten.
+- Nächster Produktschritt bleibt die durchgängige Wochenplanung: Mengen, Vorräte, Kassenbetrag und Mahlzeiten für Frühstück, Brotzeit, Snacks und Getränke zusammenführen.
