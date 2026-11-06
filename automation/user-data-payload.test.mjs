@@ -39,23 +39,32 @@ function createPayloadHarness(initialEntries = []) {
   return { applyUserDataPayload, storage };
 }
 
-test('keeps local v1 fields that an older cloud snapshot omits', () => {
-  const initial = [
-    ['angebotskueche.settings', JSON.stringify({ markets: 3 })],
-    ['angebotskueche.pantry', JSON.stringify(['Milch'])],
-    ['angebotskueche.favorites', JSON.stringify([{ name: 'Lieblingsrezept' }])],
-    ['angebotskueche.recipeHistory', JSON.stringify(['rezept-a'])],
-    ['angebotskueche.suggestionPreferences', JSON.stringify({ sort: 'variety' })],
-  ];
+test('keeps every local v1 field that an older cloud snapshot omits', () => {
+  const localFields = {
+    settings: { markets: 3 },
+    pantry: ['Milch'],
+    favorites: [{ name: 'Lieblingsrezept' }],
+    dismissedRecipes: ['rezept-abgelehnt'],
+    pinnedRecipes: ['rezept-favorit'],
+    customOffers: [{ name: 'Haferdrink' }],
+    shoppingChecks: { milch: true },
+    manualShoppingItems: [{ id: 'manuell-1', name: 'Brot' }],
+    recipeHistory: ['rezept-a'],
+    liveOfferStatus: { marketA: 'loaded' },
+    manualPlan: { monday: ['rezept-a'] },
+    recipeRatings: { 'rezept-a': { rating: 5 } },
+    suggestionPreferences: { sort: 'variety' },
+  };
+  const initial = Object.entries(localFields)
+    .map(([key, value]) => [`angebotskueche.${key}`, JSON.stringify(value)]);
   const { applyUserDataPayload, storage } = createPayloadHarness(initial);
 
   applyUserDataPayload({ version: 1, pantry: ['Reis'] }, 'geladen');
 
-  assert.equal(storage.get('angebotskueche.pantry'), JSON.stringify(['Reis']));
-  assert.equal(storage.get('angebotskueche.settings'), JSON.stringify({ markets: 3 }));
-  assert.equal(storage.get('angebotskueche.favorites'), JSON.stringify([{ name: 'Lieblingsrezept' }]));
-  assert.equal(storage.get('angebotskueche.recipeHistory'), JSON.stringify(['rezept-a']));
-  assert.equal(storage.get('angebotskueche.suggestionPreferences'), JSON.stringify({ sort: 'variety' }));
+  for (const [key, value] of Object.entries(localFields)) {
+    const expected = key === 'pantry' ? ['Reis'] : value;
+    assert.equal(storage.get(`angebotskueche.${key}`), JSON.stringify(expected), key);
+  }
 });
 
 test('validates a restored payload before changing any local fields', () => {
