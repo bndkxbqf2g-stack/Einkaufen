@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { chromium } from 'playwright';
+import { writeOfferSnapshot } from './offer-snapshot.mjs';
 
 const execFileAsync = promisify(execFile);
 const defaultMarkets = [
@@ -237,7 +238,7 @@ async function scrapeMarket(page, config) {
   if (!useOcrFallback) {
     const unique = [...new Map(offers.map(offer => [`${offer.name.toLowerCase()}|${offer.price}|${offer.store}`, offer])).values()];
     const result = { market: config.market, store: config.store, location: config.location, sourceUrl, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-offer-cards-v6', recognizedCount: unique.length, targetOfferCount: targetOfferCount || null, loadedOfferCardCount, targetReached, offers: unique };
-    await writeFile(resolve(outputDir, config.file), `${JSON.stringify(result, null, 2)}\n`, 'utf8');
+    await writeOfferSnapshot(resolve(outputDir, config.file), result);
     console.log(`KaufDA: ${unique.length} ${config.key}-Angebote aus strukturierten Karten nach ${config.file} geschrieben`);
     return result;
   }
@@ -291,7 +292,7 @@ async function scrapeMarket(page, config) {
   }
   if (!unique.length) throw new Error(`${config.key}: keine Lebensmittelangebote erkannt`);
   const result = { market: config.market, store: config.store, location: config.location, sourceUrl, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-prospect-images-ocr-v3', recognizedCount: unique.length, targetOfferCount: targetOfferCount || null, loadedOfferCardCount, targetReached, offers: unique };
-  await writeFile(resolve(outputDir, config.file), `${JSON.stringify(result, null, 2)}\n`, 'utf8');
+  await writeOfferSnapshot(resolve(outputDir, config.file), result);
   console.log(`KaufDA: ${unique.length} ${config.key}-Angebote nach ${config.file} geschrieben`);
   return result;
 }

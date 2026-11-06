@@ -5,6 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { chromium } from 'playwright';
 import { extractValidUntil, parseLidlOfferText } from './lidl-parser.mjs';
+import { writeOfferSnapshot } from './offer-snapshot.mjs';
 
 const PROSPECT_URL = 'https://www.lidl.de/c/online-prospekte/s10005610/';
 const STORE_URL = 'https://www.lidl.de/s/de-DE/filialen/zellingen/am-guessgraben-2/';
@@ -89,7 +90,7 @@ async function main() {
     const offers = parseLidlOfferText(text, { validUntil: extractValidUntil(`${prospect?.text || ''} ${await page.title()}`) });
     if (!offers.length) throw new Error('Keine Lebensmittelangebote im Lidl-Prospekt erkannt.');
     await mkdir(dirname(OUTPUT), { recursive: true });
-    await writeFile(OUTPUT, `${JSON.stringify({ market: 'Lidl', sourceUrl: prospect?.href || PROSPECT_URL, store: 'Zellingen', fetchedAt: new Date().toISOString(), validUntil: offers[0].validUntil, parser: 'lidl-playwright-v1', offers }, null, 2)}\n`, 'utf8');
+    await writeOfferSnapshot(OUTPUT, { market: 'Lidl', sourceUrl: prospect?.href || PROSPECT_URL, store: 'Zellingen', fetchedAt: new Date().toISOString(), validUntil: offers[0].validUntil, parser: 'lidl-playwright-v1', offers });
     console.log(`Lidl-Angebote geschrieben: ${offers.length}`);
   } finally {
     await browser.close();

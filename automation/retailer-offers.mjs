@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
+import { writeOfferSnapshot } from './offer-snapshot.mjs';
 
 const markets = {
   Aldi: { url: 'https://www.aldi-sued.de/angebote', host: 'aldi-sued.de', slug: 'aldi' },
@@ -184,7 +185,7 @@ async function main() {
   const parsed = market === 'Kaufland' ? parseKauflandOffers(body) : market === 'EDEKA' ? parseEdekaOffers(body) : market === 'Aldi' ? parseAldiOffers(body) : parseNettoOffers(body);
   if (!parsed.offers.length) throw new Error(`${market}: keine sicher erkennbaren Lebensmittelangebote gefunden`);
   await mkdir(dirname(output), { recursive: true });
-  await writeFile(output, `${JSON.stringify({ market, sourceUrl, store: 'Region Zellingen', fetchedAt: new Date().toISOString(), validUntil: parsed.validUntil, parser: `${source.slug}-github-actions-v1`, offers: parsed.offers }, null, 2)}\n`, 'utf8');
+  await writeOfferSnapshot(output, { market, sourceUrl, store: 'Region Zellingen', fetchedAt: new Date().toISOString(), validUntil: parsed.validUntil, parser: `${source.slug}-github-actions-v1`, offers: parsed.offers });
   console.log(`${market}: ${parsed.offers.length} Angebote nach ${output} geschrieben`);
 }
 

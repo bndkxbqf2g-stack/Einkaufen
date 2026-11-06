@@ -1,7 +1,7 @@
 # Produktziel: Einkaufen / Angebotsküche
 
 Stand der Bestandsanalyse: 05.11.2026
-Stand Supabase-Anbindung (lokal, noch nicht veröffentlicht): 06.11.2026
+Stand Supabase-Anbindung (in main und auf GitHub Pages veröffentlicht): 06.11.2026
 
 ## Projektidentität und Abgrenzung
 
@@ -57,11 +57,14 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 
 - Das Repository ist eine statische GitHub-Pages-App mit optionalem Worker-Backend und lokalem Browser-Speicher.
 - Wochenplan, Tagesauswahl, Personenanzahl, Plantage, Marktlimit, Restelogik, Einkaufsliste, Favoriten, Vorräte, lokale Bewertungen, Backup/Import und optionaler Cloud-Sync sind im Code vorhanden.
-- Supabase-E-Mail-Anmeldung, Haushaltsauswahl und revisionsgeschützter Sync sind lokal angebunden; Auth-URL-Prüfung, Test mit echtem Nutzerkonto und Deployment stehen noch aus.
+- Supabase-E-Mail-Anmeldung, Haushaltsauswahl und revisionsgeschützter Sync sind lokal angebunden. Die Auth-URLs wurden laut Nutzer auf die Produktionsadresse gesetzt; ein echter Login-E2E-Test steht noch aus.
 - Favoriten und kreative Vorschläge werden als gemeinsame Kandidaten bewertet; Angebote werden gegen Rezeptzutaten gematcht.
 - Ganze Packungen und Mehrfachverwendung werden in der Einkaufsliste zumindest als Packungsanzahl beziehungsweise „für mehrere Gerichte“ berücksichtigt.
 - KaufDA- und Händler-Workflows sowie ein Bring-Playwright/OCR-Workflow sind im Repository dokumentiert und als GitHub Actions angelegt.
-- Die aktuelle Datenversorgung enthält für Aldi, Kaufland, EDEKA, Netto und Penny Lebensmittelangebote mit Quelle, Gültigkeit und Parserkennung. Die geprüften Dateien enthalten aktuell 24 Aldi-, 52 Kaufland-, 4 EDEKA-, 16 Netto- und 57 Penny-Angebote.
+- Die eingecheckten Snapshots enthalten für Aldi, EDEKA, Kaufland, Lidl, Netto und Penny Angebote mit Quelle, Abrufzeit, Gültigkeit und Parserkennung. Der Stand der untersuchten Dateien umfasst 87 Aldi-, 68 EDEKA-, 73 Kaufland-, 211 Lidl-, 178 Netto- und 77 Penny-Angebote; diese Zählung ist eine Momentaufnahme, keine Vollständigkeitsgarantie.
+- Die Angebots-Pipelines validieren Snapshots jetzt zentral vor Veröffentlichung und schreiben Dateien atomar. Leere oder fehlerhafte Läufe können den letzten gültigen Dateistand dadurch nicht ersetzen; Regressionstests decken den Schutz ab.
+- Die gemeinsame Marktdatenansicht zeigt nach einem Quellenabruf erkannte Treffer, den von der Quelle gemeldeten Datenstand und die Gültigkeit. Ein fehlender Quellzeitpunkt wird ausdrücklich als unbekannt angezeigt statt durch die Geräteabrufzeit ersetzt.
+- Beim App-Refresh werden nur die erfolgreich aktualisierten Märkte ersetzt. Angebote fehlgeschlagener oder nicht abgefragter Märkte sowie manuelle Importe bleiben erhalten.
 
 ### Teilweise umgesetzt oder fehleranfällig
 
@@ -73,8 +76,8 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 - Vorräte werden als Artikelliste ohne belastbare Mengen geführt. Packungsbedarf wird aus Zutatenvorkommen und Personenzahl angenähert; eine konsistente Vorratsreservierung ist nicht belegt.
 - Persönliche Bewertungen werden lokal gespeichert. Externe Bewertungen werden nur übernommen, wenn eine importierte Rezeptseite sie strukturiert liefert; eine Qualitätsbewertung aller Vorschläge ist nicht garantiert.
 - Rezeptimport ist für strukturierte Rezeptseiten und begrenzte Backend-Hosts vorgesehen. Die automatische Online-Suche nach neuen, gut bewerteten Rezepten ist nicht vorhanden.
-- Die aktuelle Datenprüfung zeigt einen konkreten Fehler: `generated/lidl-offers.json` hat Parser `lidl-playwright-v1`, aber 0 Angebote sowie keine gültige Abruf- oder Gültigkeitsangabe.
-- EDEKA liefert im aktuellen Snapshot nur 4 Angebote. Ohne erwartete Kartenanzahl oder Vollständigkeitsnachweis ist nicht belegbar, ob dieser Stand vollständig ist.
+- KaufDA meldet bei Lidl `targetOfferCount=1000`, `loadedOfferCardCount=1004` und 211 erkannte Lebensmittelangebote. `targetReached` belegt nur das Nachladen der Karten und nicht, dass alle Angebote vollständig oder korrekt klassifiziert wurden.
+- Ein zentraler Contract verhindert leere/ungültige Snapshots, prüft aber noch nicht die Vollständigkeit gegen belastbare Soll-Zahlen je Markt oder Prospekt.
 
 ### Noch nicht vorhanden
 
@@ -99,17 +102,17 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 
 ## Drei wichtigste belegte Verbesserungen
 
-1. **Datenvollständigkeit je Markt herstellen:** Der Lidl-Snapshot mit 0 Angeboten muss kontrolliert fehlschlagen und den letzten gültigen Stand behalten; pro Markt braucht es erkannte Anzahl, Gültigkeit und einen Vollständigkeitsstatus.
+1. **Datenvollständigkeit je Markt herstellen:** Leere/ungültige Snapshot-Veröffentlichungen und das Löschen nicht aktualisierter Marktangebote sind jetzt abgesichert. Als Nächstes braucht es pro Markt eine belastbare Vollständigkeitsmessung; erkannte Anzahl und das Ende des Lazy-Load-Ziels allein reichen dafür nicht.
 2. **Kostenmodell vereinheitlichen:** Kassenbetrag, Verbrauchskosten, Vorratsrest, reguläre Vergleichspreise und Fahrtkosten müssen getrennt berechnet und anschließend für das 400-€-Monatsziel zusammengeführt werden.
 3. **Wochenumfang erweitern:** Die Planung muss neben warmen Hauptgerichten auch Frühstück, Brotzeit, Snacks und Getränke für Martin, Steffi und ausgewählte Kindertage berücksichtigen, ohne die bestehende persönliche Auswahl zu verlieren.
 
-## Empfohlener erster Entwicklungsschritt
+## Laufender Entwicklungsstand und nächster Schritt
 
-Zuerst die **Daten- und Kostenbasis** stabilisieren, bevor weitere Rezeptquellen oder KI angebunden werden.
+Der erste kleine Schritt der Datenbasis ist umgesetzt: Snapshot-Validierung, atomare Veröffentlichung und Regressionstests schützen den letzten gültigen Stand. Außerdem nutzt die Marktdatenansicht jetzt den Quellzeitpunkt statt des Geräteabrufs und weist Gültigkeit sowie fehlende Zeitangaben aus. Als Nächstes wird die Vollständigkeitsmessung pro Markt untersucht, ohne aus bloßen Karten-Ladezielen vollständige Prospekte abzuleiten. Danach folgt das vereinheitlichte Kostenmodell, bevor weitere Rezeptquellen oder KI angebunden werden.
 
 Überprüfbare Erfolgskriterien:
 
-- Jeder konfigurierte Markt erzeugt entweder einen validierten Datensatz mit `offers.length > 0`, Quelle, Abrufzeitpunkt und Gültigkeit oder einen sichtbaren Fehlerstatus; ein leerer Lauf darf keine gültigen Daten ersetzen.
+- Jeder veröffentlichte Snapshot hat `offers.length > 0`, Quelle, Abrufzeitpunkt und Gültigkeit; ein leerer oder fehlerhafter Lauf ersetzt keine gültige Datei. Dies ist jetzt durch automatisierte Tests abgesichert.
 - Die App zeigt pro Markt erkannte Angebote, Datenalter und Gültigkeit aus derselben normalisierten Quelle, die für Plan und Einkaufsliste verwendet wird.
 - Für einen Testplan sind Plankosten, vollständiger Kassenbetrag, Angebotsanteil, fehlende Artikel, Vorratsverbrauch und Fahrtkosten getrennt ausweisbar; fehlende Preise werden als unbekannt behandelt.
 - Relevante Parser-, Datenvalidierungs- und Konsistenztests laufen in CI und ihr Ergebnis wird dokumentiert.
@@ -123,4 +126,5 @@ Angelegt bzw. ergänzt am 05.11.2026:
 - `AGENTS.md` – dauerhafte Arbeitsregeln für dieses Repository.
 - `docs/PRODUKTZIEL.md` – Produktziel, bestätigte Nutzervorgaben, Entscheidungsregeln, Bestandsanalyse und nächster Schritt.
 - `docs/SUPABASE.md` – separates Supabase-Projekt, sichere Haushaltssync-Grundlage, lokale App-Anbindung und offene Release-Schritte.
+- `docs/FREIGABEN.md` – gebündelte Entscheidungen, die vor größeren Architektur-, Daten- oder Kostenänderungen benötigt werden.
 
