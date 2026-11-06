@@ -2,7 +2,7 @@
   "market": "Kaufland",
   "sourceUrl": "https://filiale.kaufland.de/angebote.html",
   "store": "Region Zellingen",
-  "fetchedAt": "2026-11-06T17:12:45.921Z",
+  "fetchedAt": "2026-11-06T17:24:20.692Z",
   "validUntil": "07.11.2026",
   "parser": "kaufland-github-actions-v1",
   "offers": [
