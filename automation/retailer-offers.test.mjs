@@ -19,3 +19,12 @@ test('does not invent an offer expiry when the source provides none', () => {
   assert.equal(parsed.validUntil, null);
   assert.equal(parsed.offers.length, 1);
 });
+
+test('keeps an explicitly advertised package size', () => {
+  const parsed = parseAldiOffers(`
+    <p>Gültig vom 06.11.2026 bis 12.11.2026</p>
+    <a>Joghurt Natur 500 g 0,79 € / 100 g</a>
+  `);
+
+  assert.equal(parsed.offers[0].packSize, '500 g');
+});
