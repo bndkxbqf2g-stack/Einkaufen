@@ -3,6 +3,8 @@ import { mkdir, rename, rm, writeFile } from 'node:fs/promises';
 import { basename, dirname, resolve } from 'node:path';
 
 const requiredTextFields = ['market', 'sourceUrl', 'fetchedAt', 'validUntil', 'parser'];
+const currencyPricePattern = /^(?:ab\s+)?\d{1,3}(?:\.\d{3})*(?:,\d{2})?\s*€$/i;
+const nonOfferNamePattern = /\bverfügbar\s+(?:ab|seit)\b/i;
 
 export function validateOfferSnapshot(snapshot) {
   if (!snapshot || typeof snapshot !== 'object' || Array.isArray(snapshot)) {
@@ -31,6 +33,12 @@ export function validateOfferSnapshot(snapshot) {
       if (typeof offer[field] !== 'string' || !offer[field].trim()) {
         throw new Error(`Angebotssnapshot: Angebot ${index + 1} hat kein gültiges Feld "${field}".`);
       }
+    }
+    if (nonOfferNamePattern.test(offer.name)) {
+      throw new Error(`Angebotssnapshot: Angebot ${index + 1} enthält Angebotsmetadaten statt eines Produktnamens.`);
+    }
+    if (!currencyPricePattern.test(offer.price.trim())) {
+      throw new Error(`Angebotssnapshot: Preis von Angebot ${index + 1} ist kein eindeutiger Eurobetrag.`);
     }
   });
 

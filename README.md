@@ -11,7 +11,7 @@ mit Anmeldung sowie revisionsgeschützter Haushaltssynchronisierung verbunden un
 GitHub Pages veröffentlicht. Lokale Daten und der optionale D1-Sync bleiben erhalten;
 es gab keine automatische Datenübernahme. Details: [Supabase-Setup](docs/SUPABASE.md).
 
-GitHub Actions aktualisieren automatisch die Angebotsdateien für Aldi, Kaufland, EDEKA, Lidl und Netto. Wenn eine Händlerseite vorübergehend blockiert oder strukturell geändert ist, bleibt der letzte gültige Stand erhalten und der manuelle Import in der App verfügbar.
+GitHub Actions aktualisieren automatisch die Angebotsdateien für Aldi, Kaufland, EDEKA, Lidl und Netto. Ungültige Preisfelder, als Produkte erkannte Seitenmetadaten und fehlende Angebotsenden stoppen die Veröffentlichung; der letzte gültige Stand und der manuelle Import bleiben verfügbar.
 
 ## Lidl-Automation
 

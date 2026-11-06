@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { writeOfferSnapshot } from './offer-snapshot.mjs';
 
 const markets = {
@@ -9,10 +10,6 @@ const markets = {
   Netto: { url: 'https://www.netto-online.de/angebote/c-N07', host: 'netto-online.de', slug: 'netto' },
 };
 
-const market = process.argv[2] || process.env.MARKET || '';
-const source = markets[market];
-if (!source) throw new Error(`Unbekannter Markt: ${market}. Erlaubt: ${Object.keys(markets).join(', ')}`);
-const output = resolve(process.env.OFFER_OUTPUT || `generated/${source.slug}-offers.json`);
 const maxBytes = 4_000_000;
 
 function stripHtml(value) {
@@ -42,12 +39,6 @@ function extractAnchorTexts(html) {
 
 function formatDate(day, month, year) {
   return `${String(day).padStart(2, '0')}.${String(month).padStart(2, '0')}.${year}`;
-}
-
-function defaultOfferDate() {
-  const date = new Date();
-  date.setUTCDate(date.getUTCDate() + 7);
-  return formatDate(date.getUTCDate(), date.getUTCMonth() + 1, date.getUTCFullYear());
 }
 
 function offerDateRange(text) {
@@ -95,7 +86,7 @@ function likelyFood(name) {
 function normalizeOfferText(text, validUntil) {
   const name = offerName(text);
   const price = offerPrice(text);
-  if (!name || name.length < 3 || !price || !likelyFood(name)) return null;
+  if (!name || name.length < 3 || !price || /\bverfügbar\s+(?:ab|seit)\b/i.test(name) || !likelyFood(name)) return null;
   return { name, price, saving: offerSaving(text), icon: '🛒', category: 'Lebensmittel', packSize: offerPackSize(text), relevance: 78, note: 'offizielle Händlerseite', validUntil };
 }
 
@@ -111,14 +102,14 @@ function uniqueOffers(values, validUntil) {
 
 function parseKauflandOffers(html) {
   const text = stripHtml(html);
-  const validUntil = offerDateRange(text)?.end || defaultOfferDate();
+  const validUntil = offerDateRange(text)?.end || null;
   const candidates = extractAnchorTexts(html).filter(value => /\d+[.,]\d{2}/.test(value) && /(kg|g|l|ml|St\.?|Packg\.|nur\s+|-\s*\d{1,3}\s*%)/i.test(value));
   return { validUntil, offers: uniqueOffers(candidates, validUntil) };
 }
 
 function parseEdekaOffers(html) {
   const text = stripHtml(html);
-  const validUntil = offerDateRange(text)?.end || defaultOfferDate();
+  const validUntil = offerDateRange(text)?.end || null;
   const currentText = text.split(/angebote der woche bei edeka/i)[0];
   const candidates = [];
   const pattern = /angebot:\s*([\s\S]{2,120}?)(?=\s+(?:ab\s+\d{1,2}\.\d{1,2}\.?\s*)?\d+[.,]\d{2}\b)/gi;
@@ -128,7 +119,7 @@ function parseEdekaOffers(html) {
 }
 
 function parseAldiOffers(html) {
-  const validUntil = defaultOfferDate();
+  const validUntil = offerDateRange(stripHtml(html))?.end || null;
   const candidates = extractAnchorTexts(html)
     .filter(value => /\d+[.,]\d{2}/.test(value) && /(kg|g|l|ml|St\.?|stück|€)/i.test(value))
     .map(value => value.replace(/^verfügbar\s+ab\s+\d{1,2}\.\d{1,2}\.\d{4}\s*/i, ''));
@@ -137,7 +128,7 @@ function parseAldiOffers(html) {
 
 function parseNettoOffers(html) {
   const text = stripHtml(html);
-  const validUntil = offerDateRange(text)?.end || defaultOfferDate();
+  const validUntil = offerDateRange(text)?.end || null;
   const candidates = [];
   const headingPattern = /<h3\b[^>]*>([\s\S]*?)<\/h3>([\s\S]{0,700}?)(?=<h3\b|<h2\b|<footer\b|$)/gi;
   let match;
@@ -150,6 +141,10 @@ function parseNettoOffers(html) {
 }
 
 async function main() {
+  const market = process.argv[2] || process.env.MARKET || '';
+  const source = markets[market];
+  if (!source) throw new Error(`Unbekannter Markt: ${market}. Erlaubt: ${Object.keys(markets).join(', ')}`);
+  const output = resolve(process.env.OFFER_OUTPUT || `generated/${source.slug}-offers.json`);
   let body;
   let sourceUrl = source.url;
   const controller = new AbortController();
@@ -183,11 +178,16 @@ async function main() {
   if (new URL(sourceUrl).hostname.toLowerCase() !== source.host && !new URL(sourceUrl).hostname.toLowerCase().endsWith(`.${source.host}`)) throw new Error(`${market}: unerwartete Weiterleitung`);
   if (new TextEncoder().encode(body).byteLength > maxBytes) throw new Error(`${market}: Antwort ist unerwartet groß`);
   const parsed = market === 'Kaufland' ? parseKauflandOffers(body) : market === 'EDEKA' ? parseEdekaOffers(body) : market === 'Aldi' ? parseAldiOffers(body) : parseNettoOffers(body);
+  if (!parsed.validUntil) throw new Error(`${market}: kein eindeutiges Angebotsende auf der Quelle gefunden; der letzte gültige Stand bleibt erhalten`);
   if (!parsed.offers.length) throw new Error(`${market}: keine sicher erkennbaren Lebensmittelangebote gefunden`);
   await mkdir(dirname(output), { recursive: true });
   await writeOfferSnapshot(output, { market, sourceUrl, store: 'Region Zellingen', fetchedAt: new Date().toISOString(), validUntil: parsed.validUntil, parser: `${source.slug}-github-actions-v1`, offers: parsed.offers });
   console.log(`${market}: ${parsed.offers.length} Angebote nach ${output} geschrieben`);
 }
 
-main().catch(error => { console.error(error?.message || error); process.exitCode = 1; });
+export { parseAldiOffers, parseEdekaOffers, parseKauflandOffers, parseNettoOffers };
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch(error => { console.error(error?.message || error); process.exitCode = 1; });
+}
 
