@@ -5,6 +5,21 @@ import { basename, dirname, resolve } from 'node:path';
 const requiredTextFields = ['market', 'sourceUrl', 'fetchedAt', 'validUntil', 'parser'];
 const currencyPricePattern = /^(?:ab\s+)?\d{1,3}(?:\.\d{3})*(?:,\d{2})?\s*€$/i;
 const nonOfferNamePattern = /\bverfügbar\s+(?:ab|seit)\b/i;
+const dateOnlyPattern = /^(?:(\d{1,2})\.(\d{1,2})\.(\d{4})|(\d{4})-(\d{2})-(\d{2}))$/;
+
+function isValidCalendarDate(value) {
+  const match = String(value || '').trim().match(dateOnlyPattern);
+  if (!match) return false;
+
+  const day = Number(match[1] || match[6]);
+  const month = Number(match[2] || match[5]);
+  const year = Number(match[3] || match[4]);
+  if (year < 1 || month < 1 || month > 12) return false;
+
+  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const daysInMonth = [31, leapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  return day >= 1 && day <= daysInMonth[month - 1];
+}
 
 export function validateOfferSnapshot(snapshot) {
   if (!snapshot || typeof snapshot !== 'object' || Array.isArray(snapshot)) {
@@ -15,6 +30,10 @@ export function validateOfferSnapshot(snapshot) {
     if (typeof snapshot[field] !== 'string' || !snapshot[field].trim()) {
       throw new Error(`Angebotssnapshot ohne gültiges Feld "${field}".`);
     }
+  }
+
+  if (!isValidCalendarDate(snapshot.validUntil)) {
+    throw new Error('Angebotssnapshot: "validUntil" muss ein gültiges Kalenderdatum (TT.MM.JJJJ oder JJJJ-MM-TT) sein.');
   }
 
   if (!Array.isArray(snapshot.offers) || snapshot.offers.length === 0) {
@@ -33,6 +52,9 @@ export function validateOfferSnapshot(snapshot) {
       if (typeof offer[field] !== 'string' || !offer[field].trim()) {
         throw new Error(`Angebotssnapshot: Angebot ${index + 1} hat kein gültiges Feld "${field}".`);
       }
+    }
+    if (!isValidCalendarDate(offer.validUntil)) {
+      throw new Error(`Angebotssnapshot: Gültigkeitsdatum von Angebot ${index + 1} ist kein gültiges Kalenderdatum.`);
     }
     if (nonOfferNamePattern.test(offer.name)) {
       throw new Error(`Angebotssnapshot: Angebot ${index + 1} enthält Angebotsmetadaten statt eines Produktnamens.`);

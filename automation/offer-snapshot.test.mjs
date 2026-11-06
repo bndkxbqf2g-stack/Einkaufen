@@ -33,6 +33,25 @@ test('rejects page metadata and prices that do not contain an explicit euro amou
   );
 });
 
+test('accepts supported date-only formats and rejects impossible calendar dates', () => {
+  assert.doesNotThrow(() => validateOfferSnapshot({
+    ...validSnapshot,
+    validUntil: '2028-02-29',
+    offers: [{ name: 'Kartoffeln', price: '1,99 €', validUntil: '29.02.2028' }],
+  }));
+  assert.throws(
+    () => validateOfferSnapshot({ ...validSnapshot, validUntil: '31.02.2026' }),
+    /gültiges Kalenderdatum/
+  );
+  assert.throws(
+    () => validateOfferSnapshot({
+      ...validSnapshot,
+      offers: [{ name: 'Kartoffeln', price: '1,99 €', validUntil: '2026-02-30' }],
+    }),
+    /Gültigkeitsdatum von Angebot 1 ist kein gültiges Kalenderdatum/
+  );
+});
+
 test('does not replace the last good file when a snapshot is invalid', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'angebot-snapshot-test-'));
   const output = join(directory, 'offers.json');
