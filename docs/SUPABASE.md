@@ -52,8 +52,10 @@ In den Einstellungen gibt es E-Mail/Passwort-Anmeldung, Haushaltsauswahl und
 Haushaltserstellung. Der Nutzerzustand wird weiterhin im bestehenden v1-Format
 aus `localStorage` gelesen. Nichts wird automatisch hochgeladen. Ein leerer
 Haushalt erhält lokale Daten erst nach einer ausdrücklichen Speicherbestätigung;
-Cloud-Laden ersetzt lokale Daten nur nach Bestätigung. Bei veralteter Revision
-bricht der Compare-and-swap-Speichervorgang ab und fordert zum Prüfen/Laden auf.
+Cloud-Laden übernimmt nach Bestätigung die im Snapshot enthaltenen Felder.
+Optionale Felder, die in einem älteren v1-Snapshot fehlen, bleiben lokal
+unverändert. Bei veralteter Revision bricht der Compare-and-swap-Speichervorgang
+ab und fordert zum Prüfen/Laden auf.
 Einladungen und Beitrittslinks sind noch nicht implementiert.
 
 Die Cloud-Schaltflächen verwenden auf GitHub Pages Supabase, sobald ein Konto
