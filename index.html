@@ -2017,7 +2017,7 @@
       if (!payload || payload.version !== 1 || typeof payload !== 'object' || Array.isArray(payload)) throw new Error('invalid');
       backupArrayKeys.forEach(key => { if (payload[key] !== undefined && !Array.isArray(payload[key])) throw new Error('invalid'); });
       backupObjectKeys.forEach(key => { if (payload[key] !== undefined && (!payload[key] || typeof payload[key] !== 'object' || Array.isArray(payload[key]))) throw new Error('invalid'); });
-      if (payload.settings && (typeof payload.settings !== 'object' || Array.isArray(payload.settings))) throw new Error('invalid');
+      if (payload.settings !== undefined && (!payload.settings || typeof payload.settings !== 'object' || Array.isArray(payload.settings))) throw new Error('invalid');
       return payload;
     }
 

@@ -8,6 +8,9 @@ import { dirname, resolve } from 'node:path';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const source = await readFile(resolve(root, 'index.html'), 'utf8');
 const published = await readFile(resolve(root, 'dist/index.html'), 'utf8');
+const syncSource = await readFile(resolve(root, 'supabase-sync.js'), 'utf8');
+const syncPublished = await readFile(resolve(root, 'dist/supabase-sync.js'), 'utf8');
+const worker = await readFile(resolve(root, 'dist/server/index.js'), 'utf8');
 const helpersStart = source.indexOf('    const backupArrayKeys = ');
 const helpersEnd = source.indexOf('    function exportUserData()', helpersStart);
 
@@ -70,8 +73,30 @@ test('validates a restored payload before changing any local fields', () => {
   assert.deepEqual([...storage.entries()], before);
 });
 
+test('rejects null settings before mutating any local fields', () => {
+  const initial = [
+    ['angebotskueche.settings', JSON.stringify({ markets: 3 })],
+    ['angebotskueche.pantry', JSON.stringify(['Milch'])],
+  ];
+  const { applyUserDataPayload, storage } = createPayloadHarness(initial);
+  const before = [...storage.entries()];
+
+  assert.throws(
+    () => applyUserDataPayload({ version: 1, settings: null, pantry: ['Reis'] }, 'geladen'),
+    /invalid/,
+  );
+  assert.deepEqual([...storage.entries()], before);
+});
+
 test('explains legacy-field preservation in the cloud-load confirmation', () => {
   assert.ok(source.includes(
+    'Nur enthaltene Felder werden ersetzt; fehlende optionale Felder bleiben lokal erhalten.',
+  ));
+  assert.ok(syncSource.includes(
+    'Nur enthaltene Felder werden ersetzt; fehlende optionale Felder bleiben lokal erhalten.',
+  ));
+  assert.equal(syncPublished, syncSource);
+  assert.ok(worker.includes(
     'Nur enthaltene Felder werden ersetzt; fehlende optionale Felder bleiben lokal erhalten.',
   ));
 });

@@ -234,7 +234,7 @@
     app.validatePayload(remote.payload);
     validatePayload(remote.payload);
     const stamp = remote.updatedAt ? ` vom ${new Date(remote.updatedAt).toLocaleString('de-DE')}` : '';
-    if (!window.confirm(`Cloud-Stand von „${household.name}“${stamp} auf diesem Gerät übernehmen? Lokale Daten werden ersetzt.`)) {
+    if (!window.confirm(`Cloud-Stand von „${household.name}“${stamp} auf diesem Gerät übernehmen? Nur enthaltene Felder werden ersetzt; fehlende optionale Felder bleiben lokal erhalten.`)) {
       setStatus('Laden abgebrochen. Lokale Daten bleiben erhalten.');
       return false;
     }
