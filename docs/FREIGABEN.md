@@ -40,6 +40,14 @@ freigegeben oder entschieden wurden.
    mealPurpose-Feld nutzen und braucht laut aktuellem Code keine
    Datenbankmigration; der Settings-Schreibpfad sowie alte Sync- und
    Backup-Payloads müssen vor der Umsetzung rückwärtskompatibel getestet werden.
+9. **Erfassung tatsächlicher Einkäufe und Auswertung** – festlegen, ob nur ein
+   Gesamtbetrag je Einkauf oder tatsächlich gezahlte Preise und Mengen je
+   Position gespeichert werden sollen; außerdem, ob eine Belegerfassung
+   überhaupt gewünscht ist und ob die Historie gerätegebunden bleibt oder
+   ausdrücklich mit dem Haushalt synchronisiert wird. Bis zur Entscheidung
+   bleiben vorhandene Einkaufschecks reine Statusdaten. Es werden keine
+   Kassenpreise erfunden, keine Belegbilder hochgeladen und keine OCR- oder
+   Ausgabenhistorie eingeführt.
 
 ## Benötigt später Nutzeraktion, keine Zugangsdaten im Chat
 
