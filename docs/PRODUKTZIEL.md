@@ -1,6 +1,7 @@
 # Produktziel: Einkaufen / Angebotsküche
 
 Stand der Bestandsanalyse: 05.11.2026
+Stand Supabase-Anbindung (lokal, noch nicht veröffentlicht): 06.11.2026
 
 ## Projektidentität und Abgrenzung
 
@@ -56,6 +57,7 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 
 - Das Repository ist eine statische GitHub-Pages-App mit optionalem Worker-Backend und lokalem Browser-Speicher.
 - Wochenplan, Tagesauswahl, Personenanzahl, Plantage, Marktlimit, Restelogik, Einkaufsliste, Favoriten, Vorräte, lokale Bewertungen, Backup/Import und optionaler Cloud-Sync sind im Code vorhanden.
+- Supabase-E-Mail-Anmeldung, Haushaltsauswahl und revisionsgeschützter Sync sind lokal angebunden; Auth-URL-Prüfung, Test mit echtem Nutzerkonto und Deployment stehen noch aus.
 - Favoriten und kreative Vorschläge werden als gemeinsame Kandidaten bewertet; Angebote werden gegen Rezeptzutaten gematcht.
 - Ganze Packungen und Mehrfachverwendung werden in der Einkaufsliste zumindest als Packungsanzahl beziehungsweise „für mehrere Gerichte“ berücksichtigt.
 - KaufDA- und Händler-Workflows sowie ein Bring-Playwright/OCR-Workflow sind im Repository dokumentiert und als GitHub Actions angelegt.
@@ -120,4 +122,5 @@ Angelegt bzw. ergänzt am 05.11.2026:
 
 - `AGENTS.md` – dauerhafte Arbeitsregeln für dieses Repository.
 - `docs/PRODUKTZIEL.md` – Produktziel, bestätigte Nutzervorgaben, Entscheidungsregeln, Bestandsanalyse und nächster Schritt.
+- `docs/SUPABASE.md` – separates Supabase-Projekt, sichere Haushaltssync-Grundlage, lokale App-Anbindung und offene Release-Schritte.
 

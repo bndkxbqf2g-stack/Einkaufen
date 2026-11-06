@@ -1,5 +1,5 @@
-const CACHE_NAME = 'angebotskueche-shell-v27';
-const APP_SHELL = ['./index.html', './manifest.json'];
+const CACHE_NAME = 'angebotskueche-shell-v28';
+const APP_SHELL = ['./index.html', './manifest.json', './supabase-sync.js'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
@@ -13,7 +13,9 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
-  if (new URL(event.request.url).pathname.endsWith('/sw.js')) return;
+  const url = new URL(event.request.url);
+  if (url.pathname.endsWith('/sw.js')) return;
+  if (url.origin !== self.location.origin || url.pathname.endsWith('/api/sync')) return;
   event.respondWith(
     fetch(event.request, { cache: 'no-store' })
       .then(response => {
