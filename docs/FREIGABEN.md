@@ -38,7 +38,8 @@ freigegeben oder entschieden wurden.
    bestehende Hauptgerichte-Plan unverändert; Rezepte werden nicht automatisch
    umklassifiziert. Ein kleiner Pilot kann das vorhandene optionale
    mealPurpose-Feld nutzen und braucht laut aktuellem Code keine
-   Datenbankmigration.
+   Datenbankmigration; der Settings-Schreibpfad sowie alte Sync- und
+   Backup-Payloads müssen vor der Umsetzung rückwärtskompatibel getestet werden.
 
 ## Benötigt später Nutzeraktion, keine Zugangsdaten im Chat
 
