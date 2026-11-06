@@ -1059,7 +1059,7 @@
             const marketOrder = sortedSelectedMarkets();
             const firstMarket = marketOrder.indexOf(first.store);
             const secondMarket = marketOrder.indexOf(second.store);
-            return (firstMarket === -1 ? 99 : firstMarket) - (secondMarket === -1 ? 99 : secondMarket) || Number(second.relevance || 0) - Number(first.relevance || 0);
+            return (firstMarket === -1 ? 99 : firstMarket) - (secondMarket === -1 ? 99 : secondMarket) || compareOfferCandidates(first, second);
           });
           if (candidates[0] && !current.offer) current.offer = candidates[0];
           items.set(key, current);
@@ -1070,7 +1070,7 @@
         if (!ingredient || isPantryIngredient(ingredient)) return;
         const key = shoppingIngredientKey(ingredient);
         if (!key || items.has(key)) return;
-        const offer = activeOffers.filter(candidate => offerMatchesIngredient(ingredient, candidate)).sort((first, second) => Number(second.relevance || 0) - Number(first.relevance || 0))[0] || null;
+        const offer = activeOffers.filter(candidate => offerMatchesIngredient(ingredient, candidate)).sort(compareOfferCandidates)[0] || null;
         items.set(key, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id });
       });
       const people = Number($('#peopleSelect')?.value || settings.people || 2);
@@ -1448,6 +1448,42 @@
       return Number.isFinite(amount) && amount > 0 ? amount : null;
     }
 
+    function parseKnownPackageSize(value) {
+      const text = String(value || '').trim().replace(/\s+/g, ' ');
+      if (!text || /^1\s+pack(?:ung|ungen)?$/iu.test(text)) return null;
+      const packCount = text.match(/^(\d+)\s*[- ]?er\s+pack(?:ung)?$/iu);
+      if (packCount) return { amount: Number(packCount[1]), unit: 'pack' };
+      const match = text.match(/^(?:(\d+(?:[.,]\d+)?)\s*[x×]\s*)?(\d+(?:[.,]\d+)?)\s*[- ]*\s*(kg|kilogramm|g|gramm|milliliter|ml|liter|l|zentiliter|cl|deziliter|dl|stück|stk|st\.?)\s*[- ]*(?:pack(?:ungen|ung|g)?|flaschen?|dosen?|beutel|netze?|schalen?|gl(?:as|äser|aeser)|becher|tüten?|kartons?|rollen?)?$/iu);
+      if (!match) return null;
+      const multiplier = Number(String(match[1] || '1').replace(',', '.'));
+      const quantity = Number(match[2].replace(',', '.'));
+      if (!Number.isFinite(multiplier) || multiplier <= 0 || !Number.isFinite(quantity) || quantity <= 0) return null;
+      const rawUnit = match[3].toLowerCase().replace(/\.$/, '');
+      const unit = /^(?:kg|kilogramm)$/i.test(rawUnit) ? 'g'
+        : /^(?:g|gramm)$/i.test(rawUnit) ? 'g'
+        : /^(?:l|liter)$/i.test(rawUnit) ? 'ml'
+        : /^(?:ml|milliliter|cl|zentiliter|dl|deziliter)$/i.test(rawUnit) ? 'ml'
+        : 'stück';
+      const factor = /^(?:kg|kilogramm)$/i.test(rawUnit) ? 1000
+        : /^(?:l|liter)$/i.test(rawUnit) ? 1000
+        : /^(?:cl|zentiliter)$/i.test(rawUnit) ? 10
+        : /^(?:dl|deziliter)$/i.test(rawUnit) ? 100
+        : 1;
+      return { amount: Math.round(multiplier * quantity * factor * 1_000_000) / 1_000_000, unit };
+    }
+
+    function compareOfferCandidates(first, second) {
+      const relevanceDifference = Number(second?.relevance || 0) - Number(first?.relevance || 0);
+      if (relevanceDifference) return relevanceDifference;
+      const firstSize = parseKnownPackageSize(first?.packSize);
+      const secondSize = parseKnownPackageSize(second?.packSize);
+      if (!firstSize || !secondSize || firstSize.unit !== secondSize.unit || firstSize.amount !== secondSize.amount) return 0;
+      const firstPrice = parseKnownMoney(first?.price);
+      const secondPrice = parseKnownMoney(second?.price);
+      if (firstPrice === null || secondPrice === null) return 0;
+      return firstPrice - secondPrice;
+    }
+
     function calculateOfferAmount(items) {
       let totalCents = 0;
       const knownItems = [];
@@ -1774,7 +1810,7 @@
       const matchedIngredients = [];
       const matchedOffers = [];
       requiredIngredients.forEach(ingredient => {
-        const candidates = activeOffers.filter(offer => offerMatchesIngredient(ingredient, offer)).sort((first, second) => Number(second.relevance || 0) - Number(first.relevance || 0));
+        const candidates = activeOffers.filter(offer => offerMatchesIngredient(ingredient, offer)).sort(compareOfferCandidates);
         if (!candidates.length) return;
         matchedIngredients.push(ingredient);
         const offer = candidates[0];
