@@ -20,10 +20,24 @@ test('parses only explicit positive euro amounts', () => {
   assert.equal(parseKnownMoney('1.99 €'), 1.99);
   assert.equal(parseKnownMoney('ab 0,79 €'), 0.79);
   assert.equal(parseKnownMoney('0,00 €'), null);
+  assert.equal(parseKnownMoney('2,49 €/kg'), null);
+  assert.equal(parseKnownMoney('2,49 € / 100 g'), null);
+  assert.equal(parseKnownMoney('2,49 € pro kg'), null);
+  assert.equal(parseKnownMoney('2,49 € (500 g Packung)'), 2.49);
   assert.equal(parseKnownMoney(''), null);
   assert.equal(parseKnownMoney('not a price'), null);
   assert.equal(parseKnownMoney('–'), null);
   assert.equal(parseKnownMoney('Preis unbekannt'), null);
+});
+
+test('keeps unit-price denominators out of known purchase amounts', () => {
+  const result = calculateOfferAmount([
+    { id: 'unit-price', packCount: 2, offer: { price: '2,49 €/kg' } },
+  ]);
+
+  assert.equal(result.totalCents, 0);
+  assert.deepEqual(result.knownItems, []);
+  assert.deepEqual(result.unknownItems.map(item => item.id), ['unit-price']);
 });
 
 test('calculates known offer amounts in cents and keeps unknown positions separate', () => {

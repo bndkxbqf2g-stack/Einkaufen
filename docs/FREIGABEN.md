@@ -32,6 +32,13 @@ freigegeben oder entschieden wurden.
    sowie die Berechnungsbasis der Fahrtkosten festlegen. Die Schwelle soll
    einstellbar sein; bis zur Entscheidung werden keine zusätzlichen Stopps
    automatisch empfohlen und keine Fahrtkosten geschätzt.
+8. **Umfang des ersten zusätzlichen Mahlzeiten-Slots** – entscheiden, ob der
+   erste Pilot ein globaler, optionaler Frühstücks-Slot je Planungstag sein soll
+   oder direkt eine Auswahl pro Tag und Person. Bis zur Entscheidung bleibt der
+   bestehende Hauptgerichte-Plan unverändert; Rezepte werden nicht automatisch
+   umklassifiziert. Ein kleiner Pilot kann das vorhandene optionale
+   mealPurpose-Feld nutzen und braucht laut aktuellem Code keine
+   Datenbankmigration.
 
 ## Benötigt später Nutzeraktion, keine Zugangsdaten im Chat
 
@@ -47,7 +54,9 @@ freigegeben oder entschieden wurden.
 - PRs #13, #14, #16 und #17 wurden nach Review und jeweils grüner CI gemergt. Sie ergänzen konservative Markt-/Prospekt-Evidenz, sichere bekannte Preisbeträge, centgenaue Summen und Service-Worker-Regressionstests. Keine zusätzliche Nutzerentscheidung erforderlich.
 - PR #19 ergänzt optionale Rezept-Mahlzeitenzwecke ohne Migration vorhandener Daten. CI war grün; am 06.11.2026 per Squash gemergt, automatischer Pages-Lauf #42284984325 erfolgreich.
 - PR #20 vereinheitlicht den Centbetrag im Teilen der Einkaufsliste mit der bestehenden Angebotslogik. Lokal und in CI 57/57 Tests sowie Worker-Prüfungen grün; am 06.11.2026 per Squash gemergt, automatischer Pages-Deploy #42286814419 erfolgreich.
-- Ein isolierter Branch ergänzt bekannte Angebotssummen je Markt; unbekannte Preise bleiben separat. Auf dem aktuellen main 58/58 Tests und Worker-Prüfungen grün; PR und CI-Abgleich stehen noch aus.
+- PR #21 ergänzt bekannte Angebotssummen je Markt; unbekannte Preise bleiben separat. 58/58 Tests, Worker-Prüfungen und CI grün; am 06.11.2026 gemergt. Automatischer Pages-Lauf #42288762437 erfolgreich.
+- Ein isolierter Folgebranch schließt Grundpreise wie „€/kg“ aus Packungspreissummen aus. 59/59 Tests, Worker-Build/-Validierung und Diff-Prüfung grün; PR/CI-Abgleich steht noch aus, keine zusätzliche Freigabe erforderlich.
+- Chat B hat den Wochenplan auf dem aktuellen main read-only geprüft: Das optionale mealPurpose ist vorhanden, wird aber noch keinem zusätzlichen Planungsslot zugeordnet. Für die erste Frühstücks-Erweiterung wurde Freigabepunkt 8 aufgenommen; Chat B hat weder Dateien noch externe Ressourcen geändert.
 - Chat A ist auf Wunsch pausiert. Die Deploy-Pfadsteuerung bleibt uncommittet im verwalteten Worktree; keine Deploy-, Auth- oder Datenbankänderungen wurden ausgeführt.
 - Die zusätzliche Marktstopp-Schwelle und Fahrtkostenbasis werden als spätere Nutzerentscheidung gesammelt. Bis dahin bleibt automatische Routen-/Mehrstoppoptimierung deaktiviert.
 - Neue Entscheidungen zu Kosten, Nutzerdaten, Cloud, Rechten oder Produktumfang werden hier vor ihrer Umsetzung gesammelt.
