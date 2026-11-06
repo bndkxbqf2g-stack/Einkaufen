@@ -9,6 +9,17 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const source = await readFile(resolve(root, 'sw.js'), 'utf8');
 const origin = 'https://app.example';
 
+test('published service worker and manifest stay identical to their root sources', async () => {
+  const [publishedWorker, manifest, publishedManifest] = await Promise.all([
+    readFile(resolve(root, 'dist/sw.js'), 'utf8'),
+    readFile(resolve(root, 'manifest.json'), 'utf8'),
+    readFile(resolve(root, 'dist/manifest.json'), 'utf8'),
+  ]);
+
+  assert.equal(publishedWorker, source);
+  assert.equal(publishedManifest, manifest);
+});
+
 function requestKey(request) {
   const value = typeof request === 'string' ? request : request.url;
   return new URL(value, origin).href;
