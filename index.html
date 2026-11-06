@@ -771,6 +771,17 @@
       return timestamp && Number.isFinite(timestamp.getTime()) ? timestamp.toISOString() : '';
     }
 
+    function offerCoverageLabel(live) {
+      const target = Number(live?.targetOfferCount);
+      const loaded = Number(live?.loadedOfferCardCount);
+      if (!Number.isFinite(target) || target <= 0 || !Number.isFinite(loaded) || loaded < 0 || live?.loadedOfferCardCount == null) return 'Angebotsumfang unbekannt';
+      const formattedTarget = target.toLocaleString('de-DE');
+      const formattedLoaded = loaded.toLocaleString('de-DE');
+      if (live.targetReached === false) return `${formattedLoaded} von ${formattedTarget} Karten geladen; Ladeziel noch nicht erreicht`;
+      if (live.targetReached === true) return `${formattedLoaded} Karten geladen; Ladeziel ${formattedTarget} erreicht, Gesamtumfang nicht belegt`;
+      return `${formattedLoaded} von ${formattedTarget} Karten geladen; Status des Ladeziels unbekannt`;
+    }
+
     function renderSourceStatus() {
       const selected = sortedSelectedMarkets();
       const activeMarkets = selected.slice(0, Number(settings.markets || 2));
@@ -787,7 +798,8 @@
             ? ` · geprüft ${new Date(live.checkedAt).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })}`
             : live?.count ? ' · Datenstand unbekannt' : '';
         const validUntilLabel = live?.validUntil ? ` · gültig bis ${live.validUntil}` : '';
-        return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(details.logo)}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(details.distance)} · ${activeLabel}</div><div class="source-note">${escapeHtml(sourceLabel)}${escapeHtml(timestampLabel)}${escapeHtml(validUntilLabel)}${escapeHtml(nextCheckLabel)}</div>${details.source ? `<a class="source-note" href="${escapeHtml(details.source)}" target="_blank" rel="noopener">Offizielle Angebote öffnen ↗</a>` : ''}</div></div><span class="market-count">${offerLabel}</span></div>`;
+        const coverageLabel = live?.count ? ` · ${offerCoverageLabel(live)}` : '';
+        return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(details.logo)}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(details.distance)} · ${activeLabel}</div><div class="source-note">${escapeHtml(sourceLabel)}${escapeHtml(timestampLabel)}${escapeHtml(validUntilLabel)}${escapeHtml(coverageLabel)}${escapeHtml(nextCheckLabel)}</div>${details.source ? `<a class="source-note" href="${escapeHtml(details.source)}" target="_blank" rel="noopener">Offizielle Angebote öffnen ↗</a>` : ''}</div></div><span class="market-count">${offerLabel}</span></div>`;
       }).join('');
     }
 
@@ -873,7 +885,7 @@
         const validUntil = result.payload ? offerEndDate(result.payload.validUntil) : null;
         const nextCheckAt = result.payload ? (validUntil ? new Date(validUntil.getTime() + 60 * 1000).toISOString() : new Date(checkedAt.getTime() + offerRefreshFallbackMs).toISOString()) : new Date(checkedAt.getTime() + offerRetryDelayMs).toISOString();
         liveOfferStatus[result.market] = result.payload
-          ? { fetchedAt: sourceFetchedAt, checkedAt: checkedAt.toISOString(), timestampSource: sourceFetchedAt ? 'source' : 'unknown', validUntil: result.payload.validUntil, nextCheckAt, count: Number(result.payload.recognizedCount ?? result.payload.offers.length) }
+          ? { fetchedAt: sourceFetchedAt, checkedAt: checkedAt.toISOString(), timestampSource: sourceFetchedAt ? 'source' : 'unknown', validUntil: result.payload.validUntil, targetOfferCount: Number(result.payload.targetOfferCount || 0), loadedOfferCardCount: Number(result.payload.loadedOfferCardCount || 0), targetReached: typeof result.payload.targetReached === 'boolean' ? result.payload.targetReached : null, nextCheckAt, count: Number(result.payload.recognizedCount ?? result.payload.offers.length) }
           : { checkedAt: checkedAt.toISOString(), timestampSource: 'check', nextCheckAt, error: result.error || 'Keine verwertbaren Angebote', count: 0 };
       });
       localStorage.setItem('angebotskueche.liveOfferStatus', JSON.stringify(liveOfferStatus));

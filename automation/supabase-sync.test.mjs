@@ -133,6 +133,27 @@ test('source freshness uses the timestamp reported by the offer source', () => {
   assert.match(html, /Datenstand unbekannt/);
 });
 
+test('reports card load goals without claiming the prospect is complete', () => {
+  const declaration = html.match(/function offerCoverageLabel\(live\) \{[\s\S]*?\n    \}/);
+  assert.ok(declaration, 'offer coverage label helper is present');
+  const coverage = vm.runInNewContext(`(${declaration[0]})`);
+
+  assert.equal(
+    coverage({ targetOfferCount: 1000, loadedOfferCardCount: 1004, targetReached: true }),
+    '1.004 Karten geladen; Ladeziel 1.000 erreicht, Gesamtumfang nicht belegt'
+  );
+  assert.equal(
+    coverage({ targetOfferCount: 1000, loadedOfferCardCount: 40, targetReached: false }),
+    '40 von 1.000 Karten geladen; Ladeziel noch nicht erreicht'
+  );
+  assert.equal(
+    coverage({ targetOfferCount: 1000, loadedOfferCardCount: 40 }),
+    '40 von 1.000 Karten geladen; Status des Ladeziels unbekannt'
+  );
+  assert.equal(coverage({}), 'Angebotsumfang unbekannt');
+  assert.match(html, /targetOfferCount: Number\(result\.payload\.targetOfferCount/);
+});
+
 test('retains stored offers for unrefreshed and failed markets', () => {
   const declaration = html.match(/function retainUnrefreshedAutomaticOffers\(currentOffers, refreshedMarkets\) \{[\s\S]*?\n    \}/);
   assert.ok(declaration, 'market offer retention helper is present');

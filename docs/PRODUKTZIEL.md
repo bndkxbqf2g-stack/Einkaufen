@@ -76,7 +76,7 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 - Vorräte werden als Artikelliste ohne belastbare Mengen geführt. Packungsbedarf wird aus Zutatenvorkommen und Personenzahl angenähert; eine konsistente Vorratsreservierung ist nicht belegt.
 - Persönliche Bewertungen werden lokal gespeichert. Externe Bewertungen werden nur übernommen, wenn eine importierte Rezeptseite sie strukturiert liefert; eine Qualitätsbewertung aller Vorschläge ist nicht garantiert.
 - Rezeptimport ist für strukturierte Rezeptseiten und begrenzte Backend-Hosts vorgesehen. Die automatische Online-Suche nach neuen, gut bewerteten Rezepten ist nicht vorhanden.
-- KaufDA meldet bei Lidl `targetOfferCount=1000`, `loadedOfferCardCount=1004` und 211 erkannte Lebensmittelangebote. `targetReached` belegt nur das Nachladen der Karten und nicht, dass alle Angebote vollständig oder korrekt klassifiziert wurden.
+- KaufDA meldet bei Lidl `targetOfferCount=1000`, `loadedOfferCardCount=1004` und 211 erkannte Lebensmittelangebote. `targetReached` belegt nur das Nachladen der Karten und nicht, dass alle Angebote vollständig oder korrekt klassifiziert wurden. Die App zeigt dieses Ladeziel inzwischen ausdrücklich als Ladeziel und markiert den Gesamtumfang weiterhin als unbelegt.
 - Ein zentraler Contract verhindert leere Snapshots, Seitenmetadaten als Produkte und Preise ohne expliziten Eurobetrag. Angebotsenden dürfen weder für Händler- noch für KaufDA-/Lidl-Abrufe pauschal auf „heute + 7 Tage“ geschätzt werden. Die Vollständigkeit gegen belastbare Soll-Zahlen je Markt oder Prospekt ist noch offen.
 
 ### Noch nicht vorhanden
