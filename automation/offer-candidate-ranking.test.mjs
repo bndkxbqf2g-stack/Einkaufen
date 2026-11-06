@@ -11,7 +11,7 @@ assert.ok(packageSizeMatch, 'parseKnownPackageSize muss im App-Bundle vorhanden 
 assert.ok(compareMatch, 'compareOfferCandidates muss im App-Bundle vorhanden sein');
 const parseKnownMoney = new Function(`${parseMoneyMatch[0]}; return parseKnownMoney;`)();
 const parseKnownPackageSize = new Function(`${packageSizeMatch[0]}; return parseKnownPackageSize;`)();
-const compareOfferCandidates = new Function(`${parseMoneyMatch[0]}\\n${packageSizeMatch[0]}\\n${compareMatch[0]}; return compareOfferCandidates;`)();
+const compareOfferCandidates = new Function(`${parseMoneyMatch[0]}\n${packageSizeMatch[0]}\n${compareMatch[0]}; return compareOfferCandidates;`)();
 
 function bestCandidate(offers) {
   return [...offers].sort(compareOfferCandidates)[0];
