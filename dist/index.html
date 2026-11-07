@@ -469,7 +469,7 @@
         </div>
         <section class="panel">
           <div class="panel-header"><div><h2 class="panel-title">Nach Markt sortiert</h2><p class="panel-subtitle">Mehrfach benötigte Zutaten werden als größerer Einkauf markiert und für spätere Restegerichte eingeplant.</p></div><div class="shopping-actions"><button class="outline-button" id="checkAllShopping">Alles abhaken</button><button class="text-button" id="refreshShoppingList">Liste aktualisieren</button></div></div>
-          <div class="panel-body"><div class="source-note" id="shoppingHint" style="margin-bottom:13px"></div><div id="shoppingList"></div></div>
+          <div class="panel-body"><div class="source-note" id="shoppingHint" style="margin-bottom:13px"></div><div class="source-note" id="shoppingPantryDetail" style="margin-bottom:13px"></div><div id="shoppingList"></div></div>
         </section>
       </section>
 
@@ -1296,6 +1296,11 @@
       $('#shoppingOfferNote').textContent = `${knownOfferItems.length} von ${offerItems.length} Angebotspositionen mit Preis · Packungen für ${Number($('#peopleSelect').value || 2)} Personen${unknownOfferItems.length ? ` · ${unknownOfferItems.length} Preis${unknownOfferItems.length === 1 ? '' : 'e'} unbekannt` : ''}`;
       $('#shoppingMissingCount').textContent = String(missingItems.length);
       const pantryNote = pantryCoverage.coveredCount ? `${pantryCoverage.coveredCount} Vorratszutat${pantryCoverage.coveredCount === 1 ? '' : 'en'} aus dem Bestand berücksichtigt` : 'keine Vorratszutat aus dem Bestand berücksichtigt';
+      const pantryPreview = pantryCoverage.coveredItems.slice(0, 4);
+      const pantryDetail = pantryCoverage.coveredCount
+        ? `Vorratsabgleich: ${pantryPreview.join(', ')}${pantryCoverage.coveredCount > pantryPreview.length ? ` +${pantryCoverage.coveredCount - pantryPreview.length} weitere` : ''}`
+        : 'Vorratsabgleich: keine geplante Zutat im Bestand erkannt';
+      $('#shoppingPantryDetail').textContent = pantryDetail;
       $('#shoppingHint').textContent = items.length ? `${openItems.length} offene Artikel · ${offerItems.length} mit Angebotsanker · ${reusedItems.length ? `${reusedItems.length} Zutaten für mehrere Gerichte eingeplant · größere Packungsmenge berücksichtigt` : 'noch keine Zutat mehrfach eingeplant'} · ${pantryNote} · ${unknownOfferItems.length ? 'Unbekannte Preise sind im bekannten Angebotsbetrag nicht enthalten' : 'Packungsbedarf ist angenähert'}; fehlende Artikel und Vorräte sind im Angebotswert nicht enthalten.` : 'Noch keine einkaufbaren Zutaten im aktuellen Plan.';
       if (!items.length) { $('#shoppingList').innerHTML = '<div class="empty-state">Für den aktuellen Plan gibt es noch keine Einkaufsliste.</div>'; return; }
       const groups = new Map();

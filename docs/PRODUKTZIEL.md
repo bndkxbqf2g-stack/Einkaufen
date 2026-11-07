@@ -223,3 +223,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Ein automatischer Paritätstest vergleicht die Client- und Worker-Feldlisten für Arrays und Objekte sowie das veröffentlichte Worker-Artefakt.
 - Dadurch wird verhindert, dass ein lokales Sync-Feld wie `recipeHistory` künftig nur an einer Boundary ergänzt wird.
 - Der Test verändert keine Laufzeitlogik, Supabase-Daten, Datenbankstruktur oder Nutzerinhalte.
+
+## Fortschritt 07.11.2026 – transparenter Vorratsabgleich
+
+- Die Einkaufsliste zeigt neben der Anzahl nun bis zu vier konkret berücksichtigte Vorratszutaten und weist weitere Treffer nur als Anzahl aus.
+- Es werden weiterhin keine Vorratsmengen, Haltbarkeiten, Preise oder Verbrauchsannahmen behauptet; der Angebots-Zwischenwert bleibt unverändert.
+- Die Anzeige nutzt ausschließlich den bestehenden lokalen Plan-/Vorratsabgleich und verändert keine Nutzer-, Backup-, Sync- oder Supabase-Daten.
