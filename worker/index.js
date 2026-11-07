@@ -38,7 +38,7 @@ function syncUserId(request) {
 
 function validSyncPayload(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload) || payload.version !== 1) return false;
-  const arrays = ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems'];
+  const arrays = ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems', 'recipeHistory'];
   const objects = ['settings', 'shoppingChecks', 'liveOfferStatus', 'manualPlan', 'manualDinnerPlan', 'recipeRatings', 'suggestionPreferences'];
   if (arrays.some(key => payload[key] !== undefined && (!Array.isArray(payload[key]) || payload[key].length > 5000))) return false;
   if (objects.some(key => payload[key] !== undefined && (!payload[key] || typeof payload[key] !== 'object' || Array.isArray(payload[key])))) return false;
