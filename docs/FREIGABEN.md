@@ -601,3 +601,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 ## Fortschritt 07.11.2026 – ISO-Gültigkeitsdaten
 
 - [PR #198](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/198) gleicht den App-Parser mit dem Snapshot-Vertrag ab: `TT.MM.JJJJ` und `JJJJ-MM-TT` werden strikt kalendergültig ausgewertet; unmögliche oder unbekannte Daten bleiben ungültig bzw. unbekannt. Validate war grün. Keine neuen Angebotsdaten, keine Supabase-/Datenbankänderung und keine Migration.
+
+
+## Fortschritt 07.11.2026 – Erhalt persönlicher Settings
+
+- [PR #200](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/200) bewahrt unbekannte bzw. persönliche Legacy-Settings beim Speichern, während bekannte Einstellungen wie bisher aktualisiert werden. Der fokussierte Regressionstest, Build, Validator und die Vollsuite (194/194) waren grün.
+- Der ergänzte Zeilenenden-Ausgleich betrifft ausschließlich den bestehenden Test-Harness; keine Migration, keine Supabase-/Nutzerdatenänderung und keine neuen Kosten.
