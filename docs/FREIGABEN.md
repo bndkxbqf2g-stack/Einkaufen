@@ -380,3 +380,9 @@ freigegeben oder entschieden wurden.
 - [PR #124](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/124) ersetzt den statischen Initialwert `0,00 €` durch `–` und `Noch keine verifizierte Preisbasis`, bevor die Einkaufsliste gerendert wurde.
 - Nach dem Rendern gelten weiterhin nur bekannte Angebots-Packungssummen; unbekannte Preise, fehlende Artikel, Vorräte und Kassenbeträge werden nicht geschätzt.
 - Regressionstest, Root-/`dist`-Synchronität und CI sind grün. Keine Nutzerdaten, Supabase-Migration, Datenbankänderung, Angebotsdatenänderung, Deployment- oder kostenpflichtige Ressourcenänderung.
+
+## Validierter Angebotsimport – Gültigkeitsdatum – 07.11.2026
+
+- [PR #126](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/126) weist manuelle Angebotszeilen ohne ausdrücklich übergebenes Gültigkeitsdatum zurück; ein pauschales Angebotsende wird nicht mehr erzeugt.
+- Das bestehende sechsteilige Legacy-Format mit Datum bleibt gültig. Bereits gespeicherte manuelle Angebote werden nicht verändert.
+- Regressionstest und Root-/`dist`-Synchronität sind durch grüne CI abgesichert. Keine Nutzerdaten, Supabase-Migration, Datenbankänderung, Deployment- oder kostenpflichtige Ressourcenänderung.
