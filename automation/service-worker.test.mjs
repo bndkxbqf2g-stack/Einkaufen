@@ -13,13 +13,15 @@ const [source, index] = await Promise.all([
 const origin = 'https://app.example';
 
 test('published service worker and manifest stay identical to their root sources', async () => {
-  const [publishedWorker, manifest, publishedManifest] = await Promise.all([
+  const [publishedWorker, publishedIndex, manifest, publishedManifest] = await Promise.all([
     readFile(resolve(root, 'dist/sw.js'), 'utf8'),
+    readFile(resolve(root, 'dist/index.html'), 'utf8'),
     readFile(resolve(root, 'manifest.json'), 'utf8'),
     readFile(resolve(root, 'dist/manifest.json'), 'utf8'),
   ]);
 
   assert.equal(publishedWorker, source);
+  assert.equal(publishedIndex, index);
   assert.equal(publishedManifest, manifest);
 
   const parsedManifest = JSON.parse(manifest);
@@ -27,6 +29,12 @@ test('published service worker and manifest stay identical to their root sources
     { src: './icons/pwa-192.svg', sizes: '192x192', type: 'image/svg+xml', purpose: 'any maskable' },
     { src: './icons/pwa-512.svg', sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' },
   ]);
+});
+
+test('keeps the active shell cache during APP_BUILD updates', () => {
+  assert.match(index, /const APP_BUILD = '[^']+'/);
+  assert.match(index, /registration\.update\(\)/);
+  assert.doesNotMatch(index, /caches\.keys\(\).*angebotskueche-shell-/s);
 });
 
 function requestKey(request) {
