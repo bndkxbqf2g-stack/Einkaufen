@@ -529,3 +529,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - Der KaufDA-Importer berücksichtigt bei einem quellenbelegten Enddatum ohne Jahr im Dezember das Folgejahr; ein sicherer synthetischer Regressionstest schützt den Fall.
 - Keine Live-Angebotsdaten, Nutzerdaten, Supabase-, Datenbank- oder Deploymentänderung; keine zusätzliche Freigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Mahlzeiten-Slot-Schutz
+
+- Der Wochenplan weist manuelle Zuordnungen für Frühstück, Snack und Getränk nun zurück und ignoriert entsprechende alte Zuordnungen beim Wiederaufbau; Mittagessen und optionales Abendessen bleiben unverändert.
+- Regressionstests sichern die UI-Zuordnung und die lunch-only-Wiederherstellung. Keine Nutzerdaten, Supabase-, Datenbank- oder Deploymentänderung; PR-Merge bleibt aus diesem Nebenchat ausgeschlossen.
