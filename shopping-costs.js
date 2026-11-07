@@ -26,6 +26,23 @@
     return { total: totalCents / 100, totalCents, knownItems, unknownItems };
   }
 
+  function summarizePantryCoverage(ingredients, isPantryIngredient) {
+    const isCovered = typeof isPantryIngredient === 'function' ? isPantryIngredient : () => false;
+    const coveredItems = [];
+    const uncoveredItems = [];
+    for (const rawIngredient of Array.isArray(ingredients) ? ingredients : []) {
+      const ingredient = String(rawIngredient || '').trim();
+      if (!ingredient) continue;
+      (isCovered(ingredient) ? coveredItems : uncoveredItems).push(ingredient);
+    }
+    return {
+      coveredItems,
+      uncoveredItems,
+      coveredCount: coveredItems.length,
+      uncoveredCount: uncoveredItems.length,
+    };
+  }
+
   function summarizeShoppingCosts(items, parseUnitPrice) {
     const list = Array.isArray(items) ? items : [];
     const offerItems = list.filter(item => item && item.offer);
@@ -42,6 +59,7 @@
   root.AngebotskuecheCostModel = Object.freeze({
     calculateOfferAmount,
     normalizePackCount,
+    summarizePantryCoverage,
     summarizeShoppingCosts,
   });
 }(typeof window !== 'undefined' ? window : globalThis));
