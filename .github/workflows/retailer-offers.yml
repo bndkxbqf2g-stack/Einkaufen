@@ -57,7 +57,7 @@ jobs:
             node automation/retailer-offers.mjs "$SELECTED_MARKET"
           fi
       - name: Angebotsdaten validieren
-        run: node automation/validate-generated-offers.mjs generated/aldi-offers.json generated/kaufland-offers.json generated/edeka-offers.json generated/netto-offers.json
+        run: node automation/offer-snapshot.mjs generated/aldi-offers.json generated/kaufland-offers.json generated/edeka-offers.json generated/netto-offers.json
       - name: Aktualisierte Angebote committen
         run: |
           set -euo pipefail
