@@ -199,13 +199,12 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Es werden keine Mengen, Haltbarkeiten oder Kassenpreise behauptet. Vorratszutaten bleiben aus dem Angebots-Zwischenwert ausgeschlossen; nicht verankerte Einkaufspositionen bleiben separat sichtbar.
 - Das bestehende Vorratsformat, lokale Daten, Backups, Haushaltssync und Supabase bleiben unverändert. Eine mengenfähige Vorratserfassung ist ein späteres, separat zu prüfendes Arbeitspaket.
 
-## Fortschritt 07.11.2026 – Angebots-Snapshot-Prüfung
+## Fortschritt 07.11.2026 – gemeinsamer Angebots-Snapshot-Vertrag
 
-- Der alte Draft-PR #1 enthielt eine Angebotsprüfung, war aber auf einem veralteten Stand und wurde nicht übernommen.
-- Die Prüfung wurde auf die aktuelle Struktur portiert: veröffentlichte Snapshot-Dateien müssen Markt, HTTP-Quelle, Parser, Abrufdatum, gültiges Angebotsende, nichtleere Angebotszeilen und konsistente Zähler enthalten.
-- Preisstatus und Packungs-/Marktmerkmale werden auf leere oder doppelte Datensätze geprüft; das Verfahren erfindet keine Preise und verändert keine Angebotsdaten.
-- Die sechs aktuellen Angebotsbestände bestehen die Prüfung. Die drei Angebots-Workflows validieren künftig vor dem Commit in `generated/`.
-- Keine Nutzerdaten, Supabase-/Datenbankänderung, Migration, Deployment- oder kostenpflichtige Ressourcenänderung.
+- Die Angebots-Workflows verwenden jetzt denselben bestehenden Validator `automation/offer-snapshot.mjs`, der auch die automatisierten Regressionstests und den atomaren Snapshot-Schreibpfad absichert.
+- Dadurch gelten vor einer Veröffentlichung einheitlich HTTPS-Quelle ohne Zugangsdaten, gültige Abruf-/Angebotsdaten, explizite Eurobeträge, nichtleere Angebote, konsistente Zähler und Duplikatsschutz.
+- Die zuvor ergänzte doppelte Workflow-Prüfung wurde entfernt; damit bleibt die Angebotsvalidierung an einer Stelle wartbar.
+- Die Prüfung erfindet keine Preise und verändert keine Angebotsdaten. Keine Nutzerdaten, Supabase-/Datenbankänderung, Migration, Deployment- oder kostenpflichtige Ressourcenänderung.
 
 ## Fortschritt 07.11.2026 – zentraler Mahlzeiten-Slot-Vertrag
 

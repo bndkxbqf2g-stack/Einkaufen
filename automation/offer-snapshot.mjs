@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
-import { mkdir, rename, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { basename, dirname, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const requiredTextFields = ['market', 'sourceUrl', 'fetchedAt', 'validUntil', 'parser'];
 const currencyPricePattern = /^(?:ab\s+)?\d{1,3}(?:\.\d{3})*(?:,\d{2})?\s*€$/i;
@@ -152,4 +153,17 @@ export async function writeOfferSnapshot(filePath, snapshot) {
   }
 
   return target;
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
+  const files = process.argv.slice(2);
+  if (!files.length) {
+    throw new Error('Verwendung: node automation/offer-snapshot.mjs <datei.json> ...');
+  }
+
+  for (const file of files) {
+    const snapshot = JSON.parse(await readFile(resolve(file), 'utf8'));
+    const validated = validateOfferSnapshot(snapshot);
+    console.log(`${file}: ${validated.offers.length} gültige Angebote bis ${validated.validUntil}`);
+  }
 }
