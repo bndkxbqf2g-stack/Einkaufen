@@ -26,14 +26,40 @@
     return { total: totalCents / 100, totalCents, knownItems, unknownItems };
   }
 
+  function pantryIngredientIdentity(value) {
+    return String(value || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\\u0300-\\u036f]/g, '')
+      .replace(/[^a-z0-9äöüß ]/g, ' ')
+      .replace(/\\b(frisch|frische|frischen|gehackt|gerieben|gemischt|rote|roten|gross|grosse|große|klein|kleine)\\b/g, ' ')
+      .replace(/\\s+/g, ' ')
+      .trim()
+      .split(/\\s+/)
+      .map(word => word.length >= 5 && word.endsWith('n') ? word.slice(0, -1) : word)
+      .join(' ');
+  }
+
   function summarizePantryCoverage(ingredients, isPantryIngredient) {
     const isCovered = typeof isPantryIngredient === 'function' ? isPantryIngredient : () => false;
-    const coveredItems = [];
-    const uncoveredItems = [];
+    const entries = new Map();
     for (const rawIngredient of Array.isArray(ingredients) ? ingredients : []) {
       const ingredient = String(rawIngredient || '').trim();
       if (!ingredient) continue;
-      (isCovered(ingredient) ? coveredItems : uncoveredItems).push(ingredient);
+      const identity = pantryIngredientIdentity(ingredient);
+      if (!identity) continue;
+      const existing = entries.get(identity);
+      const covered = Boolean(isCovered(ingredient));
+      if (existing) {
+        existing.covered = existing.covered || covered;
+      } else {
+        entries.set(identity, { ingredient, covered });
+      }
+    }
+    const coveredItems = [];
+    const uncoveredItems = [];
+    for (const { ingredient, covered } of entries.values()) {
+      (covered ? coveredItems : uncoveredItems).push(ingredient);
     }
     return {
       coveredItems,
