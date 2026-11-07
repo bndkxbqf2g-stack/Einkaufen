@@ -231,12 +231,6 @@ function offerDateRange(text) {
   return { start: formatOfferDate(Number(match[1]), Number(match[2]), startYear), end: formatOfferDate(Number(match[4]), Number(match[5]), endYear) };
 }
 
-function defaultOfferDate() {
-  const date = new Date();
-  date.setUTCDate(date.getUTCDate() + 7);
-  return formatOfferDate(date.getUTCDate(), date.getUTCMonth() + 1, date.getUTCFullYear());
-}
-
 function offerPrice(text) {
   const outside = String(text || '').replace(/\([^)]*\)/g, ' ');
   const discounted = outside.match(/(?:nur\s+|-\s*\d{1,3}\s*%)\s*(\d+[.,]\d{2})/i);
@@ -301,7 +295,7 @@ function parseKauflandOffers(html) {
   const text = stripHtml(html);
   const range = offerDateRange(text);
   const candidates = extractAnchorTexts(html).filter(value => /\d+[.,]\d{2}/.test(value) && /(kg|g|l|ml|St\.?|Packg\.|nur\s+|-\s*\d{1,3}\s*%)/i.test(value));
-  return { validUntil: range?.end || defaultOfferDate(), offers: uniqueOffers(candidates, range?.end || defaultOfferDate()) };
+  return { validUntil: range?.end || null, offers: uniqueOffers(candidates, range?.end || null) };
 }
 
 function parseEdekaOffers(html) {
@@ -312,12 +306,12 @@ function parseEdekaOffers(html) {
   const pattern = /angebot:\s*([\s\S]{2,120}?)(?=\s+(?:ab\s+\d{1,2}\.\d{1,2}\.?\s*)?\d+[.,]\d{2}\b)/gi;
   let match;
   while ((match = pattern.exec(currentText))) candidates.push(`Angebot: ${match[1]} ${currentText.slice(pattern.lastIndex, pattern.lastIndex + 24)}`);
-  const validUntil = range?.end || defaultOfferDate();
+  const validUntil = range?.end || null;
   return { validUntil, offers: uniqueOffers(candidates, validUntil) };
 }
 
 function parseAldiOffers(html) {
-  const validUntil = defaultOfferDate();
+  const validUntil = offerDateRange(stripHtml(html))?.end || null;
   const candidates = extractAnchorTexts(html)
     .filter(value => /\d+[.,]\d{2}/.test(value) && /(kg|g|l|ml|St\.?|stück|€)/i.test(value))
     .map(value => value.replace(/^verfügbar\s+ab\s+\d{1,2}\.\d{1,2}\.\d{4}\s*/i, ''));
@@ -335,13 +329,13 @@ function parseNettoOffers(html) {
     if (/\d+[.,]\d{2}/.test(candidate)) candidates.push(candidate);
   }
   const fallback = extractAnchorTexts(html).filter(value => /\d+[.,]\d{2}/.test(value) && /(kg|g|l|ml|St\.?|stück|€)/i.test(value));
-  const validUntil = range?.end || defaultOfferDate();
+  const validUntil = range?.end || null;
   return { validUntil, offers: uniqueOffers([...candidates, ...fallback], validUntil) };
 }
 
 function parseLidlOffers(html) {
   const payload = JSON.parse(html);
-  const validUntil = String(payload?.validUntil || defaultOfferDate());
+  const validUntil = String(payload?.validUntil || '');
   const offers = Array.isArray(payload?.offers) ? payload.offers.map(item => {
     if (!item || typeof item !== 'object') return null;
     const name = String(item.name || '').trim();
@@ -373,6 +367,7 @@ async function parseOffers(request) {
       : market === 'Lidl' ? parseLidlOffers(html)
       : parseNettoOffers(html);
     if (!parsed.offers.length) return json({ error: 'Die offizielle Seite enthielt keine sicher erkennbaren Lebensmittelangebote.' }, 422, request);
+    if (!parsed.validUntil) return json({ error: 'Die offizielle Seite enthielt kein eindeutig belegtes Angebotsende.' }, 422, request);
     return json({ market, sourceUrl: parsed.sourceUrl || source.url, fetchedAt: new Date().toISOString(), validUntil: parsed.validUntil, parser: source.parser, offers: parsed.offers }, 200, request);
   } catch (error) {
     return json({ error: error?.name === 'AbortError' ? 'Die offizielle Angebotsseite hat zu lange gebraucht.' : 'Die offizielle Angebotsseite konnte nicht gelesen werden.' }, 504, request);
