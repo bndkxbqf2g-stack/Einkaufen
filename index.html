@@ -452,7 +452,7 @@
               <div class="panel-body"><div class="offer-list" id="highlightList"></div></div>
             </section>
             <section class="panel">
-              <div class="panel-header"><div><h2 class="panel-title">Dein Markt-Mix</h2><p class="panel-subtitle" id="marketSubtitle">Bewusst auf zwei Stopps begrenzt.</p></div></div>
+              <div class="panel-header"><div><h2 class="panel-title">Dein Markt-Mix</h2><p class="panel-subtitle" id="marketSubtitle">Marktauswahl und Stopplimit werden aus deinen Einstellungen übernommen.</p></div></div>
               <div class="panel-body"><div class="market-list" id="marketList"></div></div>
             </section>
             <div class="explain"><h3>Warum dieser Plan?</h3><p><b>Abwechslungsfilter aktiv:</b> keine gleiche Hauptzutat an zwei aufeinanderfolgenden Tagen, unterschiedliche Küchenprofile und mindestens ein vegetarischer Tag. Reste wandern nur als Bestandteil eines neuen Gerichts weiter.</p></div>
@@ -1843,7 +1843,7 @@
       const marketLabel = marketDisplayString(used.join(' + '));
       $('#marketCount').textContent = used.length;
       $('#marketNote').textContent = marketLabel;
-      $('#marketSubtitle').textContent = `Einkaufsroute: ${marketLabel} · maximal ${used.length} ${used.length === 1 ? 'Stopp' : 'Stopps'}.`;
+      $('#marketSubtitle').textContent = `Marktauswahl: ${marketLabel} · maximal ${used.length} ${used.length === 1 ? 'Stopp' : 'Stopps'}. Routenoptimierung und Fahrtkosten bleiben offen.`;
       $('#marketList').innerHTML = used.map((name, index) => { const currentCount = offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer) && offer.store === name).length; return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(marketDetails[name].logo)}</div><div><div class="market-name">${index + 1}. ${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(marketDetails[name].distance)} entfernt</div></div></div><span class="market-count">${currentCount} gültige Angebote</span></div>`; }).join('');
     }
 
