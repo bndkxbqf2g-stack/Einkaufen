@@ -187,3 +187,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Der Kern summiert ausschließlich ausdrücklich geparste Angebotspreise in Cent, normalisiert Packungszahlen und trennt bekannte Preise, unbekannte Preise und nicht verankerte Artikel. Unbekannte Preise werden nicht zu null und fehlende Artikel nicht zu einem Kassenbetrag.
 - Die Berechnung ist mit Node-Tests abgesichert. Sie ist weiterhin ein Angebots-Zwischenwert; echte Kassenbeträge, IST-Erfassung, Fahrtkosten und Haushaltssynchronisierung bleiben getrennte nächste Arbeitspakete bzw. Freigabepunkt 9.
 
+## Fortschritt 07.11.2026 – gemeinsamer UI-Kostenstatus
+
+- PR #147 verwendet den gemeinsamen Kostenkern auch im Einkaufslisten-Rendering. Die UI bezieht die Aufteilung in Angebotspositionen, unbekannte Angebotspreise und nicht verankerte Artikel nun aus derselben deterministischen Zusammenfassung wie Teilen und Tests.
+- Dadurch bleibt der bekannte Angebotsbetrag ein klar abgegrenzter Zwischenwert; fehlende Artikel, Vorräte, Fahrtkosten und der echte Kassenbetrag werden nicht stillschweigend eingerechnet.
+- Nächster sicherer Schritt ist die weitere Verbindung von Plan-/Einkaufsbedarf und Vorratsmengen. Eine produktive IST-Erfassung oder Haushaltssynchronisierung bleibt bis zur fachlichen Freigabe von Punkt 9 ausgeschlossen.
+
