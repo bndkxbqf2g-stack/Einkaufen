@@ -73,6 +73,49 @@ const sources = await Promise.all(
   })),
 );
 
+function loadPersistedSettings(source, label) {
+  const persistSettingsSource = extract(
+    source,
+    'function persistSettings()',
+    'function calculateVariety',
+  );
+  const storage = new Map();
+  const controls = {
+    '#peopleSelect': { value: '4' },
+    '#daysSelect': { value: '4' },
+    '#marketsSelect': { value: '7' },
+    '#leftoverToggle': { checked: false },
+    '#eveningToggle': { checked: false },
+  };
+  const context = {
+    settings: {
+      people: 2,
+      days: 5,
+      markets: 2,
+      leftovers: true,
+      evening: true,
+      selectedMarkets: ['Penny'],
+      customSetting: 'preserved',
+      personalPreferences: { variety: 'high' },
+    },
+    $: selector => controls[selector],
+    localStorage: {
+      setItem(key, value) {
+        storage.set(key, String(value));
+      },
+    },
+  };
+  const persistSettings = vm.runInNewContext(
+    `${persistSettingsSource}
+persistSettings`,
+    context,
+    { filename: label },
+  );
+  persistSettings();
+  return JSON.parse(storage.get('angebotskueche.settings'));
+}
+
+
 test('normalizes persisted settings without changing valid values', () => {
   for (const { path, source } of sources) {
     const { normalizeSettings, normalizeSelectedMarkets } = loadNormalizers(source, path);
@@ -134,5 +177,21 @@ test('normalizes persisted settings without changing valid values', () => {
     assert.deepEqual(plain(normalizeSelectedMarkets(['unknown'])), defaultSelectedMarkets, `${path}: unknown markets`);
     assert.deepEqual(plain(normalizeSelectedMarkets([])), defaultSelectedMarkets, `${path}: empty markets`);
     assert.deepEqual(plain(normalizeSelectedMarkets(undefined)), defaultSelectedMarkets, `${path}: missing markets`);
+  }
+});
+
+
+test('preserves unknown settings when known settings are persisted', () => {
+  for (const { path, source } of sources) {
+    assert.deepEqual(loadPersistedSettings(source, path), {
+      people: 4,
+      days: 4,
+      markets: 7,
+      leftovers: false,
+      evening: false,
+      selectedMarkets: ['Penny'],
+      customSetting: 'preserved',
+      personalPreferences: { variety: 'high' },
+    }, path);
   }
 });
