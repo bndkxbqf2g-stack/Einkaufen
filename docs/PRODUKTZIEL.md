@@ -353,3 +353,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Ein aus dem Service-Worker-Cache gelieferter Angebots-Snapshot wird jetzt ausdrücklich markiert. Die App behandelt ihn nicht als frischen Refresh, sondern behält den bisherigen Angebotsstand und zeigt den Offline-/Fehlerpfad.
 - Die Offline-Shell bleibt verfügbar; lokale Einstellungen, Backups und persönliche Daten werden vom Cache-Fallback nicht verändert.
+
+
+### Fortschritt 07.11.2026 – PWA-Shell bei APP_BUILD-Updates
+
+- Ein `APP_BUILD`-Wechsel leert den aktiven Shell-Cache nicht mehr vorzeitig. Die bestehende Offline-Shell bleibt erhalten, bis ein neuer Service Worker installiert und aktiviert ist; erst dessen versionierter Aktivierungspfad räumt alte Caches auf.
+- Root und `dist` werden zusätzlich auf identische App-Shell-Quellen geprüft. Persönliche Daten und lokale Einstellungen werden vom Updatepfad nicht verändert.
