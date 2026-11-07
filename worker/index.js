@@ -85,6 +85,14 @@ function isRecipeType(value) {
   return value === 'Recipe' || (Array.isArray(value) && value.includes('Recipe'));
 }
 
+function hasUsableRecipeData(value) {
+  return isRecipeType(value['@type'])
+    && typeof value.name === 'string'
+    && value.name.trim()
+    && Array.isArray(value.recipeIngredient)
+    && value.recipeIngredient.some(item => typeof item === 'string' && item.trim());
+}
+
 function findRecipe(value) {
   if (!value) return null;
   if (Array.isArray(value)) {
@@ -95,7 +103,7 @@ function findRecipe(value) {
     return null;
   }
   if (typeof value !== 'object') return null;
-  if (isRecipeType(value['@type']) && Array.isArray(value.recipeIngredient)) return value;
+  if (hasUsableRecipeData(value)) return value;
   if (Array.isArray(value['@graph'])) return findRecipe(value['@graph']);
   if (value.mainEntity) return findRecipe(value.mainEntity);
   return null;
@@ -121,7 +129,11 @@ function parseRecipeJsonLd(html) {
     try {
       const recipe = findRecipe(JSON.parse(block));
       if (!recipe) continue;
-      const ingredients = recipe.recipeIngredient.map(item => String(item).trim()).filter(Boolean).slice(0, 120);
+      const ingredients = recipe.recipeIngredient
+        .filter(item => typeof item === 'string')
+        .map(item => item.trim())
+        .filter(Boolean)
+        .slice(0, 120);
       const name = String(recipe.name || '').trim();
       if (name && ingredients.length) {
         const aggregateRating = parseAggregateRating(recipe.aggregateRating);
@@ -384,4 +396,5 @@ export default {
     return new Response(page, { headers: { 'content-type': 'text/html; charset=utf-8' } });
   },
 };
+
 
