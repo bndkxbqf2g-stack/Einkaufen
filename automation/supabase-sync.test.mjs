@@ -134,6 +134,14 @@ test('treats manualDinnerPlan as an object at both sync payload boundaries', () 
   assert.equal(validateWorkerPayload({ ...payload, manualDinnerPlan: null }), false);
 });
 
+test('bounds recipe history at the worker sync boundary', () => {
+  const validateWorkerPayload = workerPayloadValidator();
+  assert.equal(validateWorkerPayload({ version: 1, recipeHistory: [] }), true);
+  assert.equal(validateWorkerPayload({ version: 1, recipeHistory: ['Rezept'] }), true);
+  assert.equal(validateWorkerPayload({ version: 1, recipeHistory: {} }), false);
+  assert.equal(validateWorkerPayload({ version: 1, recipeHistory: Array(5001).fill('Rezept') }), false);
+});
+
 test('measures UTF-8 bytes and rejects payloads over 600000 bytes', () => {
   const payload = { version: 1, notes: '🥨'.repeat(150001) };
   assert.throws(() => sync.validatePayload(payload), /600.000 Bytes/);
