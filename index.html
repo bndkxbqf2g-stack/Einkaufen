@@ -2118,9 +2118,10 @@
       return payload;
     }
 
-    function applyUserDataPayload(payload, message) {
+    function applyUserDataPayload(payload, message, options = {}) {
       validateUserDataPayload(payload);
-      localStorage.setItem('angebotskueche.settings', JSON.stringify(payload.settings || settings));
+      const restoredSettings = options.mergeSettings ? { ...settings, ...(payload.settings || {}) } : (payload.settings || settings);
+      localStorage.setItem('angebotskueche.settings', JSON.stringify(restoredSettings));
       backupArrayKeys.forEach(key => { if (payload[key] !== undefined) localStorage.setItem(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
       backupObjectKeys.forEach(key => { if (payload[key] !== undefined) localStorage.setItem(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
       showToast(message);
@@ -2176,7 +2177,7 @@
     function importUserData(file) {
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = () => { try { applyUserDataPayload(JSON.parse(reader.result), 'Daten geladen – die App wird aktualisiert.'); } catch { showToast('Die Datei ist kein gültiges Angebotsküche-Backup.'); } };
+      reader.onload = () => { try { applyUserDataPayload(JSON.parse(reader.result), 'Daten geladen – die App wird aktualisiert.', { mergeSettings: true }); } catch { showToast('Die Datei ist kein gültiges Angebotsküche-Backup.'); } };
       reader.readAsText(file);
     }
 

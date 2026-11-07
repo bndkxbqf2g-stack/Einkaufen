@@ -18,14 +18,14 @@ assert.ok(helpersStart >= 0 && helpersEnd > helpersStart, 'backup payload helper
 
 const helpers = source.slice(helpersStart, helpersEnd);
 
-function createPayloadHarness(initialEntries = []) {
+function createPayloadHarness(initialEntries = [], currentSettings = { markets: 3 }) {
   const storage = new Map(initialEntries);
   const sandbox = {
     localStorage: {
       getItem(key) { return storage.has(key) ? storage.get(key) : null; },
       setItem(key, value) { storage.set(key, String(value)); },
     },
-    settings: { markets: 3 },
+    settings: currentSettings,
     showToast() {},
     setTimeout() {},
     location: { reload() {} },
@@ -97,6 +97,28 @@ test('rejects null settings before mutating any local fields', () => {
   assert.deepEqual([...storage.entries()], before);
 });
 
+
+test('local file restore preserves settings omitted by an older backup', () => {
+  const currentSettings = {
+    people: 4,
+    days: 7,
+    markets: 3,
+    leftovers: false,
+    evening: false,
+    selectedMarkets: ['Aldi', 'Lidl'],
+  };
+  const { applyUserDataPayload, storage } = createPayloadHarness([
+    ['angebotskueche.settings', JSON.stringify(currentSettings)],
+  ], currentSettings);
+
+  applyUserDataPayload({ version: 1, settings: { markets: 1 } }, 'geladen', { mergeSettings: true });
+
+  assert.deepEqual(JSON.parse(storage.get('angebotskueche.settings')), {
+    ...currentSettings,
+    markets: 1,
+  });
+});
+
 test('explains legacy-field preservation in the cloud-load confirmation', () => {
   assert.ok(source.includes(
     'Nur enthaltene Felder werden ersetzt; fehlende optionale Felder bleiben lokal erhalten.',
@@ -107,6 +129,9 @@ test('explains legacy-field preservation in the cloud-load confirmation', () => 
   assert.equal(syncPublished, syncSource);
   assert.ok(worker.includes(
     'Nur enthaltene Felder werden ersetzt; fehlende optionale Felder bleiben lokal erhalten.',
+  ));
+  assert.ok(source.includes(
+    "applyUserDataPayload(JSON.parse(reader.result), 'Daten geladen – die App wird aktualisiert.', { mergeSettings: true })",
   ));
 });
 
