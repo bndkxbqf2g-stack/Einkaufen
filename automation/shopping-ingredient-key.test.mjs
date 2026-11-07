@@ -75,6 +75,28 @@ test('führt Singular und Plural gemeinsamer Zutaten in einer Position zusammen'
   assert.deepEqual(items[0].meals, ['Gericht 1', 'Gericht 2']);
 });
 
+test('behält manuelle Singular-/Pluralvarianten getrennt von Rezeptzutaten', () => {
+  const items = createShoppingItems(
+    [{ title: 'Gericht', ingredients: ['Tomaten'] }],
+    [{ id: 'manual-1', name: 'Tomate' }],
+  );
+
+  assert.equal(items.length, 2);
+  const manual = items.find(item => item.manual);
+  assert.deepEqual(manual, {
+    id: 'manual-manual-1',
+    name: 'Tomate',
+    count: 1,
+    meals: ['zusätzlich ergänzt'],
+    offer: null,
+    manual: true,
+    manualId: 'manual-1',
+    packCount: 1,
+    reused: false,
+  });
+  assert.equal(items.find(item => !item.manual)?.id, 'shopping-tomaten');
+});
+
 test('trennt weiterhin unterschiedliche Zutaten und Varianten bei manuellen Artikeln', () => {
   const items = createShoppingItems(
     [{ title: 'Gericht', ingredients: ['Milch'] }],
