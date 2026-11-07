@@ -340,7 +340,7 @@ function parseLidlOffers(html) {
     if (!item || typeof item !== 'object') return null;
     const name = String(item.name || '').trim();
     const price = String(item.price || '').trim();
-    if (!name || !price || !likelyFood(name)) return null;
+    if (!name || !/\d+[.,]\d{2}\s*€/u.test(price) || !likelyFood(name)) return null;
     return { name, price, saving: String(item.saving || '–'), icon: String(item.icon || '🛒'), category: 'Lebensmittel', packSize: String(item.packSize || '1 Packung'), relevance: Number(item.relevance || 78), note: 'Lidl-Prospekt', validUntil };
   }).filter(Boolean).slice(0, 120) : [];
   return { validUntil, sourceUrl: String(payload?.sourceUrl || 'https://www.lidl.de/c/online-prospekte/s10005610/'), offers };
