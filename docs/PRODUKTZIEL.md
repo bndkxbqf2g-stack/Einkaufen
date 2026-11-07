@@ -359,3 +359,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Ein `APP_BUILD`-Wechsel leert den aktiven Shell-Cache nicht mehr vorzeitig. Die bestehende Offline-Shell bleibt erhalten, bis ein neuer Service Worker installiert und aktiviert ist; erst dessen versionierter Aktivierungspfad räumt alte Caches auf.
 - Root und `dist` werden zusätzlich auf identische App-Shell-Quellen geprüft. Persönliche Daten und lokale Einstellungen werden vom Updatepfad nicht verändert.
+## Fortschritt 07.11.2026 – Restelogik mit optionalem Abendessen
+
+- Die bestehende Restelogik wertet Mittagessen und vorhandene optionale Abendessen jetzt gemeinsam in Tagesreihenfolge aus. Dadurch werden gemeinsam verwendete Zutaten auch über die Grenze zwischen Mittagessen und Abendessen erkannt.
+- Die vorhandene Zutaten-Normalisierung bleibt maßgeblich; der Regressionstest deckt eine Singular-/Plural-Variante (Tomate/Tomaten) sowie die Synchronität von Root und dist ab.
+- Es gibt weiterhin keinen Frühstücks-Slot, keine neue Mengenarchitektur, keine Migration und keine Supabase-/Nutzerdatenänderung.
