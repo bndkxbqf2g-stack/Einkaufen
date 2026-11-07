@@ -5,7 +5,7 @@ import test from 'node:test';
 const source = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const published = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
 const estimateStart = source.indexOf('function estimateMealCost(recipe) {');
-const estimateEnd = source.indexOf('\\n    function favoriteAsCandidate', estimateStart);
+const estimateEnd = source.indexOf(String.fromCharCode(10) + '    function favoriteAsCandidate', estimateStart);
 const estimate = source.slice(estimateStart, estimateEnd);
 
 test('does not fall back to a static recipe cost without verified offers', () => {
