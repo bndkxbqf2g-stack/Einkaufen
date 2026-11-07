@@ -335,3 +335,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Wenn eine Angebotsquelle vorübergehend nicht erreichbar ist, bleiben zuletzt geladene Angebote lokal erhalten; abgelaufene Angebote werden weiterhin nicht geplant.
 - Die Statusanzeige kennzeichnet den fehlgeschlagenen Refresh jetzt ausdrücklich als „letzter Datensatz behalten“ und zeigt weiterhin den letzten bekannten Quellzeitpunkt, die Gültigkeit und vorhandene Ladezielmetadaten. Fehlende Sollzahlen bleiben unbekannt.
+
+
+### Fortschritt 07.11.2026 – Snapshot-Quelladresse in der Marktstatusanzeige
+
+- Die Marktstatusanzeige verwendet nach einem Quellen- oder Snapshotwechsel jetzt die vom validierten Snapshot gemeldete sichere `sourceUrl`; bei alten lokalen Statusständen ohne diese Angabe bleibt die hinterlegte Marktseite als Fallback bestehen.
+- Ungültige oder unsichere Quelladressen werden nicht verlinkt. Fehlende Sollzahlen bleiben unabhängig von der Quelladresse unbekannt.

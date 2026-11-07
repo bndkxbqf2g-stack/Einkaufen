@@ -891,6 +891,15 @@
       return timestamp && Number.isFinite(timestamp.getTime()) ? timestamp.toISOString() : '';
     }
 
+    function sourceUrlForDisplay(value) {
+      try {
+        const url = new URL(String(value || '').trim());
+        return url.protocol === 'https:' && Boolean(url.hostname) && !url.username && !url.password ? url.href : '';
+      } catch {
+        return '';
+      }
+    }
+
     function offerCoverageLabel(live) {
       const target = Number(live?.targetOfferCount);
       const loaded = Number(live?.loadedOfferCardCount);
@@ -923,7 +932,10 @@
               : live?.count ? ' · Datenstand unbekannt' : '';
         const validUntilLabel = live?.validUntil ? ` · gültig bis ${live.validUntil}` : '';
         const coverageLabel = live?.count ? ` · ${offerCoverageLabel(live)}` : '';
-        return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(details.logo)}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(details.distance)} · ${activeLabel}</div><div class="source-note">${escapeHtml(sourceLabel)}${escapeHtml(timestampLabel)}${escapeHtml(validUntilLabel)}${escapeHtml(coverageLabel)}${escapeHtml(nextCheckLabel)}</div>${details.source ? `<a class="source-note" href="${escapeHtml(details.source)}" target="_blank" rel="noopener">Offizielle Angebote öffnen ↗</a>` : ''}</div></div><span class="market-count">${offerLabel}</span></div>`;
+        const liveSourceUrl = sourceUrlForDisplay(live?.sourceUrl);
+        const sourceUrl = live?.sourceUrl === undefined ? details.source : liveSourceUrl;
+        const sourceLinkLabel = live?.sourceUrl === undefined ? 'Offizielle Angebote öffnen ↗' : 'Quelle öffnen ↗';
+        return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(details.logo)}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(details.distance)} · ${activeLabel}</div><div class="source-note">${escapeHtml(sourceLabel)}${escapeHtml(timestampLabel)}${escapeHtml(validUntilLabel)}${escapeHtml(coverageLabel)}${escapeHtml(nextCheckLabel)}</div>${sourceUrl ? `<a class="source-note" href="${escapeHtml(sourceUrl)}" target="_blank" rel="noopener">${sourceLinkLabel}</a>` : ''}</div></div><span class="market-count">${offerLabel}</span></div>`;
       }).join('');
     }
 
@@ -1009,7 +1021,7 @@
         const validUntil = result.payload ? offerEndDate(result.payload.validUntil) : null;
         const nextCheckAt = result.payload ? (validUntil ? new Date(validUntil.getTime() + 60 * 1000).toISOString() : new Date(checkedAt.getTime() + offerRefreshFallbackMs).toISOString()) : new Date(checkedAt.getTime() + offerRetryDelayMs).toISOString();
         liveOfferStatus[result.market] = result.payload
-          ? { fetchedAt: sourceFetchedAt, checkedAt: checkedAt.toISOString(), timestampSource: sourceFetchedAt ? 'source' : 'unknown', validUntil: result.payload.validUntil, targetOfferCount: Number(result.payload.targetOfferCount || 0), loadedOfferCardCount: Number(result.payload.loadedOfferCardCount || 0), targetReached: typeof result.payload.targetReached === 'boolean' ? result.payload.targetReached : null, nextCheckAt, count: Number(result.payload.recognizedCount ?? result.payload.offers.length) }
+          ? { fetchedAt: sourceFetchedAt, checkedAt: checkedAt.toISOString(), timestampSource: sourceFetchedAt ? 'source' : 'unknown', sourceUrl: sourceUrlForDisplay(result.payload.sourceUrl), validUntil: result.payload.validUntil, targetOfferCount: Number(result.payload.targetOfferCount || 0), loadedOfferCardCount: Number(result.payload.loadedOfferCardCount || 0), targetReached: typeof result.payload.targetReached === 'boolean' ? result.payload.targetReached : null, nextCheckAt, count: Number(result.payload.recognizedCount ?? result.payload.offers.length) }
           : {
             ...liveOfferStatus[result.market],
             checkedAt: checkedAt.toISOString(),
