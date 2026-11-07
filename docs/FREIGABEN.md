@@ -63,6 +63,19 @@ Die folgenden Punkte müssen vor einer produktiven IST-Erfassung festgelegt werd
 - **Budgetanzeige:** Monatsziel und Überziehung ausschließlich aus bestätigten IST-Werten; Plan- und Angebotswerte bleiben getrennt.
 
 
+## Offene Nutzerentscheidung – mengenfähige Vorräte
+
+Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung zu bündeln; sie ist noch keine Freigabe und ändert keine bestehenden Vorratsdaten:
+
+- **Mengenmodell:** nur eine ungefähre Restmenge je Zutat oder zusätzlich Einheit/Packungsgröße.
+- **Genauigkeit:** freie Angabe wie „wenig/halb/voll“ oder normierte Werte; keine Genauigkeit vortäuschen, die aus dem Bestand nicht ablesbar ist.
+- **Verbrauch:** Vorräte nur als „vorhanden“ abziehen oder pro Gericht eine geplante Verbrauchsmenge reservieren.
+- **Nullbestand und Korrektur:** Verhalten bei „aufgebraucht“, negativen Korrekturen und unbekannter Menge.
+- **Zeitbezug:** Haltbarkeit/Mindesthaltbarkeit überhaupt erfassen oder bewusst weglassen.
+- **Datenhoheit:** nur lokal, im Backup, oder haushaltsweit synchronisiert; inklusive Löschung und Konfliktbehandlung.
+- **Angebotswert:** Vorräte weiterhin vollständig aus dem Angebots-Zwischenwert und dem bestätigten Monatsbudget ausnehmen.
+
+
 ## Benötigt später Nutzeraktion, keine Zugangsdaten im Chat
 
 - Für den echten Auth-End-to-End-Test wird ein vom Nutzer angelegtes
