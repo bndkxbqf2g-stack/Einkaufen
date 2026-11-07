@@ -596,3 +596,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - [PR #195](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/195) verhindert, dass ein APP_BUILD-Wechsel den aktiven Offline-Shell-Cache vor erfolgreicher Service-Worker-Aktivierung löscht. CI war grün; keine Nutzer-, Supabase- oder Angebotsdatenänderung.
 - [PR #196](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/196) wertet optionale Abendessen gemeinsam mit Mittagessen in der bestehenden Restelogik aus. Der vollständige Validate-Lauf war nach Anpassung der bestehenden Regressionstests grün; Root/dist bleiben synchron. Kein Frühstücks-Slot, keine neue Mengenarchitektur, keine Migration und keine Supabase-/Nutzerdatenänderung.
+
+
+## Fortschritt 07.11.2026 – ISO-Gültigkeitsdaten
+
+- [PR #198](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/198) gleicht den App-Parser mit dem Snapshot-Vertrag ab: `TT.MM.JJJJ` und `JJJJ-MM-TT` werden strikt kalendergültig ausgewertet; unmögliche oder unbekannte Daten bleiben ungültig bzw. unbekannt. Validate war grün. Keine neuen Angebotsdaten, keine Supabase-/Datenbankänderung und keine Migration.
