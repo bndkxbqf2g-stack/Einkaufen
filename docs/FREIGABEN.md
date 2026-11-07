@@ -501,3 +501,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - PR-Vorbereitung: `pantryStatus` und `shoppingItemStatus` werden als `status` mit höflicher Live-Region ausgezeichnet.
 - Die Regressionstests prüfen Root-/`dist`-Synchronität und beide Statusfelder. Keine Nutzer-, Mengen-, Preis-, Plan-, Backup-, Sync-, Supabase- oder Angebotsdatenänderung; keine zusätzliche Freigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Offline-Shell-Vertrag
+
+- PR-Vorbereitung: Der Service-Worker-Test erkennt lokale `index.html`-Scriptquellen automatisch und verlangt ihre Aufnahme in `APP_SHELL`.
+- Die Absicherung ändert keine Laufzeit- oder Nutzerdaten, sondern verhindert Regressionen bei künftigen Offline-Erweiterungen; keine zusätzliche Freigabe erforderlich.
