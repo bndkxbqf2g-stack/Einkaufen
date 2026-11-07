@@ -28,7 +28,11 @@ self.addEventListener('fetch', event => {
         return response;
       })
       .catch(() => caches.match(event.request).then(cached => {
-        if (cached) return cached;
+        if (cached) {
+          const headers = new Headers(cached.headers);
+          headers.set('X-Angebotskueche-Cache-Fallback', '1');
+          return new Response(cached.body, { status: cached.status, statusText: cached.statusText, headers });
+        }
         return event.request.mode === 'navigate' || event.request.destination === 'document'
           ? caches.match('./index.html')
           : Response.error();

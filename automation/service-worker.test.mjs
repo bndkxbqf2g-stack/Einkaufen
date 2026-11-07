@@ -101,6 +101,7 @@ function createHarness({ fetchImpl = async () => new Response('network'), claimI
     Promise,
     Request,
     Response,
+    Headers,
     caches,
     self,
     fetch: async (request, options) => {
@@ -290,6 +291,7 @@ test('falls back to the request cache and then the precached index when offline'
   const cached = await harness.dispatchFetch(new Request(`${origin}/dashboard`));
   assert.equal(cached.respondWithCalled, true);
   assert.equal(await cached.response.text(), 'cached dashboard');
+  assert.equal(cached.response.headers.get('X-Angebotskueche-Cache-Fallback'), '1');
 
   harness.seed(`${origin}/dashboard`, undefined);
   const shell = await harness.dispatchFetch({

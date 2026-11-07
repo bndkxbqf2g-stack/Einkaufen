@@ -347,3 +347,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Backup- und Cloud-Daten werden vor dem Schreiben validiert und jetzt als gemeinsamer lokaler Schreibvorgang behandelt. Wenn ein einzelner `localStorage`-Schreibvorgang fehlschlägt, werden bereits geänderte Schlüssel bestmöglich auf den vorherigen Stand zurückgesetzt.
 - Der Service Worker bleibt unverändert; Offline-Shell und Cache-Fallback verändern keine lokalen App-Daten.
+
+
+### Fortschritt 07.11.2026 – Offline-Snapshot-Fallback
+
+- Ein aus dem Service-Worker-Cache gelieferter Angebots-Snapshot wird jetzt ausdrücklich markiert. Die App behandelt ihn nicht als frischen Refresh, sondern behält den bisherigen Angebotsstand und zeigt den Offline-/Fehlerpfad.
+- Die Offline-Shell bleibt verfügbar; lokale Einstellungen, Backups und persönliche Daten werden vom Cache-Fallback nicht verändert.
