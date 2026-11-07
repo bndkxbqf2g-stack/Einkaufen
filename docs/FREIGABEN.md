@@ -536,3 +536,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - Der Plan-Matcher und die Einkaufsliste verwenden denselben deterministischen Angebotskandidaten; dadurch können Marktpräferenz und Planpreis nicht mehr für dieselbe Zutat auseinanderlaufen.
 - Regressionstests decken den kombinierten Mittagessen-/optionalen-Abendessen-Fluss und die Kostenparität ab. Keine IST-/Beleg-/OCR-, Supabase-, Datenbank- oder Angebotsdatenänderung; keine zusätzliche Freigabe erforderlich.
 \n\n## Koordinierter Arbeitsstand – 07.11.2026, Packungskosten-Parität\n\n- Neuer separater Befund: Die alte Plan-Gesamtsumme skalierte bekannte Rezeptpreise mit \`Personen / 2\`, während die Einkaufsliste Verkaufspackungen aufrundet. Das ist bei drei Personen nicht dieselbe Kaufsumme.\n- Vorgesehener Fix: Plan-Gesamtsumme aus der nicht-manuellen Einkaufsliste und dem bestehenden Kostenmodell ableiten; Regressionstest für Mittagessen plus optionales Abendessen. Keine zusätzliche Freigabe für den risikoarmen, deterministischen Fix erforderlich; Merge erst nach grüner CI.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Mahlzeiten-Slot-Schutz
+
+- Der Wochenplan weist manuelle Zuordnungen für Frühstück, Snack und Getränk nun zurück und ignoriert entsprechende alte Zuordnungen beim Wiederaufbau; Mittagessen und optionales Abendessen bleiben unverändert.
+- Regressionstests sichern die UI-Zuordnung und die lunch-only-Wiederherstellung. Keine Nutzerdaten, Supabase-, Datenbank- oder Deploymentänderung; PR-Merge bleibt aus diesem Nebenchat ausgeschlossen.
