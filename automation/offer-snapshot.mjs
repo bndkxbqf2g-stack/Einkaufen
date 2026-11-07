@@ -84,10 +84,11 @@ export function validateOfferSnapshot(snapshot, { now = new Date() } = {}) {
   if (fetchedAtDate === null) {
     throw new Error('Angebotssnapshot: "fetchedAt" muss ein gültiger ISO-8601-UTC-Zeitpunkt sein.');
   }
-  if (dateOrdinal(snapshot.validUntil) < fetchedAtDate) {
+  const snapshotEndDate = dateOrdinal(snapshot.validUntil);
+  if (snapshotEndDate < fetchedAtDate) {
     throw new Error('Angebotssnapshot: "validUntil" liegt vor dem Abrufzeitpunkt.');
   }
-  if (dateOrdinal(snapshot.validUntil) < currentDate) {
+  if (snapshotEndDate < currentDate) {
     throw new Error('Angebotssnapshot: "validUntil" ist bereits abgelaufen.');
   }
 
@@ -111,6 +112,9 @@ export function validateOfferSnapshot(snapshot, { now = new Date() } = {}) {
     }
     if (!isValidCalendarDate(offer.validUntil)) {
       throw new Error(`Angebotssnapshot: Gültigkeitsdatum von Angebot ${index + 1} ist kein gültiges Kalenderdatum.`);
+    }
+    if (dateOrdinal(offer.validUntil) > snapshotEndDate) {
+      throw new Error(`Angebotssnapshot: Gültigkeitsdatum von Angebot ${index + 1} liegt nach dem Snapshot-Ende.`);
     }
     if (dateOrdinal(offer.validUntil) < fetchedAtDate) {
       throw new Error(`Angebotssnapshot: Angebot ${index + 1} ist bereits vor dem Abrufzeitpunkt abgelaufen.`);
