@@ -174,3 +174,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Zusätzlich ist ausschließlich ein optionales Abendessen vorgesehen.
 - Der bestehende optionale Abendblock bleibt die kleinste rückwärtskompatible Grundlage. Eine per-Person-Auswahl, automatische Umklassifizierung vorhandener Rezepte und eine neue Datenbankstruktur sind nicht Bestandteil dieser Entscheidung.
 - Frühere Passagen, die Frühstück als aktuellen oder nächsten Pflichtumfang nennen, gelten insoweit als überholt. Die nächste Umsetzung darf nur den optionalen Abendessen-Umfang betreffen.
+
+## Fortschritt 07.11.2026 – vorbereiteter IST-Budget-Kern
+
+- [PR #142](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/142) ergänzt den rein lokalen, deterministischen Validator/Summarizer für das dokumentierte Format `purchaseRecords`.
+- Der Kern leitet den Monat aus einem gültigen Kaufdatum ab, prüft Centbeträge und eindeutige manuelle Datensätze und berechnet eine Monatszwischensumme gegen das dokumentierte Ziel von 400,00 €.
+- Die Funktion ist noch nicht in UI, lokale Speicherung, Backup, Haushaltssync, Supabase, Beleg/OCR oder echte Einkaufsdaten integriert. Der vollständige Kassenbetrag und die produktive IST-Erfassung bleiben Freigabepunkt 9.
