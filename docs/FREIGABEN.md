@@ -51,6 +51,18 @@ freigegeben oder entschieden wurden.
    Kassenpreise erfunden, keine Belegbilder hochgeladen und keine OCR- oder
    Ausgabenhistorie eingeführt.
 
+**Entscheidungscheckliste für die spätere Freigabe von Punkt 9**
+
+Die folgenden Punkte müssen vor einer produktiven IST-Erfassung festgelegt werden; diese Checkliste ist selbst noch keine Freigabe und ändert keine Daten:
+
+- **Erfassungsgranularität:** nur ein Gesamtbetrag je Einkauf oder Positionen mit tatsächlich bezahlten Mengen und Preisen.
+- **Quelle:** ausschließlich manuelle Eingabe, spätere Belegerfassung/OCR oder eine ausdrücklich begrenzte Kombination.
+- **Zeitbezug:** Kaufdatum, Monatszuordnung und maßgebliche Zeitzone sowie der Umgang mit nachträglichen Korrekturen.
+- **Historie und Rechte:** nur auf diesem Gerät oder haushaltsweit synchronisiert; außerdem Aufbewahrung und Löschung.
+- **Umfang:** ob Märkte, Haushaltswaren und Fahrtkosten getrennt erfasst oder ausgeschlossen werden.
+- **Budgetanzeige:** Monatsziel und Überziehung ausschließlich aus bestätigten IST-Werten; Plan- und Angebotswerte bleiben getrennt.
+
+
 ## Benötigt später Nutzeraktion, keine Zugangsdaten im Chat
 
 - Für den echten Auth-End-to-End-Test wird ein vom Nutzer angelegtes
