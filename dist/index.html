@@ -2246,6 +2246,13 @@
       showToast(added.length ? `${added.length} ${added.length === 1 ? 'Vorrat' : 'Vorräte'} gespeichert.` : 'Alle eingegebenen Vorräte sind bereits gespeichert.');
     }
 
+    function startInitialOfferRefresh() {
+      if (!isGithubPagesHost || automaticOfferRefreshStarted) return Promise.resolve(false);
+      automaticOfferRefreshStarted = true;
+      // The generated snapshot is authoritative for the first plan; seedOffers remain the offline fallback.
+      return refreshOfficialOffers({ force: true }).catch(() => false);
+    }
+
     function showPage(page) {
       $$('.nav-button').forEach(button => button.classList.toggle('active', button.dataset.page === page));
       $$('.page').forEach(section => section.classList.toggle('active', section.id === `page-${page}`));
@@ -2634,7 +2641,9 @@
     configureGithubPages();
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
     let automaticOfferRefreshStarted = false;
-    renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
+    startInitialOfferRefresh().finally(() => {
+      renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
+    });
     setTimeout(() => refreshPendingRecipeImports().catch(() => {}), 250);
     const APP_BUILD = '2026-11-07-restore-stability-1';
     try {
