@@ -459,3 +459,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - [PR #142](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/142) ergänzt einen rein lokalen und deterministischen Validator/Summarizer für das bereits dokumentierte Format `purchaseRecords`.
 - Der Kern prüft Datum/Monat, Centbeträge, manuelle Quelle und eindeutige IDs und summiert nur übergebene Datensätze des angeforderten Monats gegen das dokumentierte Ziel von 40.000 Cent.
 - Es gibt weiterhin keine Speicherung, UI-Integration, Beleg-/OCR-Verarbeitung, Haushaltshistorie, Supabase-/Datenbankänderung oder echten Einkaufsdatensatz. Die produktive IST-Erfassung bleibt Freigabepunkt 9.
+
+## Koordinierter Arbeitsstand – 07.11.2026, transparenter Vorratsabgleich
+
+- PR [#158](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/158) ergänzt in der Einkaufsliste neben der Trefferanzahl bis zu vier konkret berücksichtigte Vorratszutaten und weist weitere Treffer nur als Anzahl aus.
+- Die Anzeige nutzt ausschließlich den bestehenden lokalen Plan-/Vorratsabgleich. Vorratsmengen, Haltbarkeiten, Verbrauchsannahmen, Preise, Angebots-Zwischensummen, Backup-, Sync- und Supabase-Daten bleiben unverändert.
+- Regressionstest, Root-/`dist`-Synchronität und CI waren grün; der Merge nach `main@9c8b0934a3964341a19c7f8eb4088271c13b4b35` wurde anschließend erfolgreich auf GitHub Pages veröffentlicht. Keine zusätzliche Freigabe erforderlich.
