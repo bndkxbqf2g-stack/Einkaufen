@@ -180,6 +180,15 @@ test('precaches every local runtime script referenced by the app', () => {
 });
 
 
+test('service worker registration requests the active cache version', () => {
+  const cacheVersion = source.match(/const CACHE_NAME = ['"]angebotskueche-shell-v([^'"]+)['"]/);
+  const registrationVersion = index.match(/navigator\.serviceWorker\.register\('\.\/sw\.js\?v=([^']+)'/);
+
+  assert.ok(cacheVersion, 'CACHE_NAME muss eine Versionsnummer enthalten');
+  assert.ok(registrationVersion, 'die App muss eine versionierte Service-Worker-Registrierung enthalten');
+  assert.equal(registrationVersion[1], cacheVersion[1]);
+});
+
 test('precaches the app shell during install and removes old caches on activate', async () => {
   const harness = createHarness();
   harness.cacheNames.add('angebotskueche-shell-old');
