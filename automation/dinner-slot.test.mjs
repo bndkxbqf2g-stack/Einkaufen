@@ -13,8 +13,9 @@ const allowsMatch = source.match(/function mealPurposeAllowsSlot\(recipe, slot =
 const candidatesMatch = source.match(/function getPlanCandidatesForSlot\(slot = 'lunch'\) \{[\s\S]*?\n    \}/);
 const assignmentMatch = source.match(/function assignRecipeToDinner\(recipeId, dayIndex\) \{[\s\S]*?\n    \}/);
 const dinnersMatch = source.match(/function getCurrentPlanDinners\(\) \{[\s\S]*?\n    \}/);
+const dinnerCardMatch = source.match(/function renderDinnerCard\(dinner, index, people\) \{[\s\S]*?\n    \}/);
 
-for (const [label, match] of Object.entries({ normalizeMatch, purposeMatch, allowsMatch, candidatesMatch, assignmentMatch, dinnersMatch })) {
+for (const [label, match] of Object.entries({ normalizeMatch, purposeMatch, allowsMatch, candidatesMatch, assignmentMatch, dinnersMatch, dinnerCardMatch })) {
   assert.ok(match, `${label} must be present in index.html`);
 }
 
@@ -109,4 +110,37 @@ test('hides a stale dinner assignment when lunch now uses the same recipe', () =
   );
 
   assert.equal(dinnerContext.getCurrentPlanDinners()[0], null);
+});
+
+test('shows a recipe source link on dinner cards when available', () => {
+  const dinnerContext = {
+    getPlanDateInfo: () => ({ day: 'Montag', short: 'Mo, 10. Nov.' }),
+    escapeHtml: value => String(value ?? ''),
+    recipeMealPurpose: () => 'Brotzeit',
+    parseMoney: () => 4,
+    recipeRatings: {},
+    mealRatingKey: () => 'dinner-1',
+    marketDisplayString: () => 'Aldi',
+    getMealIngredients: () => ['Brot', 'Käse'],
+    recipeSourceUrl: dinner => dinner.url || '',
+  };
+  vm.runInNewContext(
+    `${dinnerCardMatch[0]}\nglobalThis.renderDinnerCard = renderDinnerCard;`,
+    dinnerContext,
+  );
+
+  const html = dinnerContext.renderDinnerCard({
+    recipeId: 'dinner-1',
+    title: 'Synthetische Brotzeit',
+    url: 'https://example.test/brotzeit',
+    emoji: '🥪',
+    kind: 'dinner',
+    score: 80,
+    cost: '4,00 €',
+    store: 'Aldi',
+    tags: ['Abendessen'],
+  }, 0, 2);
+
+  assert.match(html, /data-recipe-source="true"/);
+  assert.match(html, new RegExp('https://example\\.test/brotzeit'));
 });
