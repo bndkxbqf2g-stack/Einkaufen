@@ -1762,6 +1762,10 @@
       return { ...template, kind: slot === 'dinner' ? 'dinner' : template.kind, slot, recipeId: recipe.id, title: recipe.title, emoji: recipe.emoji, store: store.split(' + ')[0], cost, costSource: cost ? 'offer-subtotal' : 'unknown', score: match.score, tags: [...(recipe.tags || []), ...(recipe.favorite ? ['Lieblingsrezept'] : []), ...(pinned ? ['vorgemerkt'] : []), match.matchedIngredients.length ? 'Angebotsanker' : 'Angebotsbezug offen'], note: match.reason || 'Angebotsbezug noch nicht verifiziert', main: normalizeIngredient(recipe.ingredients?.[0] || recipe.title), profile: recipe.favorite ? 'Lieblingsrezept' : template.profile || 'Angebotsrezept', mealPurpose: recipeMealPurpose(recipe), vegetarian: recipe.vegetarian, ingredients: recipe.ingredients };
     }
 
+    function sanitizeFallbackMeal(meal) {
+      const tags = Array.isArray(meal?.tags) ? meal.tags.filter(tag => !/angebot/i.test(String(tag))) : [];
+      return { ...meal, store: '', cost: '', costSource: 'unknown', score: 0, tags, note: 'Angebotsbezug offen' };
+    }
     function getCurrentPlanMeals() {
       const days = Number($('#daysSelect').value);
       const planCandidates = getPlanCandidates();
@@ -1807,7 +1811,7 @@
       let fallbackIndex = 0;
       for (let index = 0; index < days; index += 1) {
         if (selected[index]) continue;
-        selected[index] = fallback[fallbackIndex] || planBase[index] || planBase[0];
+        selected[index] = sanitizeFallbackMeal(fallback[fallbackIndex] || planBase[index] || planBase[0]);
         fallbackIndex += 1;
       }
       const dated = selected.slice(0, days).map((meal, index) => { const date = getPlanDateInfo(index); return { ...meal, day: date.day, date: date.short }; });
