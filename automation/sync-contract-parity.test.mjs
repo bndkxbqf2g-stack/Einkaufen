@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import test from 'node:test';
 
 const [clientSource, workerSource, workerPublished] = await Promise.all([
   readFile(new URL('../supabase-sync.js', import.meta.url), 'utf8'),
