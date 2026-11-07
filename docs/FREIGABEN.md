@@ -511,3 +511,10 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - PR-Vorbereitung: Die Normalisierung manueller Einkaufsartikel repariert doppelte explizite IDs deterministisch und erhält alle Einträge.
 - Dadurch bleiben `shoppingChecks` und Entfernen-Aktionen pro Artikel eindeutig. Mengen, Preise, Plan-, Backup-, Sync-, Supabase- und Angebotsdaten werden nicht verändert; keine zusätzliche Freigabe erforderlich.
+
+
+## Koordinierter Arbeitsstand – 07.11.2026, Service-Worker-Versionskopplung
+
+- [PR #172](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/172) gleicht die Registrierungskennung `sw.js?v=29` an den aktiven App-Shell-Cache `angebotskueche-shell-v29` an.
+- Der Regressionstest prüft diese Kopplung künftig automatisch; Root und `dist` sind bytegleich.
+- Keine Nutzerdaten, Plan-, Preis-, Angebots-, Backup-, Sync-, Supabase- oder Datenbankänderung; keine zusätzliche Freigabe erforderlich.
