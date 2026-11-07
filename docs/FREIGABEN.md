@@ -368,3 +368,9 @@ freigegeben oder entschieden wurden.
 - [PR #120](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/120) verhindert, dass ein unbekannter Preis im optionalen Abendessen als `0,00 €` erscheint.
 - Bekannte Angebots-Packungssummen bleiben als Näherungswert sichtbar; unbekannte Abendessenpreise werden ausdrücklich als `Preis unbekannt` markiert. Es werden keine regulären Preise, Kassenbeträge oder Fahrtkosten ergänzt.
 - Root und `dist` bleiben synchron; die CI war nach Ergänzung der isolierten Dinner-Test-Hilfen grün. Keine Nutzerdaten, Supabase-Migration, Datenbankänderung, Angebotsdatenänderung, Deployment- oder kostenpflichtige Ressourcenänderung.
+
+## Validierter Kostenfluss – Rezeptdetails und Vorschläge – 07.11.2026
+
+- [PR #122](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/122) entfernt statische Rezeptkosten als Ersatz für fehlende Angebotsnachweise aus Vorschlagskarten, Rezeptdetails und der Match-Kostenschätzung.
+- Ohne mindestens ein verifiziertes, plausibles Angebot erscheint `Preis unbekannt`; bekannte Angebots-Packungssummen bleiben davon getrennt. Es werden keine regulären Preise oder Kassenbeträge erfunden.
+- Regressionstest und Root-/`dist`-Synchronität sind durch die grüne CI abgesichert. Keine Nutzerdaten, Supabase-Migration, Datenbankänderung, Angebotsdatenänderung, Deployment- oder kostenpflichtige Ressourcenänderung.
