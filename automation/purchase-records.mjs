@@ -83,7 +83,14 @@ export function summarizePurchaseRecords(records, month) {
 
   const normalizedRecords = validatePurchaseRecords(records);
   const matchingRecords = normalizedRecords.filter(record => record.month === month);
-  const totalCents = matchingRecords.reduce((sum, record) => sum + record.totalCents, 0);
+  let totalCents = 0;
+  for (const record of matchingRecords) {
+    const nextTotalCents = totalCents + record.totalCents;
+    if (!Number.isSafeInteger(nextTotalCents)) {
+      throw new Error('Einkauf: Monatsgesamtbetrag überschreitet die sichere Centgrenze.');
+    }
+    totalCents = nextTotalCents;
+  }
 
   return {
     month,

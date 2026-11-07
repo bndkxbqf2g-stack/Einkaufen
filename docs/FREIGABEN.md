@@ -563,3 +563,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - [PR #182](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/182) begrenzt Einzelangebots-Gültigkeiten auf das Ende des Gesamtsnapshots und schützt den Randfall synthetisch. Nach grüner CI gemerged; keine Angebotsdaten, Supabase- oder Datenbankänderung.
 - [PR #183](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/183) speichert das neue Marktlimit vor der Planneuberechnung, damit Marktansicht und Plan dieselbe Stopplimit-Einstellung verwenden. Nach grüner CI gemerged; Fahrtkosten- und Ersparnisoptimierung bleiben ausdrücklich offen.
 - Die dokumentierten Freigabepunkte für tatsächliche Einkäufe, Fahrtkosten, Routing und Supabase-Migrationen bleiben unverändert und wurden nicht freigegeben.
+
+## Fortschritt 07.11.2026 – sichere Budget-Monatssumme
+
+- Der vorbereitete `purchaseRecords`-Summarizer bricht jetzt ab, wenn die Summe gültiger Centwerte nicht mehr sicher als JavaScript-Ganzzahl darstellbar ist. Einzelwerte waren bereits auf sichere Centzahlen begrenzt; die Aggregatsumme ist nun ebenfalls deterministisch geschützt.
+- Die produktive IST-Erfassung bleibt weiterhin nicht integriert. Keine Nutzer-, Angebots-, Supabase- oder Datenbankdaten wurden geändert.
