@@ -217,3 +217,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Der bestehende Client begrenzt `recipeHistory` bereits als Array; der Worker-Grenzvalidator übernimmt diese Begrenzung nun ebenfalls mit maximal 5.000 Einträgen.
 - Ungültige Objektwerte und übergroße Rezeptverläufe werden am Worker-Sync abgewiesen, bevor sie in den D1-Pfad gelangen.
 - Worker-Quelle und `dist/server/index.js` bleiben synchron. Die Supabase-RPC-Validierung und deren möglicher Migrationsbedarf bleiben unverändert und werden nicht vorweggenommen.
+
+## Fortschritt 07.11.2026 – Sync-Vertragsparität
+
+- Ein automatischer Paritätstest vergleicht die Client- und Worker-Feldlisten für Arrays und Objekte sowie das veröffentlichte Worker-Artefakt.
+- Dadurch wird verhindert, dass ein lokales Sync-Feld wie `recipeHistory` künftig nur an einer Boundary ergänzt wird.
+- Der Test verändert keine Laufzeitlogik, Supabase-Daten, Datenbankstruktur oder Nutzerinhalte.
