@@ -528,6 +528,7 @@
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
+  <script src="./shopping-costs.js"></script>
   <script src="./supabase-sync.js"></script>
   <script>
     const seedOffers = [
@@ -1673,21 +1674,7 @@
     }
 
     function calculateOfferAmount(items) {
-      let totalCents = 0;
-      const knownItems = [];
-      const unknownItems = [];
-      for (const item of Array.isArray(items) ? items : []) {
-        const unitPrice = parseKnownMoney(item?.offer?.price);
-        const rawPackCount = Number(item?.packCount);
-        const packCount = Number.isFinite(rawPackCount) && rawPackCount > 0 ? Math.ceil(rawPackCount) : 1;
-        if (unitPrice === null) {
-          unknownItems.push(item);
-          continue;
-        }
-        knownItems.push(item);
-        totalCents += Math.round(unitPrice * 100) * packCount;
-      }
-      return { total: totalCents / 100, totalCents, knownItems, unknownItems };
+      return window.AngebotskuecheCostModel.calculateOfferAmount(items, parseKnownMoney);
     }
 
     function shoppingShareAmountLabel(item) {

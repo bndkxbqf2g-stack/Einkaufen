@@ -1,22 +1,25 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 
 const html = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
+const modelSource = await readFile(new URL('../shopping-costs.js', import.meta.url), 'utf8');
+const browserGlobal = {};
+runInNewContext(modelSource, browserGlobal);
+const costModel = browserGlobal.AngebotskuecheCostModel;
 const parseMoneyMatch = html.match(/function parseKnownMoney\(value\) \{[\s\S]*?\n    \}/);
-const offerAmountMatch = html.match(/function calculateOfferAmount\(items\) \{[\s\S]*?\n    \}/);
 const formatEuroMatch = html.match(/function formatEuro\(value\) \{[\s\S]*?\n    \}/);
 const shareAmountMatch = html.match(/function shoppingShareAmountLabel\(item\) \{[\s\S]*?\n    \}/);
 const shareSummaryMatch = html.match(/function shoppingShareSummary\(items\) \{[\s\S]*?\n    \}/);
 assert.ok(parseMoneyMatch, 'parseKnownMoney muss im App-Bundle vorhanden sein');
-assert.ok(offerAmountMatch, 'calculateOfferAmount muss im App-Bundle vorhanden sein');
 assert.ok(formatEuroMatch, 'formatEuro muss im App-Bundle vorhanden sein');
 assert.ok(shareAmountMatch, 'shoppingShareAmountLabel muss im App-Bundle vorhanden sein');
 assert.ok(shareSummaryMatch, 'shoppingShareSummary muss im App-Bundle vorhanden sein');
 
-const shoppingShareFunctions = new Function(
-  `${parseMoneyMatch[0]}\n${offerAmountMatch[0]}\n${formatEuroMatch[0]}\n${shareAmountMatch[0]}\n${shareSummaryMatch[0]}; return { shoppingShareAmountLabel, shoppingShareSummary };`,
-)();
+const parseKnownMoney = new Function(`${parseMoneyMatch[0]}; return parseKnownMoney;`)();
+const calculateOfferAmount = items => costModel.calculateOfferAmount(items, parseKnownMoney);
+const shoppingShareFunctions = new Function('calculateOfferAmount', `${formatEuroMatch[0]}\n${shareAmountMatch[0]}\n${shareSummaryMatch[0]}; return { shoppingShareAmountLabel, shoppingShareSummary };`)(calculateOfferAmount);
 
 const { shoppingShareAmountLabel, shoppingShareSummary } = shoppingShareFunctions;
 

@@ -1,19 +1,22 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 
 const html = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
+const modelSource = await readFile(new URL('../shopping-costs.js', import.meta.url), 'utf8');
+const browserGlobal = {};
+runInNewContext(modelSource, browserGlobal);
+const costModel = browserGlobal.AngebotskuecheCostModel;
 const parseMoneyMatch = html.match(/function parseKnownMoney\(value\) \{[\s\S]*?\n    \}/);
-const offerAmountMatch = html.match(/function calculateOfferAmount\(items\) \{[\s\S]*?\n    \}/);
 const formatEuroMatch = html.match(/function formatEuro\(value\) \{[\s\S]*?\n    \}/);
 const marketSummaryMatch = html.match(/function formatShoppingGroupOfferSummary\(group, items\) \{[\s\S]*?\n    \}/);
 assert.ok(parseMoneyMatch, 'parseKnownMoney muss im App-Bundle vorhanden sein');
-assert.ok(offerAmountMatch, 'calculateOfferAmount muss im App-Bundle vorhanden sein');
 assert.ok(formatEuroMatch, 'formatEuro muss im App-Bundle vorhanden sein');
 assert.ok(marketSummaryMatch, 'formatShoppingGroupOfferSummary muss im App-Bundle vorhanden sein');
 const parseKnownMoney = new Function(`${parseMoneyMatch[0]}; return parseKnownMoney;`)();
-const calculateOfferAmount = new Function(`${parseMoneyMatch[0]}\n${offerAmountMatch[0]}; return calculateOfferAmount;`)();
-const formatShoppingGroupOfferSummary = new Function(`${parseMoneyMatch[0]}\n${offerAmountMatch[0]}\n${formatEuroMatch[0]}\n${marketSummaryMatch[0]}; return formatShoppingGroupOfferSummary;`)();
+const calculateOfferAmount = items => costModel.calculateOfferAmount(items, parseKnownMoney);
+const formatShoppingGroupOfferSummary = new Function('calculateOfferAmount', `${formatEuroMatch[0]}\n${marketSummaryMatch[0]}; return formatShoppingGroupOfferSummary;`)(calculateOfferAmount);
 
 test('parses only explicit positive euro amounts', () => {
   assert.equal(parseKnownMoney('2,49 €'), 2.49);
@@ -55,8 +58,8 @@ test('keeps unit-price denominators out of known purchase amounts', () => {
   ]);
 
   assert.equal(result.totalCents, 0);
-  assert.deepEqual(result.knownItems, []);
-  assert.deepEqual(result.unknownItems.map(item => item.id), ['unit-price']);
+  assert.equal(result.knownItems.length, 0);
+  assert.deepEqual(Array.from(result.unknownItems, item => item.id), ['unit-price']);
 });
 
 test('does not count a negative euro amount as a purchasable offer price', () => {
@@ -65,8 +68,8 @@ test('does not count a negative euro amount as a purchasable offer price', () =>
   ]);
 
   assert.equal(result.totalCents, 0);
-  assert.deepEqual(result.knownItems, []);
-  assert.deepEqual(result.unknownItems.map(item => item.id), ['negative']);
+  assert.equal(result.knownItems.length, 0);
+  assert.deepEqual(Array.from(result.unknownItems, item => item.id), ['negative']);
 });
 
 test('normalizes explicit German thousands groups and rejects unsupported decimal precision', () => {
@@ -77,8 +80,8 @@ test('normalizes explicit German thousands groups and rejects unsupported decima
   ]);
 
   assert.equal(result.totalCents, 246856);
-  assert.deepEqual(result.knownItems.map(item => item.id), ['grouped-whole', 'grouped-cents']);
-  assert.deepEqual(result.unknownItems.map(item => item.id), ['ambiguous-comma']);
+  assert.deepEqual(Array.from(result.knownItems, item => item.id), ['grouped-whole', 'grouped-cents']);
+  assert.deepEqual(Array.from(result.unknownItems, item => item.id), ['ambiguous-comma']);
 });
 
 test('calculates known offer amounts in cents and keeps unknown positions separate', () => {
@@ -91,8 +94,8 @@ test('calculates known offer amounts in cents and keeps unknown positions separa
 
   assert.equal(result.totalCents, 360);
   assert.equal(result.total, 3.6);
-  assert.deepEqual(result.knownItems.map(item => item.id), ['known']);
-  assert.deepEqual(result.unknownItems.map(item => item.id), ['unknown', 'empty', 'invalid']);
+  assert.deepEqual(Array.from(result.knownItems, item => item.id), ['known']);
+  assert.deepEqual(Array.from(result.unknownItems, item => item.id), ['unknown', 'empty', 'invalid']);
 });
 
 test('keeps unknown offer prices out of the displayed subtotal and shared list', () => {
