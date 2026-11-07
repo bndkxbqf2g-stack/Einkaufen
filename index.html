@@ -2291,17 +2291,23 @@
       $('#pantryModal').classList.remove('open');
     }
 
-    function savePantryItem() {
-      const candidates = parseManualIngredients($('#pantryInput').value).map(item => item.replace(/\s+/g, ' ').trim()).filter(Boolean);
-      if (!candidates.length) { $('#pantryStatus').textContent = 'Bitte mindestens eine Zutat eingeben.'; $('#pantryInput').focus(); return; }
-      const known = new Set(pantry.map(normalizeIngredient));
+    function classifyPantryCandidates(existingItems, candidates) {
+      const known = new Set((Array.isArray(existingItems) ? existingItems : []).map(shoppingIngredientIdentity));
       const added = [];
       const duplicates = [];
-      candidates.forEach(candidate => {
-        const key = normalizeIngredient(candidate);
+      (Array.isArray(candidates) ? candidates : []).forEach(candidate => {
+        const key = shoppingIngredientIdentity(candidate);
+        if (!key) return;
         if (known.has(key)) duplicates.push(candidate);
         else { known.add(key); added.push(candidate); }
       });
+      return { added, duplicates };
+    }
+
+    function savePantryItem() {
+      const candidates = parseManualIngredients($('#pantryInput').value).map(item => item.replace(/\s+/g, ' ').trim()).filter(Boolean);
+      if (!candidates.length) { $('#pantryStatus').textContent = 'Bitte mindestens eine Zutat eingeben.'; $('#pantryInput').focus(); return; }
+      const { added, duplicates } = classifyPantryCandidates(pantry, candidates);
       if (added.length) {
         pantry.push(...added);
         localStorage.setItem('angebotskueche.pantry', JSON.stringify(pantry));
