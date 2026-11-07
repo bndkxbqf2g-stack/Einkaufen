@@ -121,3 +121,9 @@ freigegeben oder entschieden wurden.
 - PR #53 korrigiert das Abschneiden dezimaler Packungsgrößen im Angebotsnamen, z. B. `0,33-l-Dose` bei Kaufland. Der konkrete Produktname bleibt erhalten; Preis und Packungsgröße werden weiterhin deterministisch geprüft. Die PR-CI (Run `42335185938`) war vollständig grün; gemergt in `e7b0c88adec41dd04bf0acad5cda24b71d40522e`.
 - Keine Datenbankmigration, keine Änderung am Supabase-Projekt, keine erfundenen Angebotsdaten und keine neue kostenpflichtige Ressource.
 - Chat A hat den begrenzten Audit abgeschlossen; Chat B bleibt nach PR #51 abgeschlossen. Neue Nebentasks werden erst nach erneuter Kontingentprüfung und nur unterhalb der vereinbarten Verbrauchsgrenzen gestartet.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Auditabschluss
+
+- Der Kostenmodell-Audit von Chat B fand keinen reproduzierbaren Defekt: bekannte positive Angebotspreise werden centgenau und packungsbezogen summiert; unbekannte, negative, Grund- und mehrdeutige Preise bleiben getrennt. Der fokussierte Teststand war 7/7 grün; kein PR und keine Dateiänderung.
+- Der Angebots-Deduplikationsaudit von Chat A fand keinen reproduzierbaren Defekt: gleiche Namen und Preise mit unterschiedlichen Packungsgrößen wurden in der Probe nicht zusammengelegt. Das verbleibende Namensartefakt gehört zum bereits behobenen bzw. separat abgegrenzten Normalisierungsthema; kein PR und keine Dateiänderung.
+- Beide Nebenchats haben ihre begrenzten Aufgaben abgeschlossen. Es werden keine Folgeaufgaben gestartet, bis eine neue Kontingentprüfung erfolgt. Der zuletzt geprüfte Verbrauch lag bei 6 % im 5-Stunden-Fenster und 31 % im Wochenfenster.
