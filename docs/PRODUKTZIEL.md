@@ -247,3 +247,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - PR #164 führt die Zutaten-Normalisierung in einem gemeinsam geladenen Modul für App, Vorratsabgleich und Kostenmodell zusammen.
 - Singular-/Plural- und beschreibende Varianten verwenden damit denselben Identitätsvertrag; isolierte Legacy-/Offline-Fallbacks bleiben erhalten.
 - Root und `dist` bleiben synchron; Verhalten, Modul-Synchronität und die bestehende Einkaufslistenlogik sind durch Tests abgesichert.
+
+## Fortschritt 07.11.2026 – Offline-Erststart der App
+
+- PR #166 nimmt die für den ersten App-Start benötigten Zutaten-, Kosten- und Planmodule in den Service-Worker-Shell-Cache auf.
+- Der Cache-Marker wurde auf v29 erhöht, damit bestehende Clients den vollständigen Shell-Bestand neu übernehmen.
+- Root und `dist` bleiben synchron; Service-Worker- und Worker-Validierung sind durch Tests abgesichert.

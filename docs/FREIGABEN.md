@@ -484,3 +484,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - PR [#164](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/164) bündelt den Identitätsvertrag für Zutaten in `ingredient-normalization.js` und verwendet ihn in App sowie Vorrats-/Kostenmodell.
 - Der Fix verhindert, dass Normalisierungsregeln an zwei Stellen auseinanderlaufen. Ein isolierter Fallback bleibt für alte oder unvollständig geladene Clients bestehen.
 - PR-CI, Root-Synchronisierung und GitHub-Pages-Deployment waren erfolgreich. Keine Nutzer-, Plan-, Mengen-, Preis-, Angebots-, Supabase- oder Datenbankänderung; keine zusätzliche Freigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Offline-Erststart
+
+- PR [#166](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/166) precacht `ingredient-normalization.js`, `shopping-costs.js` und `meal-planning.js` gemeinsam mit der App-Shell.
+- Der Cache-Marker wurde von v28 auf v29 erhöht; Root und `dist` sind synchron. Der erste CI-Lauf erkannte korrekt den noch alten Worker-Versionsassert, der vor dem Merge auf v29 aktualisiert wurde.
+- CI, Root-Synchronisierung und GitHub-Pages-Deployment waren anschließend erfolgreich. Keine Nutzer-, Supabase-, Angebots- oder Datenbankänderung; keine zusätzliche Freigabe erforderlich.
