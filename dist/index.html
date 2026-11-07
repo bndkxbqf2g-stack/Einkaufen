@@ -2493,7 +2493,7 @@
     let automaticOfferRefreshStarted = false;
     renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
     setTimeout(() => refreshPendingRecipeImports().catch(() => {}), 250);
-    const APP_BUILD = '2026-11-06-supabase-household-sync-1';
+    const APP_BUILD = '2026-11-07-restore-stability-1';
     try {
       if (localStorage.getItem('angebotskueche.appBuild') !== APP_BUILD) {
         localStorage.setItem('angebotskueche.appBuild', APP_BUILD);
