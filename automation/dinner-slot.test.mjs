@@ -77,7 +77,7 @@ test('keeps dinner assignments separate and limited to one per day', () => {
 test('prevents one recipe from occupying lunch and dinner on the same day', () => {
   const duplicateContext = {
     manualDinnerPlan: {},
-    getPlanCandidateById: id => candidates.find(recipe => recipe.id === id) || null,
+    getPlanCandidateById: id => recipes.find(recipe => recipe.id === id) || null,
     mealPurposeAllowsSlot,
     getCurrentPlanMeals: () => [{ recipeId: 'flex' }],
     $: () => ({ value: 1 }),
