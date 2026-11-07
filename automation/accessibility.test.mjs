@@ -13,3 +13,12 @@ test('announces transient action feedback to assistive technology', () => {
   assert.match(toast, /\baria-live="polite"/, 'the toast needs a polite live region');
   assert.match(toast, /\baria-atomic="true"/, 'the toast message should be announced as one unit');
 });
+
+test('announces pantry and manual shopping input feedback', () => {
+  for (const id of ['pantryStatus', 'shoppingItemStatus']) {
+    const status = source.match(new RegExp(`<div class="source-note" id="${id}"[^>]*>`))?.[0] || '';
+    assert.match(status, /\brole="status"/, `${id} needs a status role`);
+    assert.match(status, /\baria-live="polite"/, `${id} needs a polite live region`);
+    assert.match(status, /\baria-atomic="true"/, `${id} should be announced as one unit`);
+  }
+});
