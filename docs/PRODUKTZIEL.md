@@ -61,7 +61,7 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 - Favoriten und kreative Vorschläge werden als gemeinsame Kandidaten bewertet; der Zutaten-Angebotsabgleich nutzt normalisierte Wörter, häufige Flexionen und eng begrenzte, durch reale Marktsnapshots belegte Produktfamilien. Regressionstests sichern sowohl gültige Komposita als auch typische Fehlzuordnungen ab.
 - Ganze Packungen und Mehrfachverwendung werden in der Einkaufsliste zumindest als Packungsanzahl beziehungsweise „für mehrere Gerichte“ berücksichtigt.
 - KaufDA- und Händler-Workflows sowie ein Bring-Playwright/OCR-Workflow sind im Repository dokumentiert und als GitHub Actions angelegt.
-- Die eingecheckten Snapshots enthalten für Aldi, EDEKA, Kaufland, Lidl, Netto und Penny Angebote mit Quelle, Abrufzeit, Gültigkeit und Parserkennung. Der Stand der untersuchten Dateien umfasst 87 Aldi-, 68 EDEKA-, 73 Kaufland-, 211 Lidl-, 178 Netto- und 77 Penny-Angebote; diese Zählung ist eine Momentaufnahme, keine Vollständigkeitsgarantie.
+- Die eingecheckten Snapshots enthalten für Aldi, EDEKA, Kaufland, Lidl, Netto und Penny Angebote mit Quelle, Abrufzeit, Gültigkeit und Parserkennung. Der beim Audit am 07.11.2026 festgestellte Stand umfasst 87 Aldi-, 68 EDEKA-, 49 Kaufland-, 211 Lidl-, 178 Netto- und 77 Penny-Angebote; diese Zählung ist eine Momentaufnahme, keine Vollständigkeitsgarantie. Für Kaufland fehlen belastbare Quell-Sollzahlen und Ladezielmetadaten; der Vollständigkeitsreport weist den Angebotsumfang deshalb als unbekannt aus.
 - Die Angebots-Pipelines validieren Snapshots jetzt zentral vor Veröffentlichung, verlangen sichere HTTPS-Quelladressen, prüfen Gültigkeitsangaben als echte Kalenderdaten und weisen bereits beim Abruf abgelaufene Snapshots oder Einzelangebote zurück. Dateien werden atomar geschrieben; fehlerhafte Läufe können den letzten gültigen Dateistand dadurch nicht ersetzen.
 - Die gemeinsame Marktdatenansicht zeigt nach einem Quellenabruf erkannte Treffer, den von der Quelle gemeldeten Datenstand und die Gültigkeit. Ein fehlender Quellzeitpunkt wird ausdrücklich als unbekannt angezeigt statt durch die Geräteabrufzeit ersetzt.
 - Beim App-Refresh werden nur die erfolgreich aktualisierten Märkte ersetzt. Angebote fehlgeschlagener oder nicht abgefragter Märkte sowie manuelle Importe bleiben erhalten.
@@ -311,3 +311,10 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Der vorbereitete `purchaseRecords`-Validator akzeptiert nur nichtnegative sichere Ganzzahlen als Centbeträge. Dadurch bleiben Summen oberhalb der JavaScript-Präzisionsgrenze nicht stillschweigend ungenau.
 - Gültige Budgetwerte, die noch nicht produktiv gespeichert oder angezeigt werden, bleiben unverändert. Es wurden keine IST-, Nutzer-, Supabase- oder Datenbankdaten geändert.
+
+
+### Fortschritt 07.11.2026 – Audit Angebotsvollständigkeit und Marktvergleich
+
+- Der Vollständigkeitsreport unterscheidet weiterhin korrekt zwischen Ladeziel und Prospekt-Gesamtumfang: `targetReached` wird nur als Ladeziel angezeigt; „Gesamtumfang nicht belegt“ bleibt explizit.
+- Audit der eingecheckten Snapshots: Aldi, EDEKA, Lidl, Netto und Penny liefern `recognizedCount` plus Ladeziel; Kaufland liefert aktuell 49 Angebote ohne belastbare Sollzahl/`recognizedCount`. Alle sechs Snapshots sind nichtleer, datiert, nicht dupliziert und `recognizedCount` (wo vorhanden) entspricht `offers.length`. Keine Vollständigkeitsbehauptung wird daraus abgeleitet.
+- Der Marktvergleich verwendet nur aktuelle Angebote aktiver Märkte; fehlende oder unklare Preise bleiben unbekannt. Die bestehenden Regressionstests sichern die Coverage-Darstellung, Quellzeitpunkte und den Erhalt nicht aktualisierter Märkte. Für diesen Audit war keine Laufzeitänderung erforderlich.
