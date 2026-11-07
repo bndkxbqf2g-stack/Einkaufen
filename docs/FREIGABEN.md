@@ -61,6 +61,7 @@ Die folgenden Punkte müssen vor einer produktiven IST-Erfassung festgelegt werd
 - **Historie und Rechte:** nur auf diesem Gerät oder haushaltsweit synchronisiert; außerdem Aufbewahrung und Löschung.
 - **Umfang:** ob Märkte, Haushaltswaren und Fahrtkosten getrennt erfasst oder ausgeschlossen werden.
 - **Budgetanzeige:** Monatsziel und Überziehung ausschließlich aus bestätigten IST-Werten; Plan- und Angebotswerte bleiben getrennt.
+- **Null-/Korrekturbeträge:** festlegen, ob ein Einkauf mit 0 Cent zulässig ist (z. B. kostenlos erhalten), ob Korrekturen separat erfasst oder Einträge geändert/gelöscht werden und ob negative Beträge grundsätzlich ausgeschlossen bleiben.
 
 
 ## Offene Nutzerentscheidung – mengenfähige Vorräte
