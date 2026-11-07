@@ -14,8 +14,10 @@ const candidatesMatch = source.match(/function getPlanCandidatesForSlot\(slot = 
 const assignmentMatch = source.match(/function assignRecipeToDinner\(recipeId, dayIndex\) \{[\s\S]*?\n    \}/);
 const dinnersMatch = source.match(/function getCurrentPlanDinners\(\) \{[\s\S]*?\n    \}/);
 const dinnerCardMatch = source.match(/function renderDinnerCard\(dinner, index, people\) \{[\s\S]*?\n    \}/);
+const lunchAssignmentMatch = source.match(/function assignRecipeToDay\(recipeId, dayIndex\) \{[\s\S]*?\n    \}/);
+const currentPlanMatch = source.match(/function getCurrentPlanMeals\(\) \{[\s\S]*?\n    \}/);
 
-for (const [label, match] of Object.entries({ normalizeMatch, purposeMatch, allowsMatch, candidatesMatch, assignmentMatch, dinnersMatch, dinnerCardMatch })) {
+for (const [label, match] of Object.entries({ normalizeMatch, purposeMatch, allowsMatch, candidatesMatch, assignmentMatch, dinnersMatch, dinnerCardMatch, lunchAssignmentMatch, currentPlanMatch })) {
   assert.ok(match, `${label} must be present in index.html`);
 }
 
@@ -145,4 +147,27 @@ test('shows a recipe source link on dinner cards when available', () => {
 
   assert.match(html, /data-recipe-source="true"/);
   assert.match(html, new RegExp('https://example\\.test/brotzeit'));
+});
+
+test('rejects breakfast from manual lunch assignment and keeps valid lunch choices', () => {
+  const assignmentContext = {
+    manualPlan: {},
+    getPlanCandidateById: id => recipes.find(recipe => recipe.id === id) || null,
+    mealPurposeAllowsSlot,
+    $: () => ({ value: 5 }),
+    localStorage: { setItem() {} },
+  };
+  vm.runInNewContext(
+    `${lunchAssignmentMatch[0]}\nglobalThis.assignRecipeToDay = assignRecipeToDay;`,
+    assignmentContext,
+  );
+
+  assert.equal(assignmentContext.assignRecipeToDay('breakfast', 0), false);
+  assert.deepEqual(assignmentContext.manualPlan, {});
+  assert.equal(assignmentContext.assignRecipeToDay('main', 0), true);
+  assert.deepEqual(assignmentContext.manualPlan, { '0': 'main' });
+});
+
+test('uses lunch-only candidates when restoring manual plan assignments', () => {
+  assert.match(currentPlanMatch[0], /getPlanCandidateById\(recipeId, lunchCandidates\)/);
 });
