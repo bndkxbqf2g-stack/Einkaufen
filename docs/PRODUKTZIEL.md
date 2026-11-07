@@ -229,3 +229,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Die Einkaufsliste zeigt neben der Anzahl nun bis zu vier konkret berücksichtigte Vorratszutaten und weist weitere Treffer nur als Anzahl aus.
 - Es werden weiterhin keine Vorratsmengen, Haltbarkeiten, Preise oder Verbrauchsannahmen behauptet; der Angebots-Zwischenwert bleibt unverändert.
 - Die Anzeige nutzt ausschließlich den bestehenden lokalen Plan-/Vorratsabgleich und verändert keine Nutzer-, Backup-, Sync- oder Supabase-Daten.
+
+## Fortschritt 07.11.2026 – barrierefreier Vorratsstatus
+
+- PR #160 kennzeichnet die dynamische Vorratsdetailzeile der Einkaufsliste als zugänglichen Status und kündigt Aktualisierungen für unterstützende Technologien an.
+- Die Verbesserung betrifft ausschließlich die Darstellung; Vorratsmengen, Planwerte, Preise, Angebots-Zwischensummen sowie lokale, Backup-, Sync- und Supabase-Daten bleiben unverändert.
+- Root und `dist` bleiben synchron; die Regressionstest- und CI-Prüfung war erfolgreich.
