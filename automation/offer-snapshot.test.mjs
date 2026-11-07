@@ -43,6 +43,23 @@ test('rejects page metadata and prices that do not contain an explicit euro amou
   );
 });
 
+test('accepts only source-defined German thousands grouping for euro amounts', () => {
+  for (const price of ['1.234 €', '1.234,56 €']) {
+    assert.doesNotThrow(() => validateOfferSnapshot({
+      ...validSnapshot,
+      offers: [{ name: 'Kartoffeln', price, validUntil: '12.11.2026' }],
+    }));
+  }
+
+  assert.throws(
+    () => validateOfferSnapshot({
+      ...validSnapshot,
+      offers: [{ name: 'Kartoffeln', price: '1,234 €', validUntil: '12.11.2026' }],
+    }),
+    /kein eindeutiger Eurobetrag/
+  );
+});
+
 test('accepts supported date-only formats and rejects impossible calendar dates', () => {
   assert.doesNotThrow(() => validateOfferSnapshot({
     ...validSnapshot,
