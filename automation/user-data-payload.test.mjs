@@ -420,7 +420,7 @@ test('round-trips unknown settings through backup export and confirmed cloud-loa
       exportedSettings,
     );
     const exportedPayload = exporter.buildUserDataPayload();
-    assert.deepEqual(plain(exportedPayload.settings), exportedSettings, `${path}: backup export`);
+    assert.deepEqual(JSON.parse(JSON.stringify(exportedPayload.settings)), exportedSettings, `${path}: backup export`);
 
     const localSettings = {
       people: 2,
