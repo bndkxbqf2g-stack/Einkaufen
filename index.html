@@ -1238,7 +1238,7 @@
       const people = Number($('#peopleSelect')?.value || settings.people || 2);
       return [...items.values()].map(item => {
         // Zutaten werden ohne Mengenangabe im Rezept geführt. Ein Vorkommen entspricht deshalb
-        // einer Basisportion für zwei Personen; manuelle Artikel bleiben bei einer Packung.
+        // einer Basisportion für zwei Personen; manuelle Artikel nutzen die gespeicherte Packungszahl (Standard: 1).
         const packCount = shoppingPackCount(item, people);
         return { ...item, packCount, reused: item.count > 1 };
       }).sort((first, second) => Number(Boolean(first.offer)) - Number(Boolean(second.offer)) || first.name.localeCompare(second.name, 'de'));
