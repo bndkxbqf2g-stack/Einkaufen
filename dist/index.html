@@ -709,7 +709,8 @@
     }
     let offers = [...seedOffers, ...(Array.isArray(storedCustomOffers) ? storedCustomOffers : [])].map(offer => ({ validUntil: defaultOfferEnd(), source: 'Demo-Import', confidence: 'mittel', packSize: '1 Packung', ...offer }));
     let favorites = stored('angebotskueche.favorites', seededFavorites);
-    let pantry = stored('angebotskueche.pantry', ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch']);
+    const DEFAULT_PANTRY = ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch'];
+    let pantry = stored('angebotskueche.pantry', [...DEFAULT_PANTRY]);
     let dismissedRecipes = stored('angebotskueche.dismissedRecipes', []);
     let pinnedRecipes = stored('angebotskueche.pinnedRecipes', []);
     let shoppingChecks = stored('angebotskueche.shoppingChecks', {});
@@ -720,15 +721,20 @@
     let suggestionPreferences = stored('angebotskueche.suggestionPreferences', { sort: 'match', filter: 'all', max30: false, vegetarian: false, family: false, leftovers: false, offerMin2: true });
     if (!Array.isArray(favorites)) favorites = seededFavorites;
     favorites = favorites.filter(item => item && typeof item === 'object' && typeof item.name === 'string' && item.name.trim());
-    if (!Array.isArray(pantry)) pantry = ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch'];
+    if (!Array.isArray(pantry)) {
+      pantry = [...DEFAULT_PANTRY];
+      localStorage.setItem('angebotskueche.pantry', JSON.stringify(pantry));
+    }
     if (!Array.isArray(dismissedRecipes)) dismissedRecipes = [];
     if (!Array.isArray(pinnedRecipes)) pinnedRecipes = [];
     dismissedRecipes = dismissedRecipes.filter(item => typeof item === 'string');
     pinnedRecipes = pinnedRecipes.filter(item => typeof item === 'string');
     if (!manualPlan || typeof manualPlan !== 'object' || Array.isArray(manualPlan)) manualPlan = {};
     if (!recipeRatings || typeof recipeRatings !== 'object' || Array.isArray(recipeRatings)) recipeRatings = {};
-    if (!Array.isArray(recipeHistory)) recipeHistory = [];
-    recipeHistory = recipeHistory.filter(item => typeof item === 'string').slice(0, 20);
+    const rawRecipeHistory = recipeHistory;
+    const normalizedRecipeHistory = Array.isArray(rawRecipeHistory) ? rawRecipeHistory.filter(item => typeof item === 'string').slice(0, 20) : [];
+    if (JSON.stringify(normalizedRecipeHistory) !== JSON.stringify(rawRecipeHistory)) localStorage.setItem('angebotskueche.recipeHistory', JSON.stringify(normalizedRecipeHistory));
+    recipeHistory = normalizedRecipeHistory;
     if (!suggestionPreferences || typeof suggestionPreferences !== 'object' || Array.isArray(suggestionPreferences)) suggestionPreferences = { sort: 'match', filter: 'all', max30: false, vegetarian: false, family: false, leftovers: false, offerMin2: true };
     const normalizedManualShoppingItems = normalizeManualShoppingItems(manualShoppingItems);
     if (JSON.stringify(normalizedManualShoppingItems) !== JSON.stringify(manualShoppingItems)) localStorage.setItem('angebotskueche.manualShoppingItems', JSON.stringify(normalizedManualShoppingItems));
