@@ -171,9 +171,11 @@ test('keeps the static app inline script syntactically valid', () => {
 
 test('shows an offline sync error instead of a misleading sign-in prompt', () => {
   assert.ok(html.includes('const syncReady = sync && await initializeSupabaseSync();'));
+  assert.ok(html.includes('const sessionState = syncReady ? await sync.hasSession() : false;'));
+  assert.ok(html.includes('if (sessionState === true) { await sync.save(); return; }'));
+  assert.ok(html.includes('if (sessionState === true) { await sync.load(); return; }'));
+  assert.ok(html.includes('if (sessionState === null) {'));
   assert.ok(html.includes("showToast('Supabase momentan nicht erreichbar. Lokale Daten bleiben auf diesem Gerät verfügbar.');"));
-  assert.ok(html.includes('if (syncReady && await sync.hasSession()) { await sync.save(); return; }'));
-  assert.ok(html.includes('if (syncReady && await sync.hasSession()) { await sync.load(); return; }'));
 });
 
 function extractCloudAction(source, name, nextMarker) {
