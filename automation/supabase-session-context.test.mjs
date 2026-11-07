@@ -30,6 +30,7 @@ function createSessionHarness(initialStorage, initialUser = 'user-1') {
     let session = { user: { id: ${JSON.stringify(initialUser)} } };
     let households = [{ household_id: 'house-old' }];
     let selectedHouseholdId = 'house-old';
+    function safeRemove(key) { localStorage.removeItem(key); }
     ${clearMatch[0]}
     ${updateMatch[0]}
     return {
