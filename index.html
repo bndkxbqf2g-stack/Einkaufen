@@ -1108,6 +1108,10 @@
       return normalizeIngredient(ingredient).replace(/\b(frisch|frische|frischen|gehackt|gerieben|gemischt|rote|roten|gross|grosse|große|klein|kleine)\b/g, ' ').replace(/\s+/g, ' ').trim();
     }
 
+    function shoppingIngredientIdentity(ingredient) {
+      return shoppingIngredientKey(ingredient).split(/\s+/).map(word => word.length >= 5 && word.endsWith('n') ? word.slice(0, -1) : word).join(' ');
+    }
+
     function shoppingPackCount(item, people) {
       if (item?.manual) return 1;
       return Math.max(1, Math.ceil((item.count * people) / 2));
@@ -1121,8 +1125,11 @@
           const ingredient = String(rawIngredient || '').trim();
           if (!ingredient || isPantryIngredient(ingredient)) return;
           const key = shoppingIngredientKey(ingredient);
+          const identity = shoppingIngredientIdentity(ingredient);
           if (!key) return;
-          const current = items.get(key) || { id: `shopping-${key.replace(/[^a-z0-9]+/g, '-')}`, name: ingredient, count: 0, meals: [], offer: null };
+          const existingKey = [...items.keys()].find(candidate => shoppingIngredientIdentity(candidate) === identity);
+          const itemKey = existingKey || key;
+          const current = items.get(itemKey) || { id: `shopping-${key.replace(/[^a-z0-9]+/g, '-')}`, name: ingredient, count: 0, meals: [], offer: null };
           current.count += 1;
           if (!current.meals.includes(meal.title)) current.meals.push(meal.title);
           const candidates = activeOffers.filter(offer => offerMatchesIngredient(ingredient, offer)).sort((first, second) => {
@@ -1132,14 +1139,16 @@
             return (firstMarket === -1 ? 99 : firstMarket) - (secondMarket === -1 ? 99 : secondMarket) || compareOfferCandidates(first, second);
           });
           if (candidates[0] && !current.offer) current.offer = candidates[0];
-          items.set(key, current);
+          items.set(itemKey, current);
         });
       });
       manualShoppingItems.forEach(manualItem => {
         const ingredient = manualItem.name.trim();
         if (!ingredient || isPantryIngredient(ingredient)) return;
         const key = shoppingIngredientKey(ingredient);
-        if (!key || items.has(key)) return;
+        const identity = shoppingIngredientIdentity(ingredient);
+        const existingKey = [...items.keys()].find(candidate => shoppingIngredientIdentity(candidate) === identity);
+        if (!key || existingKey) return;
         const offer = activeOffers.filter(candidate => offerMatchesIngredient(ingredient, candidate)).sort(compareOfferCandidates)[0] || null;
         items.set(key, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id });
       });
