@@ -33,6 +33,8 @@ test('keeps all ingredients uncovered when no pantry predicate is supplied', () 
 test('renders pantry coverage as a separate shopping-list status', () => {
   assert.match(html, /summarizePantryCoverage/);
   assert.match(html, /Vorratszutat/);
+  assert.match(html, /id="shoppingPantryDetail"/);
+  assert.match(html, /Vorratsabgleich: \\${pantryPreview\.join/);
   assert.match(html, /fehlende Artikel und Vorräte sind im Angebotswert nicht enthalten/);
 });
 
