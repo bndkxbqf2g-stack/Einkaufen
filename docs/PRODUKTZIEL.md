@@ -163,3 +163,14 @@ Angelegt bzw. ergänzt am 05.11.2026:
 - Die Service-Worker-Aktivierung wurde geprüft bzw. abgesichert, damit eine neue Version nach der Aktivierung kontrolliert übernimmt.
 - Kombinierte Legacy-Backup-Tests wurden geprüft bzw. abgesichert; ältere Sicherungsstände mit ausgelassenen Feldern verändern erhaltene lokale Daten nicht unkontrolliert.
 - Supabase, Datenmodell und Budgetlogik bleiben unverändert. Der nächste fachliche Freigabepunkt bleibt ein globaler optionaler Frühstücks-Slot.
+
+
+## Fachliche Aktualisierung – Mahlzeitenumfang – 07.11.2026
+
+Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstück:
+
+- Es gibt keinen Frühstücks-Slot.
+- Der bestehende Hauptgericht-Slot wird als Mittagessen verstanden.
+- Zusätzlich ist ausschließlich ein optionales Abendessen vorgesehen.
+- Der bestehende optionale Abendblock bleibt die kleinste rückwärtskompatible Grundlage. Eine per-Person-Auswahl, automatische Umklassifizierung vorhandener Rezepte und eine neue Datenbankstruktur sind nicht Bestandteil dieser Entscheidung.
+- Frühere Passagen, die Frühstück als aktuellen oder nächsten Pflichtumfang nennen, gelten insoweit als überholt. Die nächste Umsetzung darf nur den optionalen Abendessen-Umfang betreffen.
