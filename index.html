@@ -771,7 +771,7 @@
 
     function sortedSelectedMarkets() {
       const configured = Array.isArray(settings.selectedMarkets) ? settings.selectedMarkets.filter(name => marketDetails[name]) : [];
-      const selected = configured.length ? configured : [...DEFAULT_SELECTED_MARKETS];
+      const selected = configured.length ? configured : ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'];
       return selected.sort((first, second) => parseFloat(marketDetails[first].distance.replace(',', '.')) - parseFloat(marketDetails[second].distance.replace(',', '.')));
     }
 
