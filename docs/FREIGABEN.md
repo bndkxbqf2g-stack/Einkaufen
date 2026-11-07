@@ -575,3 +575,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - [PR #185](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/185) schützt die Monatsaggregation gültiger Centwerte vor unsicherer JavaScript-Ganzzahldarstellung. Die produktive IST-Erfassung bleibt ausdrücklich offen; nach grüner CI gemerged.
 - [PR #186](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/186) bewahrt bei fehlgeschlagenem Angebotsrefresh den letzten Datenstand samt Quellzeitpunkt, Gültigkeit und vorhandenen Ladezielmetadaten sichtbar. Unbekannte Sollzahlen bleiben unbekannt; nach grüner CI gemerged.
 - Keine Nutzer-, Angebots-, Supabase- oder Datenbankdaten wurden geändert.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Snapshot-Quellenlink
+
+- [PR #188](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/188) verlinkt bei validierten Snapshot-Metadaten die tatsächlich geladene sichere HTTPS-`sourceUrl`; alte Statusstände ohne diese Angabe nutzen weiterhin den statischen Fallback.
+- Regressionstest, Root-/`dist`-Synchronität und CI waren grün; PR #188 ist gemerged. Keine neuen Angebotsdaten, keine Supabase- oder Datenbankänderung.
