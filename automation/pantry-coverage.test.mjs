@@ -3,12 +3,13 @@ import { readFile } from 'node:fs/promises';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 
-const [html, modelSource] = await Promise.all([
+const [html, normalizationSource, modelSource] = await Promise.all([
   readFile(new URL('../dist/index.html', import.meta.url), 'utf8'),
+  readFile(new URL('../ingredient-normalization.js', import.meta.url), 'utf8'),
   readFile(new URL('../shopping-costs.js', import.meta.url), 'utf8'),
 ]);
 const browserGlobal = {};
-runInNewContext(modelSource, browserGlobal);
+runInNewContext(`${normalizationSource}\n${modelSource}`, browserGlobal);
 const model = browserGlobal.AngebotskuecheCostModel;
 
 test('summarizes pantry coverage without inventing quantities', () => {
