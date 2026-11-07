@@ -275,3 +275,48 @@ test('confirmed cloud load applies the payload and remembers its revision', asyn
   assert.equal(harness.storage.get('angebotskueche.supabase.localHousehold'), 'house-1');
   assert.equal(harness.storage.get('angebotskueche.supabase.revision.house-1'), '4');
 });
+
+function createMarketSelectionHarness({ selectedMarkets, markets } = {}) {
+  const sortedDeclaration = html.match(/function sortedSelectedMarkets\(\) \{[\\s\\S]*?\r?\n    \}/);
+  const activeDeclaration = html.match(/function getActiveOffers\(\) \{[\\s\\S]*?\r?\n    \}/);
+  assert.ok(sortedDeclaration, 'selected market sorter is present');
+  assert.ok(activeDeclaration, 'active offer selector is present');
+  return vm.runInNewContext(`(() => {
+    ${sortedDeclaration[0]}
+    ${activeDeclaration[0]}
+    return { sortedSelectedMarkets, getActiveOffers };
+  })()`, {
+    settings: { selectedMarkets, markets },
+    marketDetails: {
+      Aldi: { distance: '4,8 km' },
+      Kaufland: { distance: '18,6 km' },
+      Lidl: { distance: '6,2 km' },
+      EDEKA: { distance: '3,1 km' },
+    },
+    offers: [
+      { store: 'Aldi' },
+      { store: 'Kaufland' },
+      { store: 'Lidl' },
+      { store: 'EDEKA' },
+    ],
+    isOfferCurrent: () => true,
+  });
+}
+
+test('keeps active offers bounded when persisted market settings are invalid', () => {
+  const valid = createMarketSelectionHarness({ selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'], markets: 1 });
+  assert.deepEqual(valid.getActiveOffers().map(offer => offer.store), ['EDEKA']);
+
+  const invalidSelection = createMarketSelectionHarness({ selectedMarkets: ['not-a-market'], markets: 1 });
+  assert.deepEqual(invalidSelection.sortedSelectedMarkets(), ['EDEKA', 'Aldi', 'Lidl', 'Kaufland']);
+  assert.deepEqual(invalidSelection.getActiveOffers().map(offer => offer.store), ['EDEKA']);
+
+  const invalidLimit = createMarketSelectionHarness({ selectedMarkets: ['Aldi', 'Kaufland'], markets: 'invalid' });
+  assert.deepEqual(invalidLimit.getActiveOffers().map(offer => offer.store), ['Aldi', 'Kaufland']);
+
+  const zeroLimit = createMarketSelectionHarness({ selectedMarkets: ['Aldi', 'Kaufland'], markets: '0' });
+  assert.deepEqual(zeroLimit.getActiveOffers().map(offer => offer.store), ['Aldi', 'Kaufland']);
+
+  const missingSettings = createMarketSelectionHarness();
+  assert.deepEqual(missingSettings.getActiveOffers().map(offer => offer.store), ['EDEKA', 'Aldi']);
+});
