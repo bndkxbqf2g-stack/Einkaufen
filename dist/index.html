@@ -1527,7 +1527,7 @@
         const amountLabel = item.offer ? shoppingShareAmountLabel(item) : 'ergänzen';
         return `- ${item.name}${item.count > 1 ? ` · für ${item.count} Gerichte` : ''}${item.offer ? ` · ${packCount} × ${item.offer.packSize || '1 Packung'} · ${amountLabel}` : ` · ${amountLabel}`}`;
       }).join('\n')}`).join('\n\n');
-      const text = `Angebotsküche · offene Einkaufsliste\n\n${lines}`;
+      const text = `Angebotsküche · offene Einkaufsliste\n\n${lines}\n\n${shoppingShareSummary(pending)}\nFehlende Artikel und Vorräte sind nicht enthalten.`;
       if (navigator.share) {
         try { await navigator.share({ title: 'Angebotsküche · Einkaufsliste', text, url: appShareUrl }); showToast('Einkaufsliste geteilt.'); } catch (error) { if (error.name !== 'AbortError') showToast('Teilen wurde auf diesem Gerät nicht unterstützt.'); }
       } else if (navigator.clipboard) {
@@ -1682,6 +1682,15 @@
     function shoppingShareAmountLabel(item) {
       const amount = calculateOfferAmount([item]);
       return amount.knownItems.length ? formatEuro(amount.total) : 'Preis unbekannt';
+    }
+
+    function shoppingShareSummary(items) {
+      const summary = calculateOfferAmount(items);
+      const details = [];
+      details.push(summary.knownItems.length ? `Bekannter Angebotsbetrag ${formatEuro(summary.total)}` : 'Kein verifizierter Angebotsbetrag');
+      if (summary.unknownItems.length) details.push(`${summary.unknownItems.length} Preis${summary.unknownItems.length === 1 ? '' : 'e'} unbekannt`);
+      details.push('Kassenbetrag offen');
+      return details.join(' · ');
     }
 
     function formatShoppingGroupOfferSummary(group, items) {
