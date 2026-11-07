@@ -264,3 +264,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Rückmeldungen beim Speichern von Vorräten und manuellen Einkaufsartikeln werden nun als höfliche, atomare Statusmeldungen für unterstützende Technologien ausgezeichnet.
 - Die Änderung betrifft ausschließlich die Darstellung und erhält alle bestehenden Eingaben, Daten und Berechnungen.
+
+## Fortschritt 07.11.2026 – Offline-Shell-Vertrag
+
+- Ein Regressionstest vergleicht jetzt automatisch alle lokalen JavaScript-Dateien aus `index.html` mit dem Service-Worker-App-Shell-Cache.
+- Neue Frontend-Module können dadurch nicht mehr ohne passende Offline-Cache-Absicherung veröffentlicht werden.
