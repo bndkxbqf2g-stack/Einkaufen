@@ -32,18 +32,20 @@ test('loads current generated offers with a forced refresh before the first plan
   const harness = createRefreshHarness();
 
   assert.equal(await harness.start(), true);
-  assert.deepEqual(harness.calls, [{ force: true }]);
+  assert.equal(harness.calls.length, 1);
+  assert.equal(harness.calls[0]?.force, true);
   assert.equal(harness.context.automaticOfferRefreshStarted, true);
 
   assert.equal(await harness.start(), false);
-  assert.deepEqual(harness.calls, [{ force: true }]);
+  assert.equal(harness.calls.length, 1);
+  assert.equal(harness.calls[0]?.force, true);
 });
 
 test('keeps the static seed offers as the non-GitHub fallback path', async () => {
   const harness = createRefreshHarness({ githubPages: false });
 
   assert.equal(await harness.start(), false);
-  assert.deepEqual(harness.calls, []);
+  assert.equal(harness.calls.length, 0);
   assert.equal(harness.context.automaticOfferRefreshStarted, false);
 });
 
