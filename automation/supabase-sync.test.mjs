@@ -276,9 +276,19 @@ test('confirmed cloud load applies the payload and remembers its revision', asyn
   assert.equal(harness.storage.get('angebotskueche.supabase.revision.house-1'), '4');
 });
 
+function extractFrontendFunction(source, name) {
+  const start = source.indexOf(`function ${name}() {`);
+  assert.notEqual(start, -1, `${name} is present`);
+  const closing = '\n    }';
+  const end = source.indexOf(closing, start);
+  assert.notEqual(end, -1, `${name} closing brace is present`);
+  return source.slice(start, end + closing.length);
+}
+
 function createMarketSelectionHarness({ selectedMarkets, markets } = {}) {
-  const sortedDeclaration = html.match(/function sortedSelectedMarkets\(\) \{[\\s\\S]*?\r?\n    \}/);
-  const activeDeclaration = html.match(/function getActiveOffers\(\) \{[\\s\\S]*?\r?\n    \}/);
+  const normalizedHtml = html.replace(/\r\n?/g, '\n');
+  const sortedDeclaration = [extractFrontendFunction(normalizedHtml, 'sortedSelectedMarkets')];
+  const activeDeclaration = [extractFrontendFunction(normalizedHtml, 'getActiveOffers')];
   assert.ok(sortedDeclaration, 'selected market sorter is present');
   assert.ok(activeDeclaration, 'active offer selector is present');
   return vm.runInNewContext(`(() => {
