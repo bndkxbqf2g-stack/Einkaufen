@@ -2169,7 +2169,7 @@
         if (!response.ok) throw new Error(result.error || 'Cloud-Laden nicht verfügbar');
         if (!result.payload) { showToast('Noch kein Cloud-Stand gespeichert.'); return; }
         const stamp = result.updatedAt ? ` vom ${new Date(result.updatedAt).toLocaleString('de-DE')}` : '';
-        if (window.confirm(`Cloud-Stand${stamp} auf diesem Gerät übernehmen? Nur enthaltene Felder werden ersetzt; fehlende optionale Felder bleiben lokal erhalten.`)) applyUserDataPayload(result.payload, 'Cloud-Daten geladen – die App wird aktualisiert.');
+        if (window.confirm(`Cloud-Stand${stamp} auf diesem Gerät übernehmen? Nur enthaltene Felder werden ersetzt; fehlende optionale Felder bleiben lokal erhalten.`)) applyUserDataPayload(result.payload, 'Cloud-Daten geladen – die App wird aktualisiert.', { mergeSettings: true });
       } catch (error) { showToast(error?.message || 'Cloud-Laden momentan nicht verfügbar.'); }
       finally { button.disabled = false; }
     }
