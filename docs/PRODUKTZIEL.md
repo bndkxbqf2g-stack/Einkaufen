@@ -211,3 +211,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Die Slot-Regel für den Wochenplan liegt jetzt im getesteten Modul `meal-planning.js` und wird von Root- und `dist`-App verwendet.
 - Der Plan lässt weiterhin nur Hauptgericht/Flexibel für das Mittagessen und Brotzeit/Flexibel für das optionale Abendessen zu; Frühstück, Snack und Getränk werden nicht automatisch als Plan-Slots verwendet.
 - Gespeicherte Mahlzeitenzwecke bleiben gültig und werden nicht umklassifiziert. Die Änderung ist damit rückwärtskompatibel und verändert keine Nutzer- oder Supabase-Daten.
+
+## Fortschritt 07.11.2026 – Worker-Sync-Grenze für Rezeptverlauf
+
+- Der bestehende Client begrenzt `recipeHistory` bereits als Array; der Worker-Grenzvalidator übernimmt diese Begrenzung nun ebenfalls mit maximal 5.000 Einträgen.
+- Ungültige Objektwerte und übergroße Rezeptverläufe werden am Worker-Sync abgewiesen, bevor sie in den D1-Pfad gelangen.
+- Worker-Quelle und `dist/server/index.js` bleiben synchron. Die Supabase-RPC-Validierung und deren möglicher Migrationsbedarf bleiben unverändert und werden nicht vorweggenommen.
