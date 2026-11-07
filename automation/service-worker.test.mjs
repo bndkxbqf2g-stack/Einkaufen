@@ -13,7 +13,7 @@ const [source, index] = await Promise.all([
 const origin = 'https://app.example';
 
 test('published service worker and manifest stay identical to their root sources', async () => {
-  const [publishedWorker, manifest, publishedManifest] = await Promise.all([
+  const [publishedWorker, publishedIndex, manifest, publishedManifest] = await Promise.all([
     readFile(resolve(root, 'dist/sw.js'), 'utf8'),
     readFile(resolve(root, 'dist/index.html'), 'utf8'),
     readFile(resolve(root, 'manifest.json'), 'utf8'),
