@@ -289,3 +289,11 @@ freigegeben oder entschieden wurden.
 - Packungsrundung, Personenmultiplikator, Vorratsfilter, bekannte positive Angebotspreise sowie getrennte unbekannte/mehrdeutige Preise verhalten sich deterministisch. Fehlende Artikel bleiben außerhalb der Angebotssumme und erhalten keinen erfundenen Preis.
 - Das Ergebnis ist weiterhin nur ein Angebots-Zwischenwert, kein vollständiger Kassenbetrag. Reguläre Vergleichspreise, belastbare Vorratsmengen, bestätigte IST-Ausgaben und Fahrtkosten fehlen bewusst.
 - Kein PR, keine Produktänderung und keine Supabase-/Datenbankaktion aus diesem Audit. Die nächste Umsetzung des tatsächlichen Einkaufs-/Kassenflusses bleibt Freigabepunkt 9.
+## Read-only-PWA-/Offline-/Restore-Audit – 07.11.2026
+
+- Der read-only Audit auf `main@d547ff89d2c3114324d808a61838df4cbc7b9fb7` fand keinen reproduzierbaren Datenverlust-, Offline- oder Restore-Defekt; es gibt keinen Produktcode- oder Datenänderungsbedarf.
+- Root und `dist` bleiben bei `index.html`, `supabase-sync.js`, `sw.js`, Manifest und PWA-Icons bytegleich.
+- Service-Worker-Verhalten, lokale Backup-/Restore-Pfade und alte v1-Payloads ohne `manualDinnerPlan` sind durch `automation/service-worker.test.mjs`, `automation/user-data-payload.test.mjs`, `automation/supabase-sync.test.mjs` und `automation/dinner-slot.test.mjs` abgedeckt.
+- Der aktuelle CI-Lauf auf dem nachfolgenden `main@4bd8c8c2c26faa3821b0f3ca18d8f9a6e05e49cd` war grün: [Run #42375649128](https://github.com/bndkxbqf2g-stack/Einkaufen/actions/runs/42375649128).
+- Der Bytevergleich einer frisch erzeugten `dist/server/index.js` mit dem eingecheckten Artefakt zeigte einen nicht-funktionalen Drift, unter anderem `Abends optional` gegenüber `Abendessen optional`. Der Drift wird durch den CI-Schritt `Build worker bundle` erklärt, der das Worker-Artefakt vor Tests reproduzierbar neu erzeugt; es gibt keine Auswirkung auf PWA-, Offline- oder Restore-Daten.
+- Keine Produktcode-, Supabase-, Datenbank- oder Kassenänderung.
