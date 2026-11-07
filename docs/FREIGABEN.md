@@ -415,3 +415,9 @@ freigegeben oder entschieden wurden.
 - [PR #134](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/134) bezeichnet den bestehenden Hauptgericht-Slot im Wochenplan und in der Rezeptdetailansicht eindeutig als „Mittagessen“.
 - Frühstück, Snack und Getränk bleiben außerhalb der automatischen Planung; der optionale Abendessen-Slot bleibt unverändert. Root- und `dist`-Artefakt wurden synchron aktualisiert; CI war grün.
 - Keine Umklassifizierung bestehender Rezepte, keine Nutzerdatenänderung, keine Supabase-Migration, Datenbankänderung, Deployment- oder kostenpflichtige Ressourcenänderung.
+
+## Transparenter Kostenstatus beim Teilen – 07.11.2026
+
+- [PR #136](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/136) ergänzt in der geteilten offenen Einkaufsliste den bekannten Angebotsbetrag, die Anzahl unbekannter Preise und den Hinweis „Kassenbetrag offen“.
+- Fehlende Artikel und Vorräte werden im Share-Text ausdrücklich als nicht enthalten abgegrenzt; die bestehende centgenaue Berechnung und die lokalen Einkaufsdaten bleiben unverändert.
+- Root-/`dist`-Synchronität und Regressionstest sind durch grüne CI abgesichert. Keine Supabase-, Datenbank-, Angebotsdaten-, Deployment- oder kostenpflichtige Ressourcenänderung.
