@@ -1264,6 +1264,11 @@
     }
 
     function renderShoppingList() {
+      const plannedDinners = typeof getPlannedDinnerMeals === 'function' ? getPlannedDinnerMeals() : [];
+      const pantryCoverage = window.AngebotskuecheCostModel.summarizePantryCoverage(
+        [...getCurrentPlanMeals(), ...plannedDinners].flatMap(getMealIngredients),
+        isPantryIngredient,
+      );
       const items = getShoppingItems();
       const normalizedShoppingChecks = reconcileShoppingChecks(shoppingChecks, items);
       if (JSON.stringify(normalizedShoppingChecks) !== JSON.stringify(shoppingChecks)) {
@@ -1285,7 +1290,8 @@
       $('#shoppingOfferTotal').textContent = knownOfferItems.length ? formatEuro(offerTotal) : (unknownOfferItems.length ? '–' : formatEuro(offerTotal));
       $('#shoppingOfferNote').textContent = `${knownOfferItems.length} von ${offerItems.length} Angebotspositionen mit Preis · Packungen für ${Number($('#peopleSelect').value || 2)} Personen${unknownOfferItems.length ? ` · ${unknownOfferItems.length} Preis${unknownOfferItems.length === 1 ? '' : 'e'} unbekannt` : ''}`;
       $('#shoppingMissingCount').textContent = String(missingItems.length);
-      $('#shoppingHint').textContent = items.length ? `${openItems.length} offene Artikel · ${offerItems.length} mit Angebotsanker · ${reusedItems.length ? `${reusedItems.length} Zutaten für mehrere Gerichte eingeplant · größere Packungsmenge berücksichtigt` : 'noch keine Zutat mehrfach eingeplant'} · ${unknownOfferItems.length ? 'Unbekannte Preise sind im bekannten Angebotsbetrag nicht enthalten' : 'Packungsbedarf ist angenähert'}; fehlende Artikel und Vorräte sind im Angebotswert nicht enthalten.` : 'Noch keine einkaufbaren Zutaten im aktuellen Plan.';
+      const pantryNote = pantryCoverage.coveredCount ? `${pantryCoverage.coveredCount} Vorratszutat${pantryCoverage.coveredCount === 1 ? '' : 'en'} aus dem Bestand berücksichtigt` : 'keine Vorratszutat aus dem Bestand berücksichtigt';
+      $('#shoppingHint').textContent = items.length ? `${openItems.length} offene Artikel · ${offerItems.length} mit Angebotsanker · ${reusedItems.length ? `${reusedItems.length} Zutaten für mehrere Gerichte eingeplant · größere Packungsmenge berücksichtigt` : 'noch keine Zutat mehrfach eingeplant'} · ${pantryNote} · ${unknownOfferItems.length ? 'Unbekannte Preise sind im bekannten Angebotsbetrag nicht enthalten' : 'Packungsbedarf ist angenähert'}; fehlende Artikel und Vorräte sind im Angebotswert nicht enthalten.` : 'Noch keine einkaufbaren Zutaten im aktuellen Plan.';
       if (!items.length) { $('#shoppingList').innerHTML = '<div class="empty-state">Für den aktuellen Plan gibt es noch keine Einkaufsliste.</div>'; return; }
       const groups = new Map();
       items.forEach(item => { const label = item.offer?.store || 'Ergänzen'; if (!groups.has(label)) groups.set(label, []); groups.get(label).push(item); });
