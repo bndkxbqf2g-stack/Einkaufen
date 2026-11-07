@@ -328,5 +328,5 @@ test('keeps active offers bounded when persisted market settings are invalid', (
   assert.deepEqual(Array.from(zeroLimit.getActiveOffers(), offer => offer.store), ['Aldi', 'Kaufland']);
 
   const missingSettings = createMarketSelectionHarness();
-  assert.deepEqual(Array.from(missingSettings.getActiveOffers(), offer => offer.store), ['EDEKA', 'Aldi']);
+  assert.deepEqual(Array.from(missingSettings.getActiveOffers(), offer => offer.store), ['Aldi', 'EDEKA']);
 });
