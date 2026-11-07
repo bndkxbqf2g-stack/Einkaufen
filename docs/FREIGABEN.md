@@ -174,3 +174,11 @@ freigegeben oder entschieden wurden.
 - PR [#62](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/62) ist gemergt und normalisiert beim Restore ungültige bzw. ältere Settings-Werte für Personen, Tage, Märkte und Booleans. Unbekannte `selectedMarkets` werden gefiltert und sicher auf die Standardauswahl zurückgeführt; gültige Einstellungen bleiben erhalten. Die CI war grün.
 - PR [#63](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/63) ist gemergt und vergibt für ältere `manualShoppingItems` stabile deterministische IDs. Außerdem bleiben `shoppingChecks` über Reload und Restore erhalten. Die CI war ebenfalls grün.
 - Beide Änderungen waren rückwärtsverträgliche Stabilitätskorrekturen ohne Supabase-, Datenmodell-, Kosten- oder Produktarchitekturänderung; es ist keine zusätzliche Nutzerfreigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Restore-Normalisierung und Favoriten-/Angebotsaudit
+
+- Der aktuelle Integrationsstand ist `main@637bf834f738fede695bcb432fa2fe94a9542030`.
+- PR [#65](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/65) ist gemergt. `recipeHistory` und `pantry` werden vor Backup und Cloud-Synchronisierung normalisiert und persistiert; die CI war grün.
+- Der abgeschlossene Read-only-Audit von `favorites` und `customOffers` fand keinen reproduzierbaren Datenverlust oder instabile Identität über Reload, Backup und Restore. Namen, Preise, Ablaufdaten und Zusatzfelder bleiben im aktuell erzeugten Datenformat erhalten.
+- Als nicht belegter, unveränderter Randbefund bleibt dokumentiert: Ein unmarkiertes Legacy-Angebot ohne Quellen-/Manuellkennzeichnung kann im bestehenden Migrationspfad als automatisches Angebot eingestuft und archiviert werden. Es wurde hierzu kein Defekt bestätigt und keine Produktdatei geändert.
+- PR #65 und der Audit erforderten keine Supabase-, Datenmodell-, Kosten- oder Produktarchitekturänderung.
