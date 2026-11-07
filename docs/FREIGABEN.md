@@ -524,3 +524,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - [PR #173](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/173) korrigiert die Ableitung des Angebotsendes bei ausdrücklich angegebenen Spannen wie „28.12. bis 03.01.“; das fehlende Endjahr wird als Folgejahr behandelt.
 - Der Fix betrifft ausschließlich Parserlogik und Regressionstests. Keine Live-Angebotsdaten, Nutzerdaten, Supabase-, Datenbank- oder Deploymentänderung; keine zusätzliche Freigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, KaufDA-Gültigkeit über Jahreswechsel
+
+- Der KaufDA-Importer berücksichtigt bei einem quellenbelegten Enddatum ohne Jahr im Dezember das Folgejahr; ein sicherer synthetischer Regressionstest schützt den Fall.
+- Keine Live-Angebotsdaten, Nutzerdaten, Supabase-, Datenbank- oder Deploymentänderung; keine zusätzliche Freigabe erforderlich.
