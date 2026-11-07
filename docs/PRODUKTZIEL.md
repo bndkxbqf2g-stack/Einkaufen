@@ -290,3 +290,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Der KaufDA-Importer übernimmt bei einem quellenbelegten Ende wie „Gültig bis 03.01.“ während eines Dezemberabrufs das Folgejahr; zuvor konnte der Snapshot als bereits abgelaufen verworfen werden.
 - Der Randfall ist synthetisch getestet. Offizielle Händlerparser behalten ihre bestehende Jahreswechselbehandlung; fehlende Enddaten werden weiterhin nicht erfunden.
+
+## Fortschritt 07.11.2026 – Mahlzeiten-Slots im Wochenplan
+
+- Manuelle Tageszuordnungen akzeptieren jetzt ausschließlich Rezepte für den Mittagsslot (`Hauptgericht` oder `Flexibel`); Frühstück, Snack und Getränk bleiben Rezeptzwecke, werden aber nicht als Wochenplan-Slot verwendet.
+- Auch ältere gespeicherte manuelle Zuordnungen werden beim Planaufbau gegen die Mittagsslot-Kandidaten geprüft. Dadurch gelangen ausgeschlossene Mahlzeiten nicht in Einkaufsliste, Mengen-/Packungsberechnung oder Planbetrag; bestehende Nutzerdaten werden nicht gelöscht.
