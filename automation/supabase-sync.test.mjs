@@ -315,18 +315,18 @@ function createMarketSelectionHarness({ selectedMarkets, markets } = {}) {
 
 test('keeps active offers bounded when persisted market settings are invalid', () => {
   const valid = createMarketSelectionHarness({ selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'], markets: 1 });
-  assert.deepEqual(valid.getActiveOffers().map(offer => offer.store), ['EDEKA']);
+  assert.deepEqual(Array.from(valid.getActiveOffers(), offer => offer.store), ['EDEKA']);
 
   const invalidSelection = createMarketSelectionHarness({ selectedMarkets: ['not-a-market'], markets: 1 });
-  assert.deepEqual(invalidSelection.sortedSelectedMarkets(), ['EDEKA', 'Aldi', 'Lidl', 'Kaufland']);
-  assert.deepEqual(invalidSelection.getActiveOffers().map(offer => offer.store), ['EDEKA']);
+  assert.deepEqual(Array.from(invalidSelection.sortedSelectedMarkets()), ['EDEKA', 'Aldi', 'Lidl', 'Kaufland']);
+  assert.deepEqual(Array.from(invalidSelection.getActiveOffers(), offer => offer.store), ['EDEKA']);
 
   const invalidLimit = createMarketSelectionHarness({ selectedMarkets: ['Aldi', 'Kaufland'], markets: 'invalid' });
-  assert.deepEqual(invalidLimit.getActiveOffers().map(offer => offer.store), ['Aldi', 'Kaufland']);
+  assert.deepEqual(Array.from(invalidLimit.getActiveOffers(), offer => offer.store), ['Aldi', 'Kaufland']);
 
   const zeroLimit = createMarketSelectionHarness({ selectedMarkets: ['Aldi', 'Kaufland'], markets: '0' });
-  assert.deepEqual(zeroLimit.getActiveOffers().map(offer => offer.store), ['Aldi', 'Kaufland']);
+  assert.deepEqual(Array.from(zeroLimit.getActiveOffers(), offer => offer.store), ['Aldi', 'Kaufland']);
 
   const missingSettings = createMarketSelectionHarness();
-  assert.deepEqual(missingSettings.getActiveOffers().map(offer => offer.store), ['EDEKA', 'Aldi']);
+  assert.deepEqual(Array.from(missingSettings.getActiveOffers(), offer => offer.store), ['EDEKA', 'Aldi']);
 });
