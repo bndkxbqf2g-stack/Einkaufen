@@ -634,7 +634,10 @@
         });
     }
     function normalizeRecipeMealPurpose(value) {
-      return window.AngebotskuecheMealModel.normalizeRecipeMealPurpose(value);
+      const model = typeof window !== 'undefined' ? window.AngebotskuecheMealModel : null;
+      if (model) return model.normalizeRecipeMealPurpose(value);
+      const purpose = String(value || '').trim();
+      return ['Hauptgericht', 'Frühstück', 'Brotzeit', 'Snack', 'Getränk', 'Flexibel'].includes(purpose) ? purpose : 'Flexibel';
     }
     function recipeMealPurpose(recipe) {
       return normalizeRecipeMealPurpose(recipe?.mealPurpose);
@@ -644,7 +647,11 @@
       return {};
     }
     function mealPurposeAllowsSlot(recipe, slot = 'lunch') {
-      return window.AngebotskuecheMealModel.mealPurposeAllowsSlot(recipe, slot);
+      const model = typeof window !== 'undefined' ? window.AngebotskuecheMealModel : null;
+      if (model) return model.mealPurposeAllowsSlot(recipe, slot);
+      const purpose = recipeMealPurpose(recipe);
+      if (slot === 'dinner') return purpose === 'Brotzeit' || purpose === 'Flexibel';
+      return purpose === 'Hauptgericht' || purpose === 'Flexibel';
     }
     const DEFAULT_SELECTED_MARKETS = ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'];
     function normalizeSettings(raw) {
