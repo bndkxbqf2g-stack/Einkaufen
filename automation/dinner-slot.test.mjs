@@ -12,8 +12,9 @@ const purposeMatch = source.match(/function recipeMealPurpose\(recipe\) \{[\s\S]
 const allowsMatch = source.match(/function mealPurposeAllowsSlot\(recipe, slot = 'lunch'\) \{[\s\S]*?\n    \}/);
 const candidatesMatch = source.match(/function getPlanCandidatesForSlot\(slot = 'lunch'\) \{[\s\S]*?\n    \}/);
 const assignmentMatch = source.match(/function assignRecipeToDinner\(recipeId, dayIndex\) \{[\s\S]*?\n    \}/);
+const dinnersMatch = source.match(/function getCurrentPlanDinners\(\) \{[\s\S]*?\n    \}/);
 
-for (const [label, match] of Object.entries({ normalizeMatch, purposeMatch, allowsMatch, candidatesMatch, assignmentMatch })) {
+for (const [label, match] of Object.entries({ normalizeMatch, purposeMatch, allowsMatch, candidatesMatch, assignmentMatch, dinnersMatch })) {
   assert.ok(match, `${label} must be present in index.html`);
 }
 
@@ -70,4 +71,42 @@ test('keeps dinner assignments separate and limited to one per day', () => {
   assert.equal(assignmentContext.assignRecipeToDinner('flex', 1), true);
   assert.deepEqual(assignments, { '1': 'flex' });
   assert.equal(assignmentContext.assignRecipeToDinner('main', 2), false);
+});
+
+
+test('prevents one recipe from occupying lunch and dinner on the same day', () => {
+  const duplicateContext = {
+    manualDinnerPlan: {},
+    getPlanCandidateById: id => recipes.find(recipe => recipe.id === id) || null,
+    mealPurposeAllowsSlot,
+    getCurrentPlanMeals: () => [{ recipeId: 'flex' }],
+    $: () => ({ value: 1 }),
+    localStorage: { setItem() {} },
+  };
+  vm.runInNewContext(
+    `${assignmentMatch[0]}\nglobalThis.assignRecipeToDinner = assignRecipeToDinner;`,
+    duplicateContext,
+  );
+
+  assert.equal(duplicateContext.assignRecipeToDinner('flex', 0), false);
+  assert.deepEqual(duplicateContext.manualDinnerPlan, {});
+});
+
+test('hides a stale dinner assignment when lunch now uses the same recipe', () => {
+  const dinnerContext = {
+    manualDinnerPlan: { '0': 'flex' },
+    getPlanCandidates: () => recipes,
+    mealPurposeAllowsSlot,
+    getCurrentPlanMeals: () => [{ recipeId: 'flex' }],
+    getPlanCandidateById: id => recipes.find(recipe => recipe.id === id) || null,
+    $: () => ({ value: 1 }),
+    getPlanDateInfo: index => ({ day: `Tag ${index + 1}`, short: `T${index + 1}` }),
+    suggestionAsMeal: recipe => ({ ...recipe, recipeId: recipe.id, title: recipe.title, kind: 'dinner', score: 80, cost: '4,00 €' }),
+  };
+  vm.runInNewContext(
+    `${dinnersMatch[0]}\nglobalThis.getCurrentPlanDinners = getCurrentPlanDinners;`,
+    dinnerContext,
+  );
+
+  assert.equal(dinnerContext.getCurrentPlanDinners()[0], null);
 });
