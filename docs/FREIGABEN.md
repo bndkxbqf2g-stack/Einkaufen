@@ -219,3 +219,10 @@ freigegeben oder entschieden wurden.
 - Der zentrale Validator weist exakte Angebots-Snapshot-Duplikate anhand der normalisierten Identität aus Name, Preis, Packungsgröße und Gültigkeitsdatum zurück. Unterschiedliche Packungsgrößen bleiben zulässig.
 - Der Regressionstest und die PR-CI (Run [#42342350172](https://github.com/bndkxbqf2g-stack/Einkaufen/actions/runs/42342350172)) waren erfolgreich.
 - Keine Supabase-, Datenmodell-, Budget- oder Angebotsdatenänderung; keine zusätzliche Nutzerfreigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, PWA-Client-Aktivierung
+
+- PR [#79](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/79) ist in den aktuellen Integrationsstand `main@37c22a08239cbb99ad02b99abbf46e0b79a850d6` gemergt.
+- `sw.js` und `dist/sw.js` warten beim `activate`-Ereignis nun über `event.waitUntil()` auf `clients.claim()`, damit bestehende Clients die Aktivierung vollständig abwarten.
+- Der verzögerte-Claim-Regressionstest und die PR-CI (Run [#42342824800](https://github.com/bndkxbqf2g-stack/Einkaufen/actions/runs/42342824800)) waren erfolgreich.
+- Keine Daten-, Supabase- oder Architekturänderung; keine zusätzliche Nutzerfreigabe erforderlich.
