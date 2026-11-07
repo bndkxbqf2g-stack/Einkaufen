@@ -496,3 +496,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - PR-Vorbereitung: Die Vorratseingabe verwendet den gemeinsamen Zutaten-Identitätsvertrag; `Tomate` und `Tomaten` werden beim erneuten Hinzufügen als bereits vorhanden erkannt.
 - Der zuerst gespeicherte Anzeigename und alle bestehenden Vorratsdaten bleiben erhalten; nur neue Eingaben werden konservativ geprüft. Leere Identitäten werden verworfen.
 - Die Änderung betrifft keine Mengen-, Haltbarkeits-, Preis-, Plan-, Backup-, Sync-, Supabase- oder Angebotsdaten und benötigt keine zusätzliche Freigabe.
+
+## Koordinierter Arbeitsstand – 07.11.2026, zugängliche Eingaberückmeldungen
+
+- PR-Vorbereitung: `pantryStatus` und `shoppingItemStatus` werden als `status` mit höflicher Live-Region ausgezeichnet.
+- Die Regressionstests prüfen Root-/`dist`-Synchronität und beide Statusfelder. Keine Nutzer-, Mengen-, Preis-, Plan-, Backup-, Sync-, Supabase- oder Angebotsdatenänderung; keine zusätzliche Freigabe erforderlich.
