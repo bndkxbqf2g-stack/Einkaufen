@@ -116,6 +116,16 @@ test('rejects snapshots and offers already expired at their recorded fetch time'
   );
 });
 
+test('rejects offers that outlive the snapshot validity', () => {
+  assert.throws(
+    () => validateOfferSnapshot({
+      ...validSnapshot,
+      offers: [{ name: 'Kartoffeln', price: '1,99 €', validUntil: '13.11.2026' }],
+    }),
+    /liegt nach dem Snapshot-Ende/
+  );
+});
+
 test('rejects snapshots and offers already expired at publication time', () => {
   const now = new Date('2026-11-07T12:00:00.000Z');
   assert.throws(
