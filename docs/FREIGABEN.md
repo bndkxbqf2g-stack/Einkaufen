@@ -465,3 +465,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - PR [#158](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/158) ergänzt in der Einkaufsliste neben der Trefferanzahl bis zu vier konkret berücksichtigte Vorratszutaten und weist weitere Treffer nur als Anzahl aus.
 - Die Anzeige nutzt ausschließlich den bestehenden lokalen Plan-/Vorratsabgleich. Vorratsmengen, Haltbarkeiten, Verbrauchsannahmen, Preise, Angebots-Zwischensummen, Backup-, Sync- und Supabase-Daten bleiben unverändert.
 - Regressionstest, Root-/`dist`-Synchronität und CI waren grün; der Merge nach `main@9c8b0934a3964341a19c7f8eb4088271c13b4b35` wurde anschließend erfolgreich auf GitHub Pages veröffentlicht. Keine zusätzliche Freigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, barrierefreier Vorratsstatus
+
+- PR [#160](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/160) markiert die dynamische Vorratsdetailzeile als zugänglichen Status mit `aria-live="polite"` und `aria-atomic="true"`.
+- Root und `dist` sind bytegleich; die Regressionstest- und PR-CI-Prüfung war grün. Der Merge nach `main@8ab3281de64262f7ee680abee9327633619f2f5b` wurde erfolgreich auf GitHub Pages veröffentlicht.
+- Keine Produkt-, Mengen-, Preis-, Nutzer-, Sync-, Supabase- oder Datenbankänderung; keine zusätzliche Freigabe erforderlich.
