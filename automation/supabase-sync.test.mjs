@@ -249,6 +249,17 @@ test('reports card load goals without claiming the prospect is complete', () => 
   assert.match(html, /targetOfferCount: Number\(result\.payload\.targetOfferCount/);
 });
 
+test('uses the validated snapshot source URL for market links', () => {
+  const declaration = html.match(/function sourceUrlForDisplay\(value\) \{[\\s\\S]*?\n    \}/);
+  assert.ok(declaration, 'source URL display helper is present');
+  const sourceUrlForDisplay = vm.runInNewContext(`(${declaration[0]})`);
+  assert.equal(sourceUrlForDisplay('https://example.test/offers?market=lidl'), 'https://example.test/offers?market=lidl');
+  assert.equal(sourceUrlForDisplay('javascript:alert(1)'), '');
+  assert.equal(sourceUrlForDisplay('https://user:secret@example.test/offers'), '');
+  assert.match(html, /sourceUrl: sourceUrlForDisplay\(result\.payload\.sourceUrl\)/);
+  assert.match(html, /const sourceUrl = live\?\.sourceUrl === undefined \? details\.source : liveSourceUrl/);
+});
+
 test('labels the shopping offer subtotal and names what is excluded', () => {
   assert.match(html, /Angebotswert/);
   assert.match(html, /Packungsbedarf ist angenähert/);
