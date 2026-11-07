@@ -1172,7 +1172,8 @@
     function getShoppingItems() {
       const activeOffers = getActiveOffers();
       const items = new Map();
-      const plannedMeals = [...getCurrentPlanMeals(), ...getPlannedDinnerMeals()];
+      const plannedDinners = typeof getPlannedDinnerMeals === 'function' ? getPlannedDinnerMeals() : [];
+      const plannedMeals = [...getCurrentPlanMeals(), ...plannedDinners];
       plannedMeals.forEach(meal => {
         getMealIngredients(meal).forEach(rawIngredient => {
           const ingredient = String(rawIngredient || '').trim();
