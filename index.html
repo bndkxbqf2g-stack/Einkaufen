@@ -1670,7 +1670,12 @@
       const firstPrice = parseKnownMoney(first?.price);
       const secondPrice = parseKnownMoney(second?.price);
       if (firstPrice === null || secondPrice === null) return 0;
-      const calculateOfferAmount = (items) => window.AngebotskuecheCostModel.calculateOfferAmount(items, parseKnownMoney);
+      return firstPrice - secondPrice;
+    }
+
+    function calculateOfferAmount(items) {
+      return window.AngebotskuecheCostModel.calculateOfferAmount(items, parseKnownMoney);
+    }
     }
 
     function shoppingShareAmountLabel(item) {
