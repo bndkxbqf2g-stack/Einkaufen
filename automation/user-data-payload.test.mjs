@@ -400,7 +400,10 @@ test('worker source and published index stay byte-identical after the build', ()
 
 
 test('round-trips unknown settings through backup export and confirmed cloud-load merge', () => {
-  for (const { path, source } of sources) {
+  for (const { path, appSource } of [
+    { path: 'index.html', appSource: source },
+    { path: 'dist/index.html', appSource: published },
+  ]) {
     const exportedSettings = {
       people: 4,
       days: 5,
@@ -412,7 +415,7 @@ test('round-trips unknown settings through backup export and confirmed cloud-loa
       personalPreferences: { variety: 'high' },
     };
     const exporter = createSettingsRoundTripHarness(
-      source,
+      appSource,
       [['angebotskueche.settings', JSON.stringify(exportedSettings)]],
       exportedSettings,
     );
@@ -430,7 +433,7 @@ test('round-trips unknown settings through backup export and confirmed cloud-loa
       customSetting: 'old-local-value',
     };
     const loader = createSettingsRoundTripHarness(
-      source,
+      appSource,
       [['angebotskueche.settings', JSON.stringify(localSettings)]],
       localSettings,
     );
