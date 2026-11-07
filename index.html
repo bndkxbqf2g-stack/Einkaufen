@@ -712,7 +712,15 @@
     } else if (!localStorage.getItem('angebotskueche.offerStorageVersion')) {
       localStorage.setItem('angebotskueche.offerStorageVersion', '2');
     }
-    let offers = [...seedOffers, ...(Array.isArray(storedCustomOffers) ? storedCustomOffers : [])].map(offer => ({ validUntil: defaultOfferEnd(), source: 'Demo-Import', confidence: 'mittel', packSize: '1 Packung', ...offer }));
+    function normalizeSeedOffer(offer) {
+      return { validUntil: defaultOfferEnd(), source: 'Demo-Import', confidence: 'mittel', packSize: '1 Packung', ...offer };
+    }
+
+    function normalizeStoredCustomOffer(offer) {
+      const value = offer && typeof offer === 'object' ? offer : {};
+      return { source: value.source || 'manueller Import', confidence: value.confidence || 'niedrig', packSize: value.packSize || '1 Packung', ...value, validUntil: String(value.validUntil || '').trim() };
+    }
+    let offers = [...seedOffers.map(normalizeSeedOffer), ...(Array.isArray(storedCustomOffers) ? storedCustomOffers.map(normalizeStoredCustomOffer) : [])];
     let favorites = stored('angebotskueche.favorites', seededFavorites);
     const DEFAULT_PANTRY = ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch'];
     let pantry = stored('angebotskueche.pantry', [...DEFAULT_PANTRY]);
