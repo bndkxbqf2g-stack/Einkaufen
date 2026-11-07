@@ -23,6 +23,18 @@ test('summarizes pantry coverage without inventing quantities', () => {
   assert.deepEqual(Array.from(result.uncoveredItems), ['Zwiebel']);
 });
 
+test('deduplicates shared pantry ingredients by stable identity', () => {
+  const result = model.summarizePantryCoverage(
+    ['Tomaten', 'Tomate', '  rote Zwiebeln ', 'Zwiebel'],
+    ingredient => ['tomate', 'rote zwiebeln'].includes(String(ingredient).toLowerCase()),
+  );
+
+  assert.equal(result.coveredCount, 2);
+  assert.equal(result.uncoveredCount, 0);
+  assert.deepEqual(Array.from(result.coveredItems), ['Tomaten', 'rote Zwiebeln']);
+  assert.deepEqual(Array.from(result.uncoveredItems), []);
+});
+
 test('keeps all ingredients uncovered when no pantry predicate is supplied', () => {
   const result = model.summarizePantryCoverage(['Reis', 'Tomaten']);
 
