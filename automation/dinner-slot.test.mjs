@@ -142,5 +142,5 @@ test('shows a recipe source link on dinner cards when available', () => {
   }, 0, 2);
 
   assert.match(html, /data-recipe-source="true"/);
-  assert.match(html, /https://example\.test\/brotzeit/);
+  assert.match(html, new RegExp('https://example\\.test/brotzeit'));
 });
