@@ -300,7 +300,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 ## Fortschritt 07.11.2026 – Packungsbasis für Planpreis und Einkaufssumme
 
-- Die Gesamtanzeige des Wochenplans verwendet dieselbe deterministische Einkaufsliste und dieselbe Packungsrundung wie die Einkaufssumme. Bei drei Personen werden Verkaufspackungen deshalb nicht mehr nur anteilig skaliert.\n- Mittagessen und optionales Abendessen sind im synthetischen Regressionstest enthalten. Keine echten Angebots-, Nutzer-, Supabase- oder Datenbankdaten wurden verändert.
+- Die Gesamtanzeige des Wochenplans verwendet dieselbe deterministische Einkaufsliste und dieselbe Packungsrundung wie die Einkaufssumme. Bei drei Personen werden Verkaufspackungen deshalb nicht mehr nur anteilig skaliert.
+- Mittagessen und optionales Abendessen sind im synthetischen Regressionstest enthalten. Keine echten Angebots-, Nutzer-, Supabase- oder Datenbankdaten wurden verändert.
 
 ## Fortschritt 07.11.2026 – Mahlzeiten-Slots im Wochenplan
 

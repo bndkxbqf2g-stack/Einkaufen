@@ -539,12 +539,13 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 ## Koordinierter Arbeitsstand – 07.11.2026, Packungskosten-Parität
 
-- Neuer separater Befund: Die alte Plan-Gesamtsumme skalierte bekannte Rezeptpreise mit \`Personen / 2\`, während die Einkaufsliste Verkaufspackungen aufrundet. Das ist bei drei Personen nicht dieselbe Kaufsumme.\n- Vorgesehener Fix: Plan-Gesamtsumme aus der nicht-manuellen Einkaufsliste und dem bestehenden Kostenmodell ableiten; Regressionstest für Mittagessen plus optionales Abendessen. Keine zusätzliche Freigabe für den risikoarmen, deterministischen Fix erforderlich; Merge erst nach grüner CI.
+- Neuer separater Befund: Die alte Plan-Gesamtsumme skalierte bekannte Rezeptpreise mit \`Personen / 2\`, während die Einkaufsliste Verkaufspackungen aufrundet. Das ist bei drei Personen nicht dieselbe Kaufsumme.
+- Vorgesehener Fix: Plan-Gesamtsumme aus der nicht-manuellen Einkaufsliste und dem bestehenden Kostenmodell ableiten; Regressionstest für Mittagessen plus optionales Abendessen. Keine zusätzliche Freigabe für den risikoarmen, deterministischen Fix erforderlich; Merge erst nach grüner CI.
 
 ## Koordinierter Arbeitsstand – 07.11.2026, Mahlzeiten-Slot-Schutz
 
 - Der Wochenplan weist manuelle Zuordnungen für Frühstück, Snack und Getränk nun zurück und ignoriert entsprechende alte Zuordnungen beim Wiederaufbau; Mittagessen und optionales Abendessen bleiben unverändert.
-- Regressionstests sichern die UI-Zuordnung und die lunch-only-Wiederherstellung. Keine Nutzerdaten, Supabase-, Datenbank- oder Deploymentänderung; PR-Merge bleibt aus diesem Nebenchat ausgeschlossen.
+- Regressionstests sichern die UI-Zuordnung und die lunch-only-Wiederherstellung. Keine Nutzerdaten, Supabase-, Datenbank- oder Deploymentänderung; PR #177 wurde nach grüner CI gemerged.
 
 ## Fortschritt 07.11.2026 – sichere Budget-Centwerte
 
