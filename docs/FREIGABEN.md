@@ -241,3 +241,10 @@ freigegeben oder entschieden wurden.
 - Die Regressionstests decken Planwechsel, stabile manuelle IDs und ungültige Checkwerte ab; Root und `dist` bleiben bytegleich.
 - Die PR-CI (Run [#42343682651](https://github.com/bndkxbqf2g-stack/Einkaufen/actions/runs/42343682651)) war erfolgreich.
 - Keine neue Datenstruktur, keine Supabase- oder Budgetänderung; keine zusätzliche Nutzerfreigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Backup-/Restore-Roundtrip
+
+- PR [#85](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/85) ist in den aktuellen Integrationsstand `main@f61d83f6c33287086aa34834c2bb790a2ce32843` gemergt.
+- Der kombinierte Regressionstest deckt Legacy-`manualShoppingItems` ohne IDs, fehlende Backup-Felder, Reload-Normalisierung mit Kollisionssuffixen, einen zweiten stabilen Reload sowie aktuelle `true`-, veraltete, `false`- und sonstige nicht-boolesche `shoppingChecks` ab.
+- Die PR-CI (Run [#42344235081](https://github.com/bndkxbqf2g-stack/Einkaufen/actions/runs/42344235081)) war erfolgreich.
+- Keine Produktionsdatei, keine neue Datenstruktur, keine Supabase- oder Budgetänderung; keine zusätzliche Nutzerfreigabe erforderlich.
