@@ -18,6 +18,41 @@ assert.ok(helpersStart >= 0 && helpersEnd > helpersStart, 'backup payload helper
 
 const helpers = source.slice(helpersStart, helpersEnd);
 
+const manualItemsStart = source.indexOf('    function normalizeManualShoppingItems(');
+const manualItemsEnd = source.indexOf('    function normalizeRecipeMealPurpose(', manualItemsStart);
+assert.ok(manualItemsStart >= 0 && manualItemsEnd > manualItemsStart, 'manual shopping item normalizer is present');
+
+const manualShoppingNormalizer = vm.runInNewContext(
+  `${source.slice(manualItemsStart, manualItemsEnd)}
+normalizeManualShoppingItems`,
+  {},
+  { filename: 'manual-shopping-items.js' },
+);
+const manualItemsStartupStart = source.indexOf('    const normalizedManualShoppingItems =');
+const manualItemsStartupEnd = source.indexOf('    if (!shoppingChecks', manualItemsStartupStart);
+assert.ok(manualItemsStartupStart >= 0 && manualItemsStartupEnd > manualItemsStartupStart, 'manual shopping item startup normalization is present');
+const manualItemsStartup = source.slice(manualItemsStartupStart, manualItemsStartupEnd);
+
+function initializeManualShoppingItems(rawItems) {
+  const storage = new Map();
+  const sandbox = {
+    manualShoppingItems: rawItems,
+    localStorage: {
+      getItem(key) { return storage.has(key) ? storage.get(key) : null; },
+      setItem(key, value) { storage.set(key, String(value)); },
+    },
+    normalizeManualShoppingItems: manualShoppingNormalizer,
+  };
+  const result = vm.runInNewContext(
+    `${manualItemsStartup}
+({ items: manualShoppingItems, saved: localStorage.getItem('angebotskueche.manualShoppingItems') })`,
+    sandbox,
+    { filename: 'manual-shopping-items-startup.js' },
+  );
+  return result;
+}
+
+
 function createPayloadHarness(initialEntries = [], currentSettings = { markets: 3 }) {
   const storage = new Map(initialEntries);
   const sandbox = {
@@ -38,6 +73,29 @@ function createPayloadHarness(initialEntries = [], currentSettings = { markets: 
 
   return { applyUserDataPayload, storage };
 }
+
+
+test('keeps legacy manual shopping checks stable across reload and restore', () => {
+  const first = initializeManualShoppingItems([{ name: 'Brot' }, { name: 'Brot' }, { name: 'Äpfel' }]);
+  assert.deepEqual(first.items.map(item => item.id), [
+    'manual-legacy-brot',
+    'manual-legacy-brot-2',
+    'manual-legacy-apfel',
+  ]);
+  assert.equal(first.saved, JSON.stringify(first.items));
+
+  const checkKey = `manual-${first.items[0].id}`;
+  const shoppingChecks = { [checkKey]: true };
+  const reloaded = initializeManualShoppingItems(JSON.parse(first.saved));
+  const restored = initializeManualShoppingItems(JSON.parse(JSON.stringify(first.items)));
+
+  assert.equal(reloaded.saved, null, 'already-normalized items are not rewritten on reload');
+  assert.equal(restored.saved, null, 'already-normalized backup items are not rewritten on restore');
+  assert.deepEqual(reloaded.items, first.items);
+  assert.deepEqual(restored.items, first.items);
+  assert.equal(shoppingChecks[`manual-${reloaded.items[0].id}`], true);
+  assert.equal(shoppingChecks[`manual-${restored.items[0].id}`], true);
+});
 
 test('keeps every local v1 field that an older cloud snapshot omits', () => {
   const localFields = {

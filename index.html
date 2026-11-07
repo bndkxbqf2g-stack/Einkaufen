@@ -603,6 +603,32 @@
     const isGithubPagesHost = window.location.hostname.endsWith('github.io');
     const appShareUrl = isGithubPagesHost ? `${window.location.origin}${window.location.pathname}` : 'https://bndkxbqf2g-stack.github.io/Einkaufen/';
     const stored = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } };
+    function normalizeManualShoppingItems(value) {
+      if (!Array.isArray(value)) return [];
+      const usedIds = new Set();
+      const legacyCounters = new Map();
+      return value
+        .filter(item => item && typeof item.name === 'string' && item.name.trim())
+        .map((item, index) => {
+          const name = item.name.trim();
+          const explicitId = item.id === undefined || item.id === null ? '' : String(item.id).trim();
+          if (explicitId) {
+            usedIds.add(explicitId);
+            return { id: explicitId, name };
+          }
+          const slug = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ß/g, 'ss').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || `item-${index + 1}`;
+          const baseId = `manual-legacy-${slug}`;
+          let suffix = legacyCounters.get(baseId) || 0;
+          let id = suffix ? `${baseId}-${suffix + 1}` : baseId;
+          while (usedIds.has(id)) {
+            suffix += 1;
+            id = `${baseId}-${suffix + 1}`;
+          }
+          legacyCounters.set(baseId, suffix + 1);
+          usedIds.add(id);
+          return { id, name };
+        });
+    }
     function normalizeRecipeMealPurpose(value) {
       const purpose = String(value || '').trim();
       return ['Hauptgericht', 'Frühstück', 'Brotzeit', 'Snack', 'Getränk', 'Flexibel'].includes(purpose) ? purpose : 'Flexibel';
@@ -704,8 +730,9 @@
     if (!Array.isArray(recipeHistory)) recipeHistory = [];
     recipeHistory = recipeHistory.filter(item => typeof item === 'string').slice(0, 20);
     if (!suggestionPreferences || typeof suggestionPreferences !== 'object' || Array.isArray(suggestionPreferences)) suggestionPreferences = { sort: 'match', filter: 'all', max30: false, vegetarian: false, family: false, leftovers: false, offerMin2: true };
-    if (!Array.isArray(manualShoppingItems)) manualShoppingItems = [];
-    manualShoppingItems = manualShoppingItems.filter(item => item && typeof item.name === 'string' && item.name.trim()).map(item => ({ id: String(item.id || `manual-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`), name: item.name.trim() }));
+    const normalizedManualShoppingItems = normalizeManualShoppingItems(manualShoppingItems);
+    if (JSON.stringify(normalizedManualShoppingItems) !== JSON.stringify(manualShoppingItems)) localStorage.setItem('angebotskueche.manualShoppingItems', JSON.stringify(normalizedManualShoppingItems));
+    manualShoppingItems = normalizedManualShoppingItems;
     if (!shoppingChecks || typeof shoppingChecks !== 'object' || Array.isArray(shoppingChecks)) shoppingChecks = {};
     const marketDetails = {
       Aldi: { distance: '4,8 km', count: 7, logo: 'A', source: 'https://www.aldi-sued.de/angebote' },
