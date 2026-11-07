@@ -322,3 +322,10 @@ freigegeben oder entschieden wurden.
 - Der Compare-and-Swap-Schutz bleibt unverändert: Revision 0 legt einen neuen Cloud-Stand an, spätere Speicherungen schreiben nur bei passender Revision; stale Writes werden abgewiesen. Die Owner-/Editor-Berechtigungsprüfung und RLS für die drei `app_private`-Tabellen sind aktiv. Die bestehenden Offline-/Restore-Regressionstests blieben unauffällig.
 - **Offener Freigabepunkt – serverseitige Payload-Validierung:** `save_household_state_impl` prüft `recipeHistory` und `manualDinnerPlan` derzeit noch nicht vollständig entsprechend den Client-/Worker-Validatoren. Eine Angleichung würde eine Supabase-Migration erfordern. Bis zu einer ausdrücklichen Freigabe wird keine Migration und keine Supabase-Schreibänderung vorgenommen.
 - Der read-only Security-Advisor hatte keine Findings; der Performance-Advisor meldete ausschließlich drei INFO-Hinweise zu bisher unbenutzten Indizes. Keine Kassen-/IST-Daten, keine erfundenen Angebote und keine kostenpflichtige Ressource wurden angelegt.
+
+
+## Validierter Vertrag – manuelle Einkaufsvarianten – 07.11.2026
+
+- Die CI-Prüfung des Einkaufslisten-Abgleichs bestätigt: Manuelle Singular-/Pluralvarianten bleiben von Rezeptzutaten getrennt. Das ist beabsichtigtes Verhalten für zusätzlich frei erfasste Artikel und darf nicht durch eine allgemeinere Zutaten-Normalisierung überschrieben werden.
+- Ein darauf zielender Kandidat (PR #107) wurde wegen des bestehenden Regressionstests nicht gemergt. Die Prüfung war damit ein Audit des bestehenden Vertrags, keine Produktänderung.
+- Exakte doppelte manuelle Artikel bleiben weiterhin durch den bestehenden Schlüsselabgleich begrenzt. Eine fachliche Zusammenführung semantisch ähnlicher manueller Varianten bleibt bis zu einer ausdrücklichen Produktentscheidung ausgeschlossen.
