@@ -324,3 +324,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Beim Ändern des Marktlimits werden die Einstellungen vor der Planneuberechnung gespeichert. Dadurch verwendet der aktuelle Plan sofort dieselbe Stopplimit-Einstellung wie die Marktansicht.
 - Dies ist keine Routen-, Fahrtkosten- oder Ersparnisoptimierung; automatische Mehrstopp-Empfehlungen bleiben bis zur fachlichen Freigabe deaktiviert. Keine Nutz-, Angebots-, Supabase- oder Datenbankdaten wurden geändert.
+
+
+### Fortschritt 07.11.2026 – Quellstatus bei fehlgeschlagenem Refresh
+
+- Wenn eine Angebotsquelle vorübergehend nicht erreichbar ist, bleiben zuletzt geladene Angebote lokal erhalten; abgelaufene Angebote werden weiterhin nicht geplant.
+- Die Statusanzeige kennzeichnet den fehlgeschlagenen Refresh jetzt ausdrücklich als „letzter Datensatz behalten“ und zeigt weiterhin den letzten bekannten Quellzeitpunkt, die Gültigkeit und vorhandene Ladezielmetadaten. Fehlende Sollzahlen bleiben unbekannt.
