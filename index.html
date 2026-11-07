@@ -614,7 +614,33 @@
       if (!existing || changed || Object.prototype.hasOwnProperty.call(existing, 'mealPurpose')) return { mealPurpose: normalizeRecipeMealPurpose(selected) };
       return {};
     }
-    const settings = stored('angebotskueche.settings', { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'] });
+    const DEFAULT_SELECTED_MARKETS = ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'];
+    function normalizeSettings(raw) {
+      const source = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
+      const normalizeNumber = (value, allowed, fallback) => {
+        const candidate = typeof value === 'number' && Number.isFinite(value)
+          ? value
+          : typeof value === 'string' && value.trim() ? Number(value) : NaN;
+        return allowed.includes(candidate) ? candidate : fallback;
+      };
+      const normalizeBoolean = (value, fallback) => {
+        if (typeof value === 'boolean') return value;
+        const normalized = typeof value === 'string' ? value.trim().toLowerCase() : '';
+        if (value === 1 || normalized === '1' || normalized === 'true') return true;
+        if (value === 0 || normalized === '0' || normalized === 'false') return false;
+        return fallback;
+      };
+      return {
+        ...source,
+        people: normalizeNumber(source.people, [2, 3, 4], 2),
+        days: normalizeNumber(source.days, [4, 5], 5),
+        markets: normalizeNumber(source.markets, [1, 2, 3, 4, 5, 6, 7], 2),
+        leftovers: normalizeBoolean(source.leftovers, true),
+        evening: normalizeBoolean(source.evening, true),
+        selectedMarkets: Array.isArray(source.selectedMarkets) ? source.selectedMarkets : [...DEFAULT_SELECTED_MARKETS],
+      };
+    }
+    const settings = normalizeSettings(stored('angebotskueche.settings', { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: [...DEFAULT_SELECTED_MARKETS] }));
     function isManualOffer(offer) {
       const source = String(offer?.source || '').trim().toLowerCase();
       const note = String(offer?.note || '').trim().toLowerCase();
@@ -712,7 +738,11 @@
       const fetchedAt = status.fetchedAt ? new Date(status.fetchedAt) : null;
       return !fetchedAt || (Date.now() - fetchedAt.getTime()) >= offerRefreshFallbackMs;
     }
-    if (!Array.isArray(settings.selectedMarkets) || !settings.selectedMarkets.length) settings.selectedMarkets = ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'];
+    function normalizeSelectedMarkets(value) {
+      const configured = Array.isArray(value) ? value.filter(name => marketDetails[name]) : [];
+      return configured.length ? configured : [...DEFAULT_SELECTED_MARKETS];
+    }
+    settings.selectedMarkets = normalizeSelectedMarkets(settings.selectedMarkets);
     favorites = favorites.map(item => {
       const builtIn = seededFavorites.find(seed => normalizeIngredient(seed.name) === normalizeIngredient(item.name));
       if (!builtIn) return item;
@@ -741,7 +771,7 @@
 
     function sortedSelectedMarkets() {
       const configured = Array.isArray(settings.selectedMarkets) ? settings.selectedMarkets.filter(name => marketDetails[name]) : [];
-      const selected = configured.length ? configured : ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'];
+      const selected = configured.length ? configured : [...DEFAULT_SELECTED_MARKETS];
       return selected.sort((first, second) => parseFloat(marketDetails[first].distance.replace(',', '.')) - parseFloat(marketDetails[second].distance.replace(',', '.')));
     }
 
