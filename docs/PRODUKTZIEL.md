@@ -274,3 +274,10 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Ältere oder importierte manuelle Einkaufsartikel mit doppelter expliziter ID erhalten jetzt deterministische Suffixe statt denselben Statusschlüssel zu teilen.
 - Kein Eintrag wird verworfen; Mengen, Namen, Einkaufschecks und bestehende Backup-/Restore-Daten bleiben erhalten.
+
+
+## Laufender Entwicklungsstand – Service-Worker-Versionskopplung – 07.11.2026
+
+- [PR #172](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/172) korrigiert die Registrierungs-URL in Root und `dist` von `sw.js?v=28` auf die aktive Cache-Version `v29`.
+- Ein Regressionstest vergleicht die Versionsnummer der App-Registrierung automatisch mit `CACHE_NAME`; dadurch wird verhindert, dass eine neue Offline-Shell veröffentlicht, aber mit einer alten Registrierungskennung angefordert wird.
+- Root und `dist` bleiben bytegleich. Es wurden keine Nutzer-, Plan-, Preis-, Angebots-, Supabase- oder Datenbankdaten verändert; keine zusätzliche Freigabe ist erforderlich.
