@@ -1609,7 +1609,7 @@
       settings.markets = Number($('#marketsSelect').value);
       settings.leftovers = $('#leftoverToggle').checked;
       settings.evening = $('#eveningToggle').checked;
-      localStorage.setItem('angebotskueche.settings', JSON.stringify({ people: settings.people, days: settings.days, markets: settings.markets, leftovers: settings.leftovers, evening: settings.evening, selectedMarkets: settings.selectedMarkets }));
+      localStorage.setItem('angebotskueche.settings', JSON.stringify({ ...settings }));
     }
 
     function calculateVariety(meals) {
