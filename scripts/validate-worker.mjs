@@ -29,7 +29,7 @@ globalThis.fetch = async request => {
   if (new URL(requestUrl).hostname === 'www.edeka.de') return new Response('<div>Gültig vom 02.11.2026 bis 07.11.2026.</div><h2>Angebot: Himbeeren 2.99</h2><p>Festpreis von 2.99€</p><h2>Angebot: Géramont 2.22</h2><p>-36%</p><h2>Angebote der Woche bei EDEKA</h2><h3>Angebot: Salatgurke 0.88</h3>', { headers: { 'content-type': 'text/html' } });
   if (new URL(requestUrl).hostname === 'www.aldi-sued.de') return new Response(omitOfferDates ? '<a>Verfügbar ab 06.11.2026 Kühlung GOLDEN SEAFOOD Lachsfilet 1 kg 15,99 €</a>' : '<div>Gültig vom 06.11.2026 bis 12.11.2026</div><a>Verfügbar ab 06.11.2026 Kühlung GOLDEN SEAFOOD Lachsfilet 1 kg 15,99 €</a><a>Verfügbar ab 06.11.2026 WC-Reiniger 750 ml 1,49 €</a>', { headers: { 'content-type': 'text/html' } });
   if (new URL(requestUrl).hostname === 'www.netto-online.de') return new Response('<div>Gültig vom 06.11.2026 bis 12.11.2026</div><h3>Clementinen</h3><p>1 kg Netz Italien / Spanien</p><p>-32% 1,69</p><h3>WC-Reiniger</h3><p>750 ml -20% 1,49</p>', { headers: { 'content-type': 'text/html' } });
-  if (new URL(requestUrl).hostname === 'raw.githubusercontent.com') return new Response(JSON.stringify({ market: 'Lidl', sourceUrl: 'https://www.lidl.de/c/online-prospekte/s10005610/', validUntil: '07.11.2026', offers: [{ name: 'Pfanni Speisekartoffeln', price: '2,49 €', saving: '-24%', packSize: '2,5 kg' }, { name: 'WC-Reiniger', price: '1,49 €' }] }), { headers: { 'content-type': 'application/json' } });
+  if (new URL(requestUrl).hostname === 'raw.githubusercontent.com') return new Response(JSON.stringify({ market: 'Lidl', sourceUrl: 'https://www.lidl.de/c/online-prospekte/s10005610/', validUntil: '07.11.2026', offers: [{ name: 'Pfanni Speisekartoffeln', price: '2,49 €', saving: '-24%', packSize: '2,5 kg' }, { name: 'Tomaten', price: '1.49', saving: '–' }, { name: 'WC-Reiniger', price: '1,49 €' }] }), { headers: { 'content-type': 'application/json' } });
   return new Response('<script type="application/ld+json">{"@type":"Recipe","name":"Test-Curry","recipeIngredient":["Paprika","Öl"]}</script>', { headers: { 'content-type': 'text/html' } });
 };
 try {
@@ -68,6 +68,7 @@ try {
   assert.equal(lidlPayload.sourceUrl, 'https://www.lidl.de/c/online-prospekte/s10005610/');
   assert.equal(lidlPayload.offers[0].name, 'Pfanni Speisekartoffeln');
   assert.equal(lidlPayload.offers.some(offer => /WC-Reiniger/i.test(offer.name)), false);
+  assert.equal(lidlPayload.offers.some(offer => /Tomaten/i.test(offer.name)), false);
   omitOfferDates = true;
   const undated = await worker.fetch(new Request('https://example.test/api/offers?market=Aldi'));
   assert.equal(undated.status, 422);
