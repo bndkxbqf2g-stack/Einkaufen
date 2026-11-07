@@ -206,3 +206,9 @@ freigegeben oder entschieden wurden.
 - Der aktuelle Integrationsstand ist `main@f5fe78254ac14e504f3164b9751a1bc99e172e5e`.
 - PR [#72](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/72) ist gemergt; `automation/supabase-sync.test.mjs` seedet lokale Settings und Pantry und prüft deren Unverändertheit bei fehlgeschlagener Supabase-Initialisierung.
 - Der CI/Deploy-Run `42341229263` war erfolgreich. Keine Produktions-, Datenformat-, Schema- oder Produktänderung.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Angebots- und Zutatenkorrekturen
+
+- Der aktuelle Integrationsstand ist `main@2de36bd061dbd1931e60099f1829573778199941`.
+- PR [#74](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/74) filtert Lidl-OCR-Grundpreiszeilen wie `(1 kg = 1,58 €)` vor der Preis-/Packungsanalyse; Regressionstests sichern die Korrektur.
+- PR [#75](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/75) vereinheitlicht Singular/Plural gemeinsamer Zutaten in der Einkaufsliste, erhält den zuerst vorhandenen Schlüssel und enthält Regressionstests. Beide PRs sind gemergt und die CI war grün. Keine Supabase-, Datenmodell- oder Budgetänderung.
