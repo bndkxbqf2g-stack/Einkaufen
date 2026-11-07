@@ -341,3 +341,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Die Marktstatusanzeige verwendet nach einem Quellen- oder Snapshotwechsel jetzt die vom validierten Snapshot gemeldete sichere `sourceUrl`; bei alten lokalen Statusständen ohne diese Angabe bleibt die hinterlegte Marktseite als Fallback bestehen.
 - Ungültige oder unsichere Quelladressen werden nicht verlinkt. Fehlende Sollzahlen bleiben unabhängig von der Quelladresse unbekannt.
+
+
+### Fortschritt 07.11.2026 – Transaktionaler Backup-/Cloud-Import
+
+- Backup- und Cloud-Daten werden vor dem Schreiben validiert und jetzt als gemeinsamer lokaler Schreibvorgang behandelt. Wenn ein einzelner `localStorage`-Schreibvorgang fehlschlägt, werden bereits geänderte Schlüssel bestmöglich auf den vorherigen Stand zurückgesetzt.
+- Der Service Worker bleibt unverändert; Offline-Shell und Cache-Fallback verändern keine lokalen App-Daten.

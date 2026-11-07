@@ -2416,12 +2416,31 @@
       return payload;
     }
 
+    function writeUserDataPayload(values) {
+      const previous = new Map();
+      try {
+        values.forEach((value, key) => {
+          previous.set(key, localStorage.getItem(key));
+          localStorage.setItem(key, value);
+        });
+      } catch (error) {
+        previous.forEach((value, key) => {
+          try {
+            if (value === null) localStorage.removeItem(key);
+            else localStorage.setItem(key, value);
+          } catch {}
+        });
+        throw error;
+      }
+    }
+
     function applyUserDataPayload(payload, message, options = {}) {
       validateUserDataPayload(payload);
       const restoredSettings = options.mergeSettings ? { ...settings, ...(payload.settings || {}) } : (payload.settings || settings);
-      localStorage.setItem('angebotskueche.settings', JSON.stringify(restoredSettings));
-      backupArrayKeys.forEach(key => { if (payload[key] !== undefined) localStorage.setItem(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
-      backupObjectKeys.forEach(key => { if (payload[key] !== undefined) localStorage.setItem(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
+      const values = new Map([['angebotskueche.settings', JSON.stringify(restoredSettings)]]);
+      backupArrayKeys.forEach(key => { if (payload[key] !== undefined) values.set(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
+      backupObjectKeys.forEach(key => { if (payload[key] !== undefined) values.set(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
+      writeUserDataPayload(values);
       showToast(message);
       setTimeout(() => location.reload(), 500);
     }
