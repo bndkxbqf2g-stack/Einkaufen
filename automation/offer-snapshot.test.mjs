@@ -60,6 +60,25 @@ test('accepts only source-defined German thousands grouping for euro amounts', (
   );
 });
 
+test('rejects duplicate offers but keeps distinct package sizes', () => {
+  const duplicate = {
+    ...validSnapshot,
+    recognizedCount: 2,
+    offers: [validSnapshot.offers[0], { ...validSnapshot.offers[0] }],
+  };
+  assert.throws(() => validateOfferSnapshot(duplicate), /dupliziert Angebot 1/);
+
+  const distinctPackages = {
+    ...validSnapshot,
+    recognizedCount: 2,
+    offers: [
+      { ...validSnapshot.offers[0], packSize: '500 g' },
+      { ...validSnapshot.offers[0], packSize: '1 kg' },
+    ],
+  };
+  assert.doesNotThrow(() => validateOfferSnapshot(distinctPackages));
+});
+
 test('accepts supported date-only formats and rejects impossible calendar dates', () => {
   assert.doesNotThrow(() => validateOfferSnapshot({
     ...validSnapshot,
