@@ -3,8 +3,9 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import vm from 'node:vm';
 
-const source = (await readFile(new URL('../dist/supabase-sync.js', import.meta.url), 'utf8')).replace(/\r\n/g, '\n');
-const published = await readFile(new URL('../supabase-sync.js', import.meta.url), 'utf8');
+const normalizeLineEndings = value => value.replace(/\r\n/g, '\n');
+const source = normalizeLineEndings(await readFile(new URL('../dist/supabase-sync.js', import.meta.url), 'utf8'));
+const published = normalizeLineEndings(await readFile(new URL('../supabase-sync.js', import.meta.url), 'utf8'));
 assert.equal(published, source, 'published Supabase sync bundle must stay byte-identical to the source');
 
 const clearMatch = source.match(/  function clearLocalHouseholdContext\(\) \{[\s\S]*?\n  \}/);
