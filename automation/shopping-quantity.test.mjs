@@ -8,9 +8,12 @@ assert.ok(packCountMatch, 'shoppingPackCount muss im App-Bundle vorhanden sein')
 assert.match(html, /const packCount = shoppingPackCount\(item, people\);/);
 const shoppingPackCount = new Function(`${packCountMatch[0]}; return shoppingPackCount;`)();
 
-test('manuelle Artikel bleiben unabhängig von der Personenanzahl bei einer Packung', () => {
+test('manuelle Artikel übernehmen eine optionale Packungszahl unabhängig von Personen', () => {
   assert.equal(shoppingPackCount({ manual: true, count: 1 }, 2), 1);
   assert.equal(shoppingPackCount({ manual: true, count: 1 }, 4), 1);
+  assert.equal(shoppingPackCount({ manual: true, manualQuantity: 3 }, 2), 3);
+  assert.equal(shoppingPackCount({ manual: true, manualQuantity: 3 }, 4), 3);
+  assert.equal(shoppingPackCount({ manual: true, manualQuantity: 0 }, 2), 1);
 });
 
 test('Rezeptzutaten behalten die bisherige personenabhängige Skalierung', () => {
