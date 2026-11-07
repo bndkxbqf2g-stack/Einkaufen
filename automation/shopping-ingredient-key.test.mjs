@@ -91,6 +91,7 @@ test('behält manuelle Singular-/Pluralvarianten getrennt von Rezeptzutaten', ()
     offer: null,
     manual: true,
     manualId: 'manual-1',
+    manualQuantity: 1,
     packCount: 1,
     reused: false,
   });
