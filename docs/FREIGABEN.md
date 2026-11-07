@@ -226,3 +226,10 @@ freigegeben oder entschieden wurden.
 - `sw.js` und `dist/sw.js` warten beim `activate`-Ereignis nun über `event.waitUntil()` auf `clients.claim()`, damit bestehende Clients die Aktivierung vollständig abwarten.
 - Der verzögerte-Claim-Regressionstest und die PR-CI (Run [#42342824800](https://github.com/bndkxbqf2g-stack/Einkaufen/actions/runs/42342824800)) waren erfolgreich.
 - Keine Daten-, Supabase- oder Architekturänderung; keine zusätzliche Nutzerfreigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Manuelle Einkaufsvarianten
+
+- PR [#81](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/81) ist in den aktuellen Integrationsstand `main@1d13cdbaa9921d40a725564639787a74fbe79b5b` gemergt.
+- Manuelle Singular-/Pluralvarianten bleiben von der Zusammenführung der Rezeptzutaten getrennt; stabile `manual-*`-IDs und `shoppingChecks` bleiben dadurch erhalten.
+- Der Regressionstest und die PR-CI (Run [#42343231403](https://github.com/bndkxbqf2g-stack/Einkaufen/actions/runs/42343231403)) waren erfolgreich.
+- Keine neue Datenstruktur, keine Supabase- oder Budgetänderung; keine zusätzliche Nutzerfreigabe erforderlich.
