@@ -2139,8 +2139,13 @@
       button.disabled = true;
       try {
         const sync = window.angebotskuecheSupabaseSync;
-        if (sync && await initializeSupabaseSync() && await sync.hasSession()) { await sync.save(); return; }
+        const syncReady = sync && await initializeSupabaseSync();
+        if (syncReady && await sync.hasSession()) { await sync.save(); return; }
         if (isGithubPagesHost) {
+          if (!syncReady) {
+            showToast('Supabase momentan nicht erreichbar. Lokale Daten bleiben auf diesem Gerät verfügbar.');
+            return;
+          }
           sync?.openSettings();
           showToast('Bitte zuerst in den Einstellungen bei Supabase anmelden und einen Haushalt wählen.');
           return;
@@ -2158,8 +2163,13 @@
       button.disabled = true;
       try {
         const sync = window.angebotskuecheSupabaseSync;
-        if (sync && await initializeSupabaseSync() && await sync.hasSession()) { await sync.load(); return; }
+        const syncReady = sync && await initializeSupabaseSync();
+        if (syncReady && await sync.hasSession()) { await sync.load(); return; }
         if (isGithubPagesHost) {
+          if (!syncReady) {
+            showToast('Supabase momentan nicht erreichbar. Lokale Daten bleiben auf diesem Gerät verfügbar.');
+            return;
+          }
           sync?.openSettings();
           showToast('Bitte zuerst in den Einstellungen bei Supabase anmelden und einen Haushalt wählen.');
           return;
