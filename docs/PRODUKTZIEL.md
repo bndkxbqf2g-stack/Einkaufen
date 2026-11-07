@@ -206,3 +206,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Preisstatus und Packungs-/Marktmerkmale werden auf leere oder doppelte Datensätze geprüft; das Verfahren erfindet keine Preise und verändert keine Angebotsdaten.
 - Die sechs aktuellen Angebotsbestände bestehen die Prüfung. Die drei Angebots-Workflows validieren künftig vor dem Commit in `generated/`.
 - Keine Nutzerdaten, Supabase-/Datenbankänderung, Migration, Deployment- oder kostenpflichtige Ressourcenänderung.
+
+## Fortschritt 07.11.2026 – zentraler Mahlzeiten-Slot-Vertrag
+
+- Die Slot-Regel für den Wochenplan liegt jetzt im getesteten Modul `meal-planning.js` und wird von Root- und `dist`-App verwendet.
+- Der Plan lässt weiterhin nur Hauptgericht/Flexibel für das Mittagessen und Brotzeit/Flexibel für das optionale Abendessen zu; Frühstück, Snack und Getränk werden nicht automatisch als Plan-Slots verwendet.
+- Gespeicherte Mahlzeitenzwecke bleiben gültig und werden nicht umklassifiziert. Die Änderung ist damit rückwärtskompatibel und verändert keine Nutzer- oder Supabase-Daten.
