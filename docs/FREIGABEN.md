@@ -362,3 +362,9 @@ freigegeben oder entschieden wurden.
 
 - [PR #118](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/118) bezeichnet den aktuellen Markt-Mix korrekt als Auswahl mit Stopplimit. Die Oberfläche behauptet keine Routenoptimierung oder Fahrtkostenberechnung, solange dafür keine bestätigte Kostenbasis und Nutzerentscheidung vorliegen.
 - Bestehende Markt- und Stoppeinstellungen bleiben unverändert; die Änderung betrifft ausschließlich die fachlich klare Beschriftung und Regressionstests.
+
+## Validierter Kostenfluss – optionales Abendessen – 07.11.2026
+
+- [PR #120](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/120) verhindert, dass ein unbekannter Preis im optionalen Abendessen als `0,00 €` erscheint.
+- Bekannte Angebots-Packungssummen bleiben als Näherungswert sichtbar; unbekannte Abendessenpreise werden ausdrücklich als `Preis unbekannt` markiert. Es werden keine regulären Preise, Kassenbeträge oder Fahrtkosten ergänzt.
+- Root und `dist` bleiben synchron; die CI war nach Ergänzung der isolierten Dinner-Test-Hilfen grün. Keine Nutzerdaten, Supabase-Migration, Datenbankänderung, Angebotsdatenänderung, Deployment- oder kostenpflichtige Ressourcenänderung.
