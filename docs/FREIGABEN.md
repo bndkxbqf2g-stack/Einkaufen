@@ -374,3 +374,9 @@ freigegeben oder entschieden wurden.
 - [PR #122](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/122) entfernt statische Rezeptkosten als Ersatz für fehlende Angebotsnachweise aus Vorschlagskarten, Rezeptdetails und der Match-Kostenschätzung.
 - Ohne mindestens ein verifiziertes, plausibles Angebot erscheint `Preis unbekannt`; bekannte Angebots-Packungssummen bleiben davon getrennt. Es werden keine regulären Preise oder Kassenbeträge erfunden.
 - Regressionstest und Root-/`dist`-Synchronität sind durch die grüne CI abgesichert. Keine Nutzerdaten, Supabase-Migration, Datenbankänderung, Angebotsdatenänderung, Deployment- oder kostenpflichtige Ressourcenänderung.
+
+## Validierter Kostenfluss – Initialzustand der Einkaufsliste – 07.11.2026
+
+- [PR #124](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/124) ersetzt den statischen Initialwert `0,00 €` durch `–` und `Noch keine verifizierte Preisbasis`, bevor die Einkaufsliste gerendert wurde.
+- Nach dem Rendern gelten weiterhin nur bekannte Angebots-Packungssummen; unbekannte Preise, fehlende Artikel, Vorräte und Kassenbeträge werden nicht geschätzt.
+- Regressionstest, Root-/`dist`-Synchronität und CI sind grün. Keine Nutzerdaten, Supabase-Migration, Datenbankänderung, Angebotsdatenänderung, Deployment- oder kostenpflichtige Ressourcenänderung.
