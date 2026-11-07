@@ -199,3 +199,10 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Es werden keine Mengen, Haltbarkeiten oder Kassenpreise behauptet. Vorratszutaten bleiben aus dem Angebots-Zwischenwert ausgeschlossen; nicht verankerte Einkaufspositionen bleiben separat sichtbar.
 - Das bestehende Vorratsformat, lokale Daten, Backups, Haushaltssync und Supabase bleiben unverändert. Eine mengenfähige Vorratserfassung ist ein späteres, separat zu prüfendes Arbeitspaket.
 
+## Fortschritt 07.11.2026 – Angebots-Snapshot-Prüfung
+
+- Der alte Draft-PR #1 enthielt eine Angebotsprüfung, war aber auf einem veralteten Stand und wurde nicht übernommen.
+- Die Prüfung wurde auf die aktuelle Struktur portiert: veröffentlichte Snapshot-Dateien müssen Markt, HTTP-Quelle, Parser, Abrufdatum, gültiges Angebotsende, nichtleere Angebotszeilen und konsistente Zähler enthalten.
+- Preisstatus und Packungs-/Marktmerkmale werden auf leere oder doppelte Datensätze geprüft; das Verfahren erfindet keine Preise und verändert keine Angebotsdaten.
+- Die sechs aktuellen Angebotsbestände bestehen die Prüfung. Die drei Angebots-Workflows validieren künftig vor dem Commit in `generated/`.
+- Keine Nutzerdaten, Supabase-/Datenbankänderung, Migration, Deployment- oder kostenpflichtige Ressourcenänderung.
