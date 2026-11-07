@@ -386,3 +386,9 @@ freigegeben oder entschieden wurden.
 - [PR #126](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/126) weist manuelle Angebotszeilen ohne ausdrücklich übergebenes Gültigkeitsdatum zurück; ein pauschales Angebotsende wird nicht mehr erzeugt.
 - Das bestehende sechsteilige Legacy-Format mit Datum bleibt gültig. Bereits gespeicherte manuelle Angebote werden nicht verändert.
 - Regressionstest und Root-/`dist`-Synchronität sind durch grüne CI abgesichert. Keine Nutzerdaten, Supabase-Migration, Datenbankänderung, Deployment- oder kostenpflichtige Ressourcenänderung.
+
+## Validierter Angebotsbestand – gespeicherte Datumsunsicherheit – 07.11.2026
+
+- [PR #128](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/128) trennt Demo-Fallback-Daten von gespeicherten manuellen Nutzerimporten.
+- Nur Demo-Angebote erhalten den Offline-Default; gespeicherte Importe ohne `validUntil` behalten ein leeres/unsicheres Datum und werden nicht als aktuell gültige Angebote verwendet. Explizite gespeicherte Datumsangaben bleiben erhalten.
+- Regressionstest, Root-/`dist`-Synchronität und grüne CI sichern den Vertrag. Keine Nutzerdatenlöschung, Supabase-Migration, Datenbankänderung, Deployment- oder kostenpflichtige Ressourcenänderung.
