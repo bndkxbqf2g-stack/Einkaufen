@@ -139,6 +139,11 @@ function extractCloudAction(source, name, nextMarker) {
 async function runOfflineCloudAction(name, nextMarker) {
   const events = [];
   const button = { disabled: false };
+  const storage = new Map([
+    ['angebotskueche.settings', JSON.stringify({ people: 4, markets: 3 })],
+    ['angebotskueche.pantry', JSON.stringify(['Milch', 'Brot'])],
+  ]);
+  const before = [...storage.entries()];
   const sync = {
     openSettings() { events.push({ type: 'settings' }); },
     async hasSession() { events.push({ type: 'session-check' }); return false; },
@@ -148,19 +153,24 @@ async function runOfflineCloudAction(name, nextMarker) {
     isGithubPagesHost: true,
     initializeSupabaseSync: async () => false,
     $: () => button,
+    localStorage: {
+      getItem(key) { return storage.has(key) ? storage.get(key) : null; },
+      setItem(key, value) { storage.set(key, String(value)); },
+    },
     showToast(message) { events.push({ type: 'toast', message }); },
     fetch: async () => { throw new Error('offline fallback should not run'); },
     buildUserDataPayload: () => ({ version: 1 }),
   };
   const action = vm.runInNewContext(`(${extractCloudAction(html, name, nextMarker)})`, sandbox);
   await action();
-  return { events, button };
+  return { events, button, storage, before };
 }
 
 test('offline GitHub Pages save/load keep the settings prompt out of the error path', async () => {
   for (const [name, nextMarker] of [['cloudSaveData', '    async function cloudLoadData() {'], ['cloudLoadData', '    function importUserData(file) {']]) {
     const result = await runOfflineCloudAction(name, nextMarker);
     assert.equal(result.button.disabled, false, `${name} re-enables its button`);
+    assert.deepEqual([...result.storage.entries()], result.before, `${name} keeps local settings and pantry unchanged`);
     assert.equal(result.events.some(event => event.type === 'settings'), false, `${name} does not open settings offline`);
     assert.equal(result.events.some(event => event.type === 'session-check'), false, `${name} does not check a missing session offline`);
     assert.deepEqual(result.events.filter(event => event.type === 'toast').map(event => event.message), [
