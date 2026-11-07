@@ -65,7 +65,7 @@ test('signing out clears household and revision context but preserves local app 
   assert.equal(harness.storage.get('angebotskueche.settings'), '{"people":4}');
   assert.equal(harness.storage.get('angebotskueche.pantry'), '["Brot"]');
   assert.equal(harness.snapshot.session, null);
-  assert.deepEqual(harness.snapshot.households, []);
+  assert.equal(harness.snapshot.households.length, 0);
   assert.equal(harness.snapshot.selectedHouseholdId, null);
 });
 
@@ -75,7 +75,7 @@ test('switching to the next user starts without the previous household context',
 
   assert.equal(harness.snapshot.session.user.id, 'user-2');
   assert.equal(harness.snapshot.selectedHouseholdId, null);
-  assert.deepEqual(harness.snapshot.households, []);
+  assert.equal(harness.snapshot.households.length, 0);
   assert.equal(harness.storage.has('angebotskueche.supabase.household'), false);
   assert.equal(harness.storage.has('angebotskueche.supabase.localHousehold'), false);
   assert.equal(harness.storage.has('angebotskueche.supabase.revision.house-old'), false);
