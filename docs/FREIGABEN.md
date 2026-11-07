@@ -248,3 +248,11 @@ freigegeben oder entschieden wurden.
 - Der kombinierte Regressionstest deckt Legacy-`manualShoppingItems` ohne IDs, fehlende Backup-Felder, Reload-Normalisierung mit Kollisionssuffixen, einen zweiten stabilen Reload sowie aktuelle `true`-, veraltete, `false`- und sonstige nicht-boolesche `shoppingChecks` ab.
 - Die PR-CI (Run [#42344235081](https://github.com/bndkxbqf2g-stack/Einkaufen/actions/runs/42344235081)) war erfolgreich.
 - Keine Produktionsdatei, keine neue Datenstruktur, keine Supabase- oder Budgetänderung; keine zusätzliche Nutzerfreigabe erforderlich.
+## Read-only-Supabase-Audit – 07.11.2026
+
+- Das Projekt `Angebotskueche` mit der Projekt-Referenz `idcejbnkpeaaqchtkvkd` ist in `eu-central-1` aktiv und gesund (`ACTIVE_HEALTHY`) und läuft in der Organisation `FamSchicht` im Free-Tarif.
+- `mein-geldplan` ist ein separates Supabase-Projekt mit eigener Projekt-Referenz und blieb unverändert. Die App-Quelle verweist ausschließlich auf die Angebotsküche-Projekt-URL; es wurden keine `service_role`- oder `sb_secret`-Schlüssel gefunden.
+- RLS, die haushaltsbezogenen Policies, die Payload-Grenzen und der Compare-and-swap-Revisionsschutz wurden im Repository und remote read-only geprüft. Die drei `app_private`-Tabellen sind remote vorhanden, RLS ist aktiviert und die Tabellen waren zum Prüfzeitpunkt leer.
+- Die vier eingecheckten Migrationen sind remote vorhanden. Es wurde keine Migration angewendet und keine Schreibaktion am Supabase-Projekt ausgeführt.
+- Offene Freigabe bleibt ein echter Login-/E-Mail-Bestätigungs-/Redirect-End-to-End-Test mit einem vom Nutzer angelegten Testkonto. Es erfolgt keine automatische Kontenerstellung; Passwort, Einmalcode und Sitzungstoken gehören nicht in den Chat.
+- Als spätere Produktentscheidungen bleiben eine Offline-Queue mit Konflikt-UX sowie der Einladungs- und Beitrittsablauf offen. Dieser Audit stellt dafür keine Freigabe dar.
