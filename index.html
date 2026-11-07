@@ -2496,7 +2496,12 @@
       try {
         const sync = window.angebotskuecheSupabaseSync;
         const syncReady = sync && await initializeSupabaseSync();
-        if (syncReady && await sync.hasSession()) { await sync.save(); return; }
+        const sessionState = syncReady ? await sync.hasSession() : false;
+        if (sessionState === true) { await sync.save(); return; }
+        if (sessionState === null) {
+          showToast('Supabase momentan nicht erreichbar. Lokale Daten bleiben auf diesem Gerät verfügbar.');
+          return;
+        }
         if (isGithubPagesHost) {
           if (!syncReady) {
             showToast('Supabase momentan nicht erreichbar. Lokale Daten bleiben auf diesem Gerät verfügbar.');
@@ -2520,7 +2525,12 @@
       try {
         const sync = window.angebotskuecheSupabaseSync;
         const syncReady = sync && await initializeSupabaseSync();
-        if (syncReady && await sync.hasSession()) { await sync.load(); return; }
+        const sessionState = syncReady ? await sync.hasSession() : false;
+        if (sessionState === true) { await sync.load(); return; }
+        if (sessionState === null) {
+          showToast('Supabase momentan nicht erreichbar. Lokale Daten bleiben auf diesem Gerät verfügbar.');
+          return;
+        }
         if (isGithubPagesHost) {
           if (!syncReady) {
             showToast('Supabase momentan nicht erreichbar. Lokale Daten bleiben auf diesem Gerät verfügbar.');
