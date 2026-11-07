@@ -281,3 +281,7 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - [PR #172](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/172) korrigiert die Registrierungs-URL in Root und `dist` von `sw.js?v=28` auf die aktive Cache-Version `v29`.
 - Ein Regressionstest vergleicht die Versionsnummer der App-Registrierung automatisch mit `CACHE_NAME`; dadurch wird verhindert, dass eine neue Offline-Shell veröffentlicht, aber mit einer alten Registrierungskennung angefordert wird.
 - Root und `dist` bleiben bytegleich. Es wurden keine Nutzer-, Plan-, Preis-, Angebots-, Supabase- oder Datenbankdaten verändert; keine zusätzliche Freigabe ist erforderlich.
+## Fortschritt 07.11.2026 – Angebotsgültigkeit über den Jahreswechsel
+
+- Der Lidl-Prospektparser übernimmt bei einer ausdrücklich angegebenen Spanne wie „28.12. bis 03.01.“ das fehlende Endjahr als Folgejahr; damit wird ein gültiges Prospekt nicht fälschlich als abgelaufen verworfen.
+- Der Jahreswechsel ist durch einen deterministischen Regressionstest abgesichert. Fehlende Datumsangaben, Preise oder Quellen bleiben weiterhin unbekannt beziehungsweise werden vom Snapshot-Vertrag abgewiesen; Live-Angebotsdaten und Nutzerdaten wurden nicht verändert.
