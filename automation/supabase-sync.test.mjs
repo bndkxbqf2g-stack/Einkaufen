@@ -10,6 +10,7 @@ const source = await readFile(resolve(root, 'dist/supabase-sync.js'), 'utf8');
 const workerSource = await readFile(resolve(root, 'worker/index.js'), 'utf8');
 const workerPublished = await readFile(resolve(root, 'dist/server/index.js'), 'utf8');
 const html = await readFile(resolve(root, 'dist/index.html'), 'utf8');
+const serviceWorker = await readFile(resolve(root, 'dist/sw.js'), 'utf8');
 const context = {
   window: {},
   document: { getElementById: () => null },
@@ -247,6 +248,13 @@ test('reports card load goals without claiming the prospect is complete', () => 
   );
   assert.equal(coverage({}), 'Angebotsumfang unbekannt');
   assert.match(html, /targetOfferCount: Number\(result\.payload\.targetOfferCount/);
+});
+
+test('does not treat a service-worker cache fallback as a fresh offer refresh', () => {
+  assert.match(serviceWorker, /X-Angebotskueche-Cache-Fallback/);
+  assert.match(html, /response\.headers\.get\('X-Angebotskueche-Cache-Fallback'\)/);
+  assert.match(html, /cacheFallback \|\| !Array\.isArray\(payload\.offers\)/);
+  assert.match(html, /Offline: letzter Angebotsstand wird beibehalten/);
 });
 
 test('uses the validated snapshot source URL for market links', () => {
