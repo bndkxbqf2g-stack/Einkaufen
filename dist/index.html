@@ -870,7 +870,7 @@
       const selected = sortedSelectedMarkets();
       const activeMarkets = selected.slice(0, Number(settings.markets || 2));
       $('#sourceStatusList').innerHTML = Object.entries(marketDetails).map(([name, details]) => {
-        const count = offers.filter(offer => isOfferCurrent(offer) && offer.store === name).length;
+        const count = offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer) && offer.store === name).length;
         const activeLabel = activeMarkets.includes(name) ? 'für Planung aktiv' : selected.includes(name) ? 'ausgewählt, über dem Stopplimit' : 'nicht ausgewählt';
         const live = liveOfferStatus[name];
         const offerLabel = name === 'Bring' ? `${count} Artikel erkannt` : count === 1 ? '1 gültiges Angebot' : count ? `${count} gültige Angebote` : 'manueller Import';
@@ -910,7 +910,7 @@
     function renderOfferMaintenance() {
       const imported = offers.filter(isImportedOffer);
       const expired = imported.filter(offer => !isOfferCurrent(offer));
-      $('#offerMaintenanceNote').textContent = imported.length ? `${imported.length} eigene Angebote gespeichert · ${imported.length - expired.length} aktuell${expired.length ? ` · ${expired.length} abgelaufen` : ''}. Abgelaufene Einträge werden nicht geplant und können hier entfernt werden.` : 'Noch keine eigenen Angebote importiert. Die Demo-Angebote bleiben unverändert.';
+      $('#offerMaintenanceNote').textContent = imported.length ? `${imported.length} eigene Angebote gespeichert · ${imported.length - expired.length} aktuell${expired.length ? ` · ${expired.length} abgelaufen` : ''}. Abgelaufene Einträge werden nicht geplant und können hier entfernt werden.` : 'Keine verifizierten Angebote geladen. Offline-Beispieldaten werden nicht für Planung oder Kosten verwendet.';
       const clearButton = $('#clearExpiredOffers');
       clearButton.disabled = !expired.length;
       clearButton.textContent = expired.length ? `Abgelaufene entfernen (${expired.length})` : 'Keine abgelaufenen';
@@ -1511,7 +1511,7 @@
     }
 
     function renderHighlights() {
-      $('#highlightList').innerHTML = offers.filter(isOfferCurrent).slice(0, 4).map(offer => `<div class="offer"><div class="offer-thumb">${escapeHtml(offer.icon)}</div><div><div class="offer-name">${escapeHtml(offer.name)}</div><div class="offer-store">${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.note)}</div></div><div class="offer-price"><strong>${escapeHtml(offer.price)}</strong><span>${escapeHtml(offer.saving)}</span></div></div>`).join('');
+      $('#highlightList').innerHTML = offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer)).slice(0, 4).map(offer => `<div class="offer"><div class="offer-thumb">${escapeHtml(offer.icon)}</div><div><div class="offer-name">${escapeHtml(offer.name)}</div><div class="offer-store">${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.note)}</div></div><div class="offer-price"><strong>${escapeHtml(offer.price)}</strong><span>${escapeHtml(offer.saving)}</span></div></div>`).join('');
     }
 
     function persistSettings() {
@@ -1836,7 +1836,7 @@
       $('#marketCount').textContent = used.length;
       $('#marketNote').textContent = marketLabel;
       $('#marketSubtitle').textContent = `Einkaufsroute: ${marketLabel} · maximal ${used.length} ${used.length === 1 ? 'Stopp' : 'Stopps'}.`;
-      $('#marketList').innerHTML = used.map((name, index) => { const currentCount = offers.filter(offer => isOfferCurrent(offer) && offer.store === name).length; return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(marketDetails[name].logo)}</div><div><div class="market-name">${index + 1}. ${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(marketDetails[name].distance)} entfernt</div></div></div><span class="market-count">${currentCount} gültige Angebote</span></div>`; }).join('');
+      $('#marketList').innerHTML = used.map((name, index) => { const currentCount = offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer) && offer.store === name).length; return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(marketDetails[name].logo)}</div><div><div class="market-name">${index + 1}. ${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(marketDetails[name].distance)} entfernt</div></div></div><span class="market-count">${currentCount} gültige Angebote</span></div>`; }).join('');
     }
 
     function renderMarketChoices() {
@@ -1858,7 +1858,7 @@
 
     function renderOffers(filter = 'all') {
       offersRendered = true;
-      const current = offers.filter(isOfferCurrent);
+      const current = offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer));
       const filtered = filter === 'all' ? current : current.filter(offer => offer.store === filter);
       $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => { const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : ''; return `<div class="catalog-card"><div class="catalog-card-top">${renderOfferVisual(offer)}<span class="discount">${escapeHtml(offer.saving)}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category)}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note)} · ${escapeHtml(offer.packSize || '1 Packung')}</span><span>${escapeHtml(offer.relevance)}% Match</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source)} · ${escapeHtml(offer.confidence)} sicher</div>${removeAction}</div>`; }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
       renderOfferMaintenance();
@@ -2005,7 +2005,11 @@
       return date.getFullYear() === Number(match[3]) && date.getMonth() === Number(match[2]) - 1 && date.getDate() === Number(match[1]) ? date : null;
     }
 
-    function isOfferCurrent(offer) {
+    function isDemoOffer(offer) {
+      const source = String(offer?.source || '').trim().toLowerCase();
+      return Boolean(offer?.demo) || source === 'demo-import';
+    }
+function isOfferCurrent(offer) {
       const end = offerEndDate(String(offer?.validUntil || '').trim());
       return Boolean(end) && end >= new Date();
     }
@@ -2015,7 +2019,7 @@
       const requestedLimit = Number(settings.markets);
       const marketLimit = Number.isInteger(requestedLimit) && requestedLimit > 0 ? requestedLimit : 2;
       const activeMarkets = selected.slice(0, marketLimit);
-      const current = offers.filter(isOfferCurrent);
+      const current = offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer));
       return current.filter(offer => activeMarkets.includes(offer.store));
     }
 
