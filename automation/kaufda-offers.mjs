@@ -35,7 +35,7 @@ function validUntilFrom(value, now = new Date()) {
   const calendarDate = Number.isNaN(referenceDate.getTime()) ? new Date() : referenceDate;
   let year = Number(match[3] || calendarDate.getUTCFullYear());
   if (!match[3] && Number(match[2]) < calendarDate.getUTCMonth() + 1) year += 1;
-  return `${String(match[1]).padStart(2, '0')}.${String(match[2]).padStart(2, '0')}.${year};
+  return `${String(match[1]).padStart(2, '0')}.${String(match[2]).padStart(2, '0')}.${year}`;
 }
 function pageCountFrom(value) { const match = String(value || '').match(/(?:mit|insgesamt)\s+(\d{1,3})\s+Seiten/i); return Math.min(Math.max(Number(match?.[1] || 72), 1), 120); }
 
