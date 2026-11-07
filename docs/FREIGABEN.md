@@ -201,7 +201,7 @@ freigegeben oder entschieden wurden.
 
 - Read-only-Audit: `mealPurpose` erlaubt bereits `Hauptgericht`, `Frühstück`, `Brotzeit`, `Snack`, `Getränk` und `Flexibel`; die Planung nutzt weiterhin ein Hauptgericht pro Tag.
 - Eine approval-freie Erweiterung ist nicht vertretbar, weil zusätzliche Slots die Auswahl, Mengen, Kosten sowie Settings-/Backup-/Sync-Kompatibilität fachlich berühren.
-- Kleinster nächster Entscheidungsschritt ist Freigabepunkt 8: Soll je Planungstag ein globaler optionaler Frühstücks-Slot ergänzt werden? Dieser Eintrag ist keine Freigabe. Keine Produkt-, Daten- oder Supabase-Änderung.
+- Historischer Freigabepunkt 8 ist durch die Nutzerentscheidung vom 07.11.2026 überholt: Es gibt keinen Frühstücks-Slot; der Umfang bleibt Mittagessen plus optionales Abendessen. Dieser Hinweis ist keine Freigabe und ändert weder Produkt-, Daten- noch Supabase-Stand.
 
 ## Koordinierter Arbeitsstand – 07.11.2026, Offline-Sync-Test
 
