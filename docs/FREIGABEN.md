@@ -336,3 +336,10 @@ freigegeben oder entschieden wurden.
 - [PR #109](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/109) verhindert, dass die fest eingebauten `Demo-Import`-Beispiele als aktuelle Angebotsdaten in Planung, Marktanzahl, Highlights oder Angebotskosten einfließen.
 - Die Offline-Beispiele bleiben für die Darstellung erhalten; verifizierte Händlerimporte und manuelle Nutzerimporte bleiben nutzbar. Ohne verifizierte Quelle weist die Oberfläche ausdrücklich darauf hin, dass keine Angebotsdaten für Planung oder Kosten verwendet werden.
 - Die Regression-Suite prüft die Demo-Quellerkennung, die drei aktiven Filterpfade und die Bytegleichheit von `index.html` und `dist/index.html`. Keine Nutzerdaten, Supabase-Daten, Migrationen, Deployments oder kostenpflichtigen Ressourcen wurden verändert.
+
+
+## Validierter Planbezug – Angebots-Evidenz – 07.11.2026
+
+- [PR #111](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/111) verhindert, dass vorgegebene Rezeptgründe oder alte Textbausteine als aktueller Angebotsbeleg erscheinen, wenn kein verifiziertes Angebot gematcht wurde.
+- Ein Plan-Eintrag erhält den Tag `Angebotsanker` nur bei mindestens einer tatsächlich gematchten Angebotszutat; sonst wird `Angebotsbezug offen` angezeigt. Preise und Angebotsquellen werden dadurch nicht ergänzt oder erfunden.
+- Regressionstests prüfen den Textvertrag und die Bytegleichheit von `index.html` und `dist/index.html`. Keine Nutzerdaten, Supabase-Daten, Migrationen, Deployments oder kostenpflichtigen Ressourcen wurden verändert.
