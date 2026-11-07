@@ -1043,6 +1043,11 @@
       return normalizeIngredient(ingredient).replace(/\b(frisch|frische|frischen|gehackt|gerieben|gemischt|rote|roten|gross|grosse|große|klein|kleine)\b/g, ' ').replace(/\s+/g, ' ').trim();
     }
 
+    function shoppingPackCount(item, people) {
+      if (item?.manual) return 1;
+      return Math.max(1, Math.ceil((item.count * people) / 2));
+    }
+
     function getShoppingItems() {
       const activeOffers = getActiveOffers();
       const items = new Map();
@@ -1076,8 +1081,8 @@
       const people = Number($('#peopleSelect')?.value || settings.people || 2);
       return [...items.values()].map(item => {
         // Zutaten werden ohne Mengenangabe im Rezept geführt. Ein Vorkommen entspricht deshalb
-        // einer Basisportion für zwei Personen; bei 4 Personen werden zwei Packungen eingeplant.
-        const packCount = Math.max(1, Math.ceil((item.count * people) / 2));
+        // einer Basisportion für zwei Personen; manuelle Artikel bleiben bei einer Packung.
+        const packCount = shoppingPackCount(item, people);
         return { ...item, packCount, reused: item.count > 1 };
       }).sort((first, second) => Number(Boolean(first.offer)) - Number(Boolean(second.offer)) || first.name.localeCompare(second.name, 'de'));
     }
