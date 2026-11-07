@@ -230,9 +230,33 @@ test('falls back to the request cache and then the precached index when offline'
   assert.equal(await cached.response.text(), 'cached dashboard');
 
   harness.seed(`${origin}/dashboard`, undefined);
-  const shell = await harness.dispatchFetch(new Request(`${origin}/missing`));
+  const shell = await harness.dispatchFetch({
+    url: `${origin}/missing`,
+    method: 'GET',
+    mode: 'navigate',
+    destination: 'document',
+  });
   assert.equal(shell.respondWithCalled, true);
   assert.equal(await shell.response.text(), 'precached:./index.html');
   assert.equal(harness.fetchCalls.length, 2);
 });
 
+test('does not return the HTML shell for uncached offline assets', async () => {
+  const harness = createHarness({
+    fetchImpl: async () => {
+      throw new Error('offline');
+    },
+  });
+  await harness.dispatch('install');
+
+  const result = await harness.dispatchFetch({
+    url: `${origin}/generated/offers.json`,
+    method: 'GET',
+    mode: 'cors',
+    destination: '',
+  });
+  assert.equal(result.respondWithCalled, true);
+  assert.equal(result.response.type, 'error');
+  assert.equal(result.response.status, 0);
+  assert.equal(await result.response.text(), '');
+});
