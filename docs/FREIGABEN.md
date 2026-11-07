@@ -580,3 +580,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - [PR #188](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/188) verlinkt bei validierten Snapshot-Metadaten die tatsächlich geladene sichere HTTPS-`sourceUrl`; alte Statusstände ohne diese Angabe nutzen weiterhin den statischen Fallback.
 - Regressionstest, Root-/`dist`-Synchronität und CI waren grün; PR #188 ist gemerged. Keine neuen Angebotsdaten, keine Supabase- oder Datenbankänderung.
+
+## Koordinierter Arbeitsstand – 07.11.2026, atomarer lokaler Import
+
+- [PR #190](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/190) schützt Backup-/Cloud-Importe vor Teilüberschreibung bei einem späteren lokalen Schreibfehler durch gemeinsamen Schreibvorgang und best-effort Rollback.
+- Regressionstest und CI waren grün; keine Migration, keine Supabase-/Datenbankänderung und keine neuen Kosten.
