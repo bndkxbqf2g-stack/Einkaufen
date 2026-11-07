@@ -296,3 +296,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Der deterministische Kandidatenselektor wird für Plan-Matcher und Einkaufsliste gemeinsam verwendet. Marktpräferenzen überschreiben die Relevanz-/Packungsgrößen-Rangfolge nicht mehr nur im Einkaufslistenpfad.
 - Ein synthetischer Test für Mittagessen plus optionales Abendessen bestätigt, dass Planpreis und Einkaufs-Zwischensumme dieselbe Angebotsbasis verwenden. Es wurden keine echten Angebots-, Nutzer-, Supabase- oder Datenbankdaten verändert.
+
+## Fortschritt 07.11.2026 – Mahlzeiten-Slots im Wochenplan
+
+- Manuelle Tageszuordnungen akzeptieren jetzt ausschließlich Rezepte für den Mittagsslot (`Hauptgericht` oder `Flexibel`); Frühstück, Snack und Getränk bleiben Rezeptzwecke, werden aber nicht als Wochenplan-Slot verwendet.
+- Auch ältere gespeicherte manuelle Zuordnungen werden beim Planaufbau gegen die Mittagsslot-Kandidaten geprüft. Dadurch gelangen ausgeschlossene Mahlzeiten nicht in Einkaufsliste, Mengen-/Packungsberechnung oder Planbetrag; bestehende Nutzerdaten werden nicht gelöscht.
