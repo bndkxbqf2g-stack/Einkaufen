@@ -416,7 +416,7 @@
 
         <div class="stats">
           <div class="stat"><div class="stat-label"><span>Planzeitraum</span><span>⌄</span></div><div class="stat-value" id="dayCount">5 Tage</div><div class="stat-note" id="planRangeNote">31. Okt. – 04. Nov.</div></div>
-          <div class="stat stat-accent"><div class="stat-label"><span>Geschätzter Einkauf</span><span>€</span></div><div class="stat-value" id="totalCost">42,80 €</div><div class="stat-note" id="totalCostNote">ca. 8,56 € pro Tag</div></div>
+          <div class="stat stat-accent"><div class="stat-label"><span>Bekannter Angebotsbetrag</span><span>€</span></div><div class="stat-value" id="totalCost">–</div><div class="stat-note" id="totalCostNote">Noch keine verifizierte Preisbasis</div></div>
           <div class="stat"><div class="stat-label"><span>Abwechslung</span><span>✦</span></div><div class="stat-value" id="varietyScore">92 %</div><div class="stat-note" id="varietyNote">verschiedene Profile</div></div>
           <div class="stat"><div class="stat-label"><span>Märkte</span><span>⌖</span></div><div class="stat-value" id="marketCount">2</div><div class="stat-note" id="marketNote">Aldi + Kaufland Würzburg</div></div>
         </div>
@@ -1017,9 +1017,12 @@
       const visible = getCurrentPlanMeals();
       const dinnerSlots = evening ? getCurrentPlanDinners() : [];
       const dinnerMeals = dinnerSlots.filter(Boolean);
-      const estimatedCost = [...visible, ...dinnerMeals].reduce((sum, meal) => sum + parseMoney(meal.cost), 0) * multiplier;
-      $('#totalCost').textContent = formatEuro(estimatedCost);
-      $('#totalCostNote').textContent = `ca. ${formatEuro(days ? estimatedCost / days : 0)} pro Tag · Packungsbasis`;
+      const planMeals = [...visible, ...dinnerMeals];
+      const pricedMeals = planMeals.filter(meal => meal.costSource === 'offer-subtotal' && parseKnownMoney(meal.cost) !== null);
+      const unknownMeals = planMeals.length - pricedMeals.length;
+      const knownOfferTotal = pricedMeals.reduce((sum, meal) => sum + (parseKnownMoney(meal.cost) || 0), 0) * multiplier;
+      $('#totalCost').textContent = unknownMeals ? '–' : formatEuro(knownOfferTotal);
+      $('#totalCostNote').textContent = unknownMeals ? `${unknownMeals} von ${planMeals.length} Gerichten ohne verifizierte Preisbasis · Kassenbetrag offen` : `Bekannter Angebotsbetrag ${formatEuro(knownOfferTotal)} · Packungsbasis · Kassenbetrag offen`;
       const variety = calculateVariety(visible);
       $('#varietyScore').textContent = `${variety.score} %`;
       $('#varietyNote').textContent = `${variety.profiles} Profile · ${variety.vegetarian} vegetarisch`;
@@ -1027,10 +1030,10 @@
       $('#pinnedNote').textContent = pinnedLabels.length ? `Vorgemerkt und bevorzugt: ${pinnedLabels.join(' · ')}.` : 'Noch keine zusätzlichen Rezepte vorgemerkt.';
       const reused = [...new Set(visible.flatMap(meal => meal.reusedIngredients || []))];
       $('#leftoverNote').textContent = reused.length ? `Restelogik aktiv: ${reused.slice(0, 3).join(' · ')} werden in mehreren Gerichten weiterverwendet.` : 'Noch keine sinnvolle Zutatenüberschneidung für die Resteverwertung erkannt.';
-      $('#dayList').innerHTML = visible.map((meal, index) => { const tags = Array.isArray(meal.tags) ? meal.tags : []; const cost = parseMoney(meal.cost); const rating = recipeRatings[mealRatingKey(meal)]?.rating; return `
+      $('#dayList').innerHTML = visible.map((meal, index) => { const tags = Array.isArray(meal.tags) ? meal.tags : []; const costValue = parseKnownMoney(meal.cost); const costKnown = meal.costSource === 'offer-subtotal' && costValue !== null; const cost = costKnown ? costValue : 0; const costLabel = costKnown ? `Bekannter Angebotsanteil · ${(cost * multiplier).toFixed(2).replace('.', ',')} €` : 'Preis unbekannt'; const rating = recipeRatings[mealRatingKey(meal)]?.rating; return `
         <article class="day-card ${index === 0 ? 'today' : ''}">
           <div class="day-date">${index === 0 ? '<span class="today-tag">Heute</span>' : ''}<span class="day-name">${escapeHtml(meal.day)}</span><small>${escapeHtml(meal.date)}</small></div>
-          <div class="meal-row"><div class="meal-emoji ${meal.kind === 'warm' ? 'warm' : ''}">${escapeHtml(meal.emoji)}</div><div class="meal-info"><div class="meal-type">${meal.kind === 'warm' ? 'Warmes Hauptgericht' : 'Abendessen'}${meal.manual ? '<span class="manual-choice">· deine Auswahl</span>' : ''}</div><div class="meal-title">${escapeHtml(meal.title)}</div><div class="meal-meta"><span>für <b>${people} Personen</b></span><span>ca. <b>${(cost * multiplier).toFixed(2).replace('.', ',')} €</b></span><span>${escapeHtml(marketDisplayString(meal.store))}</span></div><div class="meal-tags">${tags.map((tag, tagIndex) => `<span class="tag ${tagIndex === 1 ? 'yellow' : ''}">${escapeHtml(tag)}</span>`).join('')}</div><div class="recipe-preview"><span class="recipe-preview-label">Rezept · Zutaten</span><div class="recipe-preview-list">${getMealIngredients(meal).slice(0, 6).map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('') || '<span class="source-note">Zutaten noch nicht hinterlegt</span>'}</div></div></div></div>
+          <div class="meal-row"><div class="meal-emoji ${meal.kind === 'warm' ? 'warm' : ''}">${escapeHtml(meal.emoji)}</div><div class="meal-info"><div class="meal-type">${meal.kind === 'warm' ? 'Warmes Hauptgericht' : 'Abendessen'}${meal.manual ? '<span class="manual-choice">· deine Auswahl</span>' : ''}</div><div class="meal-title">${escapeHtml(meal.title)}</div><div class="meal-meta"><span>für <b>${people} Personen</b></span><span>${escapeHtml(costLabel)}</span><span>${escapeHtml(marketDisplayString(meal.store))}</span></div><div class="meal-tags">${tags.map((tag, tagIndex) => `<span class="tag ${tagIndex === 1 ? 'yellow' : ''}">${escapeHtml(tag)}</span>`).join('')}</div><div class="recipe-preview"><span class="recipe-preview-label">Rezept · Zutaten</span><div class="recipe-preview-list">${getMealIngredients(meal).slice(0, 6).map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('') || '<span class="source-note">Zutaten noch nicht hinterlegt</span>'}</div></div></div></div>
           <div class="day-score"><div class="score"><span class="score-ring" style="background:conic-gradient(var(--green-2) 0 ${meal.score}%, #e1ece2 ${meal.score}% 100%)"><span>${meal.score}</span></span> Match</div><div class="day-actions"><button class="text-button meal-detail" data-day-index="${index}" data-title="${escapeHtml(meal.title)}" data-note="${escapeHtml(meal.note)}">Details&nbsp;→</button><button class="small-button" data-choose-day="${index}">Rezept wählen</button>${meal.manual ? `<button class="small-button remove" data-clear-day="${index}">Auswahl lösen</button>` : ''}<button class="small-button" data-rate-meal="${index}">${rating ? `Bewertet: ${'★'.repeat(rating)}` : 'Gekocht? Bewerten'}</button></div></div>
         </article>`; }).join('') + (evening ? dinnerSlots.map((dinner, index) => renderDinnerCard(dinner, index, people)).join('') : '');
       renderPlanSuggestions();
@@ -1670,13 +1673,13 @@
       return `${Number(value || 0).toFixed(2).replace('.', ',')} €`;
     }
 
-    function estimateMealCost(recipe, fallback) {
+    function estimateMealCost(recipe) {
       const match = getRecipeMatchDetails(recipe);
-      if (match.matchedOffers.length < 2) return fallback;
+      if (match.matchedOffers.length < 2) return '';
       const offerPrices = match.matchedOffers.map(offer => parseKnownMoney(offer.price));
-      if (offerPrices.some(price => price === null)) return fallback;
+      if (offerPrices.some(price => price === null)) return '';
       const offerTotal = offerPrices.reduce((sum, price) => sum + price, 0);
-      return formatEuro(Math.max(parseMoney(fallback) * 0.75, offerTotal));
+      return formatEuro(offerTotal);
     }
 
     function favoriteAsCandidate(item, index) {
@@ -1755,7 +1758,8 @@
       const match = scoreRecipe(recipe);
       const store = match.store || recipe.store || 'mehrere Märkte';
       const pinned = pinnedRecipes.includes(recipe.id);
-      return { ...template, kind: slot === 'dinner' ? 'dinner' : template.kind, slot, recipeId: recipe.id, title: recipe.title, emoji: recipe.emoji, store: store.split(' + ')[0], cost: estimateMealCost(recipe, template.cost), score: match.score, tags: [...(recipe.tags || []), ...(recipe.favorite ? ['Lieblingsrezept'] : []), ...(pinned ? ['vorgemerkt'] : []), match.matchedIngredients.length ? 'Angebotsanker' : 'Angebotsbezug offen'], note: match.reason || 'Angebotsbezug noch nicht verifiziert', main: normalizeIngredient(recipe.ingredients?.[0] || recipe.title), profile: recipe.favorite ? 'Lieblingsrezept' : template.profile || 'Angebotsrezept', mealPurpose: recipeMealPurpose(recipe), vegetarian: recipe.vegetarian, ingredients: recipe.ingredients };
+      const cost = estimateMealCost(recipe);
+      return { ...template, kind: slot === 'dinner' ? 'dinner' : template.kind, slot, recipeId: recipe.id, title: recipe.title, emoji: recipe.emoji, store: store.split(' + ')[0], cost, costSource: cost ? 'offer-subtotal' : 'unknown', score: match.score, tags: [...(recipe.tags || []), ...(recipe.favorite ? ['Lieblingsrezept'] : []), ...(pinned ? ['vorgemerkt'] : []), match.matchedIngredients.length ? 'Angebotsanker' : 'Angebotsbezug offen'], note: match.reason || 'Angebotsbezug noch nicht verifiziert', main: normalizeIngredient(recipe.ingredients?.[0] || recipe.title), profile: recipe.favorite ? 'Lieblingsrezept' : template.profile || 'Angebotsrezept', mealPurpose: recipeMealPurpose(recipe), vegetarian: recipe.vegetarian, ingredients: recipe.ingredients };
     }
 
     function getCurrentPlanMeals() {
