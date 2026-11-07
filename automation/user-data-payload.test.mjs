@@ -54,6 +54,16 @@ function initializeManualShoppingItems(rawItems) {
 
 
 
+const shoppingChecksStart = source.indexOf('    function reconcileShoppingChecks(');
+const shoppingChecksEnd = source.indexOf('    function renderShoppingGroupHeader', shoppingChecksStart);
+assert.ok(shoppingChecksStart >= 0 && shoppingChecksEnd > shoppingChecksStart, 'shopping check reconciler is present');
+const reconcileShoppingChecks = vm.runInNewContext(
+  `${source.slice(shoppingChecksStart, shoppingChecksEnd)}
+reconcileShoppingChecks`,
+  {},
+  { filename: 'shopping-checks.js' },
+);
+
 const pantryNormalizationStart = source.indexOf('    if (!Array.isArray(pantry)) {');
 const pantryNormalizationEnd = source.indexOf('    if (!Array.isArray(dismissedRecipes))', pantryNormalizationStart);
 assert.ok(pantryNormalizationStart >= 0 && pantryNormalizationEnd > pantryNormalizationStart, 'pantry normalization is present');
@@ -150,6 +160,50 @@ test('keeps legacy manual shopping checks stable across reload and restore', () 
   assert.deepEqual(restored.items, first.items);
   assert.equal(shoppingChecks[`manual-${reloaded.items[0].id}`], true);
   assert.equal(shoppingChecks[`manual-${restored.items[0].id}`], true);
+});
+
+test('round-trips legacy manual items, local fields, and shopping checks together', () => {
+  const initialChecks = {
+    'manual-manual-legacy-brot': true,
+    'manual-manual-legacy-brot-2': true,
+    'shopping-stale': true,
+    'manual-false': false,
+    'manual-text': 'false',
+  };
+  const { applyUserDataPayload, storage } = createPayloadHarness([
+    ['angebotskueche.settings', JSON.stringify({ people: 4, markets: 3 })],
+    ['angebotskueche.pantry', JSON.stringify(['Milch'])],
+    ['angebotskueche.shoppingChecks', JSON.stringify(initialChecks)],
+  ], { people: 4, markets: 3 });
+
+  applyUserDataPayload({
+    version: 1,
+    manualShoppingItems: [{ name: 'Brot' }, { name: 'Brot' }],
+  }, 'geladen', { mergeSettings: true });
+
+  assert.equal(storage.get('angebotskueche.pantry'), JSON.stringify(['Milch']));
+  assert.equal(storage.get('angebotskueche.shoppingChecks'), JSON.stringify(initialChecks), 'fehlendes Backup-Feld lässt lokale Checks erhalten');
+
+  const firstReload = initializeManualShoppingItems(
+    JSON.parse(storage.get('angebotskueche.manualShoppingItems')),
+  );
+  assert.deepEqual(firstReload.items.map(item => item.id), [
+    'manual-legacy-brot',
+    'manual-legacy-brot-2',
+  ]);
+  assert.equal(firstReload.saved, JSON.stringify(firstReload.items));
+
+  const secondReload = initializeManualShoppingItems(JSON.parse(firstReload.saved));
+  assert.equal(secondReload.saved, null, 'normalisierte IDs bleiben beim nächsten Reload stabil');
+
+  const currentItems = secondReload.items.map(item => ({ id: `manual-${item.id}` }));
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(reconcileShoppingChecks(JSON.parse(storage.get('angebotskueche.shoppingChecks')), currentItems))),
+    {
+      'manual-manual-legacy-brot': true,
+      'manual-manual-legacy-brot-2': true,
+    },
+  );
 });
 
 test('keeps every local v1 field that an older cloud snapshot omits', () => {
