@@ -831,6 +831,19 @@
       return delimiter ? row.split(delimiter).map(value => value.trim()) : row.split(/\s{2,}/).map(value => value.trim());
     }
 
+    function parseManualOfferRow(row) {
+      const parts = splitOfferRow(row);
+      const [name, store, price, saving = '–', category = 'Hauptzutat', packSizeOrDate = '1 Packung', dateOrSource = '', source = 'manueller Import'] = parts;
+      const legacyDate = /^\d{1,2}\.\d{1,2}\.\d{4}$/.test(packSizeOrDate);
+      const packSize = legacyDate ? '1 Packung' : packSizeOrDate;
+      const validUntil = legacyDate ? packSizeOrDate : dateOrSource;
+      const resolvedSource = legacyDate ? (dateOrSource || 'manueller Import') : (source || 'manueller Import');
+      const market = canonicalMarketName(store);
+      const end = offerEndDate(validUntil);
+      if (!name || !market || parseMoney(price) <= 0 || !end || end < new Date()) return null;
+      return { name: name.trim(), store: market, price: price.trim(), saving: saving.trim(), icon: '🛒', category: category.trim(), packSize: packSize.trim(), relevance: 82, note: 'manuell importiert', validUntil: validUntil.trim(), source: resolvedSource.trim(), confidence: 'niedrig' };
+    }
+
     const planWeekdays = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
     const planMonths = ['Jan.', 'Feb.', 'März', 'Apr.', 'Mai', 'Juni', 'Juli', 'Aug.', 'Sept.', 'Okt.', 'Nov.', 'Dez.'];
 
@@ -2631,21 +2644,11 @@
     }, true);
     $('#importOffers').addEventListener('click', () => {
       const rows = $('#offerInput').value.split('\n').map(row => row.trim()).filter(Boolean);
-      const rejected = [];
       const duplicates = [];
       const knownKeys = new Set(offers.filter(isImportedOffer).map(offerImportKey));
-      const imported = rows.map(row => {
-        const parts = splitOfferRow(row);
-        const [name, store, price, saving = '–', category = 'Hauptzutat', packSizeOrDate = '1 Packung', dateOrSource = defaultOfferEnd(), source = 'manueller Import'] = parts;
-        const legacyDate = /^\d{1,2}\.\d{1,2}\.\d{4}$/.test(packSizeOrDate);
-        const packSize = legacyDate ? '1 Packung' : packSizeOrDate;
-        const validUntil = legacyDate ? packSizeOrDate : (dateOrSource || defaultOfferEnd());
-        const resolvedSource = legacyDate ? (dateOrSource || 'manueller Import') : source;
-        const market = canonicalMarketName(store);
-        const end = offerEndDate(validUntil);
-        if (!name || !market || parseMoney(price) <= 0 || !end || end < new Date()) { rejected.push(row); return null; }
-        return { name: name.trim(), store: market, price: price.trim(), saving: saving.trim(), icon: '🛒', category: category.trim(), packSize: packSize.trim(), relevance: 82, note: 'manuell importiert', validUntil: validUntil.trim(), source: resolvedSource.trim(), confidence: 'niedrig' };
-      }).filter(Boolean).filter(offer => { const key = offerImportKey(offer); if (knownKeys.has(key)) { duplicates.push(offer); return false; } knownKeys.add(key); return true; });
+      const parsed = rows.map(row => ({ row, offer: parseManualOfferRow(row) }));
+      const rejected = parsed.filter(item => !item.offer).map(item => item.row);
+      const imported = parsed.map(item => item.offer).filter(Boolean).filter(offer => { const key = offerImportKey(offer); if (knownKeys.has(key)) { duplicates.push(offer); return false; } knownKeys.add(key); return true; });
       if (!imported.length) { showToast(duplicates.length ? 'Diese Angebote sind bereits gespeichert.' : 'Keine gültigen aktuellen Angebote erkannt. Prüfe Markt, Preis und Datum (TT.MM.JJJJ).'); return; }
       offers.push(...imported);
       refreshOfferViews();
