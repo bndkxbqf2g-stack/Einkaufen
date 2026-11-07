@@ -118,16 +118,16 @@ test('persists safe pantry and recipe history normalization before backup', () =
   const expectedHistory = ['rezept-0', ...Array.from({ length: 19 }, (_, index) => `rezept-${index + 1}`)];
   const expectedPantry = ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch'];
 
-  assert.deepEqual(first.pantry, expectedPantry);
-  assert.deepEqual(first.recipeHistory, expectedHistory);
+  assert.deepEqual([...first.pantry], expectedPantry);
+  assert.deepEqual([...first.recipeHistory], expectedHistory);
   assert.equal(first.pantrySaved, JSON.stringify(expectedPantry));
   assert.equal(first.historySaved, JSON.stringify(expectedHistory));
 
   const reloaded = normalizeLegacyPantryAndHistory(JSON.parse(first.pantrySaved), JSON.parse(first.historySaved));
   assert.equal(reloaded.pantrySaved, null, 'normalized pantry is not rewritten on reload');
   assert.equal(reloaded.historySaved, null, 'normalized history is not rewritten on reload');
-  assert.deepEqual(reloaded.pantry, expectedPantry);
-  assert.deepEqual(reloaded.recipeHistory, expectedHistory);
+  assert.deepEqual([...reloaded.pantry], expectedPantry);
+  assert.deepEqual([...reloaded.recipeHistory], expectedHistory);
 });
 
 test('keeps legacy manual shopping checks stable across reload and restore', () => {
