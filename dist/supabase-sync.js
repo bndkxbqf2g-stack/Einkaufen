@@ -32,6 +32,34 @@
     try { localStorage.setItem(key, value); } catch {}
   }
 
+  function safeRemove(key) {
+    try { localStorage.removeItem(key); } catch {}
+  }
+
+  function clearLocalHouseholdContext() {
+    const keys = new Set([HOUSEHOLD_KEY, LOCAL_DATA_HOUSEHOLD_KEY]);
+    try {
+      for (let index = 0; index < localStorage.length; index += 1) {
+        const key = localStorage.key(index);
+        if (key?.startsWith(REVISION_KEY_PREFIX)) keys.add(key);
+      }
+    } catch {}
+    keys.forEach(safeRemove);
+  }
+
+  function updateSession(nextSession) {
+    const priorUserId = session?.user?.id;
+    const nextUserId = nextSession?.user?.id;
+    const sessionEnded = !nextSession;
+    const userChanged = Boolean(priorUserId && nextUserId && priorUserId !== nextUserId);
+    session = nextSession || null;
+    if (sessionEnded || userChanged) {
+      households = [];
+      selectedHouseholdId = null;
+      clearLocalHouseholdContext();
+    }
+  }
+
   function setStatus(message) {
     const status = byId('supabaseStatus');
     if (status) status.textContent = String(message || '');
@@ -145,17 +173,12 @@
         auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
       });
       client.auth.onAuthStateChange((_event, nextSession) => {
-        const priorUserId = session?.user?.id;
-        session = nextSession;
-        if (!session || (priorUserId && session.user?.id !== priorUserId)) {
-          households = [];
-          if (!session) selectedHouseholdId = null;
-        }
+        updateSession(nextSession);
         renderUi();
       });
       const { data, error } = await client.auth.getSession();
       if (error) throw error;
-      session = data?.session || null;
+      updateSession(data?.session || null);
       renderUi();
       return client;
     }).catch(error => {
@@ -171,7 +194,7 @@
     const activeClient = await ensureClient();
     const { data, error } = await activeClient.auth.getSession();
     if (error) throw error;
-    session = data?.session || null;
+    updateSession(data?.session || null);
     renderUi();
     if (!isSignedIn()) throw new Error('Bitte zuerst mit einem bestätigten Konto anmelden.');
     return activeClient;
@@ -305,7 +328,7 @@
     setStatus('Anmeldung läuft …');
     const { data, error } = await activeClient.auth.signInWithPassword({ email, password });
     if (error) throw error;
-    session = data?.session || null;
+    updateSession(data?.session || null);
     if (!isSignedIn()) throw new Error('Anmeldung benötigt noch eine E-Mail-Bestätigung.');
     if (byId('supabasePassword')) byId('supabasePassword').value = '';
     await refreshHouseholds();
@@ -322,7 +345,7 @@
     const { data, error } = await activeClient.auth.signUp({ email, password });
     if (error) throw error;
     if (byId('supabasePassword')) byId('supabasePassword').value = '';
-    session = data?.session || null;
+    updateSession(data?.session || null);
     renderUi();
     if (isSignedIn()) {
       await refreshHouseholds();
@@ -336,9 +359,7 @@
     const activeClient = await ensureClient();
     const { error } = await activeClient.auth.signOut();
     if (error) throw error;
-    session = null;
-    households = [];
-    selectedHouseholdId = null;
+    updateSession(null);
     renderUi();
     setStatus('Abgemeldet. Lokale App-Daten bleiben auf diesem Gerät erhalten.');
   }
@@ -421,7 +442,7 @@
       await ensureClient();
       const { data, error } = await client.auth.getSession();
       if (error) throw error;
-      session = data?.session || null;
+      updateSession(data?.session || null);
       renderUi();
       return isSignedIn();
     } catch {
