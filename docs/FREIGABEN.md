@@ -212,3 +212,10 @@ freigegeben oder entschieden wurden.
 - Der aktuelle Integrationsstand ist `main@2de36bd061dbd1931e60099f1829573778199941`.
 - PR [#74](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/74) filtert Lidl-OCR-Grundpreiszeilen wie `(1 kg = 1,58 €)` vor der Preis-/Packungsanalyse; Regressionstests sichern die Korrektur.
 - PR [#75](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/75) vereinheitlicht Singular/Plural gemeinsamer Zutaten in der Einkaufsliste, erhält den zuerst vorhandenen Schlüssel und enthält Regressionstests. Beide PRs sind gemergt und die CI war grün. Keine Supabase-, Datenmodell- oder Budgetänderung.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Snapshot-Deduplizierung
+
+- PR [#77](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/77) ist in den aktuellen Integrationsstand `main@6e07fc8864e836413790b053540da74627215210` gemergt.
+- Der zentrale Validator weist exakte Angebots-Snapshot-Duplikate anhand der normalisierten Identität aus Name, Preis, Packungsgröße und Gültigkeitsdatum zurück. Unterschiedliche Packungsgrößen bleiben zulässig.
+- Der Regressionstest und die PR-CI (Run [#42342350172](https://github.com/bndkxbqf2g-stack/Einkaufen/actions/runs/42342350172)) waren erfolgreich.
+- Keine Supabase-, Datenmodell-, Budget- oder Angebotsdatenänderung; keine zusätzliche Nutzerfreigabe erforderlich.
