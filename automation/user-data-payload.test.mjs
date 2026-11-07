@@ -198,7 +198,7 @@ test('round-trips legacy manual items, local fields, and shopping checks togethe
 
   const currentItems = secondReload.items.map(item => ({ id: `manual-${item.id}` }));
   assert.deepEqual(
-    plain(reconcileShoppingChecks(JSON.parse(storage.get('angebotskueche.shoppingChecks')), currentItems)),
+    JSON.parse(JSON.stringify(reconcileShoppingChecks(JSON.parse(storage.get('angebotskueche.shoppingChecks')), currentItems))),
     {
       'manual-manual-legacy-brot': true,
       'manual-manual-legacy-brot-2': true,
