@@ -76,3 +76,9 @@ test('summarizes only the requested month and keeps plan values separate', () =>
 });
 
 console.log('Purchase record core checks passed');
+test('rejects a monthly sum that exceeds the safe integer range', () => {
+  const first = { id: 'large-1', purchaseDate: '2026-11-07', month: '2026-11', totalCents: Number.MAX_SAFE_INTEGER, source: 'manual' };
+  const second = { id: 'large-2', purchaseDate: '2026-11-08', month: '2026-11', totalCents: 1, source: 'manual' };
+
+  assert.throws(() => summarizePurchaseRecords([first, second], '2026-11'), /Monatsgesamtbetrag/);
+});
