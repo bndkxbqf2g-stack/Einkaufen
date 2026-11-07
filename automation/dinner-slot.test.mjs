@@ -118,6 +118,8 @@ test('shows a recipe source link on dinner cards when available', () => {
     escapeHtml: value => String(value ?? ''),
     recipeMealPurpose: () => 'Brotzeit',
     parseMoney: () => 4,
+    parseKnownMoney: () => 4,
+    formatEuro: value => `${Number(value).toFixed(2).replace('.', ',')} €`,
     recipeRatings: {},
     mealRatingKey: () => 'dinner-1',
     marketDisplayString: () => 'Aldi',
