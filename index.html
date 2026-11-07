@@ -529,6 +529,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script src="./shopping-costs.js"></script>
+  <script src="./meal-planning.js"></script>
   <script src="./supabase-sync.js"></script>
   <script>
     const seedOffers = [
@@ -633,8 +634,7 @@
         });
     }
     function normalizeRecipeMealPurpose(value) {
-      const purpose = String(value || '').trim();
-      return ['Hauptgericht', 'Frühstück', 'Brotzeit', 'Snack', 'Getränk', 'Flexibel'].includes(purpose) ? purpose : 'Flexibel';
+      return window.AngebotskuecheMealModel.normalizeRecipeMealPurpose(value);
     }
     function recipeMealPurpose(recipe) {
       return normalizeRecipeMealPurpose(recipe?.mealPurpose);
@@ -644,9 +644,7 @@
       return {};
     }
     function mealPurposeAllowsSlot(recipe, slot = 'lunch') {
-      const purpose = recipeMealPurpose(recipe);
-      if (slot === 'dinner') return purpose === 'Brotzeit' || purpose === 'Flexibel';
-      return purpose === 'Hauptgericht' || purpose === 'Flexibel';
+      return window.AngebotskuecheMealModel.mealPurposeAllowsSlot(recipe, slot);
     }
     const DEFAULT_SELECTED_MARKETS = ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'];
     function normalizeSettings(raw) {
