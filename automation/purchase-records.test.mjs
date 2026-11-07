@@ -45,6 +45,10 @@ test('rejects malformed, inconsistent, or non-manual purchase records', () => {
     /totalCents/,
   );
   assert.throws(
+    () => validatePurchaseRecord({ id: 'x', purchaseDate: '2026-11-07', month: '2026-11', totalCents: Number.MAX_SAFE_INTEGER + 1, source: 'manual' }),
+    /totalCents/,
+  );
+  assert.throws(
     () => validatePurchaseRecord({ id: 'x', purchaseDate: '2026-11-07', month: '2026-11', totalCents: 100, source: 'receipt' }),
     /source/,
   );
