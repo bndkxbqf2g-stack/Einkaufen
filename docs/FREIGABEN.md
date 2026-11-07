@@ -149,3 +149,21 @@ freigegeben oder entschieden wurden.
 - Die Konzeptprüfung für die erste lokale IST-Budget-Etappe definiert `purchaseRecords` als `{ id, purchaseDate, month, totalCents, market, source: 'manual' }`. Das feste Monatsziel beträgt zunächst 40.000 Cent; Planwert, Angebots-Zwischensumme und IST-Ausgaben werden getrennt berechnet. `shoppingChecks` bleiben reine Checklisten und erzeugen keine Ausgaben.
 - Offen bleiben vor der Umsetzung: Gesamtbetrag je Einkauf oder Positionen mit echten Mengen/Preisen, Beleg/OCR, gerätegebundene oder Haushaltshistorie, Zeitraumdefinition sowie die Abgrenzung von Fahrtkosten und Haushaltswaren.
 - Beide Konzeptprüfungen waren read-only. Keine Produktdateien, keine Supabase-Änderung, keine OCR-/Belegverarbeitung und keine Datenänderung.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Umsetzungspakete Marktoptimierung und IST-Budget
+
+- Die Marktoptimierung bleibt bis zu den fachlichen Freigaben vorbereitet, nicht umgesetzt:
+  - **MO-0 Freigabe/Vertrag:** Eingabe-/Ausgabevertrag, sichere Cent-/Packungs-/Gültigkeitsdaten, `insufficient_data` und Entscheidungen zu Schwelle, Fahrtkostenbasis, Ausgangspunkt/Datenschutz, `maxStops`, Vergleichspreisen und Routingdienst festlegen.
+  - **MO-1 Pure Kernfunktion:** `optimizeMarketSelection(input)` lokal, deterministisch und ohne Netzwerk; Einkaufs- und Fahrtkosten getrennt, Mehrstopp nur bei erfüllter Nettoersparnisschwelle.
+  - **MO-2 Synthetische Tests:** gültige/ungültige Angebote, abgelaufene Daten, fehlende Preise, Schwellenwerte, `maxStops` und deterministische Tie-Breaker prüfen.
+  - **MO-3 Verpackung/Worker:** Modulgrenzen, Build und Worker-Auslieferung vorbereiten; keine externe Routing- oder Kostenquelle ohne Freigabe anbinden.
+  - **MO-4 Adapter/UI:** erst nach MO-0 bis MO-3 ausgewählte Markt-/Routenadapter und getrennte Ergebnisanzeige ergänzen.
+  - **MO-5 CI/Rollout:** CI-Gates, Regressionen und gestuften Rollout prüfen; Veröffentlichung erst nach grüner CI und den fachlichen Freigaben.
+- Die IST-Budget-Etappe bleibt ebenfalls vorbereitet, nicht produktiv umgesetzt:
+  - **WP1 Validator:** lokales `purchaseRecords`-Schema mit Datum/Monat, positivem Centbetrag, optionalem kanonischem Markt und `source: 'manual'` validieren.
+  - **WP2 LocalStorage:** eigener lokaler Schlüssel, Round-trip, Korrektur/Löschung sowie Quota-/korruptes-JSON-Verhalten absichern.
+  - **WP3 Payload-/Cloud-Grenze:** zunächst nicht in D1, Supabase oder bestehende v1-Payloads aufnehmen; Backup-/Sync-Aufnahme separat entscheiden.
+  - **WP4 Monatsrechnung:** 40.000 Cent Zielbudget, monatliche IST-Summe und Restbudget deterministisch berechnen; Plan- und Angebotswerte getrennt halten.
+  - **WP5 UI:** manuelle Eingabe und getrennte Anzeige von Plan/Schätzung, Angebots-Zwischenwert, IST-Ausgaben, Budget und Restbudget; `shoppingChecks` bleiben Checkliste.
+  - **WP6 Tests:** Validator, Monatssummen, Überziehung, Persistence, Trennung von Checks/Planwerten und Ausbleiben von Netzwerkaufrufen testen.
+- Die produktive Speicherung tatsächlicher Einkäufe sowie jede Änderung an Backup, D1, Supabase, Beleg/OCR, Positionsdaten oder Haushaltshistorie startet erst nach ausdrücklicher Freigabe von Freigabepunkt 9. Diese Liste ist nur eine Umsetzungsvorbereitung und keine Freigabe.
