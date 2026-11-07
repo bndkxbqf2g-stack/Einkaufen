@@ -188,3 +188,9 @@ freigegeben oder entschieden wurden.
 - Der aktuelle Integrationsstand ist `main@4d376f1b1dbf217af240e74d9b1363a5ed9fae19`.
 - Der gemergte PR #67 veröffentlicht den neuen `APP_BUILD`-Marker `2026-11-07-restore-stability-1` in Root und `dist`, damit bestehende PWA-Clients den Shell-Cache nach den Restore-Stabilisierungen invalidieren.
 - Der GitHub-Pages-Deploy (Run #214), der Pages-Build/Deploy (Run #414) und der Root-Sync (Run #108) liefen für diesen Merge-Commit erfolgreich durch. Es wurden keine Produktdaten, Supabase-Daten oder Datenmodelle geändert.
+
+## Koordinierter Arbeitsstand – 07.11.2026, GitHub-Pages-Pfade
+
+- Der aktuelle Integrationsstand ist `main@113e179c21247f11e14d7a48c6eb9f66a3a66e1a`.
+- PR [#69](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/69) ist gemergt und ergänzt `docs/**` in `push.paths` und `pull_request.paths` von `.github/workflows/github-pages.yml`.
+- Die PR-CI (Run `42340472415`) war grün. Keine Produktlogik, Daten- oder Supabase-Änderung.
