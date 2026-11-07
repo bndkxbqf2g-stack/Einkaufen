@@ -281,3 +281,11 @@ freigegeben oder entschieden wurden.
 - PR #94 validiert manualDinnerPlan explizit als Objekt an den Supabase- und Worker/D1-Payload-Grenzen. Ungültige Arrays und null werden abgewiesen; Root-/dist-Artefakte und Regressionstests sind synchron. CI war nach Aktualisierung auf den aktuellen main grün.
 - PRs #95 und #96 bereinigen widersprüchliche Frühstücksannahmen in docs/PRODUKTZIEL.md. Der bestätigte Umfang ist Mittagessen plus optionales Abendessen; der nächste fachliche Schritt ist der Kosten-/Kassenfluss.
 - Keine Migration, keine Supabase-Datenänderung, keine automatische Kassenpreis-Erfassung und keine kostenpflichtige Ressource.
+
+
+## Read-only-Kosten- und Einkaufslisten-Audit – 07.11.2026
+
+- Die Kosten-/Einkaufslistenprüfung mit synthetischen Daten fand keinen reproduzierbaren Defekt. Mittagessen und aktivierte Abendessen werden in der Plankostensumme jeweils einmal berücksichtigt.
+- Packungsrundung, Personenmultiplikator, Vorratsfilter, bekannte positive Angebotspreise sowie getrennte unbekannte/mehrdeutige Preise verhalten sich deterministisch. Fehlende Artikel bleiben außerhalb der Angebotssumme und erhalten keinen erfundenen Preis.
+- Das Ergebnis ist weiterhin nur ein Angebots-Zwischenwert, kein vollständiger Kassenbetrag. Reguläre Vergleichspreise, belastbare Vorratsmengen, bestätigte IST-Ausgaben und Fahrtkosten fehlen bewusst.
+- Kein PR, keine Produktänderung und keine Supabase-/Datenbankaktion aus diesem Audit. Die nächste Umsetzung des tatsächlichen Einkaufs-/Kassenflusses bleibt Freigabepunkt 9.
