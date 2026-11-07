@@ -39,6 +39,7 @@ function createSyncHarness({ remoteState = null, confirm = true, initialStorage 
   const rpcCalls = [];
   const appliedPayloads = [];
   let confirmationCount = 0;
+  let sessionError = null;
   let state = remoteState;
   const makeElement = () => ({
     value: '',
@@ -64,7 +65,7 @@ function createSyncHarness({ remoteState = null, confirm = true, initialStorage 
   const client = {
     auth: {
       onAuthStateChange() { return { data: { subscription: { unsubscribe() {} } } }; },
-      async getSession() { return { data: { session }, error: null }; },
+      async getSession() { return { data: sessionError ? null : { session }, error: sessionError }; },
     },
     async rpc(name, args = {}) {
       rpcCalls.push({ name, args });
@@ -100,6 +101,7 @@ function createSyncHarness({ remoteState = null, confirm = true, initialStorage 
     storage,
     appliedPayloads,
     get confirmationCount() { return confirmationCount; },
+    setSessionError(error) { sessionError = error; },
     async initialize() {
       await api.initialize({
         buildPayload: () => validPayload,
@@ -153,6 +155,13 @@ test('uses a pinned Supabase SDK and never embeds a privileged key', () => {
   assert.doesNotMatch(source, /service[_-]?role|sb_secret_/i);
 });
 
+test('distinguishes a failed session lookup from a signed-out user', async () => {
+  const harness = createSyncHarness();
+  await harness.initialize();
+  harness.setSessionError(new Error('offline'));
+  assert.equal(await harness.api.hasSession(), null);
+});
+
 test('keeps the static app inline script syntactically valid', () => {
   const inlineScript = html.match(/<script>\s*([\s\S]*?)<\/script>/);
   assert.ok(inlineScript, 'main app script is present');
@@ -203,6 +212,38 @@ async function runOfflineCloudAction(name, nextMarker) {
   await action();
   return { events, button, storage, before };
 }
+
+async function runSessionLookupFailureCloudAction(name, nextMarker) {
+  const events = [];
+  const button = { disabled: false };
+  const sync = {
+    openSettings() { events.push({ type: 'settings' }); },
+    async hasSession() { events.push({ type: 'session-check' }); return null; },
+  };
+  const sandbox = {
+    window: { angebotskuecheSupabaseSync: sync },
+    isGithubPagesHost: true,
+    initializeSupabaseSync: async () => true,
+    $: () => button,
+    showToast(message) { events.push({ type: 'toast', message }); },
+    fetch: async () => { throw new Error('session lookup failure should not use D1 fallback'); },
+    buildUserDataPayload: () => ({ version: 1 }),
+  };
+  const action = vm.runInNewContext(`(${extractCloudAction(html, name, nextMarker)})`, sandbox);
+  await action();
+  return { events, button };
+}
+
+test('keeps session lookup failures out of the GitHub Pages login prompt', async () => {
+  for (const [name, nextMarker] of [['cloudSaveData', '    async function cloudLoadData() {'], ['cloudLoadData', '    function importUserData(file) {']]) {
+    const result = await runSessionLookupFailureCloudAction(name, nextMarker);
+    assert.equal(result.button.disabled, false, name + ' re-enables its button');
+    assert.equal(result.events.some(event => event.type === 'settings'), false, name + ' does not open settings after a session lookup failure');
+    assert.deepEqual(result.events.filter(event => event.type === 'toast').map(event => event.message), [
+      'Supabase momentan nicht erreichbar. Lokale Daten bleiben auf diesem Gerät verfügbar.',
+    ]);
+  }
+});
 
 test('offline GitHub Pages save/load keep the settings prompt out of the error path', async () => {
   for (const [name, nextMarker] of [['cloudSaveData', '    async function cloudLoadData() {'], ['cloudLoadData', '    function importUserData(file) {']]) {
