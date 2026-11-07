@@ -2494,7 +2494,7 @@
     $('#changePlan').addEventListener('click', () => { $('#peopleSelect').focus(); showToast('Passe Personen, Tage oder Marktlimit direkt oben im Plan an.'); });
     $('#daysSelect').addEventListener('change', () => { renderPlan(); persistSettings(); });
     $('#peopleSelect').addEventListener('change', () => { renderPlan(); persistSettings(); });
-    $('#marketsSelect').addEventListener('change', () => { renderMarkets(); renderPlan(); persistSettings(); renderSourceStatus(); showToast(`Marktlimit auf ${$('#marketsSelect').value} gesetzt.`); });
+    $('#marketsSelect').addEventListener('change', () => { persistSettings(); renderMarkets(); renderPlan(); renderSourceStatus(); showToast(`Marktlimit auf ${$('#marketsSelect').value} gesetzt.`); });
     $('#leftoverToggle').addEventListener('change', () => { renderPlan(); persistSettings(); });
     $('#eveningToggle').addEventListener('change', () => { renderPlan(); persistSettings(); });
     $('#offerFilter').addEventListener('change', (event) => renderOffers(event.target.value));
