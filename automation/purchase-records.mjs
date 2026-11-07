@@ -44,7 +44,7 @@ export function validatePurchaseRecord(record) {
     throw new Error('Einkauf: "month" muss dem Monat von "purchaseDate" entsprechen.');
   }
 
-  if (!Number.isInteger(record.totalCents) || record.totalCents < 0) {
+  if (!Number.isSafeInteger(record.totalCents) || record.totalCents < 0) {
     throw new Error('Einkauf: "totalCents" muss eine nichtnegative ganze Centzahl sein.');
   }
 
