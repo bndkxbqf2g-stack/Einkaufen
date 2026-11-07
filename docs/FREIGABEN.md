@@ -529,3 +529,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - Der KaufDA-Importer berücksichtigt bei einem quellenbelegten Enddatum ohne Jahr im Dezember das Folgejahr; ein sicherer synthetischer Regressionstest schützt den Fall.
 - Keine Live-Angebotsdaten, Nutzerdaten, Supabase-, Datenbank- oder Deploymentänderung; keine zusätzliche Freigabe erforderlich.
+
+
+## Koordinierter Arbeitsstand – 07.11.2026, Angebotsauswahl-Parität
+
+- Der Plan-Matcher und die Einkaufsliste verwenden denselben deterministischen Angebotskandidaten; dadurch können Marktpräferenz und Planpreis nicht mehr für dieselbe Zutat auseinanderlaufen.
+- Regressionstests decken den kombinierten Mittagessen-/optionalen-Abendessen-Fluss und die Kostenparität ab. Keine IST-/Beleg-/OCR-, Supabase-, Datenbank- oder Angebotsdatenänderung; keine zusätzliche Freigabe erforderlich.
