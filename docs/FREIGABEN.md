@@ -398,3 +398,9 @@ freigegeben oder entschieden wurden.
 - [PR #130](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/130) entfernt pauschale `heute + 7 Tage`-Gültigkeiten aus den Worker-Adaptern für Kaufland, EDEKA, Aldi, Netto und Lidl.
 - Ein Live-Abruf ohne eindeutig belegtes Angebotsende wird mit `422` abgewiesen; Quellen mit explizitem Datum bleiben nutzbar. Die vorhandene Worker-Validierung enthält dafür Erfolgs- und Negativfälle.
 - Worker-Quelle und generiertes `dist/server/index.js` sind synchronisiert; CI war grün und der Deployment-Job blieb übersprungen. Keine Supabase-, Datenbank-, Nutzerdaten- oder kostenpflichtige Ressourcenänderung.
+
+## Validierter Angebotsabruf – Worker-Preisfelder – 07.11.2026
+
+- [PR #132](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/132) akzeptiert im Lidl-Worker nur Preisfelder mit einem expliziten Eurobetrag.
+- Lebensmittelangebote ohne belastbaren Preis werden verworfen; bekannte Preise bleiben unverändert, und es werden keine Beträge aus unklaren Rohtexten erzeugt.
+- Worker-Quelle, generiertes Artefakt und Validierungsfixture sind synchronisiert; CI war grün, ohne Deployment oder kostenpflichtige Ressourcenänderung.
