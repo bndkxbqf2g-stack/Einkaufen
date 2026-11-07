@@ -285,3 +285,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Der Lidl-Prospektparser übernimmt bei einer ausdrücklich angegebenen Spanne wie „28.12. bis 03.01.“ das fehlende Endjahr als Folgejahr; damit wird ein gültiges Prospekt nicht fälschlich als abgelaufen verworfen.
 - Der Jahreswechsel ist durch einen deterministischen Regressionstest abgesichert. Fehlende Datumsangaben, Preise oder Quellen bleiben weiterhin unbekannt beziehungsweise werden vom Snapshot-Vertrag abgewiesen; Live-Angebotsdaten und Nutzerdaten wurden nicht verändert.
+
+## Fortschritt 07.11.2026 – KaufDA-Angebotsgültigkeit über den Jahreswechsel
+
+- Der KaufDA-Importer übernimmt bei einem quellenbelegten Ende wie „Gültig bis 03.01.“ während eines Dezemberabrufs das Folgejahr; zuvor konnte der Snapshot als bereits abgelaufen verworfen werden.
+- Der Randfall ist synthetisch getestet. Offizielle Händlerparser behalten ihre bestehende Jahreswechselbehandlung; fehlende Enddaten werden weiterhin nicht erfunden.
