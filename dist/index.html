@@ -1159,6 +1159,15 @@
       }).sort((first, second) => Number(Boolean(first.offer)) - Number(Boolean(second.offer)) || first.name.localeCompare(second.name, 'de'));
     }
 
+    function reconcileShoppingChecks(checks, items) {
+      const currentIds = new Set((Array.isArray(items) ? items : []).map(item => item?.id).filter(Boolean));
+      const normalizedChecks = {};
+      if (!checks || typeof checks !== 'object' || Array.isArray(checks)) return normalizedChecks;
+      Object.entries(checks).forEach(([id, checked]) => {
+        if (currentIds.has(id) && checked === true) normalizedChecks[id] = true;
+      });
+      return normalizedChecks;
+    }
     function renderShoppingGroupHeader(group, groupItems) {
       const offerSummary = formatShoppingGroupOfferSummary(group, groupItems);
       const itemNote = `${groupItems.length} Artikel${offerSummary ? ` · ${offerSummary}` : ''}`;
@@ -1168,6 +1177,11 @@
 
     function renderShoppingList() {
       const items = getShoppingItems();
+      const normalizedShoppingChecks = reconcileShoppingChecks(shoppingChecks, items);
+      if (JSON.stringify(normalizedShoppingChecks) !== JSON.stringify(shoppingChecks)) {
+        shoppingChecks = normalizedShoppingChecks;
+        localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks));
+      }
       const openItems = items.filter(item => !shoppingChecks[item.id]);
       const offerItems = items.filter(item => item.offer);
       const missingItems = items.filter(item => !item.offer);
