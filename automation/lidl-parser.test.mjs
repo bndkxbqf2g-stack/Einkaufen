@@ -13,3 +13,13 @@ assert.equal(parseLidlOfferText('ZUSTIMMEN Lohnt sich 2,11 €\nFüllung: reine 
 assert.equal(parseLidlOfferText('Normalpreis: 2,35 €').length, 0);
 assert.equal(parseLidlOfferText('Pfanni Speisekartoffeln\n2,49 €')[0].validUntil, null);
 console.log('Lidl parser checks passed');
+
+const unitPriceOnly = parseLidlOfferText('Naturjoghurt\n(1 kg = 1,58 €)\n0,79 €');
+assert.equal(unitPriceOnly.length, 1);
+assert.equal(unitPriceOnly[0].price, '0,79 €');
+assert.equal(unitPriceOnly[0].packSize, '1 Packung');
+
+const explicitPackSize = parseLidlOfferText('Naturjoghurt 500 g\n(1 kg = 1,58 €)\n0,79 €');
+assert.equal(explicitPackSize.length, 1);
+assert.equal(explicitPackSize[0].price, '0,79 €');
+assert.equal(explicitPackSize[0].packSize, '500 g');
