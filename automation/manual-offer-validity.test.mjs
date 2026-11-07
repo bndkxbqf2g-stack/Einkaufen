@@ -14,7 +14,7 @@ const context = {
   parseMoney: value => Number(String(value || '').replace(',', '.').replace(/[^0-9.]/g, '')) || 0,
   offerEndDate: value => value ? new Date('2099-12-31T00:00:00Z') : null,
 };
-vm.runInNewContext(`${helper}\\nglobalThis.parseManualOfferRow = parseManualOfferRow;`, context);
+vm.runInNewContext(`${helper}\nglobalThis.parseManualOfferRow = parseManualOfferRow;`, context);
 
 test('rejects manual offers without a source-provided validity date', () => {
   const missingDate = context.parseManualOfferRow('Kartoffeln | Aldi | 1,99 € | – | Basis | 2,5 kg');
