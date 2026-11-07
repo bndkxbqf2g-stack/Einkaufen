@@ -269,3 +269,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Ein Regressionstest vergleicht jetzt automatisch alle lokalen JavaScript-Dateien aus `index.html` mit dem Service-Worker-App-Shell-Cache.
 - Neue Frontend-Module können dadurch nicht mehr ohne passende Offline-Cache-Absicherung veröffentlicht werden.
+
+## Fortschritt 07.11.2026 – stabile manuelle Einkaufsartikel
+
+- Ältere oder importierte manuelle Einkaufsartikel mit doppelter expliziter ID erhalten jetzt deterministische Suffixe statt denselben Statusschlüssel zu teilen.
+- Kein Eintrag wird verworfen; Mengen, Namen, Einkaufschecks und bestehende Backup-/Restore-Daten bleiben erhalten.
