@@ -67,9 +67,11 @@ function offerSaving(text) {
 function offerName(text) {
   return String(text || '')
     .replace(/^angebot:\s*/i, '')
-    .replace(/\s+(?:nur|ab)\s+\d+[.,]\d{2}[\s\S]*$/i, '')
-    .replace(/\s*-\s*\d{1,3}\s*%[\s\S]*$/i, '')
-    .replace(/\s*\d+[.,]\d{2}[\s\S]*$/, '')
+    .replace(/\s*\([^)]*\b(?:kg|g|l|ml)\s*=[^)]*\)/gi, '')
+    .replace(/(?:\*+\s*)?(?:nur|ab)\s+\d+[.,]\d{2}[\s\S]*$/i, '')
+    .replace(/\s*-\s*\d{1,3}\s*%\s*[\s\S]*$/i, '')
+    .replace(/(?:\s*\/\s*|\s*\*+)+$/, '')
+    .replace(/\s*\d+[.,]\d{2}(?!\s*[- ]?(?:kg|g|l|ml|Stück|St\.?)\b)[\s\S]*$/i, '')
     .replace(/\s+/g, ' ')
     .replace(/[–-]\s*$/, '')
     .trim();
