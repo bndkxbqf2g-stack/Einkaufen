@@ -471,3 +471,10 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - PR [#160](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/160) markiert die dynamische Vorratsdetailzeile als zugänglichen Status mit `aria-live="polite"` und `aria-atomic="true"`.
 - Root und `dist` sind bytegleich; die Regressionstest- und PR-CI-Prüfung war grün. Der Merge nach `main@8ab3281de64262f7ee680abee9327633619f2f5b` wurde erfolgreich auf GitHub Pages veröffentlicht.
 - Keine Produkt-, Mengen-, Preis-, Nutzer-, Sync-, Supabase- oder Datenbankänderung; keine zusätzliche Freigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, eindeutiger Vorratsabgleich
+
+- PR [#162](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/162) korrigiert die doppelte Zählung derselben Vorratszutat in mehreren Gerichten und in zulässigen Singular-/Pluralvarianten.
+- Der zuerst sichtbare Name bleibt erhalten; eine Identität gilt als vorhanden, sobald eine ihrer Varianten im Bestand erkannt wird. Es werden keine Mengen, Haltbarkeiten, Preise oder Verbrauchsannahmen ergänzt.
+- Root und `dist` sind bytegleich. Der initiale CI-Lauf wurde wegen doppelt escapeter Regex-Backslashes nicht gemergt; nach Korrektur war CI vollständig grün und GitHub Pages erfolgreich.
+- Keine Nutzer-, Backup-, Sync-, Supabase-, Datenbank- oder Angebotsdatenänderung; keine zusätzliche Freigabe erforderlich.

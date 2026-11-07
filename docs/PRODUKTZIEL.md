@@ -235,3 +235,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - PR #160 kennzeichnet die dynamische Vorratsdetailzeile der Einkaufsliste als zugänglichen Status und kündigt Aktualisierungen für unterstützende Technologien an.
 - Die Verbesserung betrifft ausschließlich die Darstellung; Vorratsmengen, Planwerte, Preise, Angebots-Zwischensummen sowie lokale, Backup-, Sync- und Supabase-Daten bleiben unverändert.
 - Root und `dist` bleiben synchron; die Regressionstest- und CI-Prüfung war erfolgreich.
+
+## Fortschritt 07.11.2026 – eindeutiger Vorratsabgleich
+
+- PR #162 zählt eine geplante Vorratszutat pro stabiler Zutatenidentität nur einmal, auch wenn sie in mehreren Gerichten oder in zulässigen Singular-/Pluralvarianten vorkommt.
+- Der zuerst sichtbare Zutatenname bleibt erhalten; Varianten werden nicht in Mengen, Preise oder Verbrauchsannahmen umgedeutet.
+- Root und `dist` bleiben synchron; die Regressionstests und CI waren nach Korrektur des Regex-Escapings grün.
