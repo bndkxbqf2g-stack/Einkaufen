@@ -18,6 +18,12 @@ test('published service worker and manifest stay identical to their root sources
 
   assert.equal(publishedWorker, source);
   assert.equal(publishedManifest, manifest);
+
+  const parsedManifest = JSON.parse(manifest);
+  assert.deepEqual(parsedManifest.icons, [
+    { src: './icons/pwa-192.svg', sizes: '192x192', type: 'image/svg+xml', purpose: 'any maskable' },
+    { src: './icons/pwa-512.svg', sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' },
+  ]);
 });
 
 function requestKey(request) {
