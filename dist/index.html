@@ -1234,12 +1234,7 @@
           const current = items.get(itemKey) || { id: `shopping-${key.replace(/[^a-z0-9]+/g, '-')}`, name: ingredient, count: 0, meals: [], offer: null };
           current.count += 1;
           if (!current.meals.includes(meal.title)) current.meals.push(meal.title);
-          const candidates = activeOffers.filter(offer => offerMatchesIngredient(ingredient, offer)).sort((first, second) => {
-            const marketOrder = sortedSelectedMarkets();
-            const firstMarket = marketOrder.indexOf(first.store);
-            const secondMarket = marketOrder.indexOf(second.store);
-            return (firstMarket === -1 ? 99 : firstMarket) - (secondMarket === -1 ? 99 : secondMarket) || compareOfferCandidates(first, second);
-          });
+          const candidates = matchingOfferCandidates(ingredient, activeOffers);
           if (candidates[0] && !current.offer) current.offer = candidates[0];
           items.set(itemKey, current);
         });
@@ -1249,7 +1244,7 @@
         if (!ingredient || isPantryIngredient(ingredient)) return;
         const key = shoppingIngredientKey(ingredient);
         if (!key || items.has(key)) return;
-        const offer = activeOffers.filter(candidate => offerMatchesIngredient(ingredient, candidate)).sort(compareOfferCandidates)[0] || null;
+        const offer = matchingOfferCandidates(ingredient, activeOffers)[0] || null;
         const rawManualQuantity = Number(manualItem.quantity);
         const manualQuantity = Number.isInteger(rawManualQuantity) && rawManualQuantity >= 1 && rawManualQuantity <= 99 ? rawManualQuantity : 1;
         items.set(key, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id, manualQuantity });
@@ -2098,6 +2093,12 @@
       return ingredientTextMatches(ingredient, normalizedOffer);
     }
 
+    function matchingOfferCandidates(ingredient, activeOffers = getActiveOffers()) {
+      return (Array.isArray(activeOffers) ? activeOffers : [])
+        .filter(offer => offerMatchesIngredient(ingredient, offer))
+        .sort(compareOfferCandidates);
+    }
+
     function recipeRating(recipe) {
       const rating = recipeRatings[recipe.id]?.rating;
       return Number.isFinite(Number(rating)) ? Number(rating) : 0;
@@ -2130,7 +2131,7 @@
       const matchedIngredients = [];
       const matchedOffers = [];
       requiredIngredients.forEach(ingredient => {
-        const candidates = activeOffers.filter(offer => offerMatchesIngredient(ingredient, offer)).sort(compareOfferCandidates);
+        const candidates = matchingOfferCandidates(ingredient, activeOffers);
         if (!candidates.length) return;
         matchedIngredients.push(ingredient);
         const offer = candidates[0];
