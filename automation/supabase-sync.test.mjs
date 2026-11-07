@@ -121,6 +121,54 @@ test('keeps the static app inline script syntactically valid', () => {
   assert.doesNotThrow(() => new vm.Script(inlineScript[1]));
 });
 
+
+test('shows an offline sync error instead of a misleading sign-in prompt', () => {
+  assert.ok(html.includes('const syncReady = sync && await initializeSupabaseSync();'));
+  assert.ok(html.includes("showToast('Supabase momentan nicht erreichbar. Lokale Daten bleiben auf diesem Gerät verfügbar.');"));
+  assert.ok(html.includes('if (syncReady && await sync.hasSession()) { await sync.save(); return; }'));
+  assert.ok(html.includes('if (syncReady && await sync.hasSession()) { await sync.load(); return; }'));
+});
+
+function extractCloudAction(source, name, nextMarker) {
+  const start = source.indexOf(`    async function ${name}() {`);
+  const end = source.indexOf(nextMarker, start);
+  assert.ok(start >= 0 && end > start, `${name} is present`);
+  return source.slice(start, end).trim();
+}
+
+async function runOfflineCloudAction(name, nextMarker) {
+  const events = [];
+  const button = { disabled: false };
+  const sync = {
+    openSettings() { events.push({ type: 'settings' }); },
+    async hasSession() { events.push({ type: 'session-check' }); return false; },
+  };
+  const sandbox = {
+    window: { angebotskuecheSupabaseSync: sync },
+    isGithubPagesHost: true,
+    initializeSupabaseSync: async () => false,
+    $: () => button,
+    showToast(message) { events.push({ type: 'toast', message }); },
+    fetch: async () => { throw new Error('offline fallback should not run'); },
+    buildUserDataPayload: () => ({ version: 1 }),
+  };
+  const action = vm.runInNewContext(`(${extractCloudAction(html, name, nextMarker)})`, sandbox);
+  await action();
+  return { events, button };
+}
+
+test('offline GitHub Pages save/load keep the settings prompt out of the error path', async () => {
+  for (const [name, nextMarker] of [['cloudSaveData', '    async function cloudLoadData() {'], ['cloudLoadData', '    function importUserData(file) {']]) {
+    const result = await runOfflineCloudAction(name, nextMarker);
+    assert.equal(result.button.disabled, false, `${name} re-enables its button`);
+    assert.equal(result.events.some(event => event.type === 'settings'), false, `${name} does not open settings offline`);
+    assert.equal(result.events.some(event => event.type === 'session-check'), false, `${name} does not check a missing session offline`);
+    assert.deepEqual(result.events.filter(event => event.type === 'toast').map(event => event.message), [
+      'Supabase momentan nicht erreichbar. Lokale Daten bleiben auf diesem Gerät verfügbar.',
+    ]);
+  }
+});
+
 test('source freshness uses the timestamp reported by the offer source', () => {
   const declaration = html.match(/function normalizeSourceTimestamp\(value\) \{[\s\S]*?\n    \}/);
   assert.ok(declaration, 'source timestamp normalizer is present');
