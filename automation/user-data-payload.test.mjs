@@ -147,7 +147,14 @@ test('keeps legacy manual shopping checks stable across reload and restore', () 
     'manual-legacy-brot-2',
     'manual-legacy-apfel',
   ]);
+  assert.deepEqual(first.items.map(item => item.quantity), [1, 1, 1]);
   assert.equal(first.saved, JSON.stringify(first.items));
+
+  const sized = initializeManualShoppingItems([
+    { id: 'manual-sized', name: 'Wasser', quantity: 3 },
+    { id: 'manual-invalid-size', name: 'Saft', quantity: 100 },
+  ]);
+  assert.deepEqual(sized.items.map(item => item.quantity), [3, 1]);
 
   const checkKey = `manual-${first.items[0].id}`;
   const shoppingChecks = { [checkKey]: true };
