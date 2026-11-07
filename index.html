@@ -994,8 +994,9 @@
         try {
           const sourcePath = isGithubPagesHost ? `./generated/${generatedOfferFiles[market]}` : `/api/offers?market=${encodeURIComponent(market)}`;
           const response = await fetch(sourcePath, { headers: { accept: 'application/json' } });
+          const cacheFallback = response.headers.get('X-Angebotskueche-Cache-Fallback') === '1';
           const payload = await response.json();
-          if (!response.ok || !Array.isArray(payload.offers) || !payload.offers.length) throw new Error(payload.error || 'Keine verwertbaren Angebote');
+          if (!response.ok || cacheFallback || !Array.isArray(payload.offers) || !payload.offers.length) throw new Error(cacheFallback ? 'Offline: letzter Angebotsstand wird beibehalten.' : payload.error || 'Keine verwertbaren Angebote');
           return { market, payload };
         } catch (error) {
           return { market, error: error?.message || 'Live-Quelle nicht erreichbar' };
