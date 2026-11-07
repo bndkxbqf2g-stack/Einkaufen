@@ -1075,8 +1075,9 @@
       const multiplier = people / 2;
       $('#dayCount').textContent = `${days} Tage`;
       $('#planRangeNote').textContent = planRangeLabel(days);
-      const visible = getCurrentPlanMeals();
-      const dinnerSlots = evening ? getCurrentPlanDinners() : [];
+      const planSections = getCurrentPlanSections();
+      const visible = planSections.lunches;
+      const dinnerSlots = evening ? planSections.dinners : [];
       const dinnerMeals = dinnerSlots.filter(Boolean);
       const planMeals = [...visible, ...dinnerMeals];
       const pricedMeals = planMeals.filter(meal => meal.costSource === 'offer-subtotal' && parseKnownMoney(meal.cost) !== null);
@@ -1846,9 +1847,8 @@
       const tags = Array.isArray(meal?.tags) ? meal.tags.filter(tag => !/angebot/i.test(String(tag))) : [];
       return { ...meal, store: '', cost: '', costSource: 'unknown', score: 0, tags, note: 'Angebotsbezug offen' };
     }
-    function getCurrentPlanMeals() {
+    function buildCurrentPlanLunches() {
       const days = Number($('#daysSelect').value);
-      const planCandidates = getPlanCandidates();
       const lunchCandidates = getPlanCandidatesForSlot('lunch');
       const selected = Array(days).fill(null);
       const usedIds = new Set();
@@ -1894,14 +1894,15 @@
         selected[index] = sanitizeFallbackMeal(fallback[fallbackIndex] || planBase[index] || planBase[0]);
         fallbackIndex += 1;
       }
-      const dated = selected.slice(0, days).map((meal, index) => { const date = getPlanDateInfo(index); return { ...meal, day: date.day, date: date.short }; });
-      return applyLeftoverPlan(dated);
+      return selected.slice(0, days).map((meal, index) => {
+        const date = getPlanDateInfo(index);
+        return { ...meal, day: date.day, date: date.short };
+      });
     }
 
-    function getCurrentPlanDinners() {
+    function buildCurrentPlanDinners(lunches) {
       const days = Number($('#daysSelect').value);
       const candidates = getPlanCandidates();
-      const lunches = getCurrentPlanMeals();
       return Array.from({ length: days }, (_, index) => {
         const recipeId = String(manualDinnerPlan[String(index)] || '');
         const recipe = recipeId ? getPlanCandidateById(recipeId, candidates) : null;
@@ -1913,8 +1914,42 @@
       });
     }
 
+    function getCurrentPlanSections() {
+      const lunches = buildCurrentPlanLunches();
+      const dinners = $('#eveningToggle')?.checked === false
+        ? Array.from({ length: lunches.length }, () => null)
+        : buildCurrentPlanDinners(lunches);
+      const orderedMeals = [];
+      const lunchPositions = [];
+      const dinnerPositions = [];
+      lunches.forEach((lunch, index) => {
+        lunchPositions[index] = orderedMeals.length;
+        orderedMeals.push(lunch);
+        const dinner = dinners[index];
+        if (!dinner) {
+          dinnerPositions[index] = -1;
+          return;
+        }
+        dinnerPositions[index] = orderedMeals.length;
+        orderedMeals.push(dinner);
+      });
+      const annotated = applyLeftoverPlan(orderedMeals);
+      return {
+        lunches: lunches.map((_, index) => annotated[lunchPositions[index]]),
+        dinners: dinners.map((dinner, index) => dinner ? annotated[dinnerPositions[index]] : null),
+      };
+    }
+
+    function getCurrentPlanMeals() {
+      return getCurrentPlanSections().lunches;
+    }
+
+    function getCurrentPlanDinners() {
+      return getCurrentPlanSections().dinners;
+    }
+
     function getPlannedDinnerMeals() {
-      return $('#eveningToggle')?.checked === false ? [] : getCurrentPlanDinners().filter(Boolean);
+      return $('#eveningToggle')?.checked === false ? [] : getCurrentPlanSections().dinners.filter(Boolean);
     }
     function renderMarkets() {
       const limit = Number($('#marketsSelect').value);
