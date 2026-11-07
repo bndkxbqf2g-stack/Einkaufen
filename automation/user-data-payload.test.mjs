@@ -219,6 +219,7 @@ test('keeps every local v1 field that an older cloud snapshot omits', () => {
     recipeHistory: ['rezept-a'],
     liveOfferStatus: { marketA: 'loaded' },
     manualPlan: { monday: ['rezept-a'] },
+    manualDinnerPlan: { '0': 'abendessen-a' },
     recipeRatings: { 'rezept-a': { rating: 5 } },
     suggestionPreferences: { sort: 'variety' },
   };
