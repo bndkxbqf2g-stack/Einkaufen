@@ -29,8 +29,8 @@ test('sums only explicit offer prices in integer cents and keeps unknown prices 
 
   assert.equal(summary.totalCents, 240);
   assert.equal(summary.total, 2.4);
-  assert.deepEqual(summary.knownItems.map(item => item.id), ['known']);
-  assert.deepEqual(summary.unknownItems.map(item => item.id), ['unknown']);
+  assert.deepEqual(Array.from(summary.knownItems, item => item.id), ['known']);
+  assert.deepEqual(Array.from(summary.unknownItems, item => item.id), ['unknown']);
 });
 
 test('separates missing items from offer items without assigning a price', () => {
@@ -44,7 +44,7 @@ test('separates missing items from offer items without assigning a price', () =>
   assert.equal(summary.knownItems.length, 1);
   assert.equal(summary.unknownItems.length, 1);
   assert.equal(summary.missingCount, 1);
-  assert.deepEqual(summary.missingItems.map(item => item.id), ['missing']);
+  assert.deepEqual(Array.from(summary.missingItems, item => item.id), ['missing']);
 });
 
 test('treats invalid or nonpositive pack counts as one pack', () => {
