@@ -97,6 +97,21 @@ test('rejects snapshots and offers already expired at their recorded fetch time'
   );
 });
 
+test('rejects snapshots and offers already expired at publication time', () => {
+  const now = new Date('2026-11-07T12:00:00.000Z');
+  assert.throws(
+    () => validateOfferSnapshot({ ...validSnapshot, validUntil: '06.11.2026' }, { now }),
+    /"validUntil" ist bereits abgelaufen/
+  );
+  assert.throws(
+    () => validateOfferSnapshot({
+      ...validSnapshot,
+      offers: [{ name: 'Kartoffeln', price: '1,99 €', validUntil: '06.11.2026' }],
+    }, { now }),
+    /Angebot 1 ist bereits abgelaufen/
+  );
+});
+
 test('does not replace the last good file when a snapshot is invalid', async () => {
   const directory = await mkdtemp(join(tmpdir(), 'angebot-snapshot-test-'));
   const output = join(directory, 'offers.json');
@@ -130,13 +145,13 @@ test('atomically writes a valid snapshot', async () => {
 });
 
 
-test('all committed retailer snapshots satisfy the publication contract', async () => {
+test('all committed retailer snapshots satisfy the historical publication contract', async () => {
   const generatedDirectory = new URL('../generated/', import.meta.url);
   const files = (await readdir(generatedDirectory)).filter(file => file.endsWith('-offers.json'));
   assert.ok(files.length > 0, 'expected committed retailer offer snapshots');
 
   for (const file of files) {
     const snapshot = JSON.parse(await readFile(new URL(file, generatedDirectory), 'utf8'));
-    assert.doesNotThrow(() => validateOfferSnapshot(snapshot), file);
+    assert.doesNotThrow(() => validateOfferSnapshot(snapshot, { now: snapshot.fetchedAt }), file);
   }
 });

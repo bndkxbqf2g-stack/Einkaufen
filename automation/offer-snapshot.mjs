@@ -41,6 +41,12 @@ function fetchedAtDateOrdinal(value) {
   return date.year * 10000 + date.month * 100 + date.day;
 }
 
+function currentDateOrdinal(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.getUTCFullYear() * 10000 + (date.getUTCMonth() + 1) * 100 + date.getUTCDate();
+}
+
 function isSecureSourceUrl(value) {
   try {
     const url = new URL(String(value || '').trim());
@@ -50,9 +56,14 @@ function isSecureSourceUrl(value) {
   }
 }
 
-export function validateOfferSnapshot(snapshot) {
+export function validateOfferSnapshot(snapshot, { now = new Date() } = {}) {
   if (!snapshot || typeof snapshot !== 'object' || Array.isArray(snapshot)) {
     throw new Error('Angebotssnapshot muss ein Objekt sein.');
+  }
+
+  const currentDate = currentDateOrdinal(now);
+  if (currentDate === null) {
+    throw new Error('Angebotssnapshot: "now" muss ein gültiger Zeitpunkt sein.');
   }
 
   for (const field of requiredTextFields) {
@@ -74,6 +85,9 @@ export function validateOfferSnapshot(snapshot) {
   }
   if (dateOrdinal(snapshot.validUntil) < fetchedAtDate) {
     throw new Error('Angebotssnapshot: "validUntil" liegt vor dem Abrufzeitpunkt.');
+  }
+  if (dateOrdinal(snapshot.validUntil) < currentDate) {
+    throw new Error('Angebotssnapshot: "validUntil" ist bereits abgelaufen.');
   }
 
   if (!Array.isArray(snapshot.offers) || snapshot.offers.length === 0) {
@@ -98,6 +112,9 @@ export function validateOfferSnapshot(snapshot) {
     }
     if (dateOrdinal(offer.validUntil) < fetchedAtDate) {
       throw new Error(`Angebotssnapshot: Angebot ${index + 1} ist bereits vor dem Abrufzeitpunkt abgelaufen.`);
+    }
+    if (dateOrdinal(offer.validUntil) < currentDate) {
+      throw new Error(`Angebotssnapshot: Angebot ${index + 1} ist bereits abgelaufen.`);
     }
     if (nonOfferNamePattern.test(offer.name)) {
       throw new Error(`Angebotssnapshot: Angebot ${index + 1} enthält Angebotsmetadaten statt eines Produktnamens.`);
