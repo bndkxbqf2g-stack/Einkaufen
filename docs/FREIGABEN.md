@@ -233,3 +233,11 @@ freigegeben oder entschieden wurden.
 - Manuelle Singular-/Pluralvarianten bleiben von der Zusammenführung der Rezeptzutaten getrennt; stabile `manual-*`-IDs und `shoppingChecks` bleiben dadurch erhalten.
 - Der Regressionstest und die PR-CI (Run [#42343231403](https://github.com/bndkxbqf2g-stack/Einkaufen/actions/runs/42343231403)) waren erfolgreich.
 - Keine neue Datenstruktur, keine Supabase- oder Budgetänderung; keine zusätzliche Nutzerfreigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Einkaufsliste-Checks
+
+- PR [#83](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/83) ist in den aktuellen Integrationsstand `main@eddbca9da1ee101b63aa382c0cf54d82fdd4fe99` gemergt.
+- `shoppingChecks` werden vor dem Rendern auf aktuelle Einkaufslisten-IDs und ausschließlich den exakten Wert `true` bereinigt.
+- Die Regressionstests decken Planwechsel, stabile manuelle IDs und ungültige Checkwerte ab; Root und `dist` bleiben bytegleich.
+- Die PR-CI (Run [#42343682651](https://github.com/bndkxbqf2g-stack/Einkaufen/actions/runs/42343682651)) war erfolgreich.
+- Keine neue Datenstruktur, keine Supabase- oder Budgetänderung; keine zusätzliche Nutzerfreigabe erforderlich.
