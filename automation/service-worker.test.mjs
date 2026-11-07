@@ -168,7 +168,7 @@ function appShellAssets(serviceWorkerSource) {
 }
 
 test('precaches every local runtime script referenced by the app', () => {
-  const localScripts = [...index.matchAll(/<script\\s+src="([^"]+)"/g)]
+  const localScripts = [...index.matchAll(/<script\s+src="([^"]+)"/g)]
     .map(result => result[1])
     .filter(src => src.startsWith('./') && src.endsWith('.js'));
   const shellAssets = appShellAssets(source);
