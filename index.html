@@ -1233,7 +1233,9 @@
         const key = shoppingIngredientKey(ingredient);
         if (!key || items.has(key)) return;
         const offer = activeOffers.filter(candidate => offerMatchesIngredient(ingredient, candidate)).sort(compareOfferCandidates)[0] || null;
-        items.set(key, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id, manualQuantity: manualItem.quantity });
+        const rawManualQuantity = Number(manualItem.quantity);
+        const manualQuantity = Number.isInteger(rawManualQuantity) && rawManualQuantity >= 1 && rawManualQuantity <= 99 ? rawManualQuantity : 1;
+        items.set(key, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id, manualQuantity });
       });
       const people = Number($('#peopleSelect')?.value || settings.people || 2);
       return [...items.values()].map(item => {
