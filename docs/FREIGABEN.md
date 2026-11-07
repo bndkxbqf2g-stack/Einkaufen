@@ -392,3 +392,9 @@ freigegeben oder entschieden wurden.
 - [PR #128](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/128) trennt Demo-Fallback-Daten von gespeicherten manuellen Nutzerimporten.
 - Nur Demo-Angebote erhalten den Offline-Default; gespeicherte Importe ohne `validUntil` behalten ein leeres/unsicheres Datum und werden nicht als aktuell gültige Angebote verwendet. Explizite gespeicherte Datumsangaben bleiben erhalten.
 - Regressionstest, Root-/`dist`-Synchronität und grüne CI sichern den Vertrag. Keine Nutzerdatenlöschung, Supabase-Migration, Datenbankänderung, Deployment- oder kostenpflichtige Ressourcenänderung.
+
+## Validierter Angebotsabruf – Worker-Gültigkeit – 07.11.2026
+
+- [PR #130](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/130) entfernt pauschale `heute + 7 Tage`-Gültigkeiten aus den Worker-Adaptern für Kaufland, EDEKA, Aldi, Netto und Lidl.
+- Ein Live-Abruf ohne eindeutig belegtes Angebotsende wird mit `422` abgewiesen; Quellen mit explizitem Datum bleiben nutzbar. Die vorhandene Worker-Validierung enthält dafür Erfolgs- und Negativfälle.
+- Worker-Quelle und generiertes `dist/server/index.js` sind synchronisiert; CI war grün und der Deployment-Job blieb übersprungen. Keine Supabase-, Datenbank-, Nutzerdaten- oder kostenpflichtige Ressourcenänderung.
