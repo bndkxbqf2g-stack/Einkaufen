@@ -17,9 +17,9 @@ assert.ok(formatEuroMatch, 'formatEuro muss im App-Bundle vorhanden sein');
 assert.ok(shareAmountMatch, 'shoppingShareAmountLabel muss im App-Bundle vorhanden sein');
 assert.ok(shareSummaryMatch, 'shoppingShareSummary muss im App-Bundle vorhanden sein');
 
-const shoppingShareFunctions = new Function(
-  `${parseMoneyMatch[0]}\n${offerAmountMatch[0]}\n${formatEuroMatch[0]}\n${shareAmountMatch[0]}\n${shareSummaryMatch[0]}; return { shoppingShareAmountLabel, shoppingShareSummary };`,
-)();
+const parseKnownMoney = new Function(`${parseMoneyMatch[0]}; return parseKnownMoney;`)();
+const calculateOfferAmount = items => costModel.calculateOfferAmount(items, parseKnownMoney);
+const shoppingShareFunctions = new Function('calculateOfferAmount', `${formatEuroMatch[0]}\n${shareAmountMatch[0]}\n${shareSummaryMatch[0]}; return { shoppingShareAmountLabel, shoppingShareSummary };`)(calculateOfferAmount);
 
 const { shoppingShareAmountLabel, shoppingShareSummary } = shoppingShareFunctions;
 
