@@ -37,7 +37,7 @@ test('shares the known subtotal and open cash boundary explicitly', () => {
   assert.match(html, /Fehlende Artikel und Vorräte sind nicht enthalten/);
 });
 
-insertion
+test('keeps unknown prices explicit and does not invent missing offers', () => {
   assert.equal(shoppingShareAmountLabel({ packCount: 4, offer: { price: 'Preis unbekannt' } }), 'Preis unbekannt');
   assert.match(html, /const amountLabel = item\.offer \? shoppingShareAmountLabel\(item\) : 'ergänzen'/);
   assert.doesNotMatch(html, /formatEuro\(unitPrice \* packCount\)/);
