@@ -259,3 +259,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Die Vorratseingabe verwendet nun denselben Zutaten-Identitätsvertrag wie Einkaufsabgleich und Vorratsabdeckung.
 - Bereits gespeicherte Namen bleiben erhalten; neue Singular-/Pluralvarianten werden nicht zusätzlich als scheinbar neuer Vorrat gespeichert.
 - Leere oder nur aus Satzzeichen bestehende Eingaben werden nicht als Vorrat übernommen. Mengen, Haltbarkeiten und bestehende Nutzerdaten bleiben unberührt.
+
+## Fortschritt 07.11.2026 – zugängliche Eingaberückmeldungen
+
+- Rückmeldungen beim Speichern von Vorräten und manuellen Einkaufsartikeln werden nun als höfliche, atomare Statusmeldungen für unterstützende Technologien ausgezeichnet.
+- Die Änderung betrifft ausschließlich die Darstellung und erhält alle bestehenden Eingaben, Daten und Berechnungen.
