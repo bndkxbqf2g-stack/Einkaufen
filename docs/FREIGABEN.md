@@ -32,14 +32,16 @@ freigegeben oder entschieden wurden.
    sowie die Berechnungsbasis der Fahrtkosten festlegen. Die Schwelle soll
    einstellbar sein; bis zur Entscheidung werden keine zusätzlichen Stopps
    automatisch empfohlen und keine Fahrtkosten geschätzt.
-8. **Umfang des ersten zusätzlichen Mahlzeiten-Slots** – entscheiden, ob der
-   erste Pilot ein globaler, optionaler Frühstücks-Slot je Planungstag sein soll
-   oder direkt eine Auswahl pro Tag und Person. Bis zur Entscheidung bleibt der
-   bestehende Hauptgerichte-Plan unverändert; Rezepte werden nicht automatisch
-   umklassifiziert. Ein kleiner Pilot kann das vorhandene optionale
-   mealPurpose-Feld nutzen und braucht laut aktuellem Code keine
-   Datenbankmigration; der Settings-Schreibpfad sowie alte Sync- und
-   Backup-Payloads müssen vor der Umsetzung rückwärtskompatibel getestet werden.
+8. **Umfang des ersten zusätzlichen Mahlzeiten-Slots** – entschieden:
+   Es gibt keinen Frühstücks-Slot. Der bestehende Hauptgericht-Slot gilt als
+   Mittagessen; zusätzlich ist ausschließlich ein optionaler Abendessen-Slot
+   vorgesehen. Die Umsetzung bleibt global je Planungstag und zunächst leer,
+   sofern kein Abendessen gewählt wird; eine Auswahl pro Person und eine
+   automatische Umklassifizierung bestehender Rezepte sind nicht vorgesehen.
+   Der Pilot darf das vorhandene optionale mealPurpose-Feld nutzen und braucht
+   laut aktuellem Code keine Datenbankmigration; Settings-Schreibpfad sowie
+   alte Sync- und Backup-Payloads müssen rückwärtskompatibel bleiben und durch
+   Tests abgesichert werden.
 9. **Erfassung tatsächlicher Einkäufe und Auswertung** – festlegen, ob nur ein
    Gesamtbetrag je Einkauf oder tatsächlich gezahlte Preise und Mengen je
    Position gespeichert werden sollen; außerdem, ob eine Belegerfassung
@@ -256,3 +258,10 @@ freigegeben oder entschieden wurden.
 - Die vier eingecheckten Migrationen sind remote vorhanden. Es wurde keine Migration angewendet und keine Schreibaktion am Supabase-Projekt ausgeführt.
 - Offene Freigabe bleibt ein echter Login-/E-Mail-Bestätigungs-/Redirect-End-to-End-Test mit einem vom Nutzer angelegten Testkonto. Es erfolgt keine automatische Kontenerstellung; Passwort, Einmalcode und Sitzungstoken gehören nicht in den Chat.
 - Als spätere Produktentscheidungen bleiben eine Offline-Queue mit Konflikt-UX sowie der Einladungs- und Beitrittsablauf offen. Dieser Audit stellt dafür keine Freigabe dar.
+
+
+## Nutzerentscheidung – Mahlzeitenumfang – 07.11.2026
+
+- Der Nutzer hat klargestellt: kein Frühstücks-Slot; nur Mittagessen und bei Bedarf ein optionales Abendessen.
+- Diese Entscheidung ersetzt die frühere offene Frühstücksfrage in Freigabepunkt 8. Sie ist keine Freigabe für Supabase-, Datenbank-, Kosten- oder Deployment-Änderungen.
+- Für die technische Umsetzung wird als kleinster rückwärtskompatibler Umfang ein optionaler Abendessen-Slot je Planungstag angenommen. Bestehende Mittagessen-/manualPlan-Daten bleiben unverändert; alte Backups und Sync-Payloads ohne Abendessen bleiben gültig.
