@@ -446,7 +446,8 @@
       renderUi();
       return isSignedIn();
     } catch {
-      return false;
+      // null distinguishes a failed session lookup from a signed-out user.
+      return null;
     }
   }
 
