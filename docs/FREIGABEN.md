@@ -427,3 +427,9 @@ freigegeben oder entschieden wurden.
 - [PR #138](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/138) ergänzt für manuelle Zusatzartikel eine optionale Packungszahl von 1 bis 99.
 - Alte lokale Einträge, ältere Backups und nicht vor-normalisierte Cloud-Payloads bleiben gültig und erhalten deterministisch die Standardmenge 1; die Menge wird in Einkaufsliste, Kosten-Zwischensumme und Teilen berücksichtigt.
 - Regressionstests und Root-/`dist`-Synchronität sind durch grüne CI (148/148 Tests) abgesichert. Keine Preis-Erfindung, Supabase-, Datenbank-, Migrations-, Nutzer- oder Deploymentänderung.
+
+## Vorbereiteter IST-Budget-Kern – 07.11.2026
+
+- [PR #142](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/142) ergänzt einen rein lokalen und deterministischen Validator/Summarizer für das bereits dokumentierte Format `purchaseRecords`.
+- Der Kern prüft Datum/Monat, Centbeträge, manuelle Quelle und eindeutige IDs und summiert nur übergebene Datensätze des angeforderten Monats gegen das dokumentierte Ziel von 40.000 Cent.
+- Es gibt weiterhin keine Speicherung, UI-Integration, Beleg-/OCR-Verarbeitung, Haushaltshistorie, Supabase-/Datenbankänderung oder echten Einkaufsdatensatz. Die produktive IST-Erfassung bleibt Freigabepunkt 9.
