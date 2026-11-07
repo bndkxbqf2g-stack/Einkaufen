@@ -290,6 +290,34 @@ test('keeps the last source metadata visible when a refresh fails', () => {
   assert.match(html, /\.\.\.liveOfferStatus\[result\.market\]/);
 });
 
+test('rolls back a partial backup import when local storage rejects a write', () => {
+  const declaration = html.match(/function writeUserDataPayload\(values\) \{[\s\S]*?\n    \}/);
+  assert.ok(declaration, 'transactional backup writer is present');
+  const storage = new Map([
+    ['angebotskueche.settings', '{"people":2}'],
+    ['angebotskueche.pantry', '["Milch"]'],
+  ]);
+  const before = [...storage.entries()];
+  let failOnce = true;
+  const localStorage = {
+    getItem(key) { return storage.has(key) ? storage.get(key) : null; },
+    setItem(key, value) {
+      storage.set(key, String(value));
+      if (key === 'angebotskueche.pantry' && failOnce) {
+        failOnce = false;
+        throw new Error('quota');
+      }
+    },
+    removeItem(key) { storage.delete(key); },
+  };
+  const write = vm.runInNewContext(`(${declaration[0]})`, { localStorage, Map });
+  assert.throws(() => write(new Map([
+    ['angebotskueche.settings', '{"people":5}'],
+    ['angebotskueche.pantry', '["Brot"]'],
+  ])), /quota/);
+  assert.deepEqual([...storage.entries()], before);
+});
+
 test('requires confirmation before the first local upload and uses revision zero', async () => {
   const harness = createSyncHarness();
   await harness.initialize();
