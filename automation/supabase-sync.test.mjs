@@ -272,6 +272,13 @@ test('retains stored offers for unrefreshed and failed markets', () => {
   assert.deepEqual(retained.map(offer => offer.name), ['last Lidl offer', 'manual Aldi note']);
 });
 
+test('keeps the last source metadata visible when a refresh fails', () => {
+  assert.match(html, /Live-Prüfung fehlgeschlagen · letzter Datensatz behalten/);
+  assert.match(html, /timestampSource: liveOfferStatus\[result\.market\]\?\.fetchedAt \? 'stale' : 'check'/);
+  assert.match(html, /letzter Datenstand/);
+  assert.match(html, /\.\.\.liveOfferStatus\[result\.market\]/);
+});
+
 test('requires confirmation before the first local upload and uses revision zero', async () => {
   const harness = createSyncHarness();
   await harness.initialize();
