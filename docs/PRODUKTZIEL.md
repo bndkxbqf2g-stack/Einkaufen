@@ -290,3 +290,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Der KaufDA-Importer übernimmt bei einem quellenbelegten Ende wie „Gültig bis 03.01.“ während eines Dezemberabrufs das Folgejahr; zuvor konnte der Snapshot als bereits abgelaufen verworfen werden.
 - Der Randfall ist synthetisch getestet. Offizielle Händlerparser behalten ihre bestehende Jahreswechselbehandlung; fehlende Enddaten werden weiterhin nicht erfunden.
+
+
+## Fortschritt 07.11.2026 – gemeinsame Angebotsauswahl für Plan und Einkaufsliste
+
+- Der deterministische Kandidatenselektor wird für Plan-Matcher und Einkaufsliste gemeinsam verwendet. Marktpräferenzen überschreiben die Relevanz-/Packungsgrößen-Rangfolge nicht mehr nur im Einkaufslistenpfad.
+- Ein synthetischer Test für Mittagessen plus optionales Abendessen bestätigt, dass Planpreis und Einkaufs-Zwischensumme dieselbe Angebotsbasis verwenden. Es wurden keine echten Angebots-, Nutzer-, Supabase- oder Datenbankdaten verändert.
