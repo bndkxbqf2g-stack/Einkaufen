@@ -478,3 +478,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - Der zuerst sichtbare Name bleibt erhalten; eine Identität gilt als vorhanden, sobald eine ihrer Varianten im Bestand erkannt wird. Es werden keine Mengen, Haltbarkeiten, Preise oder Verbrauchsannahmen ergänzt.
 - Root und `dist` sind bytegleich. Der initiale CI-Lauf wurde wegen doppelt escapeter Regex-Backslashes nicht gemergt; nach Korrektur war CI vollständig grün und GitHub Pages erfolgreich.
 - Keine Nutzer-, Backup-, Sync-, Supabase-, Datenbank- oder Angebotsdatenänderung; keine zusätzliche Freigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, gemeinsame Zutaten-Normalisierung
+
+- PR [#164](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/164) bündelt den Identitätsvertrag für Zutaten in `ingredient-normalization.js` und verwendet ihn in App sowie Vorrats-/Kostenmodell.
+- Der Fix verhindert, dass Normalisierungsregeln an zwei Stellen auseinanderlaufen. Ein isolierter Fallback bleibt für alte oder unvollständig geladene Clients bestehen.
+- PR-CI, Root-Synchronisierung und GitHub-Pages-Deployment waren erfolgreich. Keine Nutzer-, Plan-, Mengen-, Preis-, Angebots-, Supabase- oder Datenbankänderung; keine zusätzliche Freigabe erforderlich.
