@@ -8,5 +8,23 @@
   "display": "standalone",
   "background_color": "#f6f5f0",
   "theme_color": "#174c42",
-  "categories": ["food", "lifestyle", "shopping"]
+  "categories": [
+    "food",
+    "lifestyle",
+    "shopping"
+  ],
+  "icons": [
+    {
+      "src": "./icons/pwa-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/pwa-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
 }
