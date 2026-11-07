@@ -98,3 +98,11 @@ freigegeben oder entschieden wurden.
 - PRs #40, #42, #43, #44 und #45 sind damit geprüft und integriert; keine Datenmigration, keine Änderung am Supabase-Projekt und keine kostenpflichtige Ressource wurde angelegt.
 - Chat A arbeitet aktiv an einem isolierten Audit der deterministischen Mengen-/Packungsrundung am Übergang Rezept → Einkaufsliste. Chat B arbeitet aktiv an einem isolierten Audit der sichtbaren Supabase-Fehler-/Statusbehandlung bei Offline- oder Lade-/Speicherfehlern. Beide erstellen nur bei einem belegten, kleinen Defekt einen eigenen PR und ändern keine überlappenden Angebots-, Restore-, Service-Worker- oder Supabase-Schema-Bereiche.
 - Der Hauptchat arbeitet parallel weiter, prüft eingehende PRs separat und wartet nicht auf die Nebenchats. Für diese rückwärtsverträglichen Prüf- und Korrekturschritte ist keine zusätzliche Nutzerfreigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, PWA-Update
+
+- Der aktuelle Integrationsstand ist `main@52f8d6e66e5ec650a1c2bbd3742387a655329190`.
+- PR #47 aktualisierte den Koordinationsstand in dieser Datei; gemergt nach erfolgreicher Prüfung.
+- PR #48 ergänzt installierbare SVG-App-Icons in Root und `dist`, synchronisiert beide Manifeste, prüft die Icon-Metadaten automatisiert und ergänzt die bisher fehlenden CI-Pfade für Manifest-/Icon-Änderungen. Die PR-CI (Run `42334269590`) war vollständig grün; gemergt in `52f8d6e66e5ec650a1c2bbd3742387a655329190`. Keine Nutzer-, Supabase- oder Angebotsdaten geändert.
+- Chat A hat den Mengen-/Packungsaudit ohne reproduzierbaren Defekt abgeschlossen und arbeitet nun an einem getrennten Audit der Angebotsnormalisierung. Chat B prüft weiterhin die sichtbare Supabase-Fehler-/Statusbehandlung. Der Hauptchat arbeitet parallel an weiteren unabhängigen, kleinen Verbesserungen.
+- Für diese rückwärtsverträglichen Prüf- und Korrekturschritte ist keine zusätzliche Nutzerfreigabe erforderlich. Kostenpflichtige Ressourcen und Datenbankmigrationen bleiben ausgeschlossen.
