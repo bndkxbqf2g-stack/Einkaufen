@@ -194,3 +194,9 @@ freigegeben oder entschieden wurden.
 - Der aktuelle Integrationsstand ist `main@113e179c21247f11e14d7a48c6eb9f66a3a66e1a`.
 - PR [#69](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/69) ist gemergt und ergänzt `docs/**` in `push.paths` und `pull_request.paths` von `.github/workflows/github-pages.yml`.
 - Die PR-CI (Run `42340472415`) war grün. Keine Produktlogik, Daten- oder Supabase-Änderung.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Audit Wochenumfang
+
+- Read-only-Audit: `mealPurpose` erlaubt bereits `Hauptgericht`, `Frühstück`, `Brotzeit`, `Snack`, `Getränk` und `Flexibel`; die Planung nutzt weiterhin ein Hauptgericht pro Tag.
+- Eine approval-freie Erweiterung ist nicht vertretbar, weil zusätzliche Slots die Auswahl, Mengen, Kosten sowie Settings-/Backup-/Sync-Kompatibilität fachlich berühren.
+- Kleinster nächster Entscheidungsschritt ist Freigabepunkt 8: Soll je Planungstag ein globaler optionaler Frühstücks-Slot ergänzt werden? Dieser Eintrag ist keine Freigabe. Keine Produkt-, Daten- oder Supabase-Änderung.
