@@ -1778,7 +1778,7 @@
       const candidate = getPlanCandidateById(recipeId);
       const index = Number(dayIndex);
       const days = Number($('#daysSelect').value);
-      if (!candidate || !Number.isInteger(index) || index < 0 || index >= days) return false;
+      if (!candidate || !mealPurposeAllowsSlot(candidate, 'lunch') || !Number.isInteger(index) || index < 0 || index >= days) return false;
       Object.keys(manualPlan).forEach(key => { if (manualPlan[key] === candidate.id) delete manualPlan[key]; });
       manualPlan[String(index)] = candidate.id;
       localStorage.setItem('angebotskueche.manualPlan', JSON.stringify(manualPlan));
@@ -1830,7 +1830,7 @@
       const usedMains = new Set();
       Object.entries(manualPlan).forEach(([dayIndex, recipeId]) => {
         const index = Number(dayIndex);
-        const recipe = getPlanCandidateById(recipeId, planCandidates);
+        const recipe = getPlanCandidateById(recipeId, lunchCandidates);
         if (!recipe || !Number.isInteger(index) || index < 0 || index >= days || selected[index]) return;
         const meal = suggestionAsMeal(recipe, index);
         selected[index] = { ...meal, manual: true, tags: [...(Array.isArray(meal.tags) ? meal.tags : []), 'manuell gewählt'] };
