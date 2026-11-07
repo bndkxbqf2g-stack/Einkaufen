@@ -169,6 +169,28 @@ test('keeps legacy manual shopping checks stable across reload and restore', () 
   assert.equal(shoppingChecks[`manual-${restored.items[0].id}`], true);
 });
 
+test('repairs duplicate explicit manual IDs without dropping entries', () => {
+  const first = initializeManualShoppingItems([
+    { id: 'manual-1', name: 'Brot' },
+    { id: 'manual-1', name: 'Milch' },
+    { id: 'manual-1-2', name: 'Saft' },
+    { id: 'manual-1', name: 'Wasser' },
+  ]);
+
+  assert.deepEqual(first.items.map(item => item.id), [
+    'manual-1',
+    'manual-1-2',
+    'manual-1-2-2',
+    'manual-1-3',
+  ]);
+  assert.equal(first.items.length, 4);
+  assert.equal(first.saved, JSON.stringify(first.items));
+
+  const reloaded = initializeManualShoppingItems(JSON.parse(first.saved));
+  assert.equal(reloaded.saved, null);
+  assert.deepEqual(reloaded.items, first.items);
+});
+
 test('round-trips legacy manual items, local fields, and shopping checks together', () => {
   const initialChecks = {
     'manual-manual-legacy-brot': true,
