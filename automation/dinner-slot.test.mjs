@@ -12,10 +12,10 @@ const purposeMatch = source.match(/function recipeMealPurpose\(recipe\) \{[\s\S]
 const allowsMatch = source.match(/function mealPurposeAllowsSlot\(recipe, slot = 'lunch'\) \{[\s\S]*?\n    \}/);
 const candidatesMatch = source.match(/function getPlanCandidatesForSlot\(slot = 'lunch'\) \{[\s\S]*?\n    \}/);
 const assignmentMatch = source.match(/function assignRecipeToDinner\(recipeId, dayIndex\) \{[\s\S]*?\n    \}/);
-const dinnersMatch = source.match(/function getCurrentPlanDinners\(\) \{[\s\S]*?\n    \}/);
+const dinnersMatch = source.match(/function buildCurrentPlanDinners\(lunches\) \{[\s\S]*?\n    \}/);
 const dinnerCardMatch = source.match(/function renderDinnerCard\(dinner, index, people\) \{[\s\S]*?\n    \}/);
 const lunchAssignmentMatch = source.match(/function assignRecipeToDay\(recipeId, dayIndex\) \{[\s\S]*?\n    \}/);
-const currentPlanMatch = source.match(/function getCurrentPlanMeals\(\) \{[\s\S]*?\n    \}/);
+const currentPlanMatch = source.match(/function buildCurrentPlanLunches\(\) \{[\s\S]*?\n    \}/);
 
 for (const [label, match] of Object.entries({ normalizeMatch, purposeMatch, allowsMatch, candidatesMatch, assignmentMatch, dinnersMatch, dinnerCardMatch, lunchAssignmentMatch, currentPlanMatch })) {
   assert.ok(match, `${label} must be present in index.html`);
@@ -107,11 +107,11 @@ test('hides a stale dinner assignment when lunch now uses the same recipe', () =
     suggestionAsMeal: recipe => ({ ...recipe, recipeId: recipe.id, title: recipe.title, kind: 'dinner', score: 80, cost: '4,00 €' }),
   };
   vm.runInNewContext(
-    `${dinnersMatch[0]}\nglobalThis.getCurrentPlanDinners = getCurrentPlanDinners;`,
+    `${dinnersMatch[0]}\nglobalThis.buildCurrentPlanDinners = buildCurrentPlanDinners;`,
     dinnerContext,
   );
 
-  assert.equal(dinnerContext.getCurrentPlanDinners()[0], null);
+  assert.equal(dinnerContext.buildCurrentPlanDinners([{ recipeId: 'flex' }])[0], null);
 });
 
 test('shows a recipe source link on dinner cards when available', () => {
