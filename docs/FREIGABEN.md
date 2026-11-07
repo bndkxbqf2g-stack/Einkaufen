@@ -556,3 +556,10 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - Beim Ändern des Marktlimits werden die Einstellungen vor der Planneuberechnung gespeichert. Dadurch verwendet der aktuelle Plan sofort dieselbe Stopplimit-Einstellung wie die Marktansicht.
 - Dies ist keine Routen-, Fahrtkosten- oder Ersparnisoptimierung; automatische Mehrstopp-Empfehlungen bleiben bis zur fachlichen Freigabe deaktiviert. Keine Nutz-, Angebots-, Supabase- oder Datenbankdaten wurden geändert.
+
+
+## Koordinierter Arbeitsstand – 07.11.2026, Snapshot- und Marktlimit-Stabilität
+
+- [PR #182](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/182) begrenzt Einzelangebots-Gültigkeiten auf das Ende des Gesamtsnapshots und schützt den Randfall synthetisch. Nach grüner CI gemerged; keine Angebotsdaten, Supabase- oder Datenbankänderung.
+- [PR #183](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/183) speichert das neue Marktlimit vor der Planneuberechnung, damit Marktansicht und Plan dieselbe Stopplimit-Einstellung verwenden. Nach grüner CI gemerged; Fahrtkosten- und Ersparnisoptimierung bleiben ausdrücklich offen.
+- Die dokumentierten Freigabepunkte für tatsächliche Einkäufe, Fahrtkosten, Routing und Supabase-Migrationen bleiben unverändert und wurden nicht freigegeben.
