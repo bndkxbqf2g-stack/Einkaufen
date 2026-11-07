@@ -162,10 +162,13 @@ test('precaches the app shell during install and removes old caches on activate'
   harness.cacheNames.add('angebotskueche-shell-old');
 
   await harness.dispatch('install');
-  assert.deepEqual(harness.addAllCalls, [['./index.html', './manifest.json', './supabase-sync.js']]);
+  assert.deepEqual(harness.addAllCalls, [['./index.html', './manifest.json', './ingredient-normalization.js', './shopping-costs.js', './meal-planning.js', './supabase-sync.js']]);
   assert.equal(harness.skipWaitingCalls(), 1);
   assert.ok(harness.entries.has(`${origin}/index.html`));
   assert.ok(harness.entries.has(`${origin}/manifest.json`));
+  assert.ok(harness.entries.has(`${origin}/ingredient-normalization.js`));
+  assert.ok(harness.entries.has(`${origin}/shopping-costs.js`));
+  assert.ok(harness.entries.has(`${origin}/meal-planning.js`));
   assert.ok(harness.entries.has(`${origin}/supabase-sync.js`));
 
   await harness.dispatch('activate');

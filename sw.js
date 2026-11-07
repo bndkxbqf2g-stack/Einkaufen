@@ -1,5 +1,5 @@
-const CACHE_NAME = 'angebotskueche-shell-v28';
-const APP_SHELL = ['./index.html', './manifest.json', './supabase-sync.js'];
+const CACHE_NAME = 'angebotskueche-shell-v29';
+const APP_SHELL = ['./index.html', './manifest.json', './ingredient-normalization.js', './shopping-costs.js', './meal-planning.js', './supabase-sync.js'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
