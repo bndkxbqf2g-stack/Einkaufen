@@ -1393,8 +1393,7 @@
       const secondText = normalizeIngredient(second).trim();
       if (!firstText || !secondText) return false;
       if (firstText === secondText) return true;
-      const firstWords = firstText.split(/\s+/).filter(word => word.length >= 4);
-      return firstWords.some(word => secondText.includes(word) || (word.endsWith('en') && secondText.includes(word.slice(0, -2))) || (word.endsWith('e') && secondText.includes(word.slice(0, -1))));
+      return ingredientTextMatches(firstText, secondText) || ingredientTextMatches(secondText, firstText);
     }
 
     function isPantryIngredient(ingredient) {
@@ -1405,8 +1404,7 @@
         if (normalizedIngredient === normalizedPantryItem) return true;
         const ingredientWords = normalizedIngredient.split(/\s+/).filter(Boolean);
         if (normalizedPantryItem.length < 4) return normalizedPantryItem === 'ol' && ingredientWords.some(word => word === 'ol' || (word.endsWith('ol') && word.length >= 4));
-        if (normalizedIngredient.includes(normalizedPantryItem)) return true;
-        return ingredientsOverlap(normalizedIngredient, normalizedPantryItem);
+        return ingredientTextMatches(normalizedPantryItem, normalizedIngredient);
       });
     }
 
@@ -1796,6 +1794,22 @@
       salami: /pizza/,
     };
 
+    function ingredientTextMatches(needle, haystack) {
+      const normalizedNeedle = normalizeIngredient(needle).trim();
+      const normalizedHaystack = normalizeIngredient(haystack).trim();
+      const words = normalizedNeedle.split(/\s+/).filter(word => word.length >= 4);
+      const haystackWords = normalizedHaystack.split(/\s+/).filter(word => word.length >= 4);
+      return words.some(word => {
+        const variants = ingredientWordVariants(word);
+        return haystackWords.some(haystackWord => [...variants].some(variant => {
+          if (haystackWord === variant) return true;
+          const pattern = safeCompoundIngredientPatterns[variant];
+          const excludedContext = unsafeCompoundOfferContexts[variant];
+          return Boolean(pattern && pattern.test(haystackWord) && !excludedContext?.test(normalizedHaystack));
+        }));
+      });
+    }
+
     function offerEndDate(value) {
       const match = String(value || '').match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
       if (!match) return null;
@@ -1816,18 +1830,8 @@
     }
 
     function offerMatchesIngredient(ingredient, offer) {
-      const words = normalizeIngredient(ingredient).split(/\s+/).filter(word => word.length >= 4);
       const normalizedOffer = normalizeIngredient(offer.name);
-      const offerWords = normalizedOffer.split(/\s+/).filter(word => word.length >= 4);
-      return words.some(word => {
-        const variants = ingredientWordVariants(word);
-        return offerWords.some(offerWord => [...variants].some(variant => {
-          if (offerWord === variant) return true;
-          const pattern = safeCompoundIngredientPatterns[variant];
-          const excludedContext = unsafeCompoundOfferContexts[variant];
-          return Boolean(pattern && pattern.test(offerWord) && !excludedContext?.test(normalizedOffer));
-        }));
-      });
+      return ingredientTextMatches(ingredient, normalizedOffer);
     }
 
     function recipeRating(recipe) {

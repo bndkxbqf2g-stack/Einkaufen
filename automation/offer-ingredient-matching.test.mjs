@@ -7,16 +7,18 @@ const normalizeMatch = html.match(/function normalizeIngredient\(value\) \{[\s\S
 const variantsMatch = html.match(/function ingredientWordVariants\(word\) \{[\s\S]*?\n    \}/);
 const compoundPatternsMatch = html.match(/const safeCompoundIngredientPatterns = \{[\s\S]*?\n    \};/);
 const compoundExclusionsMatch = html.match(/const unsafeCompoundOfferContexts = \{[\s\S]*?\n    \};/);
+const textMatch = html.match(/function ingredientTextMatches\(needle, haystack\) \{[\s\S]*?\n    \}/);
 const matcherMatch = html.match(/function offerMatchesIngredient\(ingredient, offer\) \{[\s\S]*?\n    \}/);
 
 assert.ok(normalizeMatch, 'normalizeIngredient muss im App-Bundle vorhanden sein');
 assert.ok(variantsMatch, 'ingredientWordVariants muss im App-Bundle vorhanden sein');
 assert.ok(compoundPatternsMatch, 'safeCompoundIngredientPatterns muss im App-Bundle vorhanden sein');
 assert.ok(compoundExclusionsMatch, 'unsafeCompoundOfferContexts muss im App-Bundle vorhanden sein');
+assert.ok(textMatch, 'ingredientTextMatches muss im App-Bundle vorhanden sein');
 assert.ok(matcherMatch, 'offerMatchesIngredient muss im App-Bundle vorhanden sein');
 
 const offerMatchesIngredient = new Function(
-  `${normalizeMatch[0]}\n${variantsMatch[0]}\n${compoundPatternsMatch[0]}\n${compoundExclusionsMatch[0]}\n${matcherMatch[0]}; return offerMatchesIngredient;`,
+  `${normalizeMatch[0]}\n${variantsMatch[0]}\n${compoundPatternsMatch[0]}\n${compoundExclusionsMatch[0]}\n${textMatch[0]}\n${matcherMatch[0]}; return offerMatchesIngredient;`,
 )();
 
 function matches(ingredient, offerName) {
