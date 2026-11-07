@@ -31,7 +31,7 @@ function requestKey(request) {
   return new URL(value, origin).href;
 }
 
-function createHarness({ fetchImpl = async () => new Response('network') } = {}) {
+function createHarness({ fetchImpl = async () => new Response('network'), claimImpl = () => undefined } = {}) {
   const listeners = new Map();
   const cacheNames = new Set();
   const entries = new Map();
@@ -82,6 +82,7 @@ function createHarness({ fetchImpl = async () => new Response('network') } = {})
     clients: {
       claim() {
         claimCalls += 1;
+        return claimImpl();
       },
     },
     addEventListener(name, callback) {
@@ -170,6 +171,26 @@ test('precaches the app shell during install and removes old caches on activate'
   await harness.dispatch('activate');
   assert.deepEqual(harness.deletedCaches, ['angebotskueche-shell-old']);
   assert.equal(harness.claimCalls(), 1);
+});
+
+test('waits for existing clients to be claimed before activation completes', async () => {
+  let resolveClaim;
+  const claimFinished = new Promise(resolve => {
+    resolveClaim = resolve;
+  });
+  const harness = createHarness({ claimImpl: () => claimFinished });
+  let activationSettled = false;
+  const activation = harness.dispatch('activate').then(() => {
+    activationSettled = true;
+  });
+
+  await new Promise(resolve => setTimeout(resolve, 0));
+  assert.equal(harness.claimCalls(), 1);
+  assert.equal(activationSettled, false);
+
+  resolveClaim();
+  await activation;
+  assert.equal(activationSettled, true);
 });
 
 test('bypasses the private API, cross-origin requests, and non-GET requests', async () => {
