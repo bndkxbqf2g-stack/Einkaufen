@@ -524,7 +524,7 @@
     <div class="modal"><div class="modal-header"><div><h2 id="pantryModalTitle">Vorräte schnell ergänzen</h2><p>Mehrere Zutaten mit Komma, Semikolon oder Enter trennen. Sie werden sofort als vorhanden behandelt – ähnlich wie bei Bring.</p></div><button class="close" id="closePantryModal" aria-label="Schließen">×</button></div><label class="source-note" for="pantryInput">Zutaten</label><input class="input" id="pantryInput" maxlength="500" placeholder="z. B. Reis, Nudeln, Eier oder Tomatenmark" autocomplete="off"><div class="source-note" id="pantryStatus" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelPantryModal">Fertig</button><button class="primary-button" id="savePantryItem">＋ Hinzufügen</button></div></div>
   </div>
   <div class="modal-backdrop" id="shoppingModal" role="dialog" aria-modal="true" aria-labelledby="shoppingModalTitle">
-    <div class="modal"><div class="modal-header"><div><h2 id="shoppingModalTitle">Artikel ergänzen</h2><p>Zusätzliche Artikel bleiben lokal in deiner Einkaufsliste und werden ebenfalls gegen aktive Angebote geprüft.</p></div><button class="close" id="closeShoppingModal" aria-label="Schließen">×</button></div><label class="source-note" for="shoppingItemInput">Artikel</label><input class="input" id="shoppingItemInput" maxlength="60" placeholder="z. B. Tomaten oder Küchenrolle" autocomplete="off"><div class="source-note" id="shoppingItemStatus" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelShoppingModal">Abbrechen</button><button class="primary-button" id="saveShoppingItem">Zur Liste hinzufügen</button></div></div>
+    <div class="modal"><div class="modal-header"><div><h2 id="shoppingModalTitle">Artikel ergänzen</h2><p>Zusätzliche Artikel bleiben lokal in deiner Einkaufsliste und werden ebenfalls gegen aktive Angebote geprüft.</p></div><button class="close" id="closeShoppingModal" aria-label="Schließen">×</button></div><label class="source-note" for="shoppingItemInput">Artikel</label><input class="input" id="shoppingItemInput" maxlength="60" placeholder="z. B. Tomaten oder Küchenrolle" autocomplete="off"><label class="source-note" for="shoppingItemQuantity" style="display:block;margin-top:10px">Packungen (optional)</label><input class="input" id="shoppingItemQuantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" style="margin-top:6px" aria-describedby="shoppingItemStatus"><div class="source-note" id="shoppingItemStatus" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelShoppingModal">Abbrechen</button><button class="primary-button" id="saveShoppingItem">Zur Liste hinzufügen</button></div></div>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
@@ -611,10 +611,12 @@
         .filter(item => item && typeof item.name === 'string' && item.name.trim())
         .map((item, index) => {
           const name = item.name.trim();
+          const rawQuantity = Number(item.quantity);
+          const quantity = Number.isInteger(rawQuantity) && rawQuantity >= 1 && rawQuantity <= 99 ? rawQuantity : 1;
           const explicitId = item.id === undefined || item.id === null ? '' : String(item.id).trim();
           if (explicitId) {
             usedIds.add(explicitId);
-            return { id: explicitId, name };
+            return { id: explicitId, name, quantity };
           }
           const slug = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ß/g, 'ss').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || `item-${index + 1}`;
           const baseId = `manual-legacy-${slug}`;
@@ -626,7 +628,7 @@
           }
           legacyCounters.set(baseId, suffix + 1);
           usedIds.add(id);
-          return { id, name };
+          return { id, name, quantity };
         });
     }
     function normalizeRecipeMealPurpose(value) {
@@ -1191,7 +1193,10 @@
     }
 
     function shoppingPackCount(item, people) {
-      if (item?.manual) return 1;
+      if (item?.manual) {
+        const quantity = Number(item.manualQuantity);
+        return Number.isInteger(quantity) && quantity >= 1 ? Math.min(quantity, 99) : 1;
+      }
       return Math.max(1, Math.ceil((item.count * people) / 2));
     }
 
@@ -1228,7 +1233,7 @@
         const key = shoppingIngredientKey(ingredient);
         if (!key || items.has(key)) return;
         const offer = activeOffers.filter(candidate => offerMatchesIngredient(ingredient, candidate)).sort(compareOfferCandidates)[0] || null;
-        items.set(key, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id });
+        items.set(key, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id, manualQuantity: manualItem.quantity });
       });
       const people = Number($('#peopleSelect')?.value || settings.people || 2);
       return [...items.values()].map(item => {
@@ -1286,11 +1291,12 @@
         if (second[0] === 'Ergänzen') return -1;
         return (marketOrder.indexOf(first[0]) === -1 ? 99 : marketOrder.indexOf(first[0])) - (marketOrder.indexOf(second[0]) === -1 ? 99 : marketOrder.indexOf(second[0]));
       });
-       $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group">${renderShoppingGroupHeader(group, groupItems)}<div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const useLabel = item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; const packLabel = item.offer ? (item.packCount > 1 ? `${item.packCount} Packungen · ${item.offer.packSize || 'Packungsgröße'} · für ${Number($('#peopleSelect').value || 2)} Personen` : `${item.offer.packSize || '1 Packung'} · ${item.offer.saving || 'Angebot'}`) : ''; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.packCount > 1 ? `${item.packCount} × ${item.offer.price}` : item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(packLabel)}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
+       $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group">${renderShoppingGroupHeader(group, groupItems)}<div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const useLabel = item.manual && item.packCount > 1 ? `${item.packCount} Packungen · zusätzlich ergänzt` : item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; const packLabel = item.offer ? (item.packCount > 1 ? `${item.packCount} Packungen · ${item.offer.packSize || 'Packungsgröße'} · für ${Number($('#peopleSelect').value || 2)} Personen` : `${item.offer.packSize || '1 Packung'} · ${item.offer.saving || 'Angebot'}`) : ''; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.packCount > 1 ? `${item.packCount} × ${item.offer.price}` : item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(packLabel)}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
     }
 
     function openShoppingItemModal() {
       $('#shoppingItemInput').value = '';
+      $('#shoppingItemQuantity').value = '1';
       $('#shoppingItemStatus').textContent = '';
       $('#shoppingModal').classList.add('open');
       $('#shoppingItemInput').focus();
@@ -1300,16 +1306,19 @@
       const input = $('#shoppingItemInput');
       const status = $('#shoppingItemStatus');
       const candidate = input.value.trim().replace(/\s+/g, ' ');
+      const quantity = Number($('#shoppingItemQuantity').value);
       if (!candidate) { status.textContent = 'Bitte einen Artikel eingeben.'; input.focus(); return; }
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 99) { status.textContent = 'Bitte 1 bis 99 Packungen angeben.'; $('#shoppingItemQuantity').focus(); return; }
       if (isPantryIngredient(candidate)) { status.textContent = 'Dieser Artikel ist bereits als Vorrat hinterlegt.'; input.focus(); return; }
       const key = shoppingIngredientKey(candidate);
       const alreadyListed = getShoppingItems().some(item => shoppingIngredientKey(item.name) === key);
       if (alreadyListed) { status.textContent = `${candidate} steht bereits auf der Einkaufsliste.`; input.focus(); return; }
-      manualShoppingItems.push({ id: `manual-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, name: candidate });
+      manualShoppingItems.push({ id: `manual-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, name: candidate, quantity });
       localStorage.setItem('angebotskueche.manualShoppingItems', JSON.stringify(manualShoppingItems));
+      $('#shoppingItemQuantity').value = '1';
       $('#shoppingModal').classList.remove('open');
       renderShoppingList();
-      showToast(`${candidate} zur Einkaufsliste hinzugefügt.`);
+      showToast(`${candidate}${quantity > 1 ? ` (${quantity} Packungen)` : ''} zur Einkaufsliste hinzugefügt.`);
     }
 
     function persistSuggestionPreferences() {
