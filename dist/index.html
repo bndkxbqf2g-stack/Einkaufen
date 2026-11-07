@@ -2009,7 +2009,8 @@
       const source = String(offer?.source || '').trim().toLowerCase();
       return Boolean(offer?.demo) || source === 'demo-import';
     }
-function isOfferCurrent(offer) {
+
+    function isOfferCurrent(offer) {
       const end = offerEndDate(String(offer?.validUntil || '').trim());
       return Boolean(end) && end >= new Date();
     }
