@@ -613,3 +613,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - [PR #202](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/202) stellt sicher, dass unbekannte bzw. persönliche Settings im Backup-Export und beim bestätigten Cloud-/Supabase-Load mit `mergeSettings: true` erhalten bleiben; bekannte Einstellungen werden weiterhin aktualisiert.
 - Der PR änderte ausschließlich die Testdatei. Der fokussierte Teststand (11/11), Build, Validator, die Vollsuite (195/195) und CI-Validate waren grün.
 - Kein Supabase-Schema-, Daten- oder Migrationsschritt.
+
+## Fortschritt 08.11.2026 – Auth-Session-Fehlerpfad
+
+- [PR #204](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/204) führt einen tri-state Supabase-Sessionstatus (`true`/`false`/`null`) ein. Spätere `getSession()`-Fehler öffnen keinen Login-/Settings-Dialog und nutzen keinen D1-Fallback.
+- Regressionstests für SDK-/UI-Pfade und die CI-Validierung waren grün. Es gab keinen Supabase-Projekt-, Schema-, Daten-, Auth-Konfigurations-, Redirect- oder Deployment-Schritt.
+- Der echte Auth-/E-Mail-Bestätigungs-E2E-Test bleibt offen und benötigt weiterhin ein vom Nutzer angelegtes Testkonto.
