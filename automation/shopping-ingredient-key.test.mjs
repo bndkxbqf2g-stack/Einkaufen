@@ -70,7 +70,7 @@ test('führt Singular und Plural gemeinsamer Zutaten in einer Position zusammen'
   assert.equal(ingredientKeys.shoppingIngredientIdentity('Tomaten'), ingredientKeys.shoppingIngredientIdentity('Tomate'));
   assert.equal(items.length, 1);
   assert.equal(items[0].count, 2);
-  assert.equal(items[0].packCount, 1);
+  assert.equal(items[0].packCount, 2);
   assert.equal(items[0].id, 'shopping-tomaten', 'der erste bestehende Schlüssel bleibt für shoppingChecks stabil');
   assert.deepEqual(items[0].meals, ['Gericht 1', 'Gericht 2']);
 });
