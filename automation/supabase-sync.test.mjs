@@ -275,3 +275,58 @@ test('confirmed cloud load applies the payload and remembers its revision', asyn
   assert.equal(harness.storage.get('angebotskueche.supabase.localHousehold'), 'house-1');
   assert.equal(harness.storage.get('angebotskueche.supabase.revision.house-1'), '4');
 });
+
+function extractFrontendFunction(source, name) {
+  const start = source.indexOf(`function ${name}() {`);
+  assert.notEqual(start, -1, `${name} is present`);
+  const closing = '\n    }';
+  const end = source.indexOf(closing, start);
+  assert.notEqual(end, -1, `${name} closing brace is present`);
+  return source.slice(start, end + closing.length);
+}
+
+function createMarketSelectionHarness({ selectedMarkets, markets } = {}) {
+  const normalizedHtml = html.replace(/\r\n?/g, '\n');
+  const sortedDeclaration = [extractFrontendFunction(normalizedHtml, 'sortedSelectedMarkets')];
+  const activeDeclaration = [extractFrontendFunction(normalizedHtml, 'getActiveOffers')];
+  assert.ok(sortedDeclaration, 'selected market sorter is present');
+  assert.ok(activeDeclaration, 'active offer selector is present');
+  return vm.runInNewContext(`(() => {
+    ${sortedDeclaration[0]}
+    ${activeDeclaration[0]}
+    return { sortedSelectedMarkets, getActiveOffers };
+  })()`, {
+    settings: { selectedMarkets, markets },
+    marketDetails: {
+      Aldi: { distance: '4,8 km' },
+      Kaufland: { distance: '18,6 km' },
+      Lidl: { distance: '6,2 km' },
+      EDEKA: { distance: '3,1 km' },
+    },
+    offers: [
+      { store: 'Aldi' },
+      { store: 'Kaufland' },
+      { store: 'Lidl' },
+      { store: 'EDEKA' },
+    ],
+    isOfferCurrent: () => true,
+  });
+}
+
+test('keeps active offers bounded when persisted market settings are invalid', () => {
+  const valid = createMarketSelectionHarness({ selectedMarkets: ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'], markets: 1 });
+  assert.deepEqual(Array.from(valid.getActiveOffers(), offer => offer.store), ['EDEKA']);
+
+  const invalidSelection = createMarketSelectionHarness({ selectedMarkets: ['not-a-market'], markets: 1 });
+  assert.deepEqual(Array.from(invalidSelection.sortedSelectedMarkets()), ['EDEKA', 'Aldi', 'Lidl', 'Kaufland']);
+  assert.deepEqual(Array.from(invalidSelection.getActiveOffers(), offer => offer.store), ['EDEKA']);
+
+  const invalidLimit = createMarketSelectionHarness({ selectedMarkets: ['Aldi', 'Kaufland'], markets: 'invalid' });
+  assert.deepEqual(Array.from(invalidLimit.getActiveOffers(), offer => offer.store), ['Aldi', 'Kaufland']);
+
+  const zeroLimit = createMarketSelectionHarness({ selectedMarkets: ['Aldi', 'Kaufland'], markets: '0' });
+  assert.deepEqual(Array.from(zeroLimit.getActiveOffers(), offer => offer.store), ['Aldi', 'Kaufland']);
+
+  const missingSettings = createMarketSelectionHarness();
+  assert.deepEqual(Array.from(missingSettings.getActiveOffers(), offer => offer.store), ['Aldi', 'EDEKA']);
+});
