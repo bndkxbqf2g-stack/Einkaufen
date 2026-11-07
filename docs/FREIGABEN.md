@@ -607,3 +607,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - [PR #200](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/200) bewahrt unbekannte bzw. persönliche Legacy-Settings beim Speichern, während bekannte Einstellungen wie bisher aktualisiert werden. Der fokussierte Regressionstest, Build, Validator und die Vollsuite (194/194) waren grün.
 - Der ergänzte Zeilenenden-Ausgleich betrifft ausschließlich den bestehenden Test-Harness; keine Migration, keine Supabase-/Nutzerdatenänderung und keine neuen Kosten.
+
+## Fortschritt 08.11.2026 – Erhalt unbekannter Settings im Backup- und Cloud-Load
+
+- [PR #202](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/202) stellt sicher, dass unbekannte bzw. persönliche Settings im Backup-Export und beim bestätigten Cloud-/Supabase-Load mit `mergeSettings: true` erhalten bleiben; bekannte Einstellungen werden weiterhin aktualisiert.
+- Der PR änderte ausschließlich die Testdatei. Der fokussierte Teststand (11/11), Build, Validator, die Vollsuite (195/195) und CI-Validate waren grün.
+- Kein Supabase-Schema-, Daten- oder Migrationsschritt.
