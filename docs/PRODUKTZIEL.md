@@ -302,3 +302,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Manuelle Tageszuordnungen akzeptieren jetzt ausschließlich Rezepte für den Mittagsslot (`Hauptgericht` oder `Flexibel`); Frühstück, Snack und Getränk bleiben Rezeptzwecke, werden aber nicht als Wochenplan-Slot verwendet.
 - Auch ältere gespeicherte manuelle Zuordnungen werden beim Planaufbau gegen die Mittagsslot-Kandidaten geprüft. Dadurch gelangen ausgeschlossene Mahlzeiten nicht in Einkaufsliste, Mengen-/Packungsberechnung oder Planbetrag; bestehende Nutzerdaten werden nicht gelöscht.
+
+## Fortschritt 07.11.2026 – sichere Budget-Centwerte
+
+- Der vorbereitete `purchaseRecords`-Validator akzeptiert nur nichtnegative sichere Ganzzahlen als Centbeträge. Dadurch bleiben Summen oberhalb der JavaScript-Präzisionsgrenze nicht stillschweigend ungenau.
+- Gültige Budgetwerte, die noch nicht produktiv gespeichert oder angezeigt werden, bleiben unverändert. Es wurden keine IST-, Nutzer-, Supabase- oder Datenbankdaten geändert.
