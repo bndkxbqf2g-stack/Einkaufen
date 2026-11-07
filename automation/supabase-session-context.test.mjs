@@ -38,7 +38,11 @@ function createSessionHarness(initialStorage, initialUser = 'user-1') {
       get snapshot() { return { session, households, selectedHouseholdId }; },
     };
   })()`, { localStorage });
-  return { storage, ...context };
+  return {
+    storage,
+    updateSession: context.updateSession,
+    get snapshot() { return context.snapshot; },
+  };
 }
 
 const oldContext = {
