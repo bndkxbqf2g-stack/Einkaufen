@@ -319,3 +319,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Der Vollständigkeitsreport unterscheidet weiterhin korrekt zwischen Ladeziel und Prospekt-Gesamtumfang: `targetReached` wird nur als Ladeziel angezeigt; „Gesamtumfang nicht belegt“ bleibt explizit.
 - Audit der eingecheckten Snapshots: Aldi, EDEKA, Lidl, Netto und Penny liefern `recognizedCount` plus Ladeziel; Kaufland liefert aktuell 49 Angebote ohne belastbare Sollzahl/`recognizedCount`. Alle sechs Snapshots sind nichtleer, datiert, nicht dupliziert und `recognizedCount` (wo vorhanden) entspricht `offers.length`. Keine Vollständigkeitsbehauptung wird daraus abgeleitet.
 - Der Marktvergleich verwendet nur aktuelle Angebote aktiver Märkte; fehlende oder unklare Preise bleiben unbekannt. Die bestehenden Regressionstests sichern die Coverage-Darstellung, Quellzeitpunkte und den Erhalt nicht aktualisierter Märkte. Für diesen Audit war keine Laufzeitänderung erforderlich.
+
+## Fortschritt 07.11.2026 – sofort angewendetes Marktlimit
+
+- Beim Ändern des Marktlimits werden die Einstellungen vor der Planneuberechnung gespeichert. Dadurch verwendet der aktuelle Plan sofort dieselbe Stopplimit-Einstellung wie die Marktansicht.
+- Dies ist keine Routen-, Fahrtkosten- oder Ersparnisoptimierung; automatische Mehrstopp-Empfehlungen bleiben bis zur fachlichen Freigabe deaktiviert. Keine Nutz-, Angebots-, Supabase- oder Datenbankdaten wurden geändert.
