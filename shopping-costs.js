@@ -27,17 +27,10 @@
   }
 
   function pantryIngredientIdentity(value) {
-    return String(value || '')
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9äöüß ]/g, ' ')
-      .replace(/\b(frisch|frische|frischen|gehackt|gerieben|gemischt|rote|roten|gross|grosse|große|klein|kleine)\b/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim()
-      .split(/\s+/)
-      .map(word => word.length >= 5 && word.endsWith('n') ? word.slice(0, -1) : word)
-      .join(' ');
+    const shared = root.AngebotskuecheIngredientModel;
+    return shared && typeof shared.shoppingIngredientIdentity === 'function'
+      ? shared.shoppingIngredientIdentity(value)
+      : String(value || '').trim().toLowerCase();
   }
 
   function summarizePantryCoverage(ingredients, isPantryIngredient) {
