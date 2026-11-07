@@ -127,3 +127,10 @@ freigegeben oder entschieden wurden.
 - Der Kostenmodell-Audit von Chat B fand keinen reproduzierbaren Defekt: bekannte positive Angebotspreise werden centgenau und packungsbezogen summiert; unbekannte, negative, Grund- und mehrdeutige Preise bleiben getrennt. Der fokussierte Teststand war 7/7 grün; kein PR und keine Dateiänderung.
 - Der Angebots-Deduplikationsaudit von Chat A fand keinen reproduzierbaren Defekt: gleiche Namen und Preise mit unterschiedlichen Packungsgrößen wurden in der Probe nicht zusammengelegt. Das verbleibende Namensartefakt gehört zum bereits behobenen bzw. separat abgegrenzten Normalisierungsthema; kein PR und keine Dateiänderung.
 - Beide Nebenchats haben ihre begrenzten Aufgaben abgeschlossen. Es werden keine Folgeaufgaben gestartet, bis eine neue Kontingentprüfung erfolgt. Der zuletzt geprüfte Verbrauch lag bei 6 % im 5-Stunden-Fenster und 31 % im Wochenfenster.
+
+## Koordinierter Arbeitsstand – 07.11.2026, PR #57
+
+- PR #57 schützt `getActiveOffers()` vor ungültigen persistierten Markt-IDs und Markt-Limits; der PR ist in `6d75fe642d43f170b9fc8d8d25b9c9ccede54371` gemergt.
+- Die PR-CI war nach Korrektur des Regressionstests grün.
+- Der B-Wochenplan-Audit fand keinen reproduzierbaren Defekt. Manuell fixierte und vorgemerkte Gerichte bleiben bei geänderter Kandidatenreihenfolge erhalten; bekannte Randbedingung: Eine Zuordnung kann entfallen, wenn das Rezept entfernt oder verworfen wurde.
+- Keine Produktdateien oder Supabase-Änderungen; keine neue Freigabe erforderlich.
