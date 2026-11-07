@@ -11,6 +11,10 @@ on:
       - 'automation/**'
       - 'supabase/**'
       - 'supabase-sync.js'
+      - 'manifest.json'
+      - 'icons/**'
+      - 'dist/manifest.json'
+      - 'dist/icons/**'
       - 'index.html'
       - '.github/workflows/**'
   pull_request:
@@ -23,6 +27,10 @@ on:
       - 'automation/**'
       - 'supabase/**'
       - 'supabase-sync.js'
+      - 'manifest.json'
+      - 'icons/**'
+      - 'dist/manifest.json'
+      - 'dist/icons/**'
       - 'index.html'
       - '.github/workflows/**'
   workflow_dispatch:
