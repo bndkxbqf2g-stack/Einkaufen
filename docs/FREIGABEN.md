@@ -518,3 +518,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - [PR #172](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/172) gleicht die Registrierungskennung `sw.js?v=29` an den aktiven App-Shell-Cache `angebotskueche-shell-v29` an.
 - Der Regressionstest prüft diese Kopplung künftig automatisch; Root und `dist` sind bytegleich.
 - Keine Nutzerdaten, Plan-, Preis-, Angebots-, Backup-, Sync-, Supabase- oder Datenbankänderung; keine zusätzliche Freigabe erforderlich.
+
+
+## Koordinierter Arbeitsstand – 07.11.2026, Lidl-Gültigkeit über Jahreswechsel
+
+- [PR #173](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/173) korrigiert die Ableitung des Angebotsendes bei ausdrücklich angegebenen Spannen wie „28.12. bis 03.01.“; das fehlende Endjahr wird als Folgejahr behandelt.
+- Der Fix betrifft ausschließlich Parserlogik und Regressionstests. Keine Live-Angebotsdaten, Nutzerdaten, Supabase-, Datenbank- oder Deploymentänderung; keine zusätzliche Freigabe erforderlich.
