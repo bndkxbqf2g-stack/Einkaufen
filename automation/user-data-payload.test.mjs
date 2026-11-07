@@ -117,6 +117,61 @@ function createPayloadHarness(initialEntries = [], currentSettings = { markets: 
 }
 
 
+function createSettingsRoundTripHarness(appSource, initialEntries, currentSettings) {
+  const appHelpersStart = appSource.indexOf('    const backupArrayKeys = ');
+  const appHelpersEnd = appSource.indexOf('    function exportUserData()', appHelpersStart);
+  assert.ok(appHelpersStart >= 0 && appHelpersEnd > appHelpersStart, 'backup helpers are present');
+
+  const storage = new Map(initialEntries);
+  const sandbox = {
+    localStorage: {
+      getItem(key) { return storage.has(key) ? storage.get(key) : null; },
+      setItem(key, value) { storage.set(key, String(value)); },
+      removeItem(key) { storage.delete(key); },
+    },
+    settings: currentSettings,
+    pantry: [],
+    favorites: [],
+    dismissedRecipes: [],
+    pinnedRecipes: [],
+    shoppingChecks: {},
+    manualShoppingItems: [],
+    recipeHistory: [],
+    liveOfferStatus: {},
+    manualPlan: {},
+    manualDinnerPlan: {},
+    recipeRatings: {},
+    suggestionPreferences: {},
+    showToast() {},
+    setTimeout() {},
+    location: { reload() {} },
+  };
+  const storedSource = `
+function stored(key, fallback) {
+  try {
+    const value = JSON.parse(localStorage.getItem(key));
+    return value ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+`;
+  const api = vm.runInNewContext(
+    `${storedSource}
+${appSource.slice(appHelpersStart, appHelpersEnd)}
+globalThis.buildUserDataPayload = buildUserDataPayload;
+globalThis.applyUserDataPayload = applyUserDataPayload;`,
+    sandbox,
+    { filename: 'settings-payload-roundtrip.js' },
+  );
+  return {
+    buildUserDataPayload: api.buildUserDataPayload,
+    applyUserDataPayload: api.applyUserDataPayload,
+    storage,
+  };
+}
+
+
 
 test('persists safe pantry and recipe history normalization before backup', () => {
   const legacyHistory = [
@@ -340,4 +395,62 @@ test('explains legacy-field preservation in the cloud-load confirmation', () => 
 
 test('worker source and published index stay byte-identical after the build', () => {
   assert.equal(published, source);
+});
+
+
+test('round-trips unknown settings through backup export and confirmed cloud-load merge', () => {
+  for (const { path, source } of sources) {
+    const exportedSettings = {
+      people: 4,
+      days: 5,
+      markets: 3,
+      leftovers: true,
+      evening: true,
+      selectedMarkets: ['Aldi', 'Lidl'],
+      customSetting: 'preserved-from-export',
+      personalPreferences: { variety: 'high' },
+    };
+    const exporter = createSettingsRoundTripHarness(
+      source,
+      [['angebotskueche.settings', JSON.stringify(exportedSettings)]],
+      exportedSettings,
+    );
+    const exportedPayload = exporter.buildUserDataPayload();
+    assert.deepEqual(exportedPayload.settings, exportedSettings, `${path}: backup export`);
+
+    const localSettings = {
+      people: 2,
+      days: 5,
+      markets: 2,
+      leftovers: true,
+      evening: true,
+      selectedMarkets: ['Kaufland'],
+      localOnlySetting: 'keep-local',
+      customSetting: 'old-local-value',
+    };
+    const loader = createSettingsRoundTripHarness(
+      source,
+      [['angebotskueche.settings', JSON.stringify(localSettings)]],
+      localSettings,
+    );
+    const confirmedCloudPayload = JSON.parse(JSON.stringify(exportedPayload));
+    loader.applyUserDataPayload(
+      confirmedCloudPayload,
+      'geladen',
+      { mergeSettings: true },
+    );
+
+    assert.deepEqual(
+      JSON.parse(loader.storage.get('angebotskueche.settings')),
+      {
+        ...localSettings,
+        people: 4,
+        markets: 3,
+        selectedMarkets: ['Aldi', 'Lidl'],
+        customSetting: 'preserved-from-export',
+        personalPreferences: { variety: 'high' },
+      },
+      `${path}: confirmed cloud-load merge`,
+    );
+  }
 });
