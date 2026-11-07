@@ -266,3 +266,11 @@ test('does not return the HTML shell for uncached offline assets', async () => {
   assert.equal(result.response.status, 0);
   assert.equal(await result.response.text(), '');
 });
+
+test('Pages root sync keeps published PWA icons aligned with dist', async () => {
+  const workflow = await readFile(resolve(root, '.github/workflows/sync-pages-root.yml'), 'utf8');
+
+  assert.match(workflow, /dist\\/icons\\/\\*\\*/);
+  assert.match(workflow, /cp -R dist\\/icons\\/\\. icons\\//);
+  assert.match(workflow, /git add index\\.html manifest\\.json icons sw\\.js supabase-sync\\.js/);
+});
