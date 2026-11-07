@@ -22,8 +22,7 @@ function extractFunction(source, name) {
 }
 
 const isDemoOffer = new Function(
-  extractFunction(html, 'isDemoOffer'),
-  'return isDemoOffer;',
+  `${extractFunction(html, 'isDemoOffer')}; return isDemoOffer;`,
 )();
 
 test('identifies synthetic demo offers separately from verified sources', () => {
