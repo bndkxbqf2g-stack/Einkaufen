@@ -58,7 +58,7 @@ test('keeps unit-price denominators out of known purchase amounts', () => {
   ]);
 
   assert.equal(result.totalCents, 0);
-  assert.deepEqual(result.knownItems, []);
+  assert.equal(result.knownItems.length, 0);
   assert.deepEqual(Array.from(result.unknownItems, item => item.id), ['unit-price']);
 });
 
@@ -68,7 +68,7 @@ test('does not count a negative euro amount as a purchasable offer price', () =>
   ]);
 
   assert.equal(result.totalCents, 0);
-  assert.deepEqual(result.knownItems, []);
+  assert.equal(result.knownItems.length, 0);
   assert.deepEqual(Array.from(result.unknownItems, item => item.id), ['negative']);
 });
 
