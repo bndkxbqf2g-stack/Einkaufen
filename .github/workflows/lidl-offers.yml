@@ -22,6 +22,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y tesseract-ocr tesseract-ocr-deu && npm install --no-save playwright pdf-parse && npx playwright install --with-deps chromium
       - name: Lidl-Prospekt für Zellingen auslesen
         run: node automation/lidl-offers.mjs
+      - name: Angebotsdaten validieren
+        run: node automation/validate-generated-offers.mjs generated/lidl-offers.json
       - name: Aktualisierte Angebote committen
         run: |
           git config user.name "github-actions[bot]"
