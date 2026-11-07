@@ -19,7 +19,8 @@ test('does not fall back to a static recipe cost without verified offers', () =>
 test('marks partial plan costs as unknown instead of zero', () => {
   assert.ok(source.includes("costSource: cost ? 'offer-subtotal' : 'unknown'"));
   assert.ok(source.includes("meal.costSource === 'offer-subtotal' && parseKnownMoney(meal.cost) !== null"));
-  assert.ok(source.includes("unknownMeals ? '–' : formatEuro(knownOfferTotal)"));
+  assert.ok(source.includes("unknownCostItems ? '–' : formatEuro(knownOfferTotal)"));
+  assert.ok(source.includes('summarizeShoppingCosts(getShoppingItems().filter(item => !item.manual), parseKnownMoney)'));
   assert.ok(source.includes('Preis unbekannt'));
 });
 
