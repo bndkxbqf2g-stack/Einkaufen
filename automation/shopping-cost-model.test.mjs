@@ -22,8 +22,10 @@ test('parses only explicit positive euro amounts', () => {
   assert.equal(parseKnownMoney('-1,99 €'), null);
   assert.equal(parseKnownMoney('−1,99 €'), null);
   assert.equal(parseKnownMoney('– 1,99 €'), null);
-  assert.equal(parseKnownMoney('1.234 €'), null);
+  assert.equal(parseKnownMoney('1.234 €'), 1234);
+  assert.equal(parseKnownMoney('1.234,56 €'), 1234.56);
   assert.equal(parseKnownMoney('1,234 €'), null);
+  assert.equal(parseKnownMoney('12.345.678 €'), 12345678);
   assert.equal(parseKnownMoney('2,49 € - 0,50 €'), 2.49);
   assert.equal(parseKnownMoney('0,00 €'), null);
   assert.equal(parseKnownMoney('2,49 €/kg'), null);
@@ -67,15 +69,16 @@ test('does not count a negative euro amount as a purchasable offer price', () =>
   assert.deepEqual(result.unknownItems.map(item => item.id), ['negative']);
 });
 
-test('does not extract a partial price from an ambiguous three-decimal amount', () => {
+test('normalizes explicit German thousands groups and rejects unsupported decimal precision', () => {
   const result = calculateOfferAmount([
-    { id: 'ambiguous-dot', packCount: 1, offer: { price: '1.234 €' } },
+    { id: 'grouped-whole', packCount: 1, offer: { price: '1.234 €' } },
+    { id: 'grouped-cents', packCount: 1, offer: { price: '1.234,56 €' } },
     { id: 'ambiguous-comma', packCount: 1, offer: { price: '1,234 €' } },
   ]);
 
-  assert.equal(result.totalCents, 0);
-  assert.deepEqual(result.knownItems, []);
-  assert.deepEqual(result.unknownItems.map(item => item.id), ['ambiguous-dot', 'ambiguous-comma']);
+  assert.equal(result.totalCents, 246856);
+  assert.deepEqual(result.knownItems.map(item => item.id), ['grouped-whole', 'grouped-cents']);
+  assert.deepEqual(result.unknownItems.map(item => item.id), ['ambiguous-comma']);
 });
 
 test('calculates known offer amounts in cents and keeps unknown positions separate', () => {
