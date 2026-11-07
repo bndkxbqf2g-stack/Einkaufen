@@ -404,3 +404,14 @@ freigegeben oder entschieden wurden.
 - [PR #132](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/132) akzeptiert im Lidl-Worker nur Preisfelder mit einem expliziten Eurobetrag.
 - Lebensmittelangebote ohne belastbaren Preis werden verworfen; bekannte Preise bleiben unverändert, und es werden keine Beträge aus unklaren Rohtexten erzeugt.
 - Worker-Quelle, generiertes Artefakt und Validierungsfixture sind synchronisiert; CI war grün, ohne Deployment oder kostenpflichtige Ressourcenänderung.
+
+## Validierter Angebotsabruf – Worker-Preis-Sicherheit – 07.11.2026
+
+- [PR #133](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/133) dokumentiert die verschärfte Preisprüfung für Worker-Angebotssnapshots.
+- Unklare Rohtexte und fehlende explizite Eurobeträge werden nicht als belastbare Angebotspreise veröffentlicht; CI war grün. Keine Supabase-, Datenbank-, Nutzerdaten-, Deployment- oder kostenpflichtige Ressourcenänderung.
+
+## Sichtbarer Planumfang – Mittagessen und optionales Abendessen – 07.11.2026
+
+- [PR #134](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/134) bezeichnet den bestehenden Hauptgericht-Slot im Wochenplan und in der Rezeptdetailansicht eindeutig als „Mittagessen“.
+- Frühstück, Snack und Getränk bleiben außerhalb der automatischen Planung; der optionale Abendessen-Slot bleibt unverändert. Root- und `dist`-Artefakt wurden synchron aktualisiert; CI war grün.
+- Keine Umklassifizierung bestehender Rezepte, keine Nutzerdatenänderung, keine Supabase-Migration, Datenbankänderung, Deployment- oder kostenpflichtige Ressourcenänderung.
