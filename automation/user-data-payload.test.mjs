@@ -133,6 +133,12 @@ test('explains legacy-field preservation in the cloud-load confirmation', () => 
   assert.ok(source.includes(
     "applyUserDataPayload(JSON.parse(reader.result), 'Daten geladen – die App wird aktualisiert.', { mergeSettings: true })",
   ));
+  assert.ok(source.includes(
+    "applyUserDataPayload(result.payload, 'Cloud-Daten geladen – die App wird aktualisiert.', { mergeSettings: true })",
+  ));
+  assert.ok(syncSource.includes(
+    "app.applyPayload(remote.payload, 'Haushaltsdaten geladen – die App wird aktualisiert.', { mergeSettings: true })",
+  ));
 });
 
 test('worker source and published index stay byte-identical after the build', () => {

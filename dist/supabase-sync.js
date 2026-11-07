@@ -238,7 +238,7 @@
       setStatus('Laden abgebrochen. Lokale Daten bleiben erhalten.');
       return false;
     }
-    app.applyPayload(remote.payload, 'Haushaltsdaten geladen – die App wird aktualisiert.');
+    app.applyPayload(remote.payload, 'Haushaltsdaten geladen – die App wird aktualisiert.', { mergeSettings: true });
     safeSet(revisionKey(household.household_id), remote.revision);
     safeSet(LOCAL_DATA_HOUSEHOLD_KEY, String(household.household_id));
     setStatus(`Cloud-Stand von „${household.name}“ übernommen.`);
