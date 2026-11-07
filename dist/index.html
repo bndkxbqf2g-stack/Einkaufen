@@ -1146,9 +1146,7 @@
         const ingredient = manualItem.name.trim();
         if (!ingredient || isPantryIngredient(ingredient)) return;
         const key = shoppingIngredientKey(ingredient);
-        const identity = shoppingIngredientIdentity(ingredient);
-        const existingKey = [...items.keys()].find(candidate => shoppingIngredientIdentity(candidate) === identity);
-        if (!key || existingKey) return;
+        if (!key || items.has(key)) return;
         const offer = activeOffers.filter(candidate => offerMatchesIngredient(ingredient, candidate)).sort(compareOfferCandidates)[0] || null;
         items.set(key, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id });
       });
