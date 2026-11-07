@@ -59,7 +59,7 @@ test('keeps unit-price denominators out of known purchase amounts', () => {
 
   assert.equal(result.totalCents, 0);
   assert.deepEqual(result.knownItems, []);
-  assert.deepEqual(result.unknownItems.map(item => item.id), ['unit-price']);
+  assert.deepEqual(Array.from(result.unknownItems, item => item.id), ['unit-price']);
 });
 
 test('does not count a negative euro amount as a purchasable offer price', () => {
@@ -69,7 +69,7 @@ test('does not count a negative euro amount as a purchasable offer price', () =>
 
   assert.equal(result.totalCents, 0);
   assert.deepEqual(result.knownItems, []);
-  assert.deepEqual(result.unknownItems.map(item => item.id), ['negative']);
+  assert.deepEqual(Array.from(result.unknownItems, item => item.id), ['negative']);
 });
 
 test('normalizes explicit German thousands groups and rejects unsupported decimal precision', () => {
@@ -80,8 +80,8 @@ test('normalizes explicit German thousands groups and rejects unsupported decima
   ]);
 
   assert.equal(result.totalCents, 246856);
-  assert.deepEqual(result.knownItems.map(item => item.id), ['grouped-whole', 'grouped-cents']);
-  assert.deepEqual(result.unknownItems.map(item => item.id), ['ambiguous-comma']);
+  assert.deepEqual(Array.from(result.knownItems, item => item.id), ['grouped-whole', 'grouped-cents']);
+  assert.deepEqual(Array.from(result.unknownItems, item => item.id), ['ambiguous-comma']);
 });
 
 test('calculates known offer amounts in cents and keeps unknown positions separate', () => {
@@ -94,8 +94,8 @@ test('calculates known offer amounts in cents and keeps unknown positions separa
 
   assert.equal(result.totalCents, 360);
   assert.equal(result.total, 3.6);
-  assert.deepEqual(result.knownItems.map(item => item.id), ['known']);
-  assert.deepEqual(result.unknownItems.map(item => item.id), ['unknown', 'empty', 'invalid']);
+  assert.deepEqual(Array.from(result.knownItems, item => item.id), ['known']);
+  assert.deepEqual(Array.from(result.unknownItems, item => item.id), ['unknown', 'empty', 'invalid']);
 });
 
 test('keeps unknown offer prices out of the displayed subtotal and shared list', () => {
