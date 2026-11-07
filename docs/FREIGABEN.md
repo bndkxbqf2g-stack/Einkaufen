@@ -350,3 +350,9 @@ freigegeben oder entschieden wurden.
 - [PR #113](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/113) entfernt statische Rezeptkosten als Fallback aus der Planansicht. Ohne ausreichende verifizierte Angebotsbasis erscheinen `–` und `Preis unbekannt` statt eines erfundenen Betrags.
 - Bekannte Angebots-Packungssummen werden als solche bezeichnet; der vollständige Kassenbetrag bleibt ausdrücklich offen. Bestehende Rezepte, lokale Daten und Einstellungen bleiben erhalten.
 - Die Regression-Suite prüft den unbekannten Kostenpfad und die Bytegleichheit von `index.html` und `dist/index.html`. Keine Nutzerdaten, Supabase-Daten, Migrationen, Deployments oder kostenpflichtigen Ressourcen wurden verändert.
+
+
+## Validierter Offline-Fallback – Planbezug – 07.11.2026
+
+- [PR #116](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/116) neutralisiert den letzten statischen Plan-Fallback: Gerichtstitel und Zutaten bleiben als Offline-Hilfe erhalten, aber Markt, Kosten, Score und Angebotsanker werden ohne verifizierte Daten nicht behauptet.
+- Regressionstests prüfen die Sanitization und die Bytegleichheit von `index.html` und `dist/index.html`. Keine Nutzerdaten, Supabase-Daten, Migrationen, Deployments oder kostenpflichtigen Ressourcen wurden verändert.
