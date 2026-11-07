@@ -5,7 +5,7 @@ import test from 'node:test';
 const html = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
 
 function extractFunction(name) {
-  const match = html.match(new RegExp(`function ${name}\\\\([^)]*\\\\) \\\\{[\\\\s\\\\S]*?\\\\n    \\\\}`));
+  const match = html.match(new RegExp(`function ${name}\\([^)]*\\) \\{[\\s\\S]*?\\n    \\}`));
   assert.ok(match, `${name} muss im App-Bundle vorhanden sein`);
   return match[0];
 }
