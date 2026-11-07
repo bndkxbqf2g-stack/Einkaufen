@@ -6,7 +6,10 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const source = await readFile(resolve(root, 'sw.js'), 'utf8');
+const [source, index] = await Promise.all([
+  readFile(resolve(root, 'sw.js'), 'utf8'),
+  readFile(resolve(root, 'index.html'), 'utf8'),
+]);
 const origin = 'https://app.example';
 
 test('published service worker and manifest stay identical to their root sources', async () => {
@@ -156,6 +159,26 @@ function createHarness({ fetchImpl = async () => new Response('network'), claimI
     skipWaitingCalls: () => skipWaitingCalls,
   };
 }
+
+
+function appShellAssets(serviceWorkerSource) {
+  const match = serviceWorkerSource.match(/const APP_SHELL = \[([^\]]+)\]/);
+  assert.ok(match, 'APP_SHELL muss im Service Worker vorhanden sein');
+  return [...match[1].matchAll(/'([^']+)'/g)].map(result => result[1]);
+}
+
+test('precaches every local runtime script referenced by the app', () => {
+  const localScripts = [...index.matchAll(/<script\\s+src="([^"]+)"/g)]
+    .map(result => result[1])
+    .filter(src => src.startsWith('./') && src.endsWith('.js'));
+  const shellAssets = appShellAssets(source);
+
+  assert.ok(localScripts.length > 0, 'the app must reference local runtime scripts');
+  for (const script of localScripts) {
+    assert.ok(shellAssets.includes(script), `${script} muss im App-Shell-Cache liegen`);
+  }
+});
+
 
 test('precaches the app shell during install and removes old caches on activate', async () => {
   const harness = createHarness();
