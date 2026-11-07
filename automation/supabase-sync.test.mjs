@@ -252,7 +252,7 @@ test('reports card load goals without claiming the prospect is complete', () => 
 test('uses the validated snapshot source URL for market links', () => {
   const declaration = html.match(/function sourceUrlForDisplay\(value\) \{[\s\S]*?\n    \}/);
   assert.ok(declaration, 'source URL display helper is present');
-  const sourceUrlForDisplay = vm.runInNewContext(`(${declaration[0]})`);
+  const sourceUrlForDisplay = vm.runInNewContext(`(${declaration[0]})`, { URL });
   assert.equal(sourceUrlForDisplay('https://example.test/offers?market=lidl'), 'https://example.test/offers?market=lidl');
   assert.equal(sourceUrlForDisplay('javascript:alert(1)'), '');
   assert.equal(sourceUrlForDisplay('https://user:secret@example.test/offers'), '');
