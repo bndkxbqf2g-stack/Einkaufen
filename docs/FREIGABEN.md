@@ -272,3 +272,12 @@ freigegeben oder entschieden wurden.
 - Pro Planungstag kann optional höchstens ein separates Abendessen hinterlegt werden; die neue Struktur `manualDinnerPlan` startet leer und verändert `manualPlan` nicht.
 - `mealPurpose` wird für die automatische Slot-Auswahl explizit behandelt: `Hauptgericht` gehört zum Mittagessen, `Brotzeit` zum Abendessen, `Flexibel` ist für beide Slots zugelassen. `Frühstück`, `Snack` und `Getränk` werden in diesem Plan nicht automatisch eingeordnet; bestehende manuelle `manualPlan`-Zuordnungen bleiben unverändert.
 - Alte Backups/Cloud-Payloads ohne `manualDinnerPlan` bleiben gültig. Es gibt keine Supabase-Schemaänderung, Migration, automatische Umklassifizierung oder Frühstücksänderung.
+
+
+## Koordinierter Arbeitsstand – 07.11.2026, Dinner- und Payload-Härtung
+
+- PR #92 ergänzt den optionalen Abendessen-Slot je Planungstag; manualDinnerPlan bleibt von manualPlan getrennt. Auswahl, Einkaufsliste, Teilen, Bewertungen und Backup/Restore berücksichtigen den Slot; CI war grün.
+- PR #93 verhindert, dass dasselbe Rezept am selben Tag gleichzeitig als Mittag- und Abendessen erscheint oder doppelt in Kosten-/Einkaufsberechnungen eingeht. Stale Dinner-Zuordnungen werden ausgeblendet; CI war grün.
+- PR #94 validiert manualDinnerPlan explizit als Objekt an den Supabase- und Worker/D1-Payload-Grenzen. Ungültige Arrays und null werden abgewiesen; Root-/dist-Artefakte und Regressionstests sind synchron. CI war nach Aktualisierung auf den aktuellen main grün.
+- PRs #95 und #96 bereinigen widersprüchliche Frühstücksannahmen in docs/PRODUKTZIEL.md. Der bestätigte Umfang ist Mittagessen plus optionales Abendessen; der nächste fachliche Schritt ist der Kosten-/Kassenfluss.
+- Keine Migration, keine Supabase-Datenänderung, keine automatische Kassenpreis-Erfassung und keine kostenpflichtige Ressource.
