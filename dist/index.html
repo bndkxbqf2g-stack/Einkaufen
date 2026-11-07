@@ -1271,9 +1271,10 @@
         localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks));
       }
       const openItems = items.filter(item => !shoppingChecks[item.id]);
-      const offerItems = items.filter(item => item.offer);
-      const missingItems = items.filter(item => !item.offer);
-      const offerSummary = calculateOfferAmount(offerItems);
+      const costSummary = window.AngebotskuecheCostModel.summarizeShoppingCosts(items, parseKnownMoney);
+      const offerItems = costSummary.offerItems;
+      const missingItems = costSummary.missingItems;
+      const offerSummary = costSummary;
       const knownOfferItems = offerSummary.knownItems;
       const unknownOfferItems = offerSummary.unknownItems;
       const offerTotal = offerSummary.total;

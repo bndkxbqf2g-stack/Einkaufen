@@ -100,7 +100,7 @@ test('calculates known offer amounts in cents and keeps unknown positions separa
 
 test('keeps unknown offer prices out of the displayed subtotal and shared list', () => {
   assert.match(html, /Bekannter Angebotsbetrag/);
-  assert.match(html, /const offerSummary = calculateOfferAmount\(offerItems\)/);
+  assert.match(html, /const costSummary = window\.AngebotskuecheCostModel\.summarizeShoppingCosts\(items, parseKnownMoney\)/);
   assert.match(html, /knownOfferItems/);
   assert.match(html, /Unbekannte Preise sind im bekannten Angebotsbetrag nicht enthalten/);
   assert.match(html, /Preis unbekannt/);
