@@ -329,3 +329,10 @@ freigegeben oder entschieden wurden.
 - Die CI-Prüfung des Einkaufslisten-Abgleichs bestätigt: Manuelle Singular-/Pluralvarianten bleiben von Rezeptzutaten getrennt. Das ist beabsichtigtes Verhalten für zusätzlich frei erfasste Artikel und darf nicht durch eine allgemeinere Zutaten-Normalisierung überschrieben werden.
 - Ein darauf zielender Kandidat (PR #107) wurde wegen des bestehenden Regressionstests nicht gemergt. Die Prüfung war damit ein Audit des bestehenden Vertrags, keine Produktänderung.
 - Exakte doppelte manuelle Artikel bleiben weiterhin durch den bestehenden Schlüsselabgleich begrenzt. Eine fachliche Zusammenführung semantisch ähnlicher manueller Varianten bleibt bis zu einer ausdrücklichen Produktentscheidung ausgeschlossen.
+
+
+## Validierter Datenfluss – Demo-Angebote – 07.11.2026
+
+- [PR #109](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/109) verhindert, dass die fest eingebauten `Demo-Import`-Beispiele als aktuelle Angebotsdaten in Planung, Marktanzahl, Highlights oder Angebotskosten einfließen.
+- Die Offline-Beispiele bleiben für die Darstellung erhalten; verifizierte Händlerimporte und manuelle Nutzerimporte bleiben nutzbar. Ohne verifizierte Quelle weist die Oberfläche ausdrücklich darauf hin, dass keine Angebotsdaten für Planung oder Kosten verwendet werden.
+- Die Regression-Suite prüft die Demo-Quellerkennung, die drei aktiven Filterpfade und die Bytegleichheit von `index.html` und `dist/index.html`. Keine Nutzerdaten, Supabase-Daten, Migrationen, Deployments oder kostenpflichtigen Ressourcen wurden verändert.
