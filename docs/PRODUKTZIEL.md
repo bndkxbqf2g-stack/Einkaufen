@@ -155,3 +155,11 @@ Angelegt bzw. ergänzt am 05.11.2026:
 - PR #38 härtet den JSON-LD-Rezeptimport: ungültige Rezeptkandidaten verdecken keine späteren gültigen Kandidaten; Objektzutaten werden nicht zu `[object Object]` umgewandelt. PR-CI #42330483770 (#168): 81/81 Tests, Worker-Build und Endpoint-Validierung erfolgreich; PR-Deploy-Job übersprungen. Am 07.11.2026 per Squash in Merge-Commit `5528a19ac815eccdc0d949b4efadf2800581e2d9` gemergt.
 - Die früher pausierte Deploy-Pfadsteuerung bleibt unangetastet und uncommittet. Als getrennte, kleine Prüfaufgaben laufen jetzt Packungs-/Mengenberechnung (Chat B) und lokaler Backup-/Import-/Restore-Pfad mit synthetischen Testdaten (Chat A); keine Supabase-, Auth-, Nutzerdaten- oder Angebotsdatenänderung.
 - Nächster Produktschritt nach diesem Kandidatenvergleich: den Wochenumfang auf Frühstück, Brotzeit, Snacks und Getränke erweitern. Der vollständige Kassenbetrag bleibt offen, bis reguläre Preise, belastbare Mengen/Vorräte und bestätigte Ausgaben getrennt vorliegen; Mehrstopp-Empfehlungen warten auf einen Startwert für die Nettoersparnis-Schwelle und eine bestätigte Fahrtkostenbasis.
+### Fortschritt 07.11.2026 – Daten- und Offline-Stabilisierung
+
+- Snapshot-Duplikate und die Erkennung von Grundpreis-OCR wurden geprüft bzw. abgesichert, damit doppelte Angebotsdaten nicht unkontrolliert übernommen und Grundpreise nicht als Paketpreise gerechnet werden.
+- Singular-/Plural-Zutaten sowie manuelle Varianten und stabile IDs wurden geprüft bzw. abgesichert, damit Zutatenabgleich und lokale Zuordnungen bei zulässigen Schreibvarianten erhalten bleiben.
+- Die Reconciliation von `shoppingChecks` wurde geprüft bzw. abgesichert; veraltete oder nicht mehr zur aktuellen Einkaufsliste gehörende Markierungen werden nicht als gültige Erledigungen weitergeführt.
+- Die Service-Worker-Aktivierung wurde geprüft bzw. abgesichert, damit eine neue Version nach der Aktivierung kontrolliert übernimmt.
+- Kombinierte Legacy-Backup-Tests wurden geprüft bzw. abgesichert; ältere Sicherungsstände mit ausgelassenen Feldern verändern erhaltene lokale Daten nicht unkontrolliert.
+- Supabase, Datenmodell und Budgetlogik bleiben unverändert. Der nächste fachliche Freigabepunkt bleibt ein globaler optionaler Frühstücks-Slot.
