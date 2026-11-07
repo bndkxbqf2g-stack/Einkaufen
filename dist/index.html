@@ -740,7 +740,9 @@
     }
 
     function sortedSelectedMarkets() {
-      return (Array.isArray(settings.selectedMarkets) ? settings.selectedMarkets.filter(name => marketDetails[name]) : ['Aldi', 'Kaufland', 'Lidl', 'EDEKA']).sort((first, second) => parseFloat(marketDetails[first].distance.replace(',', '.')) - parseFloat(marketDetails[second].distance.replace(',', '.')));
+      const configured = Array.isArray(settings.selectedMarkets) ? settings.selectedMarkets.filter(name => marketDetails[name]) : [];
+      const selected = configured.length ? configured : ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'];
+      return selected.sort((first, second) => parseFloat(marketDetails[first].distance.replace(',', '.')) - parseFloat(marketDetails[second].distance.replace(',', '.')));
     }
 
     const $ = (selector) => document.querySelector(selector);
@@ -1829,9 +1831,11 @@
 
     function getActiveOffers() {
       const selected = sortedSelectedMarkets();
-      const activeMarkets = selected.slice(0, Number(settings.markets || 2));
+      const requestedLimit = Number(settings.markets);
+      const marketLimit = Number.isInteger(requestedLimit) && requestedLimit > 0 ? requestedLimit : 2;
+      const activeMarkets = selected.slice(0, marketLimit);
       const current = offers.filter(isOfferCurrent);
-      return activeMarkets.length ? current.filter(offer => activeMarkets.includes(offer.store)) : current;
+      return current.filter(offer => activeMarkets.includes(offer.store));
     }
 
     function offerMatchesIngredient(ingredient, offer) {
