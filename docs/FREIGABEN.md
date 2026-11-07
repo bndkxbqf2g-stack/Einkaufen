@@ -506,3 +506,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - PR-Vorbereitung: Der Service-Worker-Test erkennt lokale `index.html`-Scriptquellen automatisch und verlangt ihre Aufnahme in `APP_SHELL`.
 - Die Absicherung ändert keine Laufzeit- oder Nutzerdaten, sondern verhindert Regressionen bei künftigen Offline-Erweiterungen; keine zusätzliche Freigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, stabile manuelle Einkaufsartikel
+
+- PR-Vorbereitung: Die Normalisierung manueller Einkaufsartikel repariert doppelte explizite IDs deterministisch und erhält alle Einträge.
+- Dadurch bleiben `shoppingChecks` und Entfernen-Aktionen pro Artikel eindeutig. Mengen, Preise, Plan-, Backup-, Sync-, Supabase- und Angebotsdaten werden nicht verändert; keine zusätzliche Freigabe erforderlich.
