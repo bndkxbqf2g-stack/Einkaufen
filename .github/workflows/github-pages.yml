@@ -17,6 +17,7 @@ on:
       - 'dist/icons/**'
       - 'index.html'
       - '.github/workflows/**'
+      - 'docs/**'
   pull_request:
     branches: [main]
     paths:
@@ -33,6 +34,7 @@ on:
       - 'dist/icons/**'
       - 'index.html'
       - '.github/workflows/**'
+      - 'docs/**'
   workflow_dispatch:
 
 permissions:
