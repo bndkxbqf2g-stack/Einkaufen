@@ -297,3 +297,10 @@ freigegeben oder entschieden wurden.
 - Der aktuelle CI-Lauf auf dem nachfolgenden `main@4bd8c8c2c26faa3821b0f3ca18d8f9a6e05e49cd` war grün: [Run #42375649128](https://github.com/bndkxbqf2g-stack/Einkaufen/actions/runs/42375649128).
 - Der Bytevergleich einer frisch erzeugten `dist/server/index.js` mit dem eingecheckten Artefakt zeigte einen nicht-funktionalen Drift, unter anderem `Abends optional` gegenüber `Abendessen optional`. Der Drift wird durch den CI-Schritt `Build worker bundle` erklärt, der das Worker-Artefakt vor Tests reproduzierbar neu erzeugt; es gibt keine Auswirkung auf PWA-, Offline- oder Restore-Daten.
 - Keine Produktcode-, Supabase-, Datenbank- oder Kassenänderung.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Angebots-/Preis-Audit und Initialisierung
+
+- Der read-only Angebots-/Preis-Audit bestätigt bei synthetischen Prüfwerten die centgenaue Berechnung bekannter positiver Angebotspreise. Die erforderliche Packungsanzahl wird deterministisch auf ganze Packungen aufgerundet; Personenmultiplikator, Vorratsabzug und Angebots-Zwischensumme bleiben getrennt nachvollziehbar.
+- Unbekannte, negative oder mehrdeutige Preise werden nicht als 0 € oder als erfundene Ersparnis verwendet. Sie bleiben aus der belastbaren Angebotssumme heraus und werden in der Darstellung nicht als scheinbar gültiger Preis weiterverarbeitet. Der Audit fand keinen reproduzierbaren Defekt.
+- [PR #101](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/101) behebt den Initialisierungsfehler, bei dem vor der ersten Planung noch keine aktuellen `generated/*-offers.json` geladen wurden. Auf GitHub Pages wird der aktuelle Snapshot nun vor der ersten Plan-/Kostendarstellung erzwungen geladen; `seedOffers` bleiben ausschließlich der klar abgegrenzte Offline-/Fallbackpfad.
+- PR #101 wurde separat mit grüner CI geprüft. Diese Dokumentation ist eine eigenständige docs-only Änderung und führt keine Code-, Supabase-, Datenbank-, Kassen- oder Angebotsdatenänderung ein.
