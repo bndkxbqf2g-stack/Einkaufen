@@ -37,8 +37,9 @@ test('does not use demo offers for active planning or market counts', () => {
   const activeFilter = 'offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer))';
   const marketFilter = 'isOfferCurrent(offer) && !isDemoOffer(offer) && offer.store === name';
 
-  assert.equal((html.match(new RegExp(activeFilter.replace(/[.*+?^$\\{}()|[\\]\\]/g, '\\$&'), 'g')) || []).length, 3);
-  assert.equal((html.match(new RegExp(marketFilter.replace(/[.*+?^$\\{}()|[\\]\\]/g, '\\$&'), 'g')) || []).length, 2);
+  const count = needle => html.split(needle).length - 1;
+  assert.equal(count(activeFilter), 3);
+  assert.equal(count(marketFilter), 2);
   assert.match(html, /Offline-Beispieldaten werden nicht für Planung oder Kosten verwendet/);
 });
 
