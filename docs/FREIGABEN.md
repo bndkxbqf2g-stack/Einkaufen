@@ -200,3 +200,9 @@ freigegeben oder entschieden wurden.
 - Read-only-Audit: `mealPurpose` erlaubt bereits `Hauptgericht`, `Frühstück`, `Brotzeit`, `Snack`, `Getränk` und `Flexibel`; die Planung nutzt weiterhin ein Hauptgericht pro Tag.
 - Eine approval-freie Erweiterung ist nicht vertretbar, weil zusätzliche Slots die Auswahl, Mengen, Kosten sowie Settings-/Backup-/Sync-Kompatibilität fachlich berühren.
 - Kleinster nächster Entscheidungsschritt ist Freigabepunkt 8: Soll je Planungstag ein globaler optionaler Frühstücks-Slot ergänzt werden? Dieser Eintrag ist keine Freigabe. Keine Produkt-, Daten- oder Supabase-Änderung.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Offline-Sync-Test
+
+- Der aktuelle Integrationsstand ist `main@f5fe78254ac14e504f3164b9751a1bc99e172e5e`.
+- PR [#72](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/72) ist gemergt; `automation/supabase-sync.test.mjs` seedet lokale Settings und Pantry und prüft deren Unverändertheit bei fehlgeschlagener Supabase-Initialisierung.
+- Der CI/Deploy-Run `42341229263` war erfolgreich. Keine Produktions-, Datenformat-, Schema- oder Produktänderung.
