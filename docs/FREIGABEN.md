@@ -114,3 +114,10 @@ freigegeben oder entschieden wurden.
 - PR #51 korrigiert die irreführende Supabase-Anmeldeaufforderung bei nicht erreichbarer Initialisierung. Die lokale Nutzung bleibt möglich, Einstellungen werden im Offline-Fehlerpfad nicht geöffnet; CI Run `42334865729` war vollständig grün und der PR wurde gemergt. Keine Datenbankmigration, Auth-URL- oder Supabase-Projektänderung.
 - Chat A hat im Angebotsnormalisierungs-Audit einen reproduzierbaren Kaufland-Grenzfall gefunden: Dezimal-Packungsgrößen wie `0,33-l-Dose` wurden beim Namenstrimming als Preis interpretiert und der Produktname zu früh abgeschnitten. Ein minimaler PR mit direktem Regressionstest steht noch aus; bis dahin keine Angebotsdaten ändern.
 - Die Kontingentsteuerung arbeitet mit den Regeln: bei 60 % Verbrauch im 5-Stunden-Fenster keine neuen Nebentasks, bei 80 % Verbrauch Projektarbeit pausieren; bei höchstens 10 % Wochenrest ebenfalls pausieren. Der zuletzt geprüfte Stand lag bei 3 % Verbrauch im 5-Stunden-Fenster und 30 % im Wochenfenster.
+
+## Koordinierter Arbeitsstand – 07.11.2026, Normalisierung
+
+- Aktueller Integrationsstand: `main@e7b0c88adec41dd04bf0acad5cda24b71d40522e`.
+- PR #53 korrigiert das Abschneiden dezimaler Packungsgrößen im Angebotsnamen, z. B. `0,33-l-Dose` bei Kaufland. Der konkrete Produktname bleibt erhalten; Preis und Packungsgröße werden weiterhin deterministisch geprüft. Die PR-CI (Run `42335185938`) war vollständig grün; gemergt in `e7b0c88adec41dd04bf0acad5cda24b71d40522e`.
+- Keine Datenbankmigration, keine Änderung am Supabase-Projekt, keine erfundenen Angebotsdaten und keine neue kostenpflichtige Ressource.
+- Chat A hat den begrenzten Audit abgeschlossen; Chat B bleibt nach PR #51 abgeschlossen. Neue Nebentasks werden erst nach erneuter Kontingentprüfung und nur unterhalb der vereinbarten Verbrauchsgrenzen gestartet.
