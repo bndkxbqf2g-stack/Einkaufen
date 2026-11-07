@@ -421,3 +421,9 @@ freigegeben oder entschieden wurden.
 - [PR #136](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/136) ergänzt in der geteilten offenen Einkaufsliste den bekannten Angebotsbetrag, die Anzahl unbekannter Preise und den Hinweis „Kassenbetrag offen“.
 - Fehlende Artikel und Vorräte werden im Share-Text ausdrücklich als nicht enthalten abgegrenzt; die bestehende centgenaue Berechnung und die lokalen Einkaufsdaten bleiben unverändert.
 - Root-/`dist`-Synchronität und Regressionstest sind durch grüne CI abgesichert. Keine Supabase-, Datenbank-, Angebotsdaten-, Deployment- oder kostenpflichtige Ressourcenänderung.
+
+## Mengensteuerung für manuelle Einkaufsartikel – 07.11.2026
+
+- [PR #138](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/138) ergänzt für manuelle Zusatzartikel eine optionale Packungszahl von 1 bis 99.
+- Alte lokale Einträge, ältere Backups und nicht vor-normalisierte Cloud-Payloads bleiben gültig und erhalten deterministisch die Standardmenge 1; die Menge wird in Einkaufsliste, Kosten-Zwischensumme und Teilen berücksichtigt.
+- Regressionstests und Root-/`dist`-Synchronität sind durch grüne CI (148/148 Tests) abgesichert. Keine Preis-Erfindung, Supabase-, Datenbank-, Migrations-, Nutzer- oder Deploymentänderung.
