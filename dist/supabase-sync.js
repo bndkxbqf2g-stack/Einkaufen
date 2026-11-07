@@ -9,6 +9,7 @@
   const LOCAL_DATA_HOUSEHOLD_KEY = 'angebotskueche.supabase.localHousehold';
   const REVISION_KEY_PREFIX = 'angebotskueche.supabase.revision.';
   const ARRAY_KEYS = ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems', 'recipeHistory'];
+  const OBJECT_KEYS = ['settings', 'shoppingChecks', 'liveOfferStatus', 'manualPlan', 'manualDinnerPlan', 'recipeRatings', 'suggestionPreferences'];
 
   let app = null;
   let client = null;
@@ -56,6 +57,11 @@
     if (!payload || typeof payload !== 'object' || Array.isArray(payload)) throw new Error('Ungültiger Angebotsküche-Datenstand.');
     for (const key of ARRAY_KEYS) {
       if (Array.isArray(payload[key]) && payload[key].length > 5000) throw new Error(`Das Array „${key}“ überschreitet das Supabase-Limit.`);
+    }
+    for (const key of OBJECT_KEYS) {
+      if (payload[key] !== undefined && (!payload[key] || typeof payload[key] !== 'object' || Array.isArray(payload[key]))) {
+        throw new Error(`Das Objekt „${key}“ ist ungültig.`);
+      }
     }
     const byteLength = new TextEncoder().encode(JSON.stringify(payload)).byteLength;
     if (byteLength > MAX_PAYLOAD_BYTES) throw new Error('Der Datenstand überschreitet das Supabase-Limit von 600.000 Bytes.');

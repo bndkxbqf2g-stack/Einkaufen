@@ -7,6 +7,8 @@ import { dirname, resolve } from 'node:path';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const source = await readFile(resolve(root, 'dist/supabase-sync.js'), 'utf8');
+const workerSource = await readFile(resolve(root, 'worker/index.js'), 'utf8');
+const workerPublished = await readFile(resolve(root, 'dist/server/index.js'), 'utf8');
 const html = await readFile(resolve(root, 'dist/index.html'), 'utf8');
 const context = {
   window: {},
@@ -16,6 +18,19 @@ const context = {
 };
 vm.runInNewContext(source, context, { filename: 'supabase-sync.js' });
 const sync = context.window.angebotskuecheSupabaseSync;
+
+function workerPayloadValidator() {
+  const start = workerSource.indexOf('function validSyncPayload(payload) {');
+  const end = workerSource.indexOf('\n\nasync function syncCloud', start);
+  assert.ok(start >= 0 && end > start, 'worker payload validator is present');
+  const workerContext = {};
+  vm.runInNewContext(
+    `${workerSource.slice(start, end)}\nglobalThis.validSyncPayload = validSyncPayload;`,
+    workerContext,
+    { filename: 'worker-payload-validator.js' },
+  );
+  return workerContext.validSyncPayload;
+}
 
 function createSyncHarness({ remoteState = null, confirm = true, initialStorage = {} } = {}) {
   const storage = new Map(Object.entries(initialStorage));
@@ -103,6 +118,20 @@ test('accepts the existing app payload, including recipe history', () => {
 test('enforces the database array item limit', () => {
   assert.throws(() => sync.validatePayload({ version: 1, pantry: Array(5001).fill('x') }), /pantry/);
   assert.throws(() => sync.validatePayload({ version: 1, recipeHistory: Array(5001).fill('x') }), /recipeHistory/);
+});
+
+test('treats manualDinnerPlan as an object at both sync payload boundaries', () => {
+  const payload = { version: 1, manualDinnerPlan: { '0': 'abendessen-a' } };
+  const validateWorkerPayload = workerPayloadValidator();
+  assert.doesNotThrow(() => sync.validatePayload(payload));
+  assert.match(workerPublished, /manualDinnerPlan/);
+  assert.equal(validateWorkerPayload(payload), true);
+  assert.throws(
+    () => sync.validatePayload({ ...payload, manualDinnerPlan: [] }),
+    /manualDinnerPlan/,
+  );
+  assert.equal(validateWorkerPayload({ ...payload, manualDinnerPlan: [] }), false);
+  assert.equal(validateWorkerPayload({ ...payload, manualDinnerPlan: null }), false);
 });
 
 test('measures UTF-8 bytes and rejects payloads over 600000 bytes', () => {
