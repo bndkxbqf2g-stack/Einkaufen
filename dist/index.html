@@ -1057,9 +1057,11 @@
       const planMeals = [...visible, ...dinnerMeals];
       const pricedMeals = planMeals.filter(meal => meal.costSource === 'offer-subtotal' && parseKnownMoney(meal.cost) !== null);
       const unknownMeals = planMeals.length - pricedMeals.length;
-      const knownOfferTotal = pricedMeals.reduce((sum, meal) => sum + (parseKnownMoney(meal.cost) || 0), 0) * multiplier;
-      $('#totalCost').textContent = unknownMeals ? '–' : formatEuro(knownOfferTotal);
-      $('#totalCostNote').textContent = unknownMeals ? `${unknownMeals} von ${planMeals.length} Gerichten ohne verifizierte Preisbasis · Kassenbetrag offen` : `Bekannter Angebotsbetrag ${formatEuro(knownOfferTotal)} · Packungsbasis · Kassenbetrag offen`;
+      const shoppingCostSummary = window.AngebotskuecheCostModel.summarizeShoppingCosts(getShoppingItems().filter(item => !item.manual), parseKnownMoney);
+      const knownOfferTotal = shoppingCostSummary.total;
+      const unknownCostItems = shoppingCostSummary.unknownItems.length + shoppingCostSummary.missingItems.length;
+      $('#totalCost').textContent = unknownCostItems ? '–' : formatEuro(knownOfferTotal);
+      $('#totalCostNote').textContent = unknownCostItems ? `${unknownCostItems} Einkaufspositionen ohne verifizierte Preisbasis · Kassenbetrag offen` : `Bekannter Angebotsbetrag ${formatEuro(knownOfferTotal)} · Packungsbasis · Kassenbetrag offen`;
       const variety = calculateVariety(visible);
       $('#varietyScore').textContent = `${variety.score} %`;
       $('#varietyNote').textContent = `${variety.profiles} Profile · ${variety.vegetarian} vegetarisch`;
