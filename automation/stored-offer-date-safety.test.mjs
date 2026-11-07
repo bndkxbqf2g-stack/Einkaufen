@@ -9,7 +9,7 @@ const helperStart = source.indexOf('function normalizeSeedOffer');
 const helperEnd = source.indexOf('let offers =', helperStart);
 const helpers = source.slice(helperStart, helperEnd);
 const context = { defaultOfferEnd: () => '31.12.2099' };
-vm.runInNewContext(`${helpers}\\nglobalThis.normalizeSeedOffer = normalizeSeedOffer; globalThis.normalizeStoredCustomOffer = normalizeStoredCustomOffer;`, context);
+vm.runInNewContext(`${helpers}\nglobalThis.normalizeSeedOffer = normalizeSeedOffer; globalThis.normalizeStoredCustomOffer = normalizeStoredCustomOffer;`, context);
 
 test('keeps the demo fallback date separate from stored custom offers', () => {
   const seed = context.normalizeSeedOffer({ name: 'Demo' });
