@@ -364,3 +364,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Die bestehende Restelogik wertet Mittagessen und vorhandene optionale Abendessen jetzt gemeinsam in Tagesreihenfolge aus. Dadurch werden gemeinsam verwendete Zutaten auch über die Grenze zwischen Mittagessen und Abendessen erkannt.
 - Die vorhandene Zutaten-Normalisierung bleibt maßgeblich; der Regressionstest deckt eine Singular-/Plural-Variante (Tomate/Tomaten) sowie die Synchronität von Root und dist ab.
 - Es gibt weiterhin keinen Frühstücks-Slot, keine neue Mengenarchitektur, keine Migration und keine Supabase-/Nutzerdatenänderung.
+
+
+### Fortschritt 07.11.2026 – ISO-Gültigkeitsdaten im Angebotsstatus
+
+- Die App wertet Snapshot-Gültigkeitsdaten jetzt in den beiden vom Snapshot-Vertrag erlaubten Formen `TT.MM.JJJJ` und `JJJJ-MM-TT` identisch aus. Unmögliche Kalenderdaten bleiben ungültig; unbekannte Daten werden nicht erfunden.

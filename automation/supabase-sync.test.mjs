@@ -250,6 +250,21 @@ test('reports card load goals without claiming the prospect is complete', () => 
   assert.match(html, /targetOfferCount: Number\(result\.payload\.targetOfferCount/);
 });
 
+test('keeps app validity parsing aligned with snapshot date formats', () => {
+  const declaration = html.match(/function offerEndDate\(value\) \{[\s\S]*?\n    \}/);
+  assert.ok(declaration, 'offer end date helper is present');
+  const offerEndDate = vm.runInNewContext(`(${declaration[0]})`);
+  const german = offerEndDate('12.11.2026');
+  const iso = offerEndDate('2026-11-12');
+  assert.equal(german.getFullYear(), 2026);
+  assert.equal(german.getMonth(), 10);
+  assert.equal(german.getDate(), 12);
+  assert.equal(iso.getFullYear(), 2026);
+  assert.equal(iso.getMonth(), 10);
+  assert.equal(iso.getDate(), 12);
+  assert.equal(offerEndDate('2026-02-30'), null);
+});
+
 test('does not treat a service-worker cache fallback as a fresh offer refresh', () => {
   assert.match(serviceWorker, /X-Angebotskueche-Cache-Fallback/);
   assert.match(html, /response\.headers\.get\('X-Angebotskueche-Cache-Fallback'\)/);
