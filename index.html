@@ -1737,6 +1737,8 @@
       const index = Number(dayIndex);
       const days = Number($('#daysSelect').value);
       if (!candidate || !mealPurposeAllowsSlot(candidate, 'dinner') || !Number.isInteger(index) || index < 0 || index >= days) return false;
+      const lunch = typeof getCurrentPlanMeals === 'function' ? getCurrentPlanMeals()[index] : null;
+      if (lunch?.recipeId === candidate.id) return false;
       manualDinnerPlan[String(index)] = candidate.id;
       localStorage.setItem('angebotskueche.manualDinnerPlan', JSON.stringify(manualDinnerPlan));
       return true;
@@ -1810,10 +1812,12 @@
     function getCurrentPlanDinners() {
       const days = Number($('#daysSelect').value);
       const candidates = getPlanCandidates();
+      const lunches = getCurrentPlanMeals();
       return Array.from({ length: days }, (_, index) => {
         const recipeId = String(manualDinnerPlan[String(index)] || '');
         const recipe = recipeId ? getPlanCandidateById(recipeId, candidates) : null;
-        if (!recipe || !mealPurposeAllowsSlot(recipe, 'dinner')) return null;
+        const lunch = lunches[index];
+        if (!recipe || !mealPurposeAllowsSlot(recipe, 'dinner') || lunch?.recipeId === recipe.id) return null;
         const date = getPlanDateInfo(index);
         const meal = suggestionAsMeal(recipe, index, 'dinner');
         return { ...meal, manual: true, day: date.day, date: date.short, tags: [...(meal.tags || []), 'Abendessen'] };
