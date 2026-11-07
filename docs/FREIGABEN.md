@@ -343,3 +343,10 @@ freigegeben oder entschieden wurden.
 - [PR #111](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/111) verhindert, dass vorgegebene Rezeptgründe oder alte Textbausteine als aktueller Angebotsbeleg erscheinen, wenn kein verifiziertes Angebot gematcht wurde.
 - Ein Plan-Eintrag erhält den Tag `Angebotsanker` nur bei mindestens einer tatsächlich gematchten Angebotszutat; sonst wird `Angebotsbezug offen` angezeigt. Preise und Angebotsquellen werden dadurch nicht ergänzt oder erfunden.
 - Regressionstests prüfen den Textvertrag und die Bytegleichheit von `index.html` und `dist/index.html`. Keine Nutzerdaten, Supabase-Daten, Migrationen, Deployments oder kostenpflichtigen Ressourcen wurden verändert.
+
+
+## Validierter Kostenfluss – Planansicht – 07.11.2026
+
+- [PR #113](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/113) entfernt statische Rezeptkosten als Fallback aus der Planansicht. Ohne ausreichende verifizierte Angebotsbasis erscheinen `–` und `Preis unbekannt` statt eines erfundenen Betrags.
+- Bekannte Angebots-Packungssummen werden als solche bezeichnet; der vollständige Kassenbetrag bleibt ausdrücklich offen. Bestehende Rezepte, lokale Daten und Einstellungen bleiben erhalten.
+- Die Regression-Suite prüft den unbekannten Kostenpfad und die Bytegleichheit von `index.html` und `dist/index.html`. Keine Nutzerdaten, Supabase-Daten, Migrationen, Deployments oder kostenpflichtigen Ressourcen wurden verändert.
