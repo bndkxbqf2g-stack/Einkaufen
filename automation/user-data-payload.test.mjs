@@ -53,6 +53,38 @@ function initializeManualShoppingItems(rawItems) {
 }
 
 
+
+const pantryNormalizationStart = source.indexOf('    if (!Array.isArray(pantry)) {');
+const pantryNormalizationEnd = source.indexOf('    if (!Array.isArray(dismissedRecipes))', pantryNormalizationStart);
+assert.ok(pantryNormalizationStart >= 0 && pantryNormalizationEnd > pantryNormalizationStart, 'pantry normalization is present');
+const pantryNormalization = source.slice(pantryNormalizationStart, pantryNormalizationEnd);
+
+const recipeHistoryNormalizationStart = source.indexOf('    const rawRecipeHistory = ');
+const recipeHistoryNormalizationEnd = source.indexOf('    if (!suggestionPreferences', recipeHistoryNormalizationStart);
+assert.ok(recipeHistoryNormalizationStart >= 0 && recipeHistoryNormalizationEnd > recipeHistoryNormalizationStart, 'recipe history normalization is present');
+const recipeHistoryNormalization = source.slice(recipeHistoryNormalizationStart, recipeHistoryNormalizationEnd);
+
+function normalizeLegacyPantryAndHistory(pantryValue, historyValue) {
+  const storage = new Map();
+  const sandbox = {
+    DEFAULT_PANTRY: ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch'],
+    pantry: pantryValue,
+    recipeHistory: historyValue,
+    localStorage: {
+      getItem(key) { return storage.has(key) ? storage.get(key) : null; },
+      setItem(key, value) { storage.set(key, String(value)); },
+    },
+  };
+  const result = vm.runInNewContext(
+    `${pantryNormalization}
+${recipeHistoryNormalization}
+({ pantry, recipeHistory, pantrySaved: localStorage.getItem('angebotskueche.pantry'), historySaved: localStorage.getItem('angebotskueche.recipeHistory') })`,
+    sandbox,
+    { filename: 'pantry-history-normalization.js' },
+  );
+  return result;
+}
+
 function createPayloadHarness(initialEntries = [], currentSettings = { markets: 3 }) {
   const storage = new Map(initialEntries);
   const sandbox = {
@@ -74,6 +106,29 @@ function createPayloadHarness(initialEntries = [], currentSettings = { markets: 
   return { applyUserDataPayload, storage };
 }
 
+
+
+test('persists safe pantry and recipe history normalization before backup', () => {
+  const legacyHistory = [
+    'rezept-0',
+    { legacy: true },
+    ...Array.from({ length: 21 }, (_, index) => `rezept-${index + 1}`),
+  ];
+  const first = normalizeLegacyPantryAndHistory({ old: 'format' }, legacyHistory);
+  const expectedHistory = ['rezept-0', ...Array.from({ length: 19 }, (_, index) => `rezept-${index + 1}`)];
+  const expectedPantry = ['Salz', 'Pfeffer', 'Gewürze', 'Öl', 'Essig', 'Brühe', 'Mehl', 'Zucker', 'Butter', 'Milch'];
+
+  assert.deepEqual(first.pantry, expectedPantry);
+  assert.deepEqual(first.recipeHistory, expectedHistory);
+  assert.equal(first.pantrySaved, JSON.stringify(expectedPantry));
+  assert.equal(first.historySaved, JSON.stringify(expectedHistory));
+
+  const reloaded = normalizeLegacyPantryAndHistory(JSON.parse(first.pantrySaved), JSON.parse(first.historySaved));
+  assert.equal(reloaded.pantrySaved, null, 'normalized pantry is not rewritten on reload');
+  assert.equal(reloaded.historySaved, null, 'normalized history is not rewritten on reload');
+  assert.deepEqual(reloaded.pantry, expectedPantry);
+  assert.deepEqual(reloaded.recipeHistory, expectedHistory);
+});
 
 test('keeps legacy manual shopping checks stable across reload and restore', () => {
   const first = initializeManualShoppingItems([{ name: 'Brot' }, { name: 'Brot' }, { name: 'Äpfel' }]);
