@@ -160,7 +160,8 @@ function stored(key, fallback) {
     `${storedSource}
 ${appSource.slice(appHelpersStart, appHelpersEnd)}
 globalThis.buildUserDataPayload = buildUserDataPayload;
-globalThis.applyUserDataPayload = applyUserDataPayload;`,
+globalThis.applyUserDataPayload = applyUserDataPayload;
+({ buildUserDataPayload, applyUserDataPayload })`,
     sandbox,
     { filename: 'settings-payload-roundtrip.js' },
   );
