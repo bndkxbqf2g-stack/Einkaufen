@@ -193,3 +193,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Dadurch bleibt der bekannte Angebotsbetrag ein klar abgegrenzter Zwischenwert; fehlende Artikel, Vorräte, Fahrtkosten und der echte Kassenbetrag werden nicht stillschweigend eingerechnet.
 - Nächster sicherer Schritt ist die weitere Verbindung von Plan-/Einkaufsbedarf und Vorratsmengen. Eine produktive IST-Erfassung oder Haushaltssynchronisierung bleibt bis zur fachlichen Freigabe von Punkt 9 ausgeschlossen.
 
+## Fortschritt 07.11.2026 – sichtbarer Vorratsabgleich
+
+- PR #149 ergänzt eine deterministische, rein informative Vorratsabdeckung für den aktuellen Plan. Die Einkaufsliste weist nun aus, wie viele geplante Zutaten aus dem vorhandenen Vorrat berücksichtigt werden.
+- Es werden keine Mengen, Haltbarkeiten oder Kassenpreise behauptet. Vorratszutaten bleiben aus dem Angebots-Zwischenwert ausgeschlossen; nicht verankerte Einkaufspositionen bleiben separat sichtbar.
+- Das bestehende Vorratsformat, lokale Daten, Backups, Haushaltssync und Supabase bleiben unverändert. Eine mengenfähige Vorratserfassung ist ein späteres, separat zu prüfendes Arbeitspaket.
+
