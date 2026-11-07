@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { parseAldiOffers } from './retailer-offers.mjs';
+import { parseAldiOffers, parseKauflandOffers } from './retailer-offers.mjs';
 
 test('filters availability metadata and parses only explicit offer dates', () => {
   const parsed = parseAldiOffers(`
@@ -27,4 +27,18 @@ test('keeps an explicitly advertised package size', () => {
   `);
 
   assert.equal(parsed.offers[0].packSize, '500 g');
+});
+
+
+test('preserves decimal package quantities in Kaufland offer names', () => {
+  const parsed = parseKauflandOffers(`
+    <p>Gültig vom 02.11. bis 07.11.</p>
+    <a>PEPSI Cola je 0,33-l-Dose(1 l = 2.10) / (1 l = 1.79)**-22%0.69 0.89</a>
+  `);
+
+  assert.deepEqual(parsed.offers.map(({ name, price, packSize }) => ({ name, price, packSize })), [{
+    name: 'PEPSI Cola je 0,33-l-Dose',
+    price: '0,69 €',
+    packSize: '0,33 l'
+  }]);
 });
