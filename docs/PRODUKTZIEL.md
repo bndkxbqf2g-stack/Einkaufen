@@ -253,3 +253,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - PR #166 nimmt die für den ersten App-Start benötigten Zutaten-, Kosten- und Planmodule in den Service-Worker-Shell-Cache auf.
 - Der Cache-Marker wurde auf v29 erhöht, damit bestehende Clients den vollständigen Shell-Bestand neu übernehmen.
 - Root und `dist` bleiben synchron; Service-Worker- und Worker-Validierung sind durch Tests abgesichert.
+
+## Fortschritt 07.11.2026 – konsistente Vorratseingabe
+
+- Die Vorratseingabe verwendet nun denselben Zutaten-Identitätsvertrag wie Einkaufsabgleich und Vorratsabdeckung.
+- Bereits gespeicherte Namen bleiben erhalten; neue Singular-/Pluralvarianten werden nicht zusätzlich als scheinbar neuer Vorrat gespeichert.
+- Leere oder nur aus Satzzeichen bestehende Eingaben werden nicht als Vorrat übernommen. Mengen, Haltbarkeiten und bestehende Nutzerdaten bleiben unberührt.

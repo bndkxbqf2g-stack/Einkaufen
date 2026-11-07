@@ -490,3 +490,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - PR [#166](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/166) precacht `ingredient-normalization.js`, `shopping-costs.js` und `meal-planning.js` gemeinsam mit der App-Shell.
 - Der Cache-Marker wurde von v28 auf v29 erhöht; Root und `dist` sind synchron. Der erste CI-Lauf erkannte korrekt den noch alten Worker-Versionsassert, der vor dem Merge auf v29 aktualisiert wurde.
 - CI, Root-Synchronisierung und GitHub-Pages-Deployment waren anschließend erfolgreich. Keine Nutzer-, Supabase-, Angebots- oder Datenbankänderung; keine zusätzliche Freigabe erforderlich.
+
+## Koordinierter Arbeitsstand – 07.11.2026, konsistente Vorratseingabe
+
+- PR-Vorbereitung: Die Vorratseingabe verwendet den gemeinsamen Zutaten-Identitätsvertrag; `Tomate` und `Tomaten` werden beim erneuten Hinzufügen als bereits vorhanden erkannt.
+- Der zuerst gespeicherte Anzeigename und alle bestehenden Vorratsdaten bleiben erhalten; nur neue Eingaben werden konservativ geprüft. Leere Identitäten werden verworfen.
+- Die Änderung betrifft keine Mengen-, Haltbarkeits-, Preis-, Plan-, Backup-, Sync-, Supabase- oder Angebotsdaten und benötigt keine zusätzliche Freigabe.
