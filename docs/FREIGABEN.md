@@ -356,3 +356,9 @@ freigegeben oder entschieden wurden.
 
 - [PR #116](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/116) neutralisiert den letzten statischen Plan-Fallback: Gerichtstitel und Zutaten bleiben als Offline-Hilfe erhalten, aber Markt, Kosten, Score und Angebotsanker werden ohne verifizierte Daten nicht behauptet.
 - Regressionstests prüfen die Sanitization und die Bytegleichheit von `index.html` und `dist/index.html`. Keine Nutzerdaten, Supabase-Daten, Migrationen, Deployments oder kostenpflichtigen Ressourcen wurden verändert.
+
+
+## Validierte Markttransparenz – 07.11.2026
+
+- [PR #118](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/118) bezeichnet den aktuellen Markt-Mix korrekt als Auswahl mit Stopplimit. Die Oberfläche behauptet keine Routenoptimierung oder Fahrtkostenberechnung, solange dafür keine bestätigte Kostenbasis und Nutzerentscheidung vorliegen.
+- Bestehende Markt- und Stoppeinstellungen bleiben unverändert; die Änderung betrifft ausschließlich die fachlich klare Beschriftung und Regressionstests.
