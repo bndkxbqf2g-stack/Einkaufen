@@ -1,5 +1,6 @@
 const DATE_PATTERN = /(?:gültig\s+(?:von|ab)\s+)?(\d{1,2})\.(\d{1,2})\.(\d{4})?\s*(?:bis|–|-)\s*(\d{1,2})\.(\d{1,2})\.(\d{4})?/i;
 const PRICE_PATTERN = /(?:nur\s+|ab\s+)?(\d{1,3}[.,]\d{2})\s*(?:€|EUR|\*)?/i;
+const UNIT_PRICE_PATTERN = /\(?\s*\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml)\s*=\s*\d{1,3}[.,]\d{2}\s*€?\s*\)?/gi;
 const NON_FOOD_PATTERN = /\b(wc|toilet|spül|wasch|shampoo|kosmetik|werkzeug|garten|bekleidung|schuh|auto|akku|drucker|spielzeug|matratze|bettwäsche|tierfutter|smartphone|fernseher|werkbank|normalpreis|preis)\b/i;
 const FOOD_HINT_PATTERN = /(apfel|banan|birn|beeren|obst|gemüse|kartoff|tomat|paprika|gurke|salat|zwiebel|knoblauch|karott|möhre|brokk|blumenkohl|spinat|fleisch|hack|rind|schwein|hähn|chicken|wurst|salami|schinken|speck|fisch|lachs|thun|joghurt|almighurt|milch|sahne|butter|käse|quark|eier?\b|brot|bröt|toast|mehl|reis|nudel|pasta|pizza|pommes|suppe|sauce|soße|fertiggericht|müsli|cerealien|cornflakes|schokolade|hanuta|kakao|keks|chips|snack|erdnuss|nuss|konfitüre|marmelade|kaffee|tee|saft|wasser|limonade|cola|bier|wein)/i;
 const HEADER_PATTERN = /^(?:lidl|angebote|aktionsprospekt|prospekt|filiale|image|gültig|seite|zurück|weiter|alle angebote|wähle|wochenangebote)\b/i;
@@ -30,14 +31,18 @@ function likelyFood(name) {
   return name.length >= 4 && /[A-Za-zÄÖÜäöüß]{4}/.test(name) && FOOD_HINT_PATTERN.test(name) && !NON_FOOD_PATTERN.test(name) && !HEADER_PATTERN.test(name);
 }
 
+function stripUnitPrices(value) {
+  return String(value || '').replace(UNIT_PRICE_PATTERN, ' ').replace(/\s+/g, ' ').trim();
+}
+
 function packSize(text) {
-  const match = String(text || '').match(/\b\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml|St\.?|Stück)\b/i);
+  const match = stripUnitPrices(text).match(/\b\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml|St\.?|Stück)\b/i);
   return match ? match[0].replace(/\s+/g, ' ').trim() : '1 Packung';
 }
 
 export function parseLidlOfferText(input, options = {}) {
   const raw = String(input || '').replace(/\u00a0/g, ' ');
-  const lines = raw.split(/\r?\n/).map(line => line.replace(/\s+/g, ' ').trim()).filter(Boolean);
+  const lines = raw.split(/\r?\n/).map(stripUnitPrices).filter(Boolean);
   const validUntil = options.validUntil || extractValidUntil(raw);
   const results = [];
   const seen = new Set();
