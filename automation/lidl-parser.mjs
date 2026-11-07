@@ -10,10 +10,15 @@ function formatDate(day, month, year) {
   return `${String(day).padStart(2, '0')}.${String(month).padStart(2, '0')}.${year}`;
 }
 
-export function extractValidUntil(text) {
+export function extractValidUntil(text, now = new Date()) {
   const match = String(text || '').match(DATE_PATTERN);
   if (!match) return null;
-  const year = Number(match[6] || match[3] || new Date().getUTCFullYear());
+  const referenceDate = now instanceof Date ? now : new Date(now);
+  const currentYear = Number.isNaN(referenceDate.getTime())
+    ? new Date().getUTCFullYear()
+    : referenceDate.getUTCFullYear();
+  let year = Number(match[6] || match[3] || currentYear);
+  if (!match[6] && Number(match[5]) < Number(match[2])) year += 1;
   return formatDate(Number(match[4]), Number(match[5]), year);
 }
 

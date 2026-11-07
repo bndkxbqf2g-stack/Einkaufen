@@ -3,6 +3,8 @@ import { extractValidUntil, parseLidlOfferText } from './lidl-parser.mjs';
 
 const sample = `Aktionsprospekt Lidl\nGültig von 02.11.2026 bis 07.11.2026\nPfanni Speisekartoffeln\n2,5 kg\n-24%\n2,49 €\nMüller Joghurt mit der Ecke\n150 g\n0,33 €\nWC-Reiniger\n750 ml\n1,49 €`;
 assert.equal(extractValidUntil(sample), '07.11.2026');
+assert.equal(extractValidUntil('Gültig von 28.12.2026 bis 03.01.'), '03.01.2027');
+assert.equal(extractValidUntil('Gültig von 28.12. bis 03.01.', new Date('2026-12-28T12:00:00.000Z')), '03.01.2027');
 assert.equal(extractValidUntil('Lidl Wochenangebote ohne Datumsangabe'), null);
 const offers = parseLidlOfferText(sample);
 assert.equal(offers.length, 2);
