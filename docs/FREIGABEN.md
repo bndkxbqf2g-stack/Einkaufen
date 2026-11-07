@@ -590,3 +590,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - [PR #192](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/192) markiert einen aus dem Service-Worker-Cache gelieferten Angebots-Snapshot ausdrücklich als Offline-Fallback. Die App behandelt ihn nicht als frischen Abruf, behält den bisherigen Angebotsstand und zeigt den Offline-/Fehlerpfad.
 - Regressionstest, Root-/dist-Synchronität und PR-CI waren grün; PR #192 ist gemerged. Keine neuen Angebotsdaten, keine Supabase-/Datenbankänderung und keine neuen Kosten.
+
+
+## Koordinierter Arbeitsstand – 07.11.2026, PWA-Shell und Abendessen-Restelogik
+
+- [PR #195](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/195) verhindert, dass ein APP_BUILD-Wechsel den aktiven Offline-Shell-Cache vor erfolgreicher Service-Worker-Aktivierung löscht. CI war grün; keine Nutzer-, Supabase- oder Angebotsdatenänderung.
+- [PR #196](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/196) wertet optionale Abendessen gemeinsam mit Mittagessen in der bestehenden Restelogik aus. Der vollständige Validate-Lauf war nach Anpassung der bestehenden Regressionstests grün; Root/dist bleiben synchron. Kein Frühstücks-Slot, keine neue Mengenarchitektur, keine Migration und keine Supabase-/Nutzerdatenänderung.
