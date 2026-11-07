@@ -1755,7 +1755,7 @@
       const match = scoreRecipe(recipe);
       const store = match.store || recipe.store || 'mehrere Märkte';
       const pinned = pinnedRecipes.includes(recipe.id);
-      return { ...template, kind: slot === 'dinner' ? 'dinner' : template.kind, slot, recipeId: recipe.id, title: recipe.title, emoji: recipe.emoji, store: store.split(' + ')[0], cost: estimateMealCost(recipe, template.cost), score: match.score, tags: [...(recipe.tags || []), ...(recipe.favorite ? ['Lieblingsrezept'] : []), pinned ? 'vorgemerkt' : 'Angebotsanker'], note: match.reason || 'Passender Angebotsanker gefunden', main: normalizeIngredient(recipe.ingredients?.[0] || recipe.title), profile: recipe.favorite ? 'Lieblingsrezept' : template.profile || 'Angebotsrezept', mealPurpose: recipeMealPurpose(recipe), vegetarian: recipe.vegetarian, ingredients: recipe.ingredients };
+      return { ...template, kind: slot === 'dinner' ? 'dinner' : template.kind, slot, recipeId: recipe.id, title: recipe.title, emoji: recipe.emoji, store: store.split(' + ')[0], cost: estimateMealCost(recipe, template.cost), score: match.score, tags: [...(recipe.tags || []), ...(recipe.favorite ? ['Lieblingsrezept'] : []), ...(pinned ? ['vorgemerkt'] : []), match.matchedIngredients.length ? 'Angebotsanker' : 'Angebotsbezug offen'], note: match.reason || 'Angebotsbezug noch nicht verifiziert', main: normalizeIngredient(recipe.ingredients?.[0] || recipe.title), profile: recipe.favorite ? 'Lieblingsrezept' : template.profile || 'Angebotsrezept', mealPurpose: recipeMealPurpose(recipe), vegetarian: recipe.vegetarian, ingredients: recipe.ingredients };
     }
 
     function getCurrentPlanMeals() {
@@ -2073,7 +2073,7 @@
       const offerBonus = matchedIngredients.length >= 2 ? 20 : matchedIngredients.length ? 8 : 0;
       const ratingBonus = recipeQualityBonus(recipe);
       const score = Math.max(0, Math.min(99, Math.round(25 + scoreBase + offerBonus + ratingBonus)));
-      const reason = matchedNames.length ? `${matchedNames.join(' + ')} im Angebot` : (recipe.reason || 'Noch kein direkter Angebotsanker');
+      const reason = matchedNames.length ? `${matchedNames.join(' + ')} im Angebot` : 'Noch kein direkter Angebotsanker';
       return { score, reason, store: stores.length ? stores.join(' + ') : recipe.store, stores, matchedIngredients, matchedOffers, requiredIngredients, estimatedCost: estimateMatchCost(matchedOffers, recipe) };
     }
 
