@@ -265,3 +265,10 @@ freigegeben oder entschieden wurden.
 - Der Nutzer hat klargestellt: kein Frühstücks-Slot; nur Mittagessen und bei Bedarf ein optionales Abendessen.
 - Diese Entscheidung ersetzt die frühere offene Frühstücksfrage in Freigabepunkt 8. Sie ist keine Freigabe für Supabase-, Datenbank-, Kosten- oder Deployment-Änderungen.
 - Für die technische Umsetzung wird als kleinster rückwärtskompatibler Umfang ein optionaler Abendessen-Slot je Planungstag angenommen. Bestehende Mittagessen-/manualPlan-Daten bleiben unverändert; alte Backups und Sync-Payloads ohne Abendessen bleiben gültig.
+
+## Nutzerentscheidung – Mittagessen und optionales Abendessen – 07.11.2026
+
+- Es gibt keinen Frühstücks-Slot. Der bestehende Hauptgericht-Slot bleibt das Mittagessen.
+- Pro Planungstag kann optional höchstens ein separates Abendessen hinterlegt werden; die neue Struktur `manualDinnerPlan` startet leer und verändert `manualPlan` nicht.
+- `mealPurpose` wird für die automatische Slot-Auswahl explizit behandelt: `Hauptgericht` gehört zum Mittagessen, `Brotzeit` zum Abendessen, `Flexibel` ist für beide Slots zugelassen. `Frühstück`, `Snack` und `Getränk` werden in diesem Plan nicht automatisch eingeordnet; bestehende manuelle `manualPlan`-Zuordnungen bleiben unverändert.
+- Alte Backups/Cloud-Payloads ohne `manualDinnerPlan` bleiben gültig. Es gibt keine Supabase-Schemaänderung, Migration, automatische Umklassifizierung oder Frühstücksänderung.
