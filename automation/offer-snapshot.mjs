@@ -98,6 +98,7 @@ export function validateOfferSnapshot(snapshot, { now = new Date() } = {}) {
     throw new Error('Angebotssnapshot: recognizedCount stimmt nicht mit offers.length überein.');
   }
 
+  const seenOfferKeys = new Map();
   snapshot.offers.forEach((offer, index) => {
     if (!offer || typeof offer !== 'object' || Array.isArray(offer)) {
       throw new Error(`Angebotssnapshot: Angebot ${index + 1} ist ungültig.`);
@@ -122,6 +123,14 @@ export function validateOfferSnapshot(snapshot, { now = new Date() } = {}) {
     if (!currencyPricePattern.test(offer.price.trim())) {
       throw new Error(`Angebotssnapshot: Preis von Angebot ${index + 1} ist kein eindeutiger Eurobetrag.`);
     }
+    const offerKey = [offer.name, offer.price, offer.packSize || '', offer.validUntil]
+      .map(value => String(value).trim().replace(/\s+/g, ' ').toLowerCase())
+      .join('|');
+    const previousIndex = seenOfferKeys.get(offerKey);
+    if (previousIndex !== undefined) {
+      throw new Error(`Angebotssnapshot: Angebot ${index + 1} dupliziert Angebot ${previousIndex + 1}.`);
+    }
+    seenOfferKeys.set(offerKey, index);
   });
 
   return snapshot;
