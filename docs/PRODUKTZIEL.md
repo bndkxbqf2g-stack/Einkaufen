@@ -241,3 +241,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - PR #162 zählt eine geplante Vorratszutat pro stabiler Zutatenidentität nur einmal, auch wenn sie in mehreren Gerichten oder in zulässigen Singular-/Pluralvarianten vorkommt.
 - Der zuerst sichtbare Zutatenname bleibt erhalten; Varianten werden nicht in Mengen, Preise oder Verbrauchsannahmen umgedeutet.
 - Root und `dist` bleiben synchron; die Regressionstests und CI waren nach Korrektur des Regex-Escapings grün.
+
+## Fortschritt 07.11.2026 – gemeinsame Zutaten-Normalisierung
+
+- PR #164 führt die Zutaten-Normalisierung in einem gemeinsam geladenen Modul für App, Vorratsabgleich und Kostenmodell zusammen.
+- Singular-/Plural- und beschreibende Varianten verwenden damit denselben Identitätsvertrag; isolierte Legacy-/Offline-Fallbacks bleiben erhalten.
+- Root und `dist` bleiben synchron; Verhalten, Modul-Synchronität und die bestehende Einkaufslistenlogik sind durch Tests abgesichert.
