@@ -764,3 +764,10 @@ Für diese kleine Stabilitätskorrektur ist keine zusätzliche fachliche Freigab
 - `automation/workflow-security.test.mjs` prüft textuell die Sicherheitsgrenzen der Workflows: Pages-Validierung mit `contents: read`, produktiver Pages-Deploy nur außerhalb von `pull_request` mit explizitem `pages: write`/`id-token: write`, sowie keine Pull-Request-Trigger für Angebots- und Root-Sync-Workflows.
 - Der Test prüft außerdem, dass die erwarteten `contents: write`-Rechte der mutierenden Angebots-/Root-Sync-Jobs explizit im jeweiligen Workflow stehen. Er verändert keine Workflowdatei und installiert keine Abhängigkeit.
 - Fokustest, Vollsuite und Worker-Validator liefen nach der Ergänzung grün (1/1, 234/234 und erfolgreich). Keine Produktionslogik, kein Root-/`dist`-Artefakt, keine Angebots-/Nutzerdaten-, Supabase-, Secret- oder Deploymentänderung. Der Testbefund ist keine Freigabe für eine spätere Härtung der Lieferkette oder Schreibrechte.
+
+## Fortschritt 08.11.2026 – additive Kosten-/Kassenmodell-Grundlage
+
+- Das reine Budgetmodul akzeptiert optional vollständige geplante Ausgaben, bestätigte Kassenbeträge und getrennte Fahrtkosten und berechnet daraus Cent-genau Planrest, Budgetrest sowie die bestätigte Summe inklusive Fahrtkosten. Der bekannte Angebotsbetrag bleibt davon getrennt und bleibt bei offenen Positionen ein Teilbetrag.
+- Die bestehende Packungslogik weist angenäherte Packungszahlen für bekannte Preise, unbekannte Preise, alle Angebotspositionen und fehlende Artikel aus. Unbekannte Preise, ungültige Centwerte und fehlende Kassenwerte bleiben `null`.
+- 40.000 Cent bleiben das Standardziel; 44.000 Cent erfordern eine explizite alternative Zielbestätigung. Die UI erhält keine automatische Kassenbuchung, keinen neuen LocalStorage-Schlüssel und keinen Supabase-/D1-Payload-Pfad.
+- Fokustests für Budget- und Kostenmodell, Vollsuite und Worker-Validator liefen grün. Der sichere Modul-/Testblock ist keine Freigabe für echte IST-Erfassung, Beleg/OCR, Fahrtkostenbasis, Backup-/Sync-Aufnahme oder Haushalts-Historie; dafür bleibt Freigabepunkt 9 maßgeblich.
