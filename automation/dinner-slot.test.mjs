@@ -173,11 +173,18 @@ test('uses lunch-only candidates when restoring manual plan assignments', () => 
 });
 
 
-test('offers day assignment actions only for lunch-capable suggestions', () => {
-  const suggestionMatch = source.match(/function renderSuggestions\(\) \{[\s\S]*?\n    \}/);
+test('renders slot actions only for lunch-capable suggestions with real recipe ids', () => {
+  const suggestionMatch = source.match(/function renderSuggestions\\(\\) \\{[\\s\\S]*?\\n    \\}/);
   assert.ok(suggestionMatch, 'renderSuggestions must be present in index.html');
-  assert.match(suggestionMatch[0], /const slotActions = mealPurposeAllowsSlot\(recipe, 'lunch'\)/);
-  assert.match(suggestionMatch[0], /\$\{slotActions\}/);
-  assert.match(suggestionMatch[0], /data-today-recipe/);
-  assert.match(suggestionMatch[0], /data-assign-recipe/);
+  const expressionMatch = suggestionMatch[0].match(/const slotActions = (.+);/);
+  assert.ok(expressionMatch, 'slot action expression must be present');
+  const renderSlotActions = vm.runInNewContext(`(recipe, pinned, escapeHtml, mealPurposeAllowsSlot) => ${expressionMatch[1]}`);
+  const allowsLunch = recipe => ['Hauptgericht', 'Flexibel'].includes(recipe.mealPurpose);
+  const escapeHtml = value => String(value ?? '');
+  const lunchHtml = renderSlotActions({ id: 'main-1', mealPurpose: 'Hauptgericht' }, false, escapeHtml, allowsLunch);
+  const breakfastHtml = renderSlotActions({ id: 'breakfast-1', mealPurpose: 'Frühstück' }, false, escapeHtml, allowsLunch);
+  assert.match(lunchHtml, /data-today-recipe="main-1"/);
+  assert.match(lunchHtml, /data-assign-recipe="main-1"/);
+  assert.match(lunchHtml, /data-plan-recipe="main-1"/);
+  assert.doesNotMatch(breakfastHtml, /data-(today|assign|plan)-recipe/);
 });
