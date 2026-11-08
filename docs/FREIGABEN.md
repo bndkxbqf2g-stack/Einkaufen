@@ -775,3 +775,9 @@ Für diese kleine Stabilitätskorrektur ist keine zusätzliche fachliche Freigab
 ## Freigabepunkt 08.11.2026 – Integration mengenbewusster Vorratsdeckung
 
 Der reine, lokale Mengenabgleich ist umgesetzt und benötigt keine neue fachliche Freigabe: Er verändert keine Nutzerdatenverträge und zieht bei unbekannten oder inkompatiblen Mengen nichts ab. Eine tatsächliche Einbindung in Einkaufsliste, Packungsanzahl und Kostenmodell bleibt als eigener Freigabepunkt offen. Dafür müssen Restbedarf, Packungsrundung, manuelle Artikel, Vorratsverbrauch sowie die Auswirkungen auf Anzeige, Backup und Haushaltssync gemeinsam festgelegt und regressionsgetestet werden. Bis dahin bleibt die bestehende String-Vorratsliste rückwärtskompatibel und die neue Menge nur im lokalen Zusatzschlüssel.
+
+## Freigabepunkt 08.11.2026 – benannte Tages-Teilnehmer und Kinderanzahl
+
+Die sichere lokale Modellgrundlage ist umgesetzt: `martin`, `steffi` und die generische Gruppe `children` werden stabil normalisiert; unbekannte oder doppelte IDs werden verworfen. Die Personenzahl wird nur mit einer expliziten Kinderanzahl abgeleitet, sonst greift der bisherige numerische Tageswert.
+
+Offen und nicht Bestandteil dieses PRs bleiben eine produktive UI-Auswahl pro Tag, die Quelle und Pflege der Kinderanzahl sowie deren Aufnahme in lokale Settings, Backup, Worker-/Supabase-Payload und Haushaltssync. Bis zu einer ausdrücklichen fachlichen Entscheidung bleibt die vorhandene Auswahl `2/3/4) Personen je Tag maßgeblich. Es wurden keine neuen Cloud-Felder, Mitgliedschaften, Auth-Regeln oder Daten geändert.
