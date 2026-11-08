@@ -871,3 +871,9 @@ Die sicheren Grundlagen für Kosten-/Budgettransparenz, lokale Vorratsmengen, Te
 ### Empfohlene Reihenfolge und nächster Schritt
 
 Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvollste nächste Implementierungsschritt, weil sie den Einkaufsprozess direkt verbessert und auf dem vorhandenen Mengenmodell aufbauen kann. Dafür müssen zuerst Einheiten, Teilmengen und Verbrauch verbindlich festgelegt werden. Diese Arbeitsliste selbst ändert keine Verträge und ist keine Freigabe.
+
+## Fortschritt 08.11.2026 – vorbereitender Adapter für mengenbewusste Vorratsdeckung
+
+- Der neue reine Adapter gruppiert explizite Bedarfspositionen über die bestehende Zutatenidentität und nutzt `pantry-quantity.js` für vollständige, teilweise, unbekannte und inkompatible Abdeckung. Mehrere Einträge derselben Identität werden vor der Abdeckung addiert.
+- Manuelle Artikel und Positionen ohne explizite Mengenbasis bleiben im Legacy-Status; Vorratsdaten werden weder verbraucht noch mutiert. Es wurden keine neuen LocalStorage-, Backup-, Worker-, Supabase-, SQL-, Auth- oder Sync-Felder eingeführt.
+- Fokustests (5/5), Vollsuite (256/256) und Worker-Validator liefen grün. Die produktive Einbindung in `getShoppingItems`, Packungsbedarf und Kosten bleibt ausdrücklich Freigabepunkt 1.
