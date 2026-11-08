@@ -61,6 +61,66 @@ test('verwirft beschädigte oder unbekannte Zusätze und erfindet keine Teilmeng
   assert.equal(quantityModel.getQuantity(normalized, 'Milch').amount, 1000);
 });
 
+test('gleicht Bedarf und Vorratsmenge nur innerhalb derselben Mengenfamilie ab', () => {
+  assert.deepEqual(plain(quantityModel.reconcilePantryQuantity(
+    { amount: 500, unit: 'g' },
+    { amount: 1, unit: 'kg' },
+  )), {
+    demand: 500,
+    coveredAmount: 500,
+    remainingDemand: 0,
+    family: 'mass',
+    unit: 'g',
+    status: 'covered',
+  });
+  assert.deepEqual(plain(quantityModel.reconcilePantryQuantity(
+    { amount: 1.5, unit: 'l' },
+    { amount: 500, unit: 'ml' },
+  )), {
+    demand: 1500,
+    coveredAmount: 500,
+    remainingDemand: 1000,
+    family: 'volume',
+    unit: 'ml',
+    status: 'partially-covered',
+  });
+  assert.deepEqual(plain(quantityModel.reconcilePantryQuantity(
+    { amount: 3, unit: 'Stück' },
+    { amount: 2, unit: 'piece' },
+  )), {
+    demand: 3,
+    coveredAmount: 2,
+    remainingDemand: 1,
+    family: 'count',
+    unit: 'piece',
+    status: 'partially-covered',
+  });
+});
+
+test('lässt unbekannte, beschädigte, inkompatible und alte String-Vorräte unangetastet', () => {
+  const pantry = ['Milch', 'Salz'];
+  assert.deepEqual(plain(quantityModel.reconcilePantryQuantity({ amount: 500, unit: 'g' }, null)), {
+    demand: 500,
+    coveredAmount: null,
+    remainingDemand: null,
+    family: 'mass',
+    unit: 'g',
+    status: 'unknown',
+  });
+  assert.deepEqual(plain(quantityModel.reconcilePantryQuantity({ amount: 500, unit: 'g' }, { amount: -1, unit: 'kg' })).status, 'unknown');
+  assert.deepEqual(plain(quantityModel.reconcilePantryQuantity({ amount: 500, unit: 'g' }, { amount: 1, unit: 'l' })), {
+    demand: 500,
+    coveredAmount: null,
+    remainingDemand: null,
+    family: 'mass',
+    unit: 'g',
+    pantryAmount: 1000,
+    status: 'incompatible',
+  });
+  assert.deepEqual(pantry, ['Milch', 'Salz']);
+  assert.deepEqual(plain(quantityModel.reconcilePantryQuantity({ amount: 500, unit: 'g' }, pantry[0])).status, 'unknown');
+});
+
 test('hält Backups und Cloud-Payloads absichtlich auf der alten String-Grenze', () => {
   assert.match(rootHtml, /const backupArrayKeys = \['pantry'/);
   assert.doesNotMatch(rootHtml.match(/function buildUserDataPayload\(\) \{[\s\S]*?\n    \}/)?.[0] || '', /pantryQuantities/);

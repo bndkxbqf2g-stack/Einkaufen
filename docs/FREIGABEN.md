@@ -771,3 +771,7 @@ Für diese kleine Stabilitätskorrektur ist keine zusätzliche fachliche Freigab
 - Die bestehende Packungslogik weist angenäherte Packungszahlen für bekannte Preise, unbekannte Preise, alle Angebotspositionen und fehlende Artikel aus. Unbekannte Preise, ungültige Centwerte und fehlende Kassenwerte bleiben `null`.
 - 40.000 Cent bleiben das Standardziel; 44.000 Cent erfordern eine explizite alternative Zielbestätigung. Die UI erhält keine automatische Kassenbuchung, keinen neuen LocalStorage-Schlüssel und keinen Supabase-/D1-Payload-Pfad.
 - Fokustests für Budget- und Kostenmodell, Vollsuite und Worker-Validator liefen grün. Der sichere Modul-/Testblock ist keine Freigabe für echte IST-Erfassung, Beleg/OCR, Fahrtkostenbasis, Backup-/Sync-Aufnahme oder Haushalts-Historie; dafür bleibt Freigabepunkt 9 maßgeblich.
+
+## Freigabepunkt 08.11.2026 – Integration mengenbewusster Vorratsdeckung
+
+Der reine, lokale Mengenabgleich ist umgesetzt und benötigt keine neue fachliche Freigabe: Er verändert keine Nutzerdatenverträge und zieht bei unbekannten oder inkompatiblen Mengen nichts ab. Eine tatsächliche Einbindung in Einkaufsliste, Packungsanzahl und Kostenmodell bleibt als eigener Freigabepunkt offen. Dafür müssen Restbedarf, Packungsrundung, manuelle Artikel, Vorratsverbrauch sowie die Auswirkungen auf Anzeige, Backup und Haushaltssync gemeinsam festgelegt und regressionsgetestet werden. Bis dahin bleibt die bestehende String-Vorratsliste rückwärtskompatibel und die neue Menge nur im lokalen Zusatzschlüssel.
