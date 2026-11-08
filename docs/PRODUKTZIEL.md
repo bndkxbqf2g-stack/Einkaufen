@@ -455,3 +455,11 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Der fehlgeschlagene Lidl-Workflow `42474845673` wurde read-only anhand seines Logs und des vorhandenen Snapshots geprüft. Der Lauf veröffentlichte keine Datei; die Pipeline brach konservativ ab, weil die Parserklassifikation keine verwertbaren Lebensmittelangebote erkannte.
 - Der Parser hatte eine zu enge Lebensmittel-Hinweisliste. Gegen die 211 bereits eingecheckten, quellenbelegten Lidl-Angebote blieben 39 eindeutige Lebensmittelbezeichnungen unklassifiziert, darunter Orangen, Mandeln, Haferdrink, Garnelen, Schoko-Bons und Vanillin-Zucker. Die Hinweisliste wurde deshalb nur um beobachtete Lebensmittelkategorien und -bezeichnungen erweitert; Nichtlebensmittel- und Metadatenfilter bleiben aktiv.
 - Synthetische Regressionen sichern die neuen Begriffe und den bestehenden konservativen Filter. Es wurden keine Angebotsdateien aktualisiert, keine Preise erfunden und keine Supabase-, Nutzdaten-, Schema-, Cloud- oder Deploymentänderung vorgenommen.
+
+## Audit 08.11.2026 – ungültige Quellen-Payloads halten den letzten Marktstand
+
+Der Angebotsimport prüft nun auch im Frontend, ob ein nichtleerer Quellen-Payload zum erwarteten Markt gehört, eine sichere HTTPS-Quelle und einen gültigen UTC-Abrufzeitpunkt enthält, aktuell ist, explizite Angebotsdaten mit gültigen Europreisen liefert und bei widersprüchlichen Zählwerten abgelehnt wird. Ein abgelehnter oder als Offline-Fallback markierter Abruf zählt nicht als erfolgreicher Marktrefresh; die bisher gültigen automatischen Angebote bleiben erhalten.
+
+Die serverseitige Snapshot-Validierung, atomische Dateischreibung und Workflow-Commit-Guards bleiben unverändert aktiv. Damit überschreibt weder ein leerer Snapshot noch ein syntaktisch nichtleerer, aber fachlich ungültiger Payload den letzten gültigen Stand.
+
+Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten, unsicheren, falsch datierten, widersprüchlich gezählten und formal ungültigen Payloads geprüft. Es wurden keine Live-Angebote abgerufen und keine Nutzer-, Supabase-, Schema- oder Deploymentänderungen vorgenommen.
