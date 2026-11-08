@@ -509,3 +509,10 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Der Adapter reicht `demand`, `coveredAmount`, `remainingDemand` und `status` pro Gruppe/Position nachvollziehbar weiter. Fehlende oder inkompatible Mengen bleiben unbekannt bzw. inkompatibel; manuelle und mengenlose Legacy-Positionen bleiben `legacy`.
 - Es gibt keine Mutation von Vorräten, keine Änderung an `getShoppingItems`, Packungs-/Kostenberechnung, LocalStorage, Backup, Worker, Supabase oder Angeboten. Root und `dist` sind synchron.
 - Dies ist ausschließlich eine Vorbereitungsgrundlage. Die produktive Einkaufslistenintegration bleibt Freigabepunkt 1; insbesondere Verbrauch, Teilbestände, Einheiten/Rundung und Sync müssen vorher fachlich entschieden werden.
+
+## Fortschritt 08.11.2026 – vorbereitendes Offline-Outbox-Modell
+
+- Das neue reine Modul `offline-queue.js` validiert Operationen mit stabiler ID, `operation`, `kind`, `baseRevision` und JSON-sicherem, unverändertem Payload.
+- Es stellt FIFO-Enqueue mit Duplikat-ID-Schutz, `next`/Peek, Remove/Acknowledge und eine Revisionsklassifikation `ready`, `conflict`, `unknown` oder `invalid` bereit.
+- Es gibt keinen automatischen Merge, kein stilles Überschreiben und keine erfundenen Revisionen. Queue, UI, localStorage, Service Worker, Supabase-Client, Worker/D1 und Datenbank bleiben unverändert.
+- Dies ist ausschließlich eine Vorbereitungsgrundlage. Die produktive Offline-Queue, Wiederholung, Konflikt-UX und Datenhoheit bleiben Freigabepunkt 6.

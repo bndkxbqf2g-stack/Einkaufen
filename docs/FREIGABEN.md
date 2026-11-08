@@ -877,3 +877,9 @@ Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvolls
 - Der neue reine Adapter gruppiert explizite Bedarfspositionen über die bestehende Zutatenidentität und nutzt `pantry-quantity.js` für vollständige, teilweise, unbekannte und inkompatible Abdeckung. Mehrere Einträge derselben Identität werden vor der Abdeckung addiert.
 - Manuelle Artikel und Positionen ohne explizite Mengenbasis bleiben im Legacy-Status; Vorratsdaten werden weder verbraucht noch mutiert. Es wurden keine neuen LocalStorage-, Backup-, Worker-, Supabase-, SQL-, Auth- oder Sync-Felder eingeführt.
 - Fokustests (5/5), Vollsuite (256/256) und Worker-Validator liefen grün. Die produktive Einbindung in `getShoppingItems`, Packungsbedarf und Kosten bleibt ausdrücklich Freigabepunkt 1.
+
+## Fortschritt 08.11.2026 – vorbereitendes Offline-Outbox-Modell
+
+- Das reine Modell `offline-queue.js` validiert stabile Operationen, schützt FIFO-Queues vor doppelten IDs und klassifiziert Sync-Versuche gegen eine explizite Remote-Revision als `ready`, `conflict`, `unknown` oder `invalid`.
+- Payloads werden nicht fachlich verändert; es gibt keinen automatischen Merge, keine erfundene Revision und keine produktive Queue-/localStorage-/UI-/Supabase-/Worker-Integration.
+- Fokustests (6/6), Vollsuite (262/262) und Worker-Validator liefen grün. Die produktive Offline-Queue und Konflikt-UX bleiben ausdrücklich Freigabepunkt 6.
