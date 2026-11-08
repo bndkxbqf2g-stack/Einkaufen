@@ -781,3 +781,7 @@ Der reine, lokale Mengenabgleich ist umgesetzt und benötigt keine neue fachlich
 Die sichere lokale Modellgrundlage ist umgesetzt: `martin`, `steffi` und die generische Gruppe `children` werden stabil normalisiert; unbekannte oder doppelte IDs werden verworfen. Die Personenzahl wird nur mit einer expliziten Kinderanzahl abgeleitet, sonst greift der bisherige numerische Tageswert.
 
 Offen und nicht Bestandteil dieses PRs bleiben eine produktive UI-Auswahl pro Tag, die Quelle und Pflege der Kinderanzahl sowie deren Aufnahme in lokale Settings, Backup, Worker-/Supabase-Payload und Haushaltssync. Bis zu einer ausdrücklichen fachlichen Entscheidung bleibt die vorhandene Auswahl `2/3/4` Personen je Tag maßgeblich. Es wurden keine neuen Cloud-Felder, Mitgliedschaften, Auth-Regeln oder Daten geändert.
+
+## Freigabepunkt 08.11.2026 – tatsächliche Mehrstopp-/Fahrtkostenbasis
+
+Der reine Marktstopp-Rechenkern ist umgesetzt: Er empfiehlt nur bei explizit belegter Nettoersparnis oberhalb einer gelieferten Schwelle und verändert keine Markt- oder Nutzerdaten. Eine produktive Integration benötigt weiterhin eine ausdrückliche Entscheidung über Fahrtkostenquelle (z. B. Verkehrsmittel, Strecke, Parken), reguläre Vergleichspreise, Marktzuordnung, Schwellenwert und UI-/Sync-Verhalten. Bis dahin werden keine Entfernungen, Fahrtkosten, Angebote oder zusätzlichen Stopps automatisch berechnet oder empfohlen.
