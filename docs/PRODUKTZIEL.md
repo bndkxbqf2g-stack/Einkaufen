@@ -470,3 +470,11 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Der Standard bleibt unverändert bei 40.000 Cent. 44.000 Cent werden nur mit einem ausdrücklich gesetzten alternativen Ziel akzeptiert; normale oder ungültige Eingaben fallen auf 40.000 Cent zurück. Vorhandene Settings und lokale Daten werden nicht überschrieben.
 - Das Kostenmodell weist angenäherte Packungsbedarfe zusätzlich als bekannte, unbekannte, Angebots- und fehlende Packungen aus. Die bestehende `packCount`-/Angebotslogik und alle Legacy-Felder bleiben erhalten.
 - Die vorhandene UI bleibt bewusst bei bekanntem Angebots-Teilbetrag und „IST noch nicht erfasst“, weil es weiterhin keinen sicheren Eingabe-/LocalStorage-Pfad für bestätigte Kassenbeträge und Fahrtkosten gibt. Der nächste UI-Schritt benötigt die Entscheidungen aus Freigabepunkt 9; es gibt keine automatische Buchung, keine Belegerfassung und keine Cloud-Aufnahme.
+
+## Fortschritt 08.11.2026 – mengenbewusste Vorratsdeckung als reines Modell
+
+- Das bestehende additive Vorratsmengenmodul enthält nun einen reinen Abgleich für Rezept-/Einkaufsbedarf und bekannte Vorratsmenge. Masseneinheiten (g/kg), Volumeneinheiten (ml/l) und Stück werden jeweils in einer kanonischen Einheit verglichen.
+- Der Abgleich liefert deterministisch Bedarf, gedeckte Menge, verbleibenden Bedarf, Mengenfamilie/-einheit und den Status `covered`, `partially-covered`, `unknown` oder `incompatible`. Negative, unklare, beschädigte oder inkompatible Vorratsmengen führen nicht zu einer stillen Subtraktion.
+- Die bestehende String-Liste `angebotskueche.pantry` bleibt unverändert. Es wurden keine neuen LocalStorage-Schlüssel, Backup-/Worker-/Supabase-Felder, Angebotsdaten oder Cloud-Schreibpfade eingeführt.
+- Die Einkaufsliste und ihre Packungs-/Kostenberechnung verwenden den neuen Abgleich noch nicht. Eine sichere Integration in `getShoppingItems` benötigt einen gesonderten Vertrag für verbleibenden Bedarf und Packungsrundung; dieser Block bleibt deshalb bewusst ein prüfbarer Modell-/Testschritt.
+- Fokustests (6/6), Vollsuite (238/238) und Worker-Validator liefen grün. Die Root-/`dist`-Mengenmodule bleiben bytegleich.
