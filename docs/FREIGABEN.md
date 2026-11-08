@@ -785,3 +785,9 @@ Offen und nicht Bestandteil dieses PRs bleiben eine produktive UI-Auswahl pro Ta
 ## Freigabepunkt 08.11.2026 – tatsächliche Mehrstopp-/Fahrtkostenbasis
 
 Der reine Marktstopp-Rechenkern ist umgesetzt: Er empfiehlt nur bei explizit belegter Nettoersparnis oberhalb einer gelieferten Schwelle und verändert keine Markt- oder Nutzerdaten. Eine produktive Integration benötigt weiterhin eine ausdrückliche Entscheidung über Fahrtkostenquelle (z. B. Verkehrsmittel, Strecke, Parken), reguläre Vergleichspreise, Marktzuordnung, Schwellenwert und UI-/Sync-Verhalten. Bis dahin werden keine Entfernungen, Fahrtkosten, Angebote oder zusätzlichen Stopps automatisch berechnet oder empfohlen.
+
+## Freigabepunkt 08.11.2026 – Abwechslungsanzeige im Wochenplan
+
+Die reine Abwechslungsbewertung ist umgesetzt und prüfbar. Sie liefert getrennte Werte für Gerichte, Hauptzutaten, Zubereitungsarten, fehlende Merkmale und bewusste Restewiederholungen. Eine Änderung der bestehenden UI-Bewertung oder eine automatische Planänderung ist nicht Bestandteil dieses PRs.
+
+Vor einer UI-Integration müssen Anzeige-/Score-Regeln, die Behandlung fehlender Metadaten und die sichtbare Kennzeichnung von Restetagen fachlich bestätigt werden. Bis dahin bleiben bestehende Plan-, Nutzer-, Backup-, Cloud- und Supabase-Daten unverändert.
