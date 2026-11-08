@@ -75,7 +75,7 @@ try {
   omitOfferDates = false;
   let cloudRow = null;
   const cloudEnv = { DB: { prepare: sql => ({ bind: (...values) => ({ first: async () => cloudRow, run: async () => { cloudRow = { payload: values[1], updated_at: values[2] }; } }) }) } };
-  const syncPayload = { version: 1, settings: { people: 2 }, pantry: ['Salz'] };
+  const syncPayload = { version: 1, settings: { people: 2, dayPeople: { '1': 4 } }, pantry: ['Salz'] };
   const saved = await worker.fetch(new Request('https://example.test/api/sync', { method: 'PUT', headers: { 'oai-authenticated-user-id': 'user-1', 'content-type': 'application/json' }, body: JSON.stringify({ payload: syncPayload }) }), cloudEnv);
   assert.equal(saved.status, 200);
   const loaded = await worker.fetch(new Request('https://example.test/api/sync', { headers: { 'oai-authenticated-user-id': 'user-1' } }), cloudEnv);
