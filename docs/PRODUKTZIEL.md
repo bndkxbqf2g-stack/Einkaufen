@@ -521,3 +521,10 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Es stellt FIFO-Enqueue mit Duplikat-ID-Schutz, `next`/Peek, Remove/Acknowledge und eine Revisionsklassifikation `ready`, `conflict`, `unknown` oder `invalid` bereit.
 - Es gibt keinen automatischen Merge, kein stilles Überschreiben und keine erfundenen Revisionen. Queue, UI, localStorage, Service Worker, Supabase-Client, Worker/D1 und Datenbank bleiben unverändert.
 - Dies ist ausschließlich eine Vorbereitungsgrundlage. Die produktive Offline-Queue, Wiederholung, Konflikt-UX und Datenhoheit bleiben Freigabepunkt 6.
+
+
+## Fortschritt 08.11.2026 – Budgettransparenz direkt in der Einkaufsliste
+
+- Die Einkaufsliste zeigt nun zusätzlich dasselbe lokale Monatsziel von 400,00 €, denselben bekannten Angebots-Teilbetrag und denselben Status „IST noch nicht erfasst“ wie die Planansicht.
+- Die Anzeige wird aus dem bestehenden `shoppingCostSummary` und dem bestehenden Budgetmodell gespeist. Unbekannte Preise, fehlende Artikel, Vorräte und Fahrtkosten bleiben außerhalb; es werden keine Kassenbeträge, Käufe oder Restbudgets erfunden.
+- Root/`dist` und das generierte Worker-Artefakt bleiben synchron. Es wurden keine neuen LocalStorage-, Backup-, Worker-, Supabase-, SQL-, Auth- oder Cloud-Felder eingeführt; die Einkaufsliste bleibt rückwärtskompatibel.
