@@ -436,3 +436,11 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Fehlgeschlagene Supabase-Initialisierung und fehlgeschlagene Session-Abfragen werden als Offline-/unbekannter Sessionstatus behandelt. Auf GitHub Pages wird dabei kein irreführender Login-Dialog geöffnet; lokale Einstellungen, Vorräte, Wochenplanung, Einkaufschecks und manuelle Artikel bleiben unangetastet.
 - Bestätigtes Cloud-Laden, Revisionsschutz und Fehlerpfade wurden erneut geprüft. Fokustests (28/28), Vollsuite (227/227), Worker-Validator und Diff-Check waren grün. Es wurde kein reproduzierbarer Laufzeitfehler gefunden; keine Produkt-, Supabase-, Schema-, Nutzdaten- oder Deploymentänderung.
+
+## Audit 08.11.2026 – Wochenplan bis bekannte Angebotssumme
+
+- Der durchgängige lokale Pfad wurde mit Mittagessen, optionalem Abendessen an einem späteren Planungstag, unterschiedlichen Tagespersonenzahlen und Vorratsabgleich geprüft. `getShoppingItems()` liest die aktuellen Planabschnitte gemeinsam ein; die Einkaufspositionen führen Zutaten, Tagesportionen, Mengenbasis, Packungszahl und den jeweils ersten passenden Angebotsanker zusammen.
+- Die bekannte Angebotssumme wird ausschließlich aus derselben vollständigen Einkaufsliste berechnet. Bekannte Preise werden in Cent aggregiert; unbekannte Preise und nicht verankerte Artikel bleiben getrennt und werden nicht als `0 €` gezählt. Vorratszutaten werden für die Einkaufsliste ausgeschlossen und im separaten Coverage-Summary ausgewiesen, ohne Mengenverbrauch oder Teilbestand zu erfinden.
+- Der optionale Abendessen-Slot respektiert den jeweiligen Tageswert für Personen und die bestehende Reihenfolge der Restelogik. Die vorhandenen Regressionen für Plan-/Einkaufskostenparität, Angebotsauswahl, Tagesmengen, Abendessen, Vorratsabgleich und unbekannte Preise liefen fokussiert mit 39/39 Tests grün; Root und `dist` sind bytegleich.
+- Es wurde kein reproduzierbarer rückwärtsverträglicher Laufzeitdefekt gefunden. Die mehrfachen synchronen Ableitungen lesen im unveränderten, synchronen Renderpfad denselben lokalen Zustand; eine riskante Snapshot-Refaktorierung wäre ohne reproduzierbaren Fehler nicht gerechtfertigt. Keine Markt-/Routing-Architektur, keine Angebotsdaten, keine Vorratsverbräuche, keine Supabase-/Schema-/Cloud-Daten und kein Deployment wurden verändert.
+
