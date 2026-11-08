@@ -486,3 +486,11 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Die bestehende Personen-/Mengen-/Kostenlogik und der optionale Abendessenpfad bleiben unverändert und verwenden weiterhin den vorhandenen Tageswert. Frühstücks-, Snack- und Getränkeslots sowie eine automatische Kalenderanbindung wurden nicht ergänzt.
 - Eine UI-Auswahl pro Tag und Speicherung der Teilnehmerlisten ist in diesem Block noch nicht aktiviert: Dafür fehlen ein bestätigter lokaler/Backup-/Haushaltssync-Vertrag und eine belastbare Kinderanzahl. Es wurden keine neuen Settings-, Backup-, Worker- oder Supabase-Felder eingeführt.
 - Fokustests des Tagesplanungsmodells: 7/7 grün. Root und `dist` bleiben synchron.
+
+## Fortschritt 08.11.2026 – reiner Mehrstopp-Rechenkern
+
+- Das neue Modul `market-stops.js` berechnet eine zusätzliche Marktstation ausschließlich aus expliziten Centwerten für Basiswarenkorb, Alternativwarenkorb, bekannte Fahrtkosten, Marktlimit und einstellbare Nettoersparnis-Schwelle.
+- Die Nettoersparnis lautet deterministisch `Basiswarenkorb - Alternativwarenkorb - Fahrtkosten`. Empfohlen wird ein zusätzlicher Stopp nur bei strikt höherer Nettoersparnis als der Schwelle; Fahrtkosten bleiben vom Lebensmittelbudget getrennt.
+- Fehlende/ungültige Werte, unbekannte Angebotspreise, doppelte oder unklare Marktzuordnungen führen zu `unknown` bzw. `not-recommended`. Entfernungen, Benzinkosten, reguläre Preise und Angebote werden nicht geschätzt.
+- Bestehende Marktauswahl, Einkaufsliste, Settings, Backup, Worker und Supabase bleiben unverändert. Das Modell ist noch nicht in UI oder automatische Routenplanung integriert; die bestätigte Fahrtkostenbasis und eine produktive Schwelle bleiben fachlich offen.
+- Fokustests (5/5), Vollsuite (245/245) und Worker-Validator liefen grün. Root-/`dist`-Rechenkern und veröffentlichte App bleiben synchron.
