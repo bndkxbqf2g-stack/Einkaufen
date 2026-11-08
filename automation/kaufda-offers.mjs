@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { chromium } from 'playwright';
-import { offerPackSize } from './offer-normalization.mjs';
+import { offerDeduplicationKey, offerPackSize } from './offer-normalization.mjs';
 import { writeOfferSnapshot } from './offer-snapshot.mjs';
 
 const execFileAsync = promisify(execFile);
@@ -141,7 +141,7 @@ async function collectStructuredOffers(page, validUntil, config) {
       const numericPrice = Number(parsedPrice.replace(',', '.').replace(/[^0-9.]/g, ''));
       if (parsedPrice === '–' || !Number.isFinite(numericPrice) || numericPrice > 30 || !likelyFood(item.name)) continue;
       if (!cardBelongsToConfig(item, config)) continue;
-      const key = item.name.toLowerCase() + '|' + priceFrom(item.price) + '|' + config.store;
+      const key = offerDeduplicationKey(item, config.store);
       const previous = unique.get(key);
       if (!previous || (!previous.imageUrl && item.imageUrl)) unique.set(key, item);
     }
@@ -244,7 +244,7 @@ async function scrapeMarket(page, config) {
   // nur noch ein Fallback, damit keine langen Vollseitenläufe nötig sind.
   const useOcrFallback = !config.browserUrl && (config.key !== 'Aldi' || structuredItems.length < 10);
   if (!useOcrFallback) {
-    const unique = [...new Map(offers.map(offer => [`${offer.name.toLowerCase()}|${offer.price}|${offer.store}`, offer])).values()];
+    const unique = [...new Map(offers.map(offer => [offerDeduplicationKey(offer), offer])).values()];
     const result = { market: config.market, store: config.store, location: config.location, sourceUrl, fetchedAt: new Date().toISOString(), validUntil, parser: 'kaufda-offer-cards-v6', recognizedCount: unique.length, targetOfferCount: targetOfferCount || null, loadedOfferCardCount, targetReached, offers: unique };
     await writeOfferSnapshot(resolve(outputDir, config.file), result);
     console.log(`KaufDA: ${unique.length} ${config.key}-Angebote aus strukturierten Karten nach ${config.file} geschrieben`);
@@ -295,7 +295,7 @@ async function scrapeMarket(page, config) {
   const unique = [];
   const seen = new Set();
   for (const offer of offers) {
-    const key = `${offer.name.toLowerCase()}|${offer.price}|${offer.store}`;
+    const key = offerDeduplicationKey(offer);
     if (!seen.has(key)) { seen.add(key); unique.push(offer); }
   }
   if (!unique.length) throw new Error(`${config.key}: keine Lebensmittelangebote erkannt`);
@@ -325,12 +325,13 @@ async function updatePriceHistory(results) {
         name: offer.name,
         price: offer.price,
         priceValue: Number(String(offer.price || '').replace(',', '.').replace(/[^0-9.]/g, '')) || null,
+        packSize: offer.packSize || '1 Packung',
         validUntil: offer.validUntil,
         imageUrl: offer.imageUrl || '',
         sourceUrl: result.sourceUrl,
         observedAt: result.fetchedAt
       };
-      const key = `${observation.market}|${observation.name.toLowerCase()}|${observation.price}|${observation.validUntil}`;
+      const key = `${observation.market}|${offerDeduplicationKey(observation)}`;
       byKey.set(key, observation);
     }
   }

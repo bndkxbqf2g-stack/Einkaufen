@@ -444,3 +444,9 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Der optionale Abendessen-Slot respektiert den jeweiligen Tageswert für Personen und die bestehende Reihenfolge der Restelogik. Die vorhandenen Regressionen für Plan-/Einkaufskostenparität, Angebotsauswahl, Tagesmengen, Abendessen, Vorratsabgleich und unbekannte Preise liefen fokussiert mit 39/39 Tests grün; Root und `dist` sind bytegleich.
 - Es wurde kein reproduzierbarer rückwärtsverträglicher Laufzeitdefekt gefunden. Die mehrfachen synchronen Ableitungen lesen im unveränderten, synchronen Renderpfad denselben lokalen Zustand; eine riskante Snapshot-Refaktorierung wäre ohne reproduzierbaren Fehler nicht gerechtfertigt. Keine Markt-/Routing-Architektur, keine Angebotsdaten, keine Vorratsverbräuche, keine Supabase-/Schema-/Cloud-Daten und kein Deployment wurden verändert.
 
+## Fortschritt 08.11.2026 – packungsbewusste Angebotsdeduplizierung
+
+- Der Angebotsquellen-/Snapshot-Audit fand einen reproduzierbaren Datenverlust: Die vorgelagerte Deduplizierung von KaufDA-/Händlerimporten und der lokale App-Importschlüssel berücksichtigten die Packungsgröße nicht. Gleichnamige, gleichpreisige Varianten wie 200 g und 250 g konnten dadurch vor der Snapshot- bzw. Planungsebene zusammenfallen.
+- Ein gemeinsamer, normalisierter Deduplizierungsschlüssel umfasst jetzt Produktname, Preis, Packungsgröße, Gültigkeitsdatum und Markt. Der Snapshot-Vertrag bleibt unverändert; er akzeptiert weiterhin echte Varianten und weist nur identische Positionen zurück. Die Preis-Historie bewahrt die Packungsgröße ebenfalls.
+- Root und `dist` bleiben bytegleich. Ein synthetischer Regressionstest prüft gleichpreisige Packungsvarianten sowie die Verwendung des Schlüssels in den Quellen und im App-Import. Keine Live-Angebotsdaten wurden aktualisiert oder erfunden; Nutzer-, Supabase-, Schema-, Cloud- und Deploymentdaten blieben unverändert.
+

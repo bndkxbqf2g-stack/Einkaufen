@@ -1010,7 +1010,9 @@
     }
 
     function offerImportKey(offer) {
-      return `${normalizeIngredient(offer.name)}|${canonicalMarketName(offer.store)}|${String(offer.validUntil || '').trim()}`;
+      return [normalizeIngredient(offer.name), canonicalMarketName(offer.store), offer.price, offer.packSize || '1 Packung', offer.validUntil]
+        .map(value => String(value || '').trim().replace(/\s+/g, ' ').toLowerCase())
+        .join('|');
     }
 
     function renderOfferMaintenance() {
@@ -2981,4 +2983,5 @@
   </script>
 </body>
 </html>
+
 
