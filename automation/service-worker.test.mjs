@@ -201,6 +201,7 @@ test('service worker registration requests the active cache version', () => {
 test('precaches the app shell during install and removes old caches on activate', async () => {
   const harness = createHarness();
   harness.cacheNames.add('angebotskueche-shell-old');
+  harness.cacheNames.add('unrelated-app-cache');
 
   await harness.dispatch('install');
   assert.deepEqual(harness.addAllCalls, [['./index.html', './manifest.json', './ingredient-normalization.js', './shopping-costs.js', './budget-transparency.js', './meal-planning.js', './day-planning.js', './ingredient-quantity.js', './pantry-quantity.js', './supabase-sync.js']]);
@@ -218,6 +219,7 @@ test('precaches the app shell during install and removes old caches on activate'
 
   await harness.dispatch('activate');
   assert.deepEqual(harness.deletedCaches, ['angebotskueche-shell-old']);
+  assert.equal(harness.cacheNames.has('unrelated-app-cache'), true);
   assert.equal(harness.claimCalls(), 1);
 });
 
@@ -344,3 +346,4 @@ test('Pages root sync keeps published PWA icons aligned with dist', async () => 
   assert.ok(workflow.includes('cp -R dist/icons/. icons/'));
   assert.ok(workflow.includes('git add index.html manifest.json icons sw.js supabase-sync.js'));
 });
+×m¸Ó]¶ã
