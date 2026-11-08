@@ -397,3 +397,11 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 ### Fortschritt 07.11.2026 – ISO-Gültigkeitsdaten im Angebotsstatus
 
 - Die App wertet Snapshot-Gültigkeitsdaten jetzt in den beiden vom Snapshot-Vertrag erlaubten Formen `TT.MM.JJJJ` und `JJJJ-MM-TT` identisch aus. Unmögliche Kalenderdaten bleiben ungültig; unbekannte Daten werden nicht erfunden.
+
+## Fortschritt 08.11.2026 – additive Budgettransparenz ohne IST-Erfassung
+
+- Die Planansicht zeigt lokal und deterministisch das gemeinsame Monatsziel von 400,00 € für Lebensmittel und Getränke, den bekannten Plan-/Angebotswert und den Status der tatsächlichen IST-Ausgaben.
+- Der Plan-/Angebotswert bleibt ausdrücklich ein verifizierter Angebots-Teilbetrag. Er wird weder als Kassenbetrag, bestätigte Ausgabe noch als verbleibendes Budget dargestellt; unbekannte Preise, fehlende Artikel, Vorräte und Fahrtkosten bleiben außerhalb.
+- Tatsächliche IST-Ausgaben werden weiterhin mit „Noch nicht erfasst“ angezeigt. Es gibt keinen `purchaseRecords`-Lese-/Schreibpfad, keine Belegerfassung/OCR, keine lokale Historie und keine Berechnung eines Restbudgets.
+- Das getrennte lokale Budgetmodell liegt in `budget-transparency.js`; Root und `dist` sind synchron. Der Service-Worker-Cache wurde für das neue statische Modul auf v32 angehoben.
+- Es gab keine Supabase-/Cloud-/Schemaänderung, keine Nutzdatenänderung, kein Deployment und keine kostenpflichtige Ressource. Vollsuite und Worker-Validierung waren grün.

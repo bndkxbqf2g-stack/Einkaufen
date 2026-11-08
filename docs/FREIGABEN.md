@@ -653,3 +653,10 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - Der bekannte Angebots-Teilbetrag wird im Plan jetzt aus derselben vollständigen Einkaufsliste wie in der Einkaufsliste und beim Teilen gebildet. Unbekannte Angebotspreise und fehlende Artikel bleiben separat; manuelle Artikel ohne Angebotsanker sind ausdrücklich sichtbar.
 - Dies ist eine lokale, deterministische und rückwärtskompatible Darstellungskorrektur. Es wurden keine tatsächlichen Einkäufe, `purchaseRecords`, Vorratsmengenverbräuche, Supabase-/Cloud-Daten, Schemaänderungen, Angebotsdaten oder kostenpflichtigen Ressourcen verändert.
 - Für diesen Block ist keine neue Nutzerfreigabe erforderlich. Weiterhin gebündelt offen bleiben die fachliche Freigabe für echte IST-Kassenhistorie, Vorratsmengenverbrauch/-synchronisierung, Fahrtkosten/Routing sowie weitere Supabase-Migrationen oder neue Cloud-Felder.
+
+## Fortschritt 08.11.2026 – Budgettransparenz ohne neue Freigabe
+
+- Die lokale Planansicht ergänzt eine klar getrennte 400-€-Monatszielanzeige, den bekannten Plan-/Angebotswert und „Tatsächliche IST-Ausgaben · Noch nicht erfasst“.
+- Keine neue fachliche Freigabe ist für diese Anzeige erforderlich. Der bekannte Plan-/Angebotswert darf nicht als Kassenbetrag, bestätigte Ausgabe oder Restbudget interpretiert werden.
+- Weiterhin gebündelt offen bleiben echte IST-Kassenhistorie und Belege/OCR, Vorratsmengenverbrauch/-synchronisierung, Fahrtkosten/Routing sowie weitere Supabase-Migrationen oder neue Cloud-Felder.
+- Dieser Block änderte keine `purchaseRecords`, keine Supabase-/Cloud-/Schema-Daten, keine Angebotsdaten und keine kostenpflichtigen Ressourcen. Die CI/Vollsuite und Worker-Validierung waren lokal grün; der PR wird zur Prüfung erstellt und nicht automatisch gemergt.

@@ -211,6 +211,13 @@
     .shopping-stat-label { color: var(--ink-soft); font-size: 11px; font-weight: 750; }
     .shopping-stat-value { margin-top: 10px; font-size: 23px; line-height: 1; font-weight: 850; letter-spacing: -.04em; }
     .shopping-stat-note { margin-top: 8px; color: var(--green-2); font-size: 10px; font-weight: 750; }
+    .budget-transparency { margin-bottom: 18px; }
+    .budget-summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .budget-summary-stat { min-height: 96px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--card); }
+    .budget-summary-label { color: var(--ink-soft); font-size: 11px; font-weight: 750; }
+    .budget-summary-value { margin-top: 12px; font-size: 22px; line-height: 1; font-weight: 850; letter-spacing: -.04em; }
+    .budget-summary-note { margin-top: 8px; color: var(--ink-soft); font-size: 10px; font-weight: 700; line-height: 1.35; }
+    .budget-summary-note.actual { color: #a05540; }
     .shopping-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .shopping-groups { display: grid; gap: 18px; }
     .shopping-group { overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: #fffefa; }
@@ -337,6 +344,7 @@
       .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
       .workspace, .section-grid { grid-template-columns: 1fr; }
       .side-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .budget-summary-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 560px) {
       html, body { height: auto !important; min-height: 100%; overflow-y: visible !important; }
@@ -422,6 +430,21 @@
           <div class="stat"><div class="stat-label"><span>Abwechslung</span><span>✦</span></div><div class="stat-value" id="varietyScore">92 %</div><div class="stat-note" id="varietyNote">verschiedene Profile</div></div>
           <div class="stat"><div class="stat-label"><span>Märkte</span><span>⌖</span></div><div class="stat-value" id="marketCount">2</div><div class="stat-note" id="marketNote">Aldi + Kaufland Würzburg</div></div>
         </div>
+
+        <section class="panel budget-transparency" aria-labelledby="budgetTransparencyTitle">
+          <div class="panel-header">
+            <div><h2 class="panel-title" id="budgetTransparencyTitle">Monatsbudget · Transparenz</h2><p class="panel-subtitle">400,00 € Monatsziel für Lebensmittel und Getränke. Planwerte sind keine Kassenbeträge.</p></div>
+            <span class="tag muted">lokal</span>
+          </div>
+          <div class="panel-body">
+            <div class="budget-summary-grid">
+              <div class="budget-summary-stat"><div class="budget-summary-label">Monatsziel</div><div class="budget-summary-value" id="budgetTargetValue">–</div><div class="budget-summary-note" id="budgetTargetNote">Planungsziel · Lebensmittel und Getränke</div></div>
+              <div class="budget-summary-stat"><div class="budget-summary-label">Bekannter Plan-/Angebotswert</div><div class="budget-summary-value" id="budgetKnownOfferValue">–</div><div class="budget-summary-note" id="budgetKnownOfferNote">Noch keine verifizierte Preisbasis</div></div>
+              <div class="budget-summary-stat"><div class="budget-summary-label">Tatsächliche IST-Ausgaben</div><div class="budget-summary-value" id="budgetActualValue">–</div><div class="budget-summary-note actual" id="budgetActualNote">Noch nicht erfasst</div></div>
+            </div>
+            <div class="source-note" id="budgetTransparencyNote" role="status" aria-live="polite" style="margin-top:12px">Der Plan-/Angebotswert ist kein Kassenbetrag und keine bestätigte Ausgabe.</div>
+          </div>
+        </section>
 
         <div class="workspace">
           <section class="panel">
@@ -532,6 +555,7 @@
 
   <script src="./ingredient-normalization.js"></script>
 <script src="./shopping-costs.js"></script>
+  <script src="./budget-transparency.js"></script>
   <script src="./meal-planning.js"></script>
   <script src="./day-planning.js"></script>
   <script src="./ingredient-quantity.js"></script>
@@ -1117,6 +1141,7 @@
       $('#totalCostNote').textContent = hasKnownOfferTotal
         ? `Bekannter Angebotsbetrag ${formatEuro(knownOfferTotal)} · ${formatShoppingCostScope(shoppingCostSummary)} · Kassenbetrag offen`
         : `Keine verifizierte Preisbasis · ${formatShoppingCostScope(shoppingCostSummary)} · Kassenbetrag offen`;
+      renderBudgetTransparency(shoppingCostSummary);
       const variety = calculateVariety(visible);
       $('#varietyScore').textContent = `${variety.score} %`;
       $('#varietyNote').textContent = `${variety.profiles} Profile · ${variety.vegetarian} vegetarisch`;
@@ -1334,6 +1359,34 @@
 
     function getShoppingCostSummary(items = getShoppingItems()) {
       return window.AngebotskuecheCostModel.summarizeShoppingCosts(items, parseKnownMoney);
+    }
+
+    function renderBudgetTransparency(costSummary) {
+      const budgetModel = window.AngebotskuecheBudgetModel;
+      if (!budgetModel || typeof budgetModel.summarizeBudgetTransparency !== 'function') return;
+      const budget = budgetModel.summarizeBudgetTransparency({
+        knownOfferTotalCents: costSummary?.knownOfferTotalCents,
+        unresolvedPositionCount: (costSummary?.unknownPriceCount || 0) + (costSummary?.missingCount || 0),
+      });
+      $('#budgetTargetValue').textContent = formatEuro(budget.monthlyTargetCents / 100);
+      $('#budgetTargetNote').textContent = 'Planungsziel · Lebensmittel und Getränke';
+      $('#budgetKnownOfferValue').textContent = budget.knownOfferTotalCents === null
+        ? '–'
+        : formatEuro(budget.knownOfferTotalCents / 100);
+      $('#budgetKnownOfferNote').textContent = budget.knownOfferStatus === 'partial'
+        ? 'Bekannter Teilbetrag · offene Positionen nicht eingerechnet'
+        : budget.knownOfferStatus === 'known-offer-only'
+          ? 'Nur verifizierte Angebots-Packungen · kein Kassenbetrag'
+          : 'Noch keine verifizierte Preisbasis';
+      $('#budgetActualValue').textContent = budget.actualSpendCents === null
+        ? '–'
+        : formatEuro(budget.actualSpendCents / 100);
+      $('#budgetActualNote').textContent = budget.actualSpendStatus === 'not-recorded'
+        ? 'Noch nicht erfasst'
+        : 'Status unbekannt';
+      $('#budgetTransparencyNote').textContent = budget.knownOfferStatus === 'partial'
+        ? 'Der Plan-/Angebotswert ist kein Kassenbetrag. Unbekannte Preise und fehlende Artikel bleiben außerhalb; tatsächliche IST-Ausgaben sind noch nicht erfasst.'
+        : 'Der Plan-/Angebotswert ist kein Kassenbetrag oder bestätigte Ausgabe; tatsächliche IST-Ausgaben sind noch nicht erfasst.';
     }
 
     function formatShoppingCostScope(summary) {
@@ -2916,7 +2969,7 @@
       renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
     });
     setTimeout(() => refreshPendingRecipeImports().catch(() => {}), 250);
-    const APP_BUILD = '2026-11-07-restore-stability-1';
+    const APP_BUILD = '2026-11-08-budget-transparency-1';
     try {
       if (localStorage.getItem('angebotskueche.appBuild') !== APP_BUILD) {
         localStorage.setItem('angebotskueche.appBuild', APP_BUILD);
@@ -2924,7 +2977,7 @@
         if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(registration => registration.update())).catch(() => {});
       }
     } catch {}
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=31', { updateViaCache: 'none' }).catch(() => {}));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=32', { updateViaCache: 'none' }).catch(() => {}));
   </script>
 </body>
 </html>
