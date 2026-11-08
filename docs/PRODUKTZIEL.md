@@ -61,7 +61,7 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 - Favoriten und kreative Vorschläge werden als gemeinsame Kandidaten bewertet; der Zutaten-Angebotsabgleich nutzt normalisierte Wörter, häufige Flexionen und eng begrenzte, durch reale Marktsnapshots belegte Produktfamilien. Regressionstests sichern sowohl gültige Komposita als auch typische Fehlzuordnungen ab.
 - Ganze Packungen und Mehrfachverwendung werden in der Einkaufsliste zumindest als Packungsanzahl beziehungsweise „für mehrere Gerichte“ berücksichtigt.
 - KaufDA- und Händler-Workflows sowie ein Bring-Playwright/OCR-Workflow sind im Repository dokumentiert und als GitHub Actions angelegt.
-- Die eingecheckten Snapshots enthalten für Aldi, EDEKA, Kaufland, Lidl, Netto und Penny Angebote mit Quelle, Abrufzeit, Gültigkeit und Parserkennung. Der beim Audit am 07.11.2026 festgestellte Stand umfasst 87 Aldi-, 68 EDEKA-, 49 Kaufland-, 211 Lidl-, 178 Netto- und 77 Penny-Angebote; diese Zählung ist eine Momentaufnahme, keine Vollständigkeitsgarantie. Für Kaufland fehlen belastbare Quell-Sollzahlen und Ladezielmetadaten; der Vollständigkeitsreport weist den Angebotsumfang deshalb als unbekannt aus.
+- Die eingecheckten Snapshots enthalten für Aldi, EDEKA, Kaufland, Lidl, Netto und Penny Angebote mit Quelle, Abrufzeit, Gültigkeit und Parserkennung. Der beim Audit am 07.11.2026 festgestellte Stand umfasst 87 Aldi-, 68 EDEKA-, 45 Kaufland-, 211 Lidl-, 178 Netto- und 77 Penny-Angebote; diese Zählung ist eine Momentaufnahme, keine Vollständigkeitsgarantie. Für Kaufland fehlen belastbare Quell-Sollzahlen und Ladezielmetadaten; der Vollständigkeitsreport weist den Angebotsumfang deshalb als unbekannt aus.
 - Die Angebots-Pipelines validieren Snapshots jetzt zentral vor Veröffentlichung, verlangen sichere HTTPS-Quelladressen, prüfen Gültigkeitsangaben als echte Kalenderdaten und weisen bereits beim Abruf abgelaufene Snapshots oder Einzelangebote zurück. Dateien werden atomar geschrieben; fehlerhafte Läufe können den letzten gültigen Dateistand dadurch nicht ersetzen.
 - Die gemeinsame Marktdatenansicht zeigt nach einem Quellenabruf erkannte Treffer, den von der Quelle gemeldeten Datenstand und die Gültigkeit. Ein fehlender Quellzeitpunkt wird ausdrücklich als unbekannt angezeigt statt durch die Geräteabrufzeit ersetzt.
 - Beim App-Refresh werden nur die erfolgreich aktualisierten Märkte ersetzt. Angebote fehlgeschlagener oder nicht abgefragter Märkte sowie manuelle Importe bleiben erhalten.
@@ -324,7 +324,7 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 ### Fortschritt 07.11.2026 – Audit Angebotsvollständigkeit und Marktvergleich
 
 - Der Vollständigkeitsreport unterscheidet weiterhin korrekt zwischen Ladeziel und Prospekt-Gesamtumfang: `targetReached` wird nur als Ladeziel angezeigt; „Gesamtumfang nicht belegt“ bleibt explizit.
-- Audit der eingecheckten Snapshots: Aldi, EDEKA, Lidl, Netto und Penny liefern `recognizedCount` plus Ladeziel; Kaufland liefert aktuell 49 Angebote ohne belastbare Sollzahl/`recognizedCount`. Alle sechs Snapshots sind nichtleer, datiert, nicht dupliziert und `recognizedCount` (wo vorhanden) entspricht `offers.length`. Keine Vollständigkeitsbehauptung wird daraus abgeleitet.
+- Audit der eingecheckten Snapshots: Aldi, EDEKA, Lidl, Netto und Penny liefern `recognizedCount` plus Ladeziel; Kaufland liefert aktuell 45 Angebote ohne belastbare Sollzahl/`recognizedCount`. Alle sechs Snapshots sind nichtleer, datiert, nicht dupliziert und `recognizedCount` (wo vorhanden) entspricht `offers.length`. Keine Vollständigkeitsbehauptung wird daraus abgeleitet.
 - Der Marktvergleich verwendet nur aktuelle Angebote aktiver Märkte; fehlende oder unklare Preise bleiben unbekannt. Die bestehenden Regressionstests sichern die Coverage-Darstellung, Quellzeitpunkte und den Erhalt nicht aktualisierter Märkte. Für diesen Audit war keine Laufzeitänderung erforderlich.
 
 ## Fortschritt 07.11.2026 – sofort angewendetes Marktlimit
@@ -463,6 +463,11 @@ Der Angebotsimport prüft nun auch im Frontend, ob ein nichtleerer Quellen-Paylo
 Die serverseitige Snapshot-Validierung, atomische Dateischreibung und Workflow-Commit-Guards bleiben unverändert aktiv. Damit überschreibt weder ein leerer Snapshot noch ein syntaktisch nichtleerer, aber fachlich ungültiger Payload den letzten gültigen Stand.
 
 Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten, unsicheren, falsch datierten, widersprüchlich gezählten und formal ungültigen Payloads geprüft. Es wurden keine Live-Angebote abgerufen und keine Nutzer-, Supabase-, Schema- oder Deploymentänderungen vorgenommen.
+
+## Fortschritt 08.11.2026 – Frontend-/Worker-Datumsparität
+
+- PR [#246](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/246) ergänzt im Frontend dieselbe Datumsinvariante wie im Worker: Snapshot- und Einzelangebotsenden vor dem protokollierten `fetchedAt` werden verworfen. Der PR wurde in Merge-Commit `806f07ab67bce6bc85ff7696f0a7dcce4bd3cd52` übernommen.
+- Ein synthetischer Regressionstest deckt sowohl ein vor dem Abrufdatum abgelaufenes Snapshot-Ende als auch ein einzelnes Angebot mit diesem Widerspruch ab. Root und `dist/index.html` bleiben synchron; PR-CI-Run `42486503518` validierte Tests und Worker-Validator erfolgreich. Es wurden keine Live-Angebote, Preise, Nutzdaten, Supabase-, SQL-, Auth- oder Cloud-Daten geändert.
 
 ## Fortschritt 08.11.2026 – additive Kosten-/Kassenmodell-Grundlage
 
