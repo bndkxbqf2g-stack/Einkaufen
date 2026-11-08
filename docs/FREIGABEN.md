@@ -883,3 +883,8 @@ Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvolls
 - Das reine Modell `offline-queue.js` validiert stabile Operationen, schützt FIFO-Queues vor doppelten IDs und klassifiziert Sync-Versuche gegen eine explizite Remote-Revision als `ready`, `conflict`, `unknown` oder `invalid`.
 - Payloads werden nicht fachlich verändert; es gibt keinen automatischen Merge, keine erfundene Revision und keine produktive Queue-/localStorage-/UI-/Supabase-/Worker-Integration.
 - Fokustests (6/6), Vollsuite (262/262) und Worker-Validator liefen grün. Die produktive Offline-Queue und Konflikt-UX bleiben ausdrücklich Freigabepunkt 6.
+
+## Fortschritt 08.11.2026 – Frontend-/Worker-Datumsparität
+
+- PR [#246](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/246) wurde nach grüner PR-CI in Merge-Commit `806f07ab67bce6bc85ff7696f0a7dcce4bd3cd52` übernommen. Der Frontend-Validator verwirft nun Snapshot- und Einzelangebotsenden vor dem protokollierten `fetchedAt`, entsprechend dem bestehenden Worker-Vertrag.
+- Der synthetische Regressionstest sowie Root-/`dist`-Synchronität und Worker-Validierung wurden geprüft. Keine neue fachliche Freigabe, da ausschließlich eine deterministische Validierungslücke geschlossen wurde; keine Live-Angebote, Preise, Nutzdaten, Supabase-, SQL-, Auth- oder Cloud-Änderung.
