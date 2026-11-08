@@ -674,7 +674,7 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 ## Fortschritt 08.11.2026 – dokumentierter PWA-Merge und korrigierte PR-Übergabe
 
 - Der Cache-Scope-Fix ist mit [PR #220](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/220) in `main` gemergt; die CI-Validierung war grün. Für diesen deterministischen, datenschonenden Fix ist keine weitere fachliche Freigabe offen.
-- PR #218 bleibt als verworfener, fehlerhafter API-Dateiupload offen und darf nicht gemergt werden. Der Ersatz-PR wurde mit exakt drei erwarteten PWA-Dateien, bytegenauem Remote-Abgleich und erfolgreicher CI erstellt und anschließend gemergt.
+- PR #218 wurde als verworfener, fehlerhafter API-Dateiupload geschlossen und durch PR #220 ersetzt. Der Ersatz-PR wurde mit exakt drei erwarteten PWA-Dateien, bytegenauem Remote-Abgleich und erfolgreicher CI erstellt und anschließend gemergt.
 - Keine Nutz-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentänderung. Weiterhin separat freigabepflichtig bleiben fachliche Vorrats-/IST-/Routing-/Supabase-Schritte.
 
 ## Fortschritt 08.11.2026 – Regressionstest für den generierten Worker
