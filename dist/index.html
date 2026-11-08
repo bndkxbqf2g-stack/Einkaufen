@@ -1110,11 +1110,13 @@
       const planMeals = [...visible, ...dinnerMeals];
       const pricedMeals = planMeals.filter(meal => meal.costSource === 'offer-subtotal' && parseKnownMoney(meal.cost) !== null);
       const unknownMeals = planMeals.length - pricedMeals.length;
-      const shoppingCostSummary = window.AngebotskuecheCostModel.summarizeShoppingCosts(getShoppingItems().filter(item => !item.manual), parseKnownMoney);
-      const knownOfferTotal = shoppingCostSummary.total;
-      const unknownCostItems = shoppingCostSummary.unknownItems.length + shoppingCostSummary.missingItems.length;
-      $('#totalCost').textContent = unknownCostItems ? '–' : formatEuro(knownOfferTotal);
-      $('#totalCostNote').textContent = unknownCostItems ? `${unknownCostItems} Einkaufspositionen ohne verifizierte Preisbasis · Kassenbetrag offen` : `Bekannter Angebotsbetrag ${formatEuro(knownOfferTotal)} · Packungsbasis · Kassenbetrag offen`;
+      const shoppingCostSummary = getShoppingCostSummary();
+      const knownOfferTotal = shoppingCostSummary.knownOfferTotal;
+      const hasKnownOfferTotal = shoppingCostSummary.knownOfferCount > 0;
+      $('#totalCost').textContent = hasKnownOfferTotal ? formatEuro(knownOfferTotal) : '–';
+      $('#totalCostNote').textContent = hasKnownOfferTotal
+        ? `Bekannter Angebotsbetrag ${formatEuro(knownOfferTotal)} · ${formatShoppingCostScope(shoppingCostSummary)} · Kassenbetrag offen`
+        : `Keine verifizierte Preisbasis · ${formatShoppingCostScope(shoppingCostSummary)} · Kassenbetrag offen`;
       const variety = calculateVariety(visible);
       $('#varietyScore').textContent = `${variety.score} %`;
       $('#varietyNote').textContent = `${variety.profiles} Profile · ${variety.vegetarian} vegetarisch`;
@@ -1122,7 +1124,7 @@
       $('#pinnedNote').textContent = pinnedLabels.length ? `Vorgemerkt und bevorzugt: ${pinnedLabels.join(' · ')}.` : 'Noch keine zusätzlichen Rezepte vorgemerkt.';
       const reused = [...new Set(visible.flatMap(meal => meal.reusedIngredients || []))];
       $('#leftoverNote').textContent = reused.length ? `Restelogik aktiv: ${reused.slice(0, 3).join(' · ')} werden in mehreren Gerichten weiterverwendet.` : 'Noch keine sinnvolle Zutatenüberschneidung für die Resteverwertung erkannt.';
-      $('#dayList').innerHTML = visible.map((meal, index) => { const dayPeople = getPlanPeople(index); const peopleOptions = (window.AngebotskuecheDayPlanningModel?.peopleOptions || [2, 3, 4]).map(option => `<option value="${option}" ${option === dayPeople ? 'selected' : ''}>${option}</option>`).join(''); const tags = Array.isArray(meal.tags) ? meal.tags : []; const costValue = parseKnownMoney(meal.cost); const costKnown = meal.costSource === 'offer-subtotal' && costValue !== null; const cost = costKnown ? costValue : 0; const costLabel = costKnown ? `Bekannter Angebotsanteil · ${(cost * (dayPeople / 2)).toFixed(2).replace('.', ',')} €` : 'Preis unbekannt'; const rating = recipeRatings[mealRatingKey(meal)]?.rating; return `
+      $('#dayList').innerHTML = visible.map((meal, index) => { const dayPeople = getPlanPeople(index); const peopleOptions = (window.AngebotskuecheDayPlanningModel?.peopleOptions || [2, 3, 4]).map(option => `<option value="${option}" ${option === dayPeople ? 'selected' : ''}>${option}</option>`).join(''); const tags = Array.isArray(meal.tags) ? meal.tags : []; const costValue = parseKnownMoney(meal.cost); const costKnown = meal.costSource === 'offer-subtotal' && costValue !== null; const costLabel = costKnown ? `Bekannter Angebotsanteil · ${(costValue * (dayPeople / 2)).toFixed(2).replace('.', ',')} €` : 'Preis unbekannt'; const rating = recipeRatings[mealRatingKey(meal)]?.rating; return `
         <article class="day-card ${index === 0 ? 'today' : ''}">
           <div class="day-date">${index === 0 ? '<span class="today-tag">Heute</span>' : ''}<span class="day-name">${escapeHtml(meal.day)}</span><small>${escapeHtml(meal.date)}</small><label class="day-people-filter">Personen <select data-day-people="${index}" aria-label="Personen für ${escapeHtml(meal.day)}">${peopleOptions}</select></label></div>
           <div class="meal-row"><div class="meal-emoji ${meal.kind === 'warm' ? 'warm' : ''}">${escapeHtml(meal.emoji)}</div><div class="meal-info"><div class="meal-type">${meal.kind === 'warm' ? 'Mittagessen' : 'Abendessen'}${meal.manual ? '<span class="manual-choice">· deine Auswahl</span>' : ''}</div><div class="meal-title">${escapeHtml(meal.title)}</div><div class="meal-meta"><span>für <b>${dayPeople} Personen</b></span><span>${escapeHtml(costLabel)}</span><span>${escapeHtml(marketDisplayString(meal.store))}</span></div><div class="meal-tags">${tags.map((tag, tagIndex) => `<span class="tag ${tagIndex === 1 ? 'yellow' : ''}">${escapeHtml(tag)}</span>`).join('')}</div><div class="recipe-preview"><span class="recipe-preview-label">Rezept · Zutaten</span><div class="recipe-preview-list">${getMealIngredients(meal).slice(0, 6).map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('') || '<span class="source-note">Zutaten noch nicht hinterlegt</span>'}</div></div></div></div>
@@ -1330,6 +1332,19 @@
       }).sort((first, second) => Number(Boolean(first.offer)) - Number(Boolean(second.offer)) || first.name.localeCompare(second.name, 'de'));
     }
 
+    function getShoppingCostSummary(items = getShoppingItems()) {
+      return window.AngebotskuecheCostModel.summarizeShoppingCosts(items, parseKnownMoney);
+    }
+
+    function formatShoppingCostScope(summary) {
+      if (!summary.itemCount) return 'Noch keine Einkaufspositionen';
+      const details = [`${summary.knownOfferCount} von ${summary.offerItemCount} Angebotspositionen mit Preis`];
+      if (summary.unknownPriceCount) details.push(`${summary.unknownPriceCount} Preis${summary.unknownPriceCount === 1 ? '' : 'e'} unbekannt`);
+      if (summary.manualMissingCount) details.push(`${summary.manualMissingCount} manuelle${summary.manualMissingCount === 1 ? 'r' : ''} Artikel ohne Angebotsanker`);
+      if (summary.unanchoredMissingCount) details.push(`${summary.unanchoredMissingCount} ${summary.unanchoredMissingCount === 1 ? 'weiterer' : 'weitere'} Artikel ohne Angebotsanker`);
+      return details.join(' · ');
+    }
+
     function reconcileShoppingChecks(checks, items) {
       const currentIds = new Set((Array.isArray(items) ? items : []).map(item => item?.id).filter(Boolean));
       const normalizedChecks = {};
@@ -1359,19 +1374,19 @@
         localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks));
       }
       const openItems = items.filter(item => !shoppingChecks[item.id]);
-      const costSummary = window.AngebotskuecheCostModel.summarizeShoppingCosts(items, parseKnownMoney);
+      const costSummary = getShoppingCostSummary(items);
       const offerItems = costSummary.offerItems;
       const missingItems = costSummary.missingItems;
-      const offerSummary = costSummary;
-      const knownOfferItems = offerSummary.knownItems;
-      const unknownOfferItems = offerSummary.unknownItems;
-      const offerTotal = offerSummary.total;
+      const knownOfferItems = costSummary.knownOfferItems;
+      const unknownOfferItems = costSummary.unknownPriceItems;
+      const offerTotal = costSummary.knownOfferTotal;
       const reusedItems = items.filter(item => item.reused);
+      const hasUnresolvedCostItems = costSummary.unknownPriceCount > 0 || costSummary.missingCount > 0;
       $('#shoppingOpenCount').textContent = String(openItems.length);
       $('#shoppingOpenNote').textContent = `${items.length ? `${items.length - openItems.length} von ${items.length} ` : ''}abgehakt`;
-      $('#shoppingOfferLabel').textContent = unknownOfferItems.length ? 'Bekannter Angebotsbetrag' : 'Angebotswert';
-      $('#shoppingOfferTotal').textContent = knownOfferItems.length ? formatEuro(offerTotal) : (unknownOfferItems.length ? '–' : formatEuro(offerTotal));
-      $('#shoppingOfferNote').textContent = `${knownOfferItems.length} von ${offerItems.length} Angebotspositionen mit Preis · Packungsbedarf ${planPeopleSummary()}${unknownOfferItems.length ? ` · ${unknownOfferItems.length} Preis${unknownOfferItems.length === 1 ? '' : 'e'} unbekannt` : ''}`;
+      $('#shoppingOfferLabel').textContent = hasUnresolvedCostItems ? 'Bekannter Angebotsbetrag' : 'Angebotswert';
+      $('#shoppingOfferTotal').textContent = knownOfferItems.length ? formatEuro(offerTotal) : '–';
+      $('#shoppingOfferNote').textContent = `${formatShoppingCostScope(costSummary)} · Packungsbedarf ${planPeopleSummary()}`;
       $('#shoppingMissingCount').textContent = String(missingItems.length);
       const pantryNote = pantryCoverage.coveredCount ? `${pantryCoverage.coveredCount} Vorratszutat${pantryCoverage.coveredCount === 1 ? '' : 'en'} aus dem Bestand berücksichtigt` : 'keine Vorratszutat aus dem Bestand berücksichtigt';
       const pantryPreview = pantryCoverage.coveredItems.slice(0, 4);
@@ -1791,14 +1806,16 @@
 
     function shoppingShareAmountLabel(item) {
       const amount = calculateOfferAmount([item]);
-      return amount.knownItems.length ? formatEuro(amount.total) : 'Preis unbekannt';
+      return amount.knownOfferCount ? formatEuro(amount.knownOfferTotal) : 'Preis unbekannt';
     }
 
     function shoppingShareSummary(items) {
-      const summary = calculateOfferAmount(items);
+      const summary = getShoppingCostSummary(items);
       const details = [];
-      details.push(summary.knownItems.length ? `Bekannter Angebotsbetrag ${formatEuro(summary.total)}` : 'Kein verifizierter Angebotsbetrag');
-      if (summary.unknownItems.length) details.push(`${summary.unknownItems.length} Preis${summary.unknownItems.length === 1 ? '' : 'e'} unbekannt`);
+      details.push(summary.knownOfferCount ? `Bekannter Angebotsbetrag ${formatEuro(summary.knownOfferTotal)}` : 'Kein verifizierter Angebotsbetrag');
+      if (summary.unknownPriceCount) details.push(`${summary.unknownPriceCount} Preis${summary.unknownPriceCount === 1 ? '' : 'e'} unbekannt`);
+      if (summary.manualMissingCount) details.push(`${summary.manualMissingCount} manuelle${summary.manualMissingCount === 1 ? 'r' : ''} Artikel ohne Angebotsanker`);
+      if (summary.unanchoredMissingCount) details.push(`${summary.unanchoredMissingCount} ${summary.unanchoredMissingCount === 1 ? 'weiterer' : 'weitere'} Artikel ohne Angebotsanker`);
       details.push('Kassenbetrag offen');
       return details.join(' · ');
     }
@@ -1807,13 +1824,16 @@
       if (group === 'Ergänzen') return '';
       const summary = calculateOfferAmount(items);
       const details = [];
-      if (summary.knownItems.length) details.push(`Bekannte Angebotssumme ${formatEuro(summary.total)}`);
-      if (summary.unknownItems.length) details.push(`${summary.unknownItems.length} Preis${summary.unknownItems.length === 1 ? '' : 'e'} unbekannt`);
+      if (summary.knownOfferCount) details.push(`Bekannte Angebotssumme ${formatEuro(summary.knownOfferTotal)}`);
+      if (summary.unknownPriceCount) details.push(`${summary.unknownPriceCount} Preis${summary.unknownPriceCount === 1 ? '' : 'e'} unbekannt`);
       return details.join(' · ');
     }
 
     function formatEuro(value) {
-      return `${Number(value || 0).toFixed(2).replace('.', ',')} €`;
+      const numeric = typeof value === 'number'
+        ? value
+        : typeof value === 'string' && value.trim() ? Number(value) : NaN;
+      return Number.isFinite(numeric) ? `${numeric.toFixed(2).replace('.', ',')} €` : '–';
     }
 
     function estimateMealCost(recipe) {

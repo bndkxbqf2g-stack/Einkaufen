@@ -647,3 +647,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - Sollen lokale Vorratsmengen künftig in Backups und im gemeinsamen Supabase-Haushalt synchronisiert werden?
 - Wie sollen Verbrauch, Teilbestände, Nullbestand und Konflikte zwischen Geräten fachlich behandelt werden?
 - Welche Einheiten und Umrechnungen sind für Einkauf, Packungszahl und Kosten verbindlich freigegeben?
+
+## Fortschritt 08.11.2026 – kanonischer Kostenvertrag ohne neue Freigabe
+
+- Der bekannte Angebots-Teilbetrag wird im Plan jetzt aus derselben vollständigen Einkaufsliste wie in der Einkaufsliste und beim Teilen gebildet. Unbekannte Angebotspreise und fehlende Artikel bleiben separat; manuelle Artikel ohne Angebotsanker sind ausdrücklich sichtbar.
+- Dies ist eine lokale, deterministische und rückwärtskompatible Darstellungskorrektur. Es wurden keine tatsächlichen Einkäufe, `purchaseRecords`, Vorratsmengenverbräuche, Supabase-/Cloud-Daten, Schemaänderungen, Angebotsdaten oder kostenpflichtigen Ressourcen verändert.
+- Für diesen Block ist keine neue Nutzerfreigabe erforderlich. Weiterhin gebündelt offen bleiben die fachliche Freigabe für echte IST-Kassenhistorie, Vorratsmengenverbrauch/-synchronisierung, Fahrtkosten/Routing sowie weitere Supabase-Migrationen oder neue Cloud-Felder.
