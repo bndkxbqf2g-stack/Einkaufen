@@ -410,3 +410,14 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Der Einkaufslisten-/Kostenpfad ist jetzt zusätzlich gegen einen optionalen Abendessen-Slot an einem späteren Planungstag abgesichert: Die für diesen Tag gespeicherte Personenzahl fließt in die gemeinsame Zutatenmenge, Packungszahl und bekannte Angebotssumme ein.
 - Der Test deckt eine zuvor nur statisch geprüfte Verbindung zwischen Wochenplanung, exakter Rezeptmenge, Packungsberechnung und Kostenmodell ab. Es wurden keine Laufzeitdaten, Preise, Angebotsquellen, Vorratsmengen, Supabase-/Cloud-Daten oder Nutzdaten verändert.
+
+## Fortschritt 08.11.2026 – isolierte Service-Worker-Cache-Bereinigung
+
+- Beim Aktivieren des Service Workers werden veraltete Caches jetzt ausschließlich innerhalb des eigenen `angebotskueche-shell-*`-Namensraums gelöscht. Fremde oder unerwartete Origin-Caches bleiben erhalten.
+- Root, `dist`, das eingebettete Worker-Artefakt und der Regressionstest sind synchron. Offline-Fallback und Angebots-Snapshot-Verhalten bleiben unverändert; es wurden keine Nutz-, Angebots-, Supabase-, Cloud- oder Deploymentdaten geändert.
+
+## Fortschritt 08.11.2026 – dokumentierter PWA-Merge und korrigierte PR-Übergabe
+
+- Der Cache-Scope-Fix ist mit [PR #220](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/220) in `main` übernommen. Die CI-Validierung war grün; der Deployment-Job blieb im Pull-Request-Lauf übersprungen.
+- PR #218 wurde wegen eines fehlerhaften API-Dateiuploads nicht gemergt. Ein neuer, bytegenau geprüfter PR enthielt ausschließlich die drei erwarteten PWA-Dateien; dadurch bleiben abgeschnittene oder verfälschte Großdateien ausgeschlossen.
+- Der erreichte Stand ändert keine Nutz-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentdaten. Die Korrektur ist auf die Bereinigung fremder Origin-Caches begrenzt.
