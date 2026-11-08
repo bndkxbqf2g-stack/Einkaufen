@@ -64,6 +64,8 @@ Fallback erhalten, solange keine Supabase-Sitzung aktiv ist. Lokale Funktionen
 und JSON-Backup bleiben ohne Netzwerk nutzbar; es gibt derzeit keine
 Offline-Warteschlange oder automatische Konfliktzusammenführung.
 
+Der optionale Worker-/D1-Pfad hat eine separate, hostingabhängige Vertrauensgrenze: `worker/index.js` übernimmt `oai-authenticated-user-id` als D1-Schlüssel und prüft im Repository nur, ob der Header nicht leer ist. Eine Signatur- oder JWT-Prüfung ist dort nicht enthalten. Der Pfad darf deshalb nur hinter einer Hosting-Schicht betrieben werden, die den Header verlässlich aus einer authentifizierten Sitzung setzt und clientseitig gesetzte Header verhindert; eine direkt öffentliche Worker-URL ist ohne zusätzliche Authentifizierung nicht freigabefähig. Diese Voraussetzung wurde in diesem Audit nicht verändert.
+
 [`sw.js`](../sw.js) cached nur noch gleich-originierte App-Ressourcen. Externe
 Supabase-/CDN-Antworten sowie der private D1-Endpunkt `/api/sync` werden nicht
 vom Service Worker abgefangen oder gecached. Der App-Worker liefert
