@@ -6,7 +6,7 @@
     return Number.isFinite(raw) && raw > 0 ? Math.ceil(raw) : 1;
   }
 
-  function createOfferAmountSummary(totalCents, knownItems, unknownItems) {
+  function createOfferAmountSummary(totalCents, knownItems, unknownItems, knownPackCount, unknownPackCount) {
     const hasKnownOffer = knownItems.length > 0;
     return {
       // Keep the legacy numeric subtotal for callers that already inspect it.
@@ -21,6 +21,9 @@
       knownOfferTotalCents: hasKnownOffer ? totalCents : null,
       knownOfferCount: knownItems.length,
       unknownPriceCount: unknownItems.length,
+      knownOfferPackCount: knownPackCount,
+      unknownPricePackCount: unknownPackCount,
+      estimatedPackCount: knownPackCount + unknownPackCount,
     };
   }
 
@@ -29,19 +32,23 @@
     let totalCents = 0;
     const knownItems = [];
     const unknownItems = [];
+    let knownPackCount = 0;
+    let unknownPackCount = 0;
 
     for (const item of Array.isArray(items) ? items : []) {
       const unitPrice = parsePrice(item?.offer?.price);
       const packCount = normalizePackCount(item?.packCount);
       if (unitPrice === null || !Number.isFinite(unitPrice) || unitPrice < 0) {
         unknownItems.push(item);
+        unknownPackCount += packCount;
         continue;
       }
       knownItems.push(item);
+      knownPackCount += packCount;
       totalCents += Math.round(unitPrice * 100) * packCount;
     }
 
-    return createOfferAmountSummary(totalCents, knownItems, unknownItems);
+    return createOfferAmountSummary(totalCents, knownItems, unknownItems, knownPackCount, unknownPackCount);
   }
 
   function pantryIngredientIdentity(value) {
@@ -88,6 +95,8 @@
     const manualItems = list.filter(item => item?.manual === true);
     const manualMissingItems = missingItems.filter(item => item?.manual === true);
     const unanchoredMissingItems = missingItems.filter(item => item?.manual !== true);
+    const estimatedPackCount = list.reduce((sum, item) => sum + normalizePackCount(item?.packCount), 0);
+    const missingPackCount = missingItems.reduce((sum, item) => sum + normalizePackCount(item?.packCount), 0);
     return {
       ...offerSummary,
       offerItems,
@@ -101,6 +110,9 @@
       manualItemCount: manualItems.length,
       manualMissingCount: manualMissingItems.length,
       unanchoredMissingCount: unanchoredMissingItems.length,
+      estimatedPackCount,
+      offerEstimatedPackCount: offerSummary.estimatedPackCount,
+      missingPackCount,
       classifiedItemCount: offerSummary.knownOfferCount + offerSummary.unknownPriceCount + missingItems.length,
     };
   }
@@ -112,3 +124,4 @@
     summarizeShoppingCosts,
   });
 }(typeof window !== 'undefined' ? window : globalThis));
+
