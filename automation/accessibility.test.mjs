@@ -31,3 +31,10 @@ test('gives rating buttons an explicit accessible name', () => {
     assert.match(attributes, new RegExp(`aria-label="${rating} von 5 Sternen"`), markup);
   });
 });
+
+
+test('associates visible import fields with explicit labels', () => {
+  for (const id of ['recipeName', 'recipeUrl', 'offerInput']) {
+    assert.match(source, new RegExp(`<label[^>]*for="${id}"[^>]*>`), `${id} needs an explicit label`);
+  }
+});
