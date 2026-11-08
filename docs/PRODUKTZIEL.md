@@ -502,3 +502,10 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Die bestehende gemeinsame Text-/Zutaten-Normalisierung wird für die Identität genutzt. Namensvarianten desselben Gerichts werden nicht doppelt gezählt. Explizit markierte Restetage bleiben als bewusste Wiederholung sichtbar und erzeugen keine neue Gericht-Abwechslung.
 - Der Rechenkern ist noch nicht in die bestehende UI-Anzeige `calculateVariety` eingebunden, damit der vorhandene Score und die Nutzerdarstellung nicht ohne gesonderte Abnahmekriterien verändert werden. Es gibt keine neue Speicherung, Backup-, Worker-, Supabase-, SQL-, Auth- oder Sync-Struktur.
 - Fokustests (6/6), Vollsuite (251/251) und Worker-Validator liefen grün. Root und `dist` des neuen Moduls bleiben bytegleich.
+
+## Fortschritt 08.11.2026 – vorbereitender Vorratsdeckungsadapter
+
+- Das neue reine Modul `pantry-shopping-coverage.js` gruppiert vorhandene Bedarfseinträge über die bestehende Zutatenidentität und wertet nur explizite `quantityBasis`-Mengen aus. Gleiche Mengenfamilien werden über das vorhandene Vorratsmengenmodell zusammengeführt.
+- Der Adapter reicht `demand`, `coveredAmount`, `remainingDemand` und `status` pro Gruppe/Position nachvollziehbar weiter. Fehlende oder inkompatible Mengen bleiben unbekannt bzw. inkompatibel; manuelle und mengenlose Legacy-Positionen bleiben `legacy`.
+- Es gibt keine Mutation von Vorräten, keine Änderung an `getShoppingItems`, Packungs-/Kostenberechnung, LocalStorage, Backup, Worker, Supabase oder Angeboten. Root und `dist` sind synchron.
+- Dies ist ausschließlich eine Vorbereitungsgrundlage. Die produktive Einkaufslistenintegration bleibt Freigabepunkt 1; insbesondere Verbrauch, Teilbestände, Einheiten/Rundung und Sync müssen vorher fachlich entschieden werden.
