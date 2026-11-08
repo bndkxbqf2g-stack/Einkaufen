@@ -463,3 +463,10 @@ Der Angebotsimport prüft nun auch im Frontend, ob ein nichtleerer Quellen-Paylo
 Die serverseitige Snapshot-Validierung, atomische Dateischreibung und Workflow-Commit-Guards bleiben unverändert aktiv. Damit überschreibt weder ein leerer Snapshot noch ein syntaktisch nichtleerer, aber fachlich ungültiger Payload den letzten gültigen Stand.
 
 Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten, unsicheren, falsch datierten, widersprüchlich gezählten und formal ungültigen Payloads geprüft. Es wurden keine Live-Angebote abgerufen und keine Nutzer-, Supabase-, Schema- oder Deploymentänderungen vorgenommen.
+
+## Fortschritt 08.11.2026 – additive Kosten-/Kassenmodell-Grundlage
+
+- Das bestehende reine Budgetmodul unterstützt nun getrennte Centwerte für bekannten Angebots-Teilbetrag, optional vollständige geplante Ausgaben, bestätigte tatsächliche Ausgaben, Budgetrest und separat ausgewiesene Fahrtkosten. Unbekannte Werte bleiben `null` und werden nicht als 0 € gerechnet.
+- Der Standard bleibt unverändert bei 40.000 Cent. 44.000 Cent werden nur mit einem ausdrücklich gesetzten alternativen Ziel akzeptiert; normale oder ungültige Eingaben fallen auf 40.000 Cent zurück. Vorhandene Settings und lokale Daten werden nicht überschrieben.
+- Das Kostenmodell weist angenäherte Packungsbedarfe zusätzlich als bekannte, unbekannte, Angebots- und fehlende Packungen aus. Die bestehende `packCount`-/Angebotslogik und alle Legacy-Felder bleiben erhalten.
+- Die vorhandene UI bleibt bewusst bei bekanntem Angebots-Teilbetrag und „IST noch nicht erfasst“, weil es weiterhin keinen sicheren Eingabe-/LocalStorage-Pfad für bestätigte Kassenbeträge und Fahrtkosten gibt. Der nächste UI-Schritt benötigt die Entscheidungen aus Freigabepunkt 9; es gibt keine automatische Buchung, keine Belegerfassung und keine Cloud-Aufnahme.
