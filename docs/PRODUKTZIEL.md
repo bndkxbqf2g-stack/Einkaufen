@@ -373,6 +373,13 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Inkompatible, unklare oder rein textliche Zutaten bleiben beim bisherigen personen-/vorkommensbasierten Legacy-Fallback; Mengen werden nicht geraten oder erfunden. Bekannte, kompatible Angebots-Packungen werden vor der bestehenden Packungsrundung verwendet.
 - Die Mengenbasis ist nur eine Laufzeitberechnung der Einkaufsliste. Manuelle Artikel, bestehende Rezepte, Backups, Cloud-Payloads und sonstige Nutzdatenformate bleiben unverändert; Root, `dist`, Service Worker und Regressionstests sind synchron.
 - Echte Kassenhistorie, Supabase-Schema/-Daten, Live-Angebotsparser und kostenpflichtige Dienste wurden nicht verändert und bleiben für spätere, separat zu prüfende Schritte offen.
+
+## Fortschritt 08.11.2026 – additive lokale Vorratsmengen
+
+- Der Vorratsdialog kann optional eine positive Menge in g/kg, ml/l oder Stück erfassen. Die Einheiten werden über das bestehende deterministische Mengenmodul normalisiert; unbekannte, negative, nullwertige oder unklare Angaben bleiben unbekannt.
+- Die bestehende `angebotskueche.pantry`-Stringliste bleibt die verbindliche Rückwärtskompatibilitätsgrenze. Mengen liegen ausschließlich zusätzlich unter `angebotskueche.pantryQuantities`; alte Stringlisten werden weder in Objekte umgewandelt noch überschrieben. Gemischte Alt-/Neu-Stände bleiben dadurch ladbar.
+- Der lokale Zusatzschlüssel ist in diesem Schritt bewusst nicht Bestandteil von Backup-Payload, Supabase-Cloud-Payload, Worker-Vertrag, Einkaufsliste oder Kostenberechnung. Es werden keine Mengenverbräuche, Packungen, Preise oder Teilbestände erfunden; eine spätere Abziehung darf nur innerhalb derselben Einheitenfamilie und nach gesonderter fachlicher Freigabe erfolgen.
+- Root, `dist`, Service Worker und Worker-Artefakt bleiben synchron. Es gab keine Supabase-Migration, keine Cloud-Datenänderung, kein Deployment und keine kostenpflichtige Ressource.
 ## Fortschritt 07.11.2026 – Restelogik mit optionalem Abendessen
 
 - Die bestehende Restelogik wertet Mittagessen und vorhandene optionale Abendessen jetzt gemeinsam in Tagesreihenfolge aus. Dadurch werden gemeinsam verwendete Zutaten auch über die Grenze zwischen Mittagessen und Abendessen erkannt.

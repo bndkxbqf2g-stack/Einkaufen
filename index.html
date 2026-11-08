@@ -523,7 +523,7 @@
     <div class="modal recipe-reader"><div class="reader-header"><div class="reader-header-bar"><button class="reader-back" id="cancelRecipeDetail">← Sammlung</button><span>Rezept-Reader</span><button class="close" id="closeRecipeDetail" aria-label="Schließen">×</button></div><div class="reader-hero"><div class="reader-icon" id="recipeDetailIcon">🍽️</div><div><div class="reader-eyebrow" id="recipeDetailType">Mittagessen</div><h2 id="recipeDetailTitle">Rezept</h2><p class="reader-meta" id="recipeDetailMeta"></p><div class="meal-tags" id="recipeDetailTags"></div></div></div></div><div class="reader-layout"><main><section class="reader-section"><div class="reader-section-title">Zutaten</div><div class="reader-ingredients" id="recipeDetailIngredients"></div></section><section class="reader-section"><div class="reader-section-title">Zubereitung</div><div class="reader-steps" id="recipeDetailInstructions"></div></section></main><span id="recipeDetailMatch" hidden></span><span id="recipeDetailCost" hidden></span></div><div class="reader-footer"><div class="reader-source" id="recipeDetailSource"></div><div class="modal-actions" style="margin-top:0"><button class="primary-button" id="recipeDetailChoose">Für heute wählen</button></div></div></div>
   </div>
   <div class="modal-backdrop" id="pantryModal" role="dialog" aria-modal="true" aria-labelledby="pantryModalTitle">
-    <div class="modal"><div class="modal-header"><div><h2 id="pantryModalTitle">Vorräte schnell ergänzen</h2><p>Mehrere Zutaten mit Komma, Semikolon oder Enter trennen. Sie werden sofort als vorhanden behandelt – ähnlich wie bei Bring.</p></div><button class="close" id="closePantryModal" aria-label="Schließen">×</button></div><label class="source-note" for="pantryInput">Zutaten</label><input class="input" id="pantryInput" maxlength="500" placeholder="z. B. Reis, Nudeln, Eier oder Tomatenmark" autocomplete="off"><div class="source-note" id="pantryStatus" role="status" aria-live="polite" aria-atomic="true" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelPantryModal">Fertig</button><button class="primary-button" id="savePantryItem">＋ Hinzufügen</button></div></div>
+    <div class="modal"><div class="modal-header"><div><h2 id="pantryModalTitle">Vorräte schnell ergänzen</h2><p>Mehrere Zutaten mit Komma, Semikolon oder Enter trennen. Sie werden sofort als vorhanden behandelt – ähnlich wie bei Bring.</p></div><button class="close" id="closePantryModal" aria-label="Schließen">×</button></div><label class="source-note" for="pantryInput">Zutaten</label><input class="input" id="pantryInput" maxlength="500" placeholder="z. B. Reis, Nudeln, Eier oder Tomatenmark" autocomplete="off"><label class="source-note" for="pantryQuantity" style="display:block;margin-top:10px">Menge (optional)</label><div style="display:flex;gap:8px;margin-top:6px"><input class="input" id="pantryQuantity" type="number" min="0.01" max="1000000000" step="0.01" inputmode="decimal" placeholder="z. B. 1,5" aria-describedby="pantryStatus" style="flex:1"><select class="input" id="pantryUnit" aria-label="Einheit" style="flex:1"><option value="">Menge unbekannt</option><option value="g">g</option><option value="kg">kg</option><option value="ml">ml</option><option value="l">l</option><option value="piece">Stück</option></select></div><div class="source-note" id="pantryStatus" role="status" aria-live="polite" aria-atomic="true" style="margin-top:10px;min-height:16px">Unklare Mengen bleiben unbekannt.</div><div class="modal-actions"><button class="outline-button" id="cancelPantryModal">Fertig</button><button class="primary-button" id="savePantryItem">＋ Hinzufügen</button></div></div>
   </div>
   <div class="modal-backdrop" id="shoppingModal" role="dialog" aria-modal="true" aria-labelledby="shoppingModalTitle">
     <div class="modal"><div class="modal-header"><div><h2 id="shoppingModalTitle">Artikel ergänzen</h2><p>Zusätzliche Artikel bleiben lokal in deiner Einkaufsliste und werden ebenfalls gegen aktive Angebote geprüft.</p></div><button class="close" id="closeShoppingModal" aria-label="Schließen">×</button></div><label class="source-note" for="shoppingItemInput">Artikel</label><input class="input" id="shoppingItemInput" maxlength="60" placeholder="z. B. Tomaten oder Küchenrolle" autocomplete="off"><label class="source-note" for="shoppingItemQuantity" style="display:block;margin-top:10px">Packungen (optional)</label><input class="input" id="shoppingItemQuantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric" style="margin-top:6px" aria-describedby="shoppingItemStatus"><div class="source-note" id="shoppingItemStatus" role="status" aria-live="polite" aria-atomic="true" style="margin-top:10px;min-height:16px"></div><div class="modal-actions"><button class="outline-button" id="cancelShoppingModal">Abbrechen</button><button class="primary-button" id="saveShoppingItem">Zur Liste hinzufügen</button></div></div>
@@ -535,6 +535,7 @@
   <script src="./meal-planning.js"></script>
   <script src="./day-planning.js"></script>
   <script src="./ingredient-quantity.js"></script>
+  <script src="./pantry-quantity.js"></script>
   <script src="./supabase-sync.js"></script>
   <script>
     const seedOffers = [
@@ -773,6 +774,15 @@
     if (!Array.isArray(pantry)) {
       pantry = [...DEFAULT_PANTRY];
       localStorage.setItem('angebotskueche.pantry', JSON.stringify(pantry));
+    }
+    const pantryQuantityModel = globalThis.AngebotskuechePantryQuantityModel;
+    const pantryQuantityStorageKey = pantryQuantityModel?.storageKey || 'angebotskueche.pantryQuantities';
+    const rawPantryQuantities = (() => { try { const value = JSON.parse(localStorage.getItem(pantryQuantityStorageKey)); return value ?? null; } catch { return null; } })();
+    let pantryQuantities = pantryQuantityModel?.normalizeDetails?.(rawPantryQuantities) || {};
+    if (pantryQuantityModel) {
+      const retainedPantryQuantities = pantryQuantityModel.retainForPantry(pantryQuantities, pantry);
+      pantryQuantities = retainedPantryQuantities;
+      if (rawPantryQuantities !== null && JSON.stringify(pantryQuantities) !== JSON.stringify(rawPantryQuantities)) localStorage.setItem(pantryQuantityStorageKey, JSON.stringify(pantryQuantities));
     }
     if (!Array.isArray(dismissedRecipes)) dismissedRecipes = [];
     if (!Array.isArray(pinnedRecipes)) pinnedRecipes = [];
@@ -2400,14 +2410,22 @@
       renderSourceStatus();
     }
 
+    function persistPantryQuantities() {
+      if (!pantryQuantityModel) return;
+      if (Object.keys(pantryQuantities).length) localStorage.setItem(pantryQuantityStorageKey, JSON.stringify(pantryQuantities));
+      else localStorage.removeItem(pantryQuantityStorageKey);
+    }
+
     function renderPantry() {
-      $('#pantryList').innerHTML = pantry.map(item => `<span class="inventory-chip">${escapeHtml(item)}<button title="${escapeHtml(item)} entfernen" data-remove-pantry="${escapeHtml(item)}">×</button></span>`).join('');
-      $$('[data-remove-pantry]').forEach(button => button.addEventListener('click', () => { const removed = button.dataset.removePantry; pantry = pantry.filter(item => item !== removed); localStorage.setItem('angebotskueche.pantry', JSON.stringify(pantry)); renderPantry(); refreshPantryDependentViews(); showToast(`${removed} wird künftig als Einkauf berücksichtigt.`); }));
+      $('#pantryList').innerHTML = pantry.map(item => { const quantity = pantryQuantityModel?.getQuantity(pantryQuantities, item); const quantityLabel = quantity ? ` <small>· ${escapeHtml(pantryQuantityModel.formatQuantity(quantity))}</small>` : ''; return `<span class="inventory-chip">${escapeHtml(item)}${quantityLabel}<button title="${escapeHtml(item)} entfernen" data-remove-pantry="${escapeHtml(item)}">×</button></span>`; }).join('');
+      $$('[data-remove-pantry]').forEach(button => button.addEventListener('click', () => { const removed = button.dataset.removePantry; pantry = pantry.filter(item => item !== removed); pantryQuantities = pantryQuantityModel?.removeQuantity(pantryQuantities, removed) || pantryQuantities; localStorage.setItem('angebotskueche.pantry', JSON.stringify(pantry)); persistPantryQuantities(); renderPantry(); refreshPantryDependentViews(); showToast(`${removed} wird künftig als Einkauf berücksichtigt.`); }));
     }
 
     function openPantryModal() {
       $('#pantryInput').value = '';
-      $('#pantryStatus').textContent = '';
+      $('#pantryQuantity').value = '';
+      $('#pantryUnit').value = '';
+      $('#pantryStatus').textContent = 'Unklare Mengen bleiben unbekannt.';
       $('#pantryModal').classList.add('open');
       $('#pantryInput').focus();
     }
@@ -2432,15 +2450,29 @@
     function savePantryItem() {
       const candidates = parseManualIngredients($('#pantryInput').value).map(item => item.replace(/\s+/g, ' ').trim()).filter(Boolean);
       if (!candidates.length) { $('#pantryStatus').textContent = 'Bitte mindestens eine Zutat eingeben.'; $('#pantryInput').focus(); return; }
+      const quantityInput = $('#pantryQuantity').value.trim();
+      const unitInput = $('#pantryUnit').value.trim();
+      const quantity = pantryQuantityModel?.normalizeQuantity(quantityInput, unitInput) || null;
+      const quantityProvided = Boolean(quantityInput || unitInput);
       const { added, duplicates } = classifyPantryCandidates(pantry, candidates);
       if (added.length) {
         pantry.push(...added);
         localStorage.setItem('angebotskueche.pantry', JSON.stringify(pantry));
-        renderPantry();
-        refreshPantryDependentViews();
       }
+      if (quantity && pantryQuantityModel) {
+        [...added, ...duplicates].forEach(candidate => {
+          const key = shoppingIngredientIdentity(candidate);
+          const existing = pantry.find(item => shoppingIngredientIdentity(item) === key) || candidate;
+          pantryQuantities = pantryQuantityModel.setQuantity(pantryQuantities, existing, quantity.amount, quantity.unit);
+        });
+        persistPantryQuantities();
+      }
+      if (added.length || quantity) { renderPantry(); refreshPantryDependentViews(); }
       $('#pantryInput').value = '';
-      $('#pantryStatus').textContent = `${added.length} ${added.length === 1 ? 'Zutat' : 'Zutaten'} hinzugefügt${duplicates.length ? ` · ${duplicates.length} bereits vorhanden` : ''}.`;
+      $('#pantryQuantity').value = '';
+      $('#pantryUnit').value = '';
+      const quantityNote = quantity ? ' · Menge gespeichert' : (quantityProvided ? ' · Menge bleibt unbekannt' : '');
+      $('#pantryStatus').textContent = `${added.length} ${added.length === 1 ? 'Zutat' : 'Zutaten'} hinzugefügt${duplicates.length ? ` · ${duplicates.length} bereits vorhanden` : ''}${quantityNote}.`;
       $('#pantryInput').focus();
       showToast(added.length ? `${added.length} ${added.length === 1 ? 'Vorrat' : 'Vorräte'} gespeichert.` : 'Alle eingegebenen Vorräte sind bereits gespeichert.');
     }
