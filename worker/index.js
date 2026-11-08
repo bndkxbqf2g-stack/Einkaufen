@@ -244,8 +244,8 @@ function offerSaving(text) {
   return match ? match[0].replace(/\s+/g, '') : '–';
 }
 
-function offerPackSize(text) {
-  const match = String(text || '').match(/\b\d+(?:[.,]\d+)?\s*-?\s*(?:kg|g|l|ml|St\.?|Stück)\b/i);
+function offerPackSize(text, details = '') {
+  const match = `${String(text || '')} ${String(details || '')}`.match(/\b\d+(?:[.,]\d+)?\s*-?\s*(?:kg|g|l|ml|St\.?|Stück)\b/i);
   return match ? match[0].replace(/\s+/g, ' ').trim() : '1 Packung';
 }
 
@@ -281,10 +281,17 @@ function normalizeOfferText(text, validUntil) {
   };
 }
 
+function offerDeduplicationKey(offer, fallbackStore = '') {
+  const packSize = offer?.packSize || offerPackSize(offer?.name, offer?.text);
+  return [offer?.name, offer?.price, packSize, offer?.validUntil, offer?.store || fallbackStore]
+    .map(value => String(value || '').trim().replace(/\s+/g, ' ').toLowerCase())
+    .join('|');
+}
+
 function uniqueOffers(values, validUntil) {
   const seen = new Set();
   return values.map(value => normalizeOfferText(value, validUntil)).filter(Boolean).filter(offer => {
-    const key = `${offer.name.toLowerCase()}|${offer.price}`;
+    const key = offerDeduplicationKey(offer);
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
