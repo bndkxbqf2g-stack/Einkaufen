@@ -42,6 +42,35 @@ test('Tagespersonenzahl nutzt nur gültige Werte und globalen Legacy-Default', (
   assert.equal(model.resolveDayPeople({ 1: 4 }, 1, 2), 4);
 });
 
+test('normalisiert benannte Tages-Teilnehmer stabil und verwirft unbekannte oder doppelte IDs', () => {
+  assert.deepEqual(Array.from(model.participantIds), ['martin', 'steffi', 'children']);
+  assert.equal(model.normalizeParticipantId(' Kinder '), 'children');
+  assert.equal(model.normalizeParticipantId('unbekannt'), null);
+  assert.deepEqual(JSON.parse(JSON.stringify(model.normalizeParticipants([
+    'Steffi', 'Martin', 'Kinder', 'children', 'unbekannt', '', null,
+  ]))), ['martin', 'steffi', 'children']);
+  assert.deepEqual(JSON.parse(JSON.stringify(model.normalizeDayParticipants({
+    0: ['Martin', 'Steffi'],
+    '01': ['Martin', 'Kinder', 'Kinder'],
+    2: ['unbekannt'],
+    x: ['Steffi'],
+  }))), {
+    0: ['martin', 'steffi'],
+    1: ['martin', 'children'],
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(model.resolveDayParticipants({ 1: ['Martin', 'Kinder'] }, 0, ['Steffi']))), ['steffi']);
+  assert.deepEqual(JSON.parse(JSON.stringify(model.resolveDayParticipants({ 1: ['Martin', 'Kinder'] }, 1, ['Steffi']))), ['martin', 'children']);
+});
+
+test('leitet Personenzahlen nur mit expliziter Kinderanzahl ab und nutzt sonst den Legacy-Fallback', () => {
+  assert.equal(model.peopleForParticipants(['Martin', 'Steffi'], undefined, 4), 2);
+  assert.equal(model.peopleForParticipants(['Martin', 'Steffi', 'Kinder'], 1, 2), 3);
+  assert.equal(model.peopleForParticipants(['Martin', 'Steffi', 'Kinder'], 2, 2), 4);
+  assert.equal(model.peopleForParticipants(['Martin', 'Steffi', 'Kinder'], undefined, 3), 3);
+  assert.equal(model.peopleForParticipants(['unbekannt'], 2, 4), 4);
+  assert.equal(model.peopleForParticipants([], 2, 3), 3);
+});
+
 test('Planmodell berechnet deterministische Portionsanteile für gemischte Tage', () => {
   assert.equal(model.portionUnitsForPeople(2), 1);
   assert.equal(model.portionUnitsForPeople(3), 1.5);

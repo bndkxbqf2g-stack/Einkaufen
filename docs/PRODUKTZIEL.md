@@ -478,3 +478,11 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Die bestehende String-Liste `angebotskueche.pantry` bleibt unverändert. Es wurden keine neuen LocalStorage-Schlüssel, Backup-/Worker-/Supabase-Felder, Angebotsdaten oder Cloud-Schreibpfade eingeführt.
 - Die Einkaufsliste und ihre Packungs-/Kostenberechnung verwenden den neuen Abgleich noch nicht. Eine sichere Integration in `getShoppingItems` benötigt einen gesonderten Vertrag für verbleibenden Bedarf und Packungsrundung; dieser Block bleibt deshalb bewusst ein prüfbarer Modell-/Testschritt.
 - Fokustests (6/6), Vollsuite (238/238) und Worker-Validator liefen grün. Die Root-/`dist`-Mengenmodule bleiben bytegleich.
+
+## Fortschritt 08.11.2026 – Tages-Teilnehmermodell als sichere Grundlage
+
+- Das bestehende Tagesplanungsmodul kennt nun die stabilen Teilnehmer-IDs `martin`, `steffi` und die nicht namensgebundene Gruppe `children` (Alias `Kinder`). Unbekannte, leere und doppelte Werte werden verworfen und in einer festen Reihenfolge ausgegeben.
+- Tagesbezogene Teilnehmerlisten werden rein deterministisch normalisiert. Eine Personenzahl wird aus einer Teilnehmerliste nur dann abgeleitet, wenn eine explizite Kinderanzahl vorliegt; andernfalls bleibt der bisherige numerische Tageswert der Fallback. Dadurch werden weder Kinderzahl noch Haushaltsmitglieder erfunden.
+- Die bestehende Personen-/Mengen-/Kostenlogik und der optionale Abendessenpfad bleiben unverändert und verwenden weiterhin den vorhandenen Tageswert. Frühstücks-, Snack- und Getränkeslots sowie eine automatische Kalenderanbindung wurden nicht ergänzt.
+- Eine UI-Auswahl pro Tag und Speicherung der Teilnehmerlisten ist in diesem Block noch nicht aktiviert: Dafür fehlen ein bestätigter lokaler/Backup-/Haushaltssync-Vertrag und eine belastbare Kinderanzahl. Es wurden keine neuen Settings-, Backup-, Worker- oder Supabase-Felder eingeführt.
+- Fokustests des Tagesplanungsmodells: 7/7 grün. Root und `dist` bleiben synchron.
