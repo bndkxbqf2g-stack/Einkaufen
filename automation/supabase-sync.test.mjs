@@ -33,7 +33,7 @@ function workerPayloadValidator() {
   return workerContext.validSyncPayload;
 }
 
-function createSyncHarness({ remoteState = null, confirm = true, initialStorage = {}, rpcErrors = {} } = {}) {
+function createSyncHarness({ remoteState = null, confirm = true, initialStorage = {}, rpcErrors = {}, payload = { version: 1, settings: { people: 2 }, pantry: [] } } = {}) {
   const storage = new Map(Object.entries(initialStorage));
   const elements = new Map();
   const rpcCalls = [];
@@ -96,7 +96,7 @@ function createSyncHarness({ remoteState = null, confirm = true, initialStorage 
   const sandbox = { window, document, localStorage, TextEncoder };
   vm.runInNewContext(source, sandbox, { filename: 'supabase-sync-harness.js' });
   const api = window.angebotskuecheSupabaseSync;
-  const validPayload = { version: 1, settings: { people: 2 }, pantry: [] };
+  const validPayload = payload;
   return {
     api,
     rpcCalls,
@@ -438,11 +438,30 @@ test('confirmed cloud load applies the payload and remembers its revision', asyn
 });
 
 
+test('round-trips dayPeople through Supabase RPC and Worker validation', async () => {
+  const payload = {
+    version: 1,
+    settings: { people: 2, dayPeople: { '1': 4 } },
+    pantry: ['Milch'],
+  };
+  const harness = createSyncHarness({ payload });
+  await harness.initialize();
+
+  assert.equal(await harness.api.save(), true);
+  const saveCall = harness.rpcCalls.find(call => call.name === 'save_household_state');
+  assert.deepEqual(saveCall.args.p_payload, payload);
+  assert.equal(workerPayloadValidator()(payload), true);
+
+  assert.equal(await harness.api.load(), true);
+  assert.deepEqual(harness.appliedPayloads[harness.appliedPayloads.length - 1], payload);
+});
+
+
 test('preserves local data when reading the household state fails', async () => {
   const harness = createSyncHarness({
     remoteState: { payload: { version: 1, settings: { people: 5 } }, revision: '3', updated_at: '2026-11-06T12:00:00Z' },
     initialStorage: {
-      'angebotskueche.settings': '{"people":2}',
+      'angebotskueche.settings': '{"people":2,"dayPeople":{"1":4}}',
       'angebotskueche.supabase.localHousehold': 'house-1',
       'angebotskueche.supabase.revision.house-1': '2',
     },
@@ -451,18 +470,24 @@ test('preserves local data when reading the household state fails', async () => 
   await harness.initialize();
   await assert.rejects(harness.api.load(), /household read failed/);
   assert.equal(harness.appliedPayloads.length, 0);
-  assert.equal(harness.storage.get('angebotskueche.settings'), '{"people":2}');
+  assert.equal(harness.storage.get('angebotskueche.settings'), '{"people":2,"dayPeople":{"1":4}}');
   assert.equal(harness.storage.get('angebotskueche.supabase.revision.house-1'), '2');
 });
 
 test('does not mark a local household saved when the save RPC fails', async () => {
   const harness = createSyncHarness({
+    initialStorage: {
+      'angebotskueche.supabase.household': 'house-1',
+      'angebotskueche.settings': '{"people":2,"dayPeople":{"1":4}}',
+    },
     rpcErrors: { save: { message: 'household save failed' } },
   });
   await harness.initialize();
+  const before = [...harness.storage.entries()];
   await assert.rejects(harness.api.save(), /household save failed/);
   assert.equal(harness.storage.has('angebotskueche.supabase.localHousehold'), false);
   assert.equal(harness.storage.has('angebotskueche.supabase.revision.house-1'), false);
+  assert.deepEqual([...harness.storage.entries()], before);
 });
 
 function extractFrontendFunction(source, name) {
