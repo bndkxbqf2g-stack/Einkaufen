@@ -40,4 +40,3 @@ export function offerDeduplicationKey(offer, fallbackStore = '') {
     .map(value => String(value || '').trim().replace(/\s+/g, ' ').toLowerCase())
     .join('|');
 }
-

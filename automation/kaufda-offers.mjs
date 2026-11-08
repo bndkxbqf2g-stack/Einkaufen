@@ -376,4 +376,3 @@ try {
   await context.close(); await browser.close(); await rm(workdir, { recursive: true, force: true });
 }
 
-
