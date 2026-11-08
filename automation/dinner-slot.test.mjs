@@ -174,7 +174,7 @@ test('uses lunch-only candidates when restoring manual plan assignments', () => 
 
 
 test('renders slot actions only for lunch-capable suggestions with real recipe ids', () => {
-  const suggestionMatch = source.match(/function renderSuggestions\\(\\) \\{[\\s\\S]*?\\n    \\}/);
+  const suggestionMatch = source.match(/function renderSuggestions\(\) \{[\s\S]*?\n    \}/);
   assert.ok(suggestionMatch, 'renderSuggestions must be present in index.html');
   const expressionMatch = suggestionMatch[0].match(/const slotActions = (.+);/);
   assert.ok(expressionMatch, 'slot action expression must be present');
