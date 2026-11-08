@@ -710,3 +710,7 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - Der nächtliche Lidl-Lauf `42474845673` auf `main@4174139…` scheiterte ausschließlich im Ausleseschritt mit `Keine Lebensmittelangebote im Lidl-Prospekt erkannt`; Validierung und Commit wurden übersprungen. Die vorhandene Snapshot-Datei blieb dadurch unverändert.
 - Der reproduzierbare Parserbefund war eine zu enge Lebensmittelklassifikation: 39 von 211 bereits vorhandenen Lidl-Angebotsnamen wurden synthetisch nicht erkannt. Die Hint-Liste wurde um beobachtete Lebensmittelbegriffe ergänzt; Metadaten, Grundpreise und bekannte Nichtlebensmittel bleiben weiterhin ausgeschlossen.
 - Lidl-Fokustests (einschließlich synthetischer Regressionen), Vollsuite, Worker-Validator und Diff-Check sind vor dem PR-Merge auszuführen. Keine echte Angebotsaktualisierung, keine Nutzer-/Supabase-/Schema-/Cloudänderung und keine neue kostenpflichtige Ressource. Für den rein deterministischen, rückwärtsverträglichen Parserfix ist keine zusätzliche fachliche Freigabe erforderlich.
+
+## Freigabepunkt 08.11.2026 – Schutz gegen ungültige Angebots-Payloads
+
+Für diese kleine Stabilitätskorrektur ist keine zusätzliche fachliche Freigabe erforderlich. Der Import verwirft ungültige oder abgelaufene Quellenantworten und behält den letzten gültigen Marktstand. Es wurden ausschließlich automatisierte Tests und statische Prüfungen ausgeführt; kein Live-Angebotslauf, keine Supabase-/Nutzerdatenänderung und kein kostenpflichtiger Dienst wurde gestartet.

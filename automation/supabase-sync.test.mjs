@@ -313,7 +313,8 @@ test('keeps app validity parsing aligned with snapshot date formats', () => {
 test('does not treat a service-worker cache fallback as a fresh offer refresh', () => {
   assert.match(serviceWorker, /X-Angebotskueche-Cache-Fallback/);
   assert.match(html, /response\.headers\.get\('X-Angebotskueche-Cache-Fallback'\)/);
-  assert.match(html, /cacheFallback \|\| !Array\.isArray\(payload\.offers\)/);
+  assert.match(html, /const payloadError = validateOfferPayload\(payload, market\)/);
+  assert.match(html, /cacheFallback \|\| payloadError/);
   assert.match(html, /Offline: letzter Angebotsstand wird beibehalten/);
 });
 

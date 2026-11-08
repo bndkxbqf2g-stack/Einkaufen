@@ -954,6 +954,24 @@
       }
     }
 
+    function validateOfferPayload(payload, expectedMarket, now = new Date()) {
+      if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return 'Angebotsdatensatz ist kein Objekt';
+      if (canonicalMarketName(payload.market) !== canonicalMarketName(expectedMarket)) return 'Angebotsdatensatz gehört zu einem anderen Markt';
+      if (!sourceUrlForDisplay(payload.sourceUrl)) return 'Angebotsdatensatz ohne sichere HTTPS-Quelle';
+      if (!/^\d{4}-\d{2}-\d{2}T([01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?Z$/.test(String(payload.fetchedAt || '').trim()) || !normalizeSourceTimestamp(payload.fetchedAt)) return 'Angebotsdatensatz ohne gültigen UTC-Abrufzeitpunkt';
+      const snapshotEnd = offerEndDate(payload.validUntil);
+      if (!snapshotEnd || snapshotEnd < now) return 'Angebotsdatensatz ist abgelaufen oder ohne gültiges Ende';
+      if (!Array.isArray(payload.offers) || !payload.offers.length) return 'Leerer Angebotsdatensatz';
+      if (payload.recognizedCount !== undefined && payload.recognizedCount !== payload.offers.length) return 'Angebotsanzahl ist widersprüchlich';
+      const pricePattern = /^(?:ab\s+)?\d{1,3}(?:\.\d{3})*(?:,\d{2})?\s*€$/i;
+      const invalidOffer = payload.offers.find(offer => {
+        if (!offer || typeof offer !== 'object' || Array.isArray(offer)) return true;
+        const offerEnd = offerEndDate(offer.validUntil);
+        return !String(offer.name || '').trim() || !pricePattern.test(String(offer.price || '').trim()) || !offerEnd || offerEnd < now || offerEnd > snapshotEnd || /\bverfügbar\s+(?:ab|seit)\b/i.test(offer.name);
+      });
+      return invalidOffer ? 'Angebotsdatensatz enthält ungültige Angebotsdaten' : '';
+    }
+
     function offerCoverageLabel(live) {
       const target = Number(live?.targetOfferCount);
       const loaded = Number(live?.loadedOfferCardCount);
@@ -1052,7 +1070,8 @@
           const response = await fetch(sourcePath, { headers: { accept: 'application/json' } });
           const cacheFallback = response.headers.get('X-Angebotskueche-Cache-Fallback') === '1';
           const payload = await response.json();
-          if (!response.ok || cacheFallback || !Array.isArray(payload.offers) || !payload.offers.length) throw new Error(cacheFallback ? 'Offline: letzter Angebotsstand wird beibehalten.' : payload.error || 'Keine verwertbaren Angebote');
+          const payloadError = validateOfferPayload(payload, market);
+          if (!response.ok || cacheFallback || payloadError) throw new Error(cacheFallback ? 'Offline: letzter Angebotsstand wird beibehalten.' : payload.error || payloadError || 'Keine verwertbaren Angebote');
           return { market, payload };
         } catch (error) {
           return { market, error: error?.message || 'Live-Quelle nicht erreichbar' };
