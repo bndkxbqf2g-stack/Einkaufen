@@ -33,3 +33,11 @@ function packSizeBeforePrice(value) {
 export function offerPackSize(title, details = '') {
   return packSizeBeforePrice(title) || packSizeBeforePrice(details) || '1 Packung';
 }
+
+export function offerDeduplicationKey(offer, fallbackStore = '') {
+  const packSize = offer?.packSize || offerPackSize(offer?.name, offer?.text);
+  return [offer?.name, offer?.price, packSize, offer?.validUntil, offer?.store || fallbackStore]
+    .map(value => String(value || '').trim().replace(/\s+/g, ' ').toLowerCase())
+    .join('|');
+}
+

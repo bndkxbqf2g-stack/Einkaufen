@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { offerPackSize } from './offer-normalization.mjs';
+import { offerDeduplicationKey, offerPackSize } from './offer-normalization.mjs';
 import { writeOfferSnapshot } from './offer-snapshot.mjs';
 
 const markets = {
@@ -91,7 +91,7 @@ function normalizeOfferText(text, validUntil) {
 function uniqueOffers(values, validUntil) {
   const seen = new Set();
   return values.map(value => normalizeOfferText(value, validUntil)).filter(Boolean).filter(offer => {
-    const key = `${offer.name.toLowerCase()}|${offer.price}`;
+    const key = offerDeduplicationKey(offer);
     if (seen.has(key)) return false;
     seen.add(key);
     return true;
@@ -188,4 +188,5 @@ export { parseAldiOffers, parseEdekaOffers, parseKauflandOffers, parseNettoOffer
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch(error => { console.error(error?.message || error); process.exitCode = 1; });
 }
+
 

@@ -699,3 +699,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - Fokustests (39/39), einschließlich Plan-/Einkaufskostenparität, Angebotsauswahl, taggenauer Mengen, Abendessen-, Restelogik-, Vorrats- und Kostenprüfungen, waren grün. Root und `dist` sind bytegleich; die anschließende Vollsuite, der Worker-Validator und der Diff-Check sind für den Doku-PR auszuführen.
 - Es wurde kein reproduzierbarer Defekt gefunden; daher keine Laufzeitänderung und keine neue Nutzerfreigabe. Nicht Bestandteil dieses Audits sind Markt-/Routing-Architektur, echte Angebotsdaten, Vorratsverbrauch/-synchronisierung, Supabase-Schema/-Daten, IST-Kassenhistorie und kostenpflichtige Ressourcen.
 
+## Fortschritt 08.11.2026 – packungsbewusste Angebotsdeduplizierung ohne neue Freigabe
+
+- Der Quellen-/Snapshot-Audit belegte einen deterministischen Defekt: Gleichnamige Angebote mit gleichem Preis, aber unterschiedlicher Packungsgröße konnten in den Importpfaden und beim lokalen App-Import als Duplikat verworfen werden. Das widersprach dem bestehenden Snapshot-Vertrag, der unterschiedliche Packungsgrößen ausdrücklich getrennt hält.
+- Der minimale Fix nutzt in den Angebotsimportern, der Preis-Historie und im Frontend einen normalisierten Schlüssel aus Name, Preis, Packungsgröße, Gültigkeitsdatum und Markt. Ein synthetischer Regressionstest stellt sicher, dass 200-g- und 250-g-Varianten erhalten bleiben und echte Duplikate weiterhin zusammenfallen.
+- Fokustests (51/51), Vollsuite (230/230), Worker-Validator und Diff-Check waren grün; Root und `dist` sind bytegleich. Es wurden keine echten Angebotsdaten aktualisiert, keine Nutzerdaten verändert und keine Supabase-/Schema-/Cloud-/Deploymentänderung vorgenommen. Für diesen rückwärtsverträglichen Korrekturblock ist keine neue Nutzerfreigabe erforderlich.
+
