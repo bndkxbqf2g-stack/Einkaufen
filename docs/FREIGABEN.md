@@ -686,3 +686,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - Der Root-Synchronisierungsworkflow entfernt vor dem Kopieren nur den ausdrücklich generierten Root-Ordner `icons` und spiegelt danach `dist/icons`. Ein Regressionstest schützt diesen Synchronitätsvertrag.
 - Dies ist eine deterministische CI-/PWA-Stabilitätskorrektur ohne neue Nutzerfreigabe. Keine Nutz-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentänderung.
+
+## Audit 08.11.2026 – Offline-/Auth-Fehlerpfade ohne Freigabebedarf
+
+- Supabase-Initialisierungsfehler und fehlgeschlagene Session-Abfragen stoppen den Cloudpfad nachvollziehbar, öffnen auf GitHub Pages keinen Login-Dialog und verändern keine lokalen Einstellungen, Vorräte, Wochenplan-, Einkaufscheck- oder manuellen Artikel-Daten.
+- Der Audit fand keinen reproduzierbaren Laufzeitfehler. Fokustests (28/28), Vollsuite (227/227), Worker-Validator und Diff-Check waren grün. Es wurde keine neue Freigabe benötigt; echte Auth-/E-Mail-E2E-Prüfung mit einem Nutzerkonto bleibt der bekannte separate Prüfpunkt.
