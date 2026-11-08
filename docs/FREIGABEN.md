@@ -665,3 +665,14 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - Der Testblock prüft den bestehenden lokalen Pfad von Wochenplanung über Mengen-/Packungsberechnung bis zur Angebotssumme mit einem optionalen Abendessen an einem späteren Tag und einer abweichenden Tagespersonenzahl.
 - Es handelt sich um eine additive Test- und Dokumentationsänderung. Keine neue Freigabe ist erforderlich; es wurden keine Preise oder Angebotsdaten erfunden und keine Vorrats-, Supabase-, Cloud-, Schema- oder Deploymentänderung vorgenommen.
+
+## Fortschritt 08.11.2026 – isolierte Service-Worker-Cache-Bereinigung
+
+- Der Service Worker löscht bei der Aktivierung nur noch veraltete `angebotskueche-shell-*`-Caches. Ein Regressionstest stellt sicher, dass fremde Origin-Caches erhalten bleiben.
+- Dies ist eine lokale, deterministische PWA-Korrektur mit synchronisiertem Root-/`dist`-/Worker-Artefakt. Keine Nutz-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentänderung; keine neue Nutzerfreigabe erforderlich. Der PR wird zur Prüfung erstellt und nicht automatisch gemergt.
+
+## Fortschritt 08.11.2026 – dokumentierter PWA-Merge und korrigierte PR-Übergabe
+
+- Der Cache-Scope-Fix ist mit [PR #220](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/220) in `main` gemergt; die CI-Validierung war grün. Für diesen deterministischen, datenschonenden Fix ist keine weitere fachliche Freigabe offen.
+- PR #218 bleibt als verworfener, fehlerhafter API-Dateiupload offen und darf nicht gemergt werden. Der Ersatz-PR wurde mit exakt drei erwarteten PWA-Dateien, bytegenauem Remote-Abgleich und erfolgreicher CI erstellt und anschließend gemergt.
+- Keine Nutz-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentänderung. Weiterhin separat freigabepflichtig bleiben fachliche Vorrats-/IST-/Routing-/Supabase-Schritte.
