@@ -971,7 +971,7 @@
       const invalidOffer = payload.offers.find(offer => {
         if (!offer || typeof offer !== 'object' || Array.isArray(offer)) return true;
         const offerEnd = offerEndDate(offer.validUntil);
-        return !String(offer.name || '').trim() || !pricePattern.test(String(offer.price || '').trim()) || !offerEnd || offerEnd < now || dateOrdinal(offerEnd) < fetchedAtOrdinal || offerEnd > snapshotEnd || /\\bverfügbar\\s+(?:ab|seit)\\b/i.test(offer.name);
+        return !String(offer.name || '').trim() || !pricePattern.test(String(offer.price || '').trim()) || !offerEnd || offerEnd < now || dateOrdinal(offerEnd) < fetchedAtOrdinal || offerEnd > snapshotEnd || /\bverfügbar\s+(?:ab|seit)\b/i.test(offer.name);
       });
       return invalidOffer ? 'Angebotsdatensatz enthält ungültige Angebotsdaten' : '';
     }
