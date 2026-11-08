@@ -691,3 +691,11 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - Supabase-Initialisierungsfehler und fehlgeschlagene Session-Abfragen stoppen den Cloudpfad nachvollziehbar, öffnen auf GitHub Pages keinen Login-Dialog und verändern keine lokalen Einstellungen, Vorräte, Wochenplan-, Einkaufscheck- oder manuellen Artikel-Daten.
 - Der Audit fand keinen reproduzierbaren Laufzeitfehler. Fokustests (28/28), Vollsuite (227/227), Worker-Validator und Diff-Check waren grün. Es wurde keine neue Freigabe benötigt; echte Auth-/E-Mail-E2E-Prüfung mit einem Nutzerkonto bleibt der bekannte separate Prüfpunkt.
+
+## Audit 08.11.2026 – Wochenplan bis bekannte Angebotssumme ohne neue Freigabe
+
+- Der lokale Konsistenzpfad von Wochenplan über optionale Abendessen, Tagespersonenzahl, Mengen-/Packungsberechnung und Vorratsabgleich bis zur bekannten Angebotssumme wurde geprüft. Die Testfälle decken Mittagessen plus optionales Abendessen an einem späteren Tag, abweichende Tagespersonenzahlen, gemeinsame Zutaten, Pantry-Coverage und unbekannte Preise ab.
+- Es werden keine unbekannten Preise oder Mengen als `0` bzw. als erfundene Werte verwendet. Bekannte Angebotspositionen, unbekannte Angebotspreise und fehlende Angebotsanker bleiben im Kostenvertrag getrennt. Der bekannte Teilbetrag basiert auf der vollständigen Einkaufsliste; der echte Kassenbetrag bleibt offen.
+- Fokustests (39/39), einschließlich Plan-/Einkaufskostenparität, Angebotsauswahl, taggenauer Mengen, Abendessen-, Restelogik-, Vorrats- und Kostenprüfungen, waren grün. Root und `dist` sind bytegleich; die anschließende Vollsuite, der Worker-Validator und der Diff-Check sind für den Doku-PR auszuführen.
+- Es wurde kein reproduzierbarer Defekt gefunden; daher keine Laufzeitänderung und keine neue Nutzerfreigabe. Nicht Bestandteil dieses Audits sind Markt-/Routing-Architektur, echte Angebotsdaten, Vorratsverbrauch/-synchronisierung, Supabase-Schema/-Daten, IST-Kassenhistorie und kostenpflichtige Ressourcen.
+
