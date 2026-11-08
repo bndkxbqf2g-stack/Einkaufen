@@ -533,3 +533,8 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Die serverseitige Angebotsnormalisierung dedupliziert nun mit demselben deterministischen Schlüssel wie der bestehende Automationskern: Produktname, Preis, Packungsgröße, Angebotsende und optionaler Markt bleiben berücksichtigt.
 - Gleichnamige und gleichpreisige Varianten mit unterschiedlichen Packungsgrößen bleiben dadurch getrennt; echte Duplikate werden weiterhin nach stabiler Leerzeichen-Normalisierung zusammengeführt.
 - Es wurden keine Angebotsquellen, Preise, Nutzerdaten, Supabase-/SQL-/Auth-/Sync-/Cloud-Verträge oder produktiven Einkaufsdaten verändert.
+## Fortschritt 08.11.2026 – Marktfortschritt direkt in der Einkaufsliste
+
+- Jede Marktgruppe der Einkaufsliste zeigt jetzt den erledigten Anteil und bietet eine lokale Gruppenaktion „Markt abhaken“ bzw. „Öffnen“.
+- Die Aktion verwendet ausschließlich den bestehenden `shoppingChecks`-Schlüssel je Artikel. Es entstehen keine neuen Daten-, Backup- oder Sync-Felder; unbekannte Preise, fehlende Artikel und Kassenbeträge bleiben unverändert offen.
+- Root, `dist` und das generierte Worker-Artefakt bleiben synchron. Die Erweiterung unterstützt den tatsächlichen Einkauf ohne Marktvergleich, Routenoptimierung oder Vorratsmutation vorwegzunehmen.

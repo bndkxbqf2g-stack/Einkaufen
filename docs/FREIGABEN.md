@@ -900,3 +900,7 @@ Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvolls
 - Der Worker verwendet für Live-Angebote nun den bereits etablierten packungsbewussten Deduplizierungsschlüssel. Die Änderung ist deterministisch, rückwärtskompatibel und rein lesend.
 - Regressionen decken 200 g/250 g bei gleichem Namen und Preis sowie echte Duplikate mit abweichenden Leerzeichen ab. Worker-Build und Validator bleiben erfolgreich.
 - Keine neue fachliche Freigabe erforderlich; es wurden keine Quellen-, Preis-, Datenbank-, Supabase-, Auth-, Sync- oder Cloud-Verträge geändert.
+## Fortschritt 08.11.2026 – Marktfortschritt in der Einkaufsliste
+
+- Marktgruppen zeigen nun `erledigt/gesamt` und können gesammelt abgehakt oder wieder geöffnet werden. Die bestehende lokale Checklistenpersistenz bleibt der einzige Zustand.
+- Regression, Vollsuite, Worker-Build und Validator liefen grün. Es gibt keine neue fachliche Freigabe; Marktvergleich, Fahrtkosten, Belegerfassung und Vorratsmengen bleiben unverändert freigabepflichtig.
