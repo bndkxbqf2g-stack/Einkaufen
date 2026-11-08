@@ -171,3 +171,13 @@ test('rejects breakfast from manual lunch assignment and keeps valid lunch choic
 test('uses lunch-only candidates when restoring manual plan assignments', () => {
   assert.match(currentPlanMatch[0], /getPlanCandidateById\(recipeId, lunchCandidates\)/);
 });
+
+
+test('offers day assignment actions only for lunch-capable suggestions', () => {
+  const suggestionMatch = source.match(/function renderSuggestions\(\) \{[\s\S]*?\n    \}/);
+  assert.ok(suggestionMatch, 'renderSuggestions must be present in index.html');
+  assert.match(suggestionMatch[0], /const slotActions = mealPurposeAllowsSlot\(recipe, 'lunch'\)/);
+  assert.match(suggestionMatch[0], /\$\{slotActions\}/);
+  assert.match(suggestionMatch[0], /data-today-recipe/);
+  assert.match(suggestionMatch[0], /data-assign-recipe/);
+});
