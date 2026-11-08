@@ -426,3 +426,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - `scripts/validate-worker.mjs` prüft zusätzlich, dass der eingebettete Service Worker im generierten `dist/server/index.js` den eigenen `angebotskueche-shell-*`-Namensraum verwendet.
 - Dies ist eine additive Build-/Artefaktprüfung ohne Laufzeit-, Nutzdaten-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentänderung.
+
+## Fortschritt 08.11.2026 – vollständige Pages-Icon-Synchronisierung
+
+- Der Root-Synchronisierungsworkflow leert vor dem Kopieren den generierten Root-Ordner `icons` und übernimmt anschließend den aktuellen Inhalt aus `dist/icons`. Entfernte oder umbenannte PWA-Icons bleiben dadurch nicht versehentlich im Pages-Root liegen.
+- Der Workflowvertrag ist durch einen Regressionstest abgesichert. Es wurden keine App-Laufzeit-, Nutzer-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentdaten verändert.
