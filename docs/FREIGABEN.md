@@ -791,3 +791,83 @@ Der reine Marktstopp-Rechenkern ist umgesetzt: Er empfiehlt nur bei explizit bel
 Die reine Abwechslungsbewertung ist umgesetzt und prüfbar. Sie liefert getrennte Werte für Gerichte, Hauptzutaten, Zubereitungsarten, fehlende Merkmale und bewusste Restewiederholungen. Eine Änderung der bestehenden UI-Bewertung oder eine automatische Planänderung ist nicht Bestandteil dieses PRs.
 
 Vor einer UI-Integration müssen Anzeige-/Score-Regeln, die Behandlung fehlender Metadaten und die sichtbare Kennzeichnung von Restetagen fachlich bestätigt werden. Bis dahin bleiben bestehende Plan-, Nutzer-, Backup-, Cloud- und Supabase-Daten unverändert.
+
+## Gebündelte Freigabe-Arbeitsliste – Stand 08.11.2026
+
+Die sicheren Grundlagen für Kosten-/Budgettransparenz, lokale Vorratsmengen, Teilnehmernormalisierung, Marktstopp-Rechnung und Abwechslungsbewertung sind inzwischen als getrennte, deterministische Modelle und Regressionstests vorhanden. Die produktiven UI-, Speicher- und Cloud-Integrationen dieser Modelle sind damit nicht automatisch freigegeben.
+
+### 1. Mengenbewusste Vorratsdeckung
+
+- **Entscheidung:** Sollen Rezeptbedarf und Vorrat in g/kg, ml/l und Stück verrechnet werden; wie werden Teilmengen, Verbrauch, Nullbestand, Rundung und mehrere Gerichte behandelt?
+- **Sicherer Standard:** Nur gleiche Mengenfamilien umrechnen; fehlende, unklare oder inkompatible Mengen nicht abziehen. Ohne Entscheidung keine Schätzung.
+- **Betroffene Verträge:** `pantryQuantities`, Rezept-/Einkaufsbedarf, Packungsrundung, Kostenmodell, Backup und Supabase-/Worker-Payload.
+- **Danach möglich:** lokale Abdeckung im Einkaufslistenmodell mit Regressionstests; anschließend getrennte Entscheidung über Verbrauch und Synchronisierung.
+- **Risiko:** Falsche Einheit oder stiller Verbrauch erzeugt zu kleine Einkaufslisten, falsche Kosten und geräteübergreifende Konflikte.
+
+### 2. Tages-Teilnehmer-UI und Kinderanzahl
+
+- **Entscheidung:** Wie viele Kinder werden planmäßig berücksichtigt, wer darf die Auswahl je Tag ändern, und soll die Auswahl nur lokal oder haushaltsweit gelten?
+- **Sicherer Standard:** Bestehender numerischer Tageswert 2/3/4 bleibt Fallback; keine Kinderzahl und keine Teilnehmer werden erfunden.
+- **Betroffene Verträge:** Wochenplan, Mengen-/Kostenpfad, lokale Settings, Backup, Haushaltssync und Mitgliedschaftsmodell.
+- **Danach möglich:** Auswahl von Martin, Steffi und Kindern pro Tag; Ableitung der Tagesportionen bei expliziter Kinderzahl.
+- **Risiko:** Eine falsche Kinderzahl verändert Mengen, Packungen, Kosten und Budgetaussagen für den ganzen Plan.
+
+### 3. Abwechslungsanzeige und Score
+
+- **Entscheidung:** Wie sollen eindeutige Gerichte, Hauptzutaten und Zubereitungsarten gewichtet werden; wie sollen fehlende Merkmale und geplante Restetage angezeigt werden?
+- **Sicherer Standard:** Reine Merkmalswerte sichtbar machen, aber bestehenden Score und Plan nicht automatisch verändern, bis die Anzeige abgenommen ist.
+- **Betroffene Verträge:** Wochenplan-Renderer, Rezeptmetadaten, gemeinsame Identitätsnormalisierung und Restelogik.
+- **Danach möglich:** UI-Anzeige mit nachvollziehbarem Status und bewusst gekennzeichneten Wiederholungen.
+- **Risiko:** Eine ungeprüfte Gewichtung bevorzugt bloße Umbenennungen oder bestraft geplante Resteverwertung.
+
+### 4. Tatsächliche IST-/Kassen-Erfassung
+
+- **Entscheidung:** Gesamtbetrag je Einkauf oder Positionen, Quelle (manuell/Beleg/OCR), Kaufdatum und Monatszeitzone, Korrekturen, Fahrtkosten, Historie, Aufbewahrung, Löschung und Haushaltsrechte.
+- **Sicherer Standard:** Bis zur Entscheidung nur vorbereiteten lokalen Validator nutzen; keine produktiven Käufe speichern und keine unbekannten Werte als 0 behandeln.
+- **Betroffene Verträge:** `purchaseRecords`, Budgetanzeige, lokale Speicherung, Backup, Supabase-/Worker-Payload, RLS und Datenschutz.
+- **Danach möglich:** zunächst lokales manuelles Erfassungsmodell; später ausdrücklich freigegebene Synchronisierung oder Belegverarbeitung.
+- **Risiko:** Unklare Monats-/Korrekturregeln verfälschen Budgetreste und Historie; zu breite Synchronisierung legt sensible Ausgaben offen.
+
+### 5. Mehrstopp-/Fahrtkostenbasis
+
+- **Entscheidung:** Verkehrsmittel, Strecke, Parken, Fahrtkostenquelle, Marktzuordnung, Nettoersparnisschwelle und Umgang mit regulären Vergleichspreisen.
+- **Sicherer Standard:** Keine zusätzlichen Stopps empfehlen, solange Kosten und Schwelle nicht ausdrücklich geliefert und validiert sind.
+- **Betroffene Verträge:** Marktlimit, Warenkorbvergleich, Angebots-/Regulärpreise, Kostenmodell und spätere Routinglogik.
+- **Danach möglich:** geprüfte Mehrstopp-Empfehlung aus Basiswarenkorb minus Alternativwarenkorb minus Fahrtkosten.
+- **Risiko:** Geschätzte Fahrtkosten oder unvollständige Angebote führen zu scheinbaren statt echten Ersparnissen.
+
+### 6. Offline-Warteschlange und Konfliktstrategie
+
+- **Entscheidung:** Welche lokalen Operationen werden gepuffert, wie werden Reihenfolge, Wiederholung, Löschung und konkurrierende Änderungen behandelt?
+- **Sicherer Standard:** Aktueller Compare-and-Swap-Schutz stoppt veraltete Schreibvorgänge; kein automatischer Merge und kein stilles Überschreiben.
+- **Betroffene Verträge:** localStorage, Outbox, Supabase-Revisionen, Worker-/D1-Pfad, RLS und UI-Status.
+- **Danach möglich:** begrenzte Outbox mit Backoff, Wiederaufnahme und expliziter Konfliktanzeige.
+- **Risiko:** Eine falsche Merge-Regel kann Vorräte, Pläne oder Ausgaben unwiederbringlich überschreiben.
+
+### 7. Supabase-Payload-/SQL-Vertragslücke
+
+- **Entscheidung:** Welche Feldtypen und Elementregeln gelten serverseitig verbindlich für `recipeHistory` und `manualDinnerPlan`, und welche Payload-Felder sind künftig zugelassen?
+- **Sicherer Standard:** Client-/Worker-Prüfungen nicht lockern und keine direkten RPC-Schreibungen für neue oder ungeprüfte Felder zulassen.
+- **Betroffene Verträge:** `supabase-sync.js`, Worker-Validator, `save_household_state_impl`, Migrationen, RLS und Regressionstests.
+- **Danach möglich:** eine freigegebene SQL-Migration mit deckungsgleichen Prüfungen und Rollback-/Testplan.
+- **Risiko:** Uneinheitliche Validierung kann per direktem RPC ungültige Haushaltszustände speichern und spätere Synchronisierung brechen.
+
+### 8. Auth-Redirect-/E-Mail-E2E-Test
+
+- **Entscheidung:** Wer legt ein zeitlich begrenztes Testkonto an und wann darf der Redirect-/Bestätigungs-/Logout-Test durchgeführt werden?
+- **Sicherer Standard:** Keine Passwörter, Tokens oder Testzugänge dokumentieren; ohne Testkonto bleibt der E2E-Befund unbekannt.
+- **Betroffene Verträge:** Supabase Auth, Site-/Redirect-Allowlist, Session-Handling und GitHub-Pages-Deployment.
+- **Danach möglich:** einmaliger Test von Registrierung, Bestätigungslink, Redirect, Session-Erneuerung und Logout ohne Änderung an Nutzdaten.
+- **Risiko:** Ein ungeprüfter Redirect kann Bestätigungslinks unbrauchbar machen oder Sessions auf unerwartete Ziele leiten.
+
+### 9. Optionale KI-/Provider-/Kostenfreigabe und Vue/TypeScript
+
+- **Entscheidung:** Ob ein KI-Anbieter benötigt wird, welche Daten übertragen werden dürfen, welches Kostenlimit gilt und ob ein Frameworkwechsel tatsächlich Nutzen bringt.
+- **Sicherer Standard:** Keine KI/API und keine kostenpflichtige Ressource; statische App und bestehende JavaScript-Module bleiben maßgeblich.
+- **Betroffene Verträge:** Datenminimierung, Validierung, Kostenkontrolle, Deployment und gesamte Frontend-Architektur.
+- **Danach möglich:** zunächst providerunabhängiger Adapter mit Budget-/Ausfallgrenzen; Vue 3/TypeScript nur nach messbarem Vergleich und ausdrücklicher Freigabe.
+- **Risiko:** Ein voreiliger Provider- oder Frameworkwechsel erhöht Kosten, Datenabfluss, Komplexität und Migrationsrisiken ohne belegten Produktnutzen.
+
+### Empfohlene Reihenfolge und nächster Schritt
+
+Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvollste nächste Implementierungsschritt, weil sie den Einkaufsprozess direkt verbessert und auf dem vorhandenen Mengenmodell aufbauen kann. Dafür müssen zuerst Einheiten, Teilmengen und Verbrauch verbindlich festgelegt werden. Diese Arbeitsliste selbst ändert keine Verträge und ist keine Freigabe.
