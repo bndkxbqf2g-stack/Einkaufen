@@ -25,3 +25,9 @@ const explicitPackSize = parseLidlOfferText('Naturjoghurt 500 g\n(1 kg = 1,58 �
 assert.equal(explicitPackSize.length, 1);
 assert.equal(explicitPackSize[0].price, '0,79 €');
 assert.equal(explicitPackSize[0].packSize, '500 g');
+
+for (const name of ['Orangen', 'Mandeln', 'Haferdrink', 'Garnelen', 'Schoko-Bons', 'Vanillin-Zucker', 'T-Bone Steak']) {
+  const parsed = parseLidlOfferText(`${name}\n2,49 €`);
+  assert.equal(parsed.length, 1, `Lebensmittelbegriff wird erkannt: ${name}`);
+  assert.equal(parsed[0].name, name);
+}

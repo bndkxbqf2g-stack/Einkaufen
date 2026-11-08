@@ -450,3 +450,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Ein gemeinsamer, normalisierter Deduplizierungsschlüssel umfasst jetzt Produktname, Preis, Packungsgröße, Gültigkeitsdatum und Markt. Der Snapshot-Vertrag bleibt unverändert; er akzeptiert weiterhin echte Varianten und weist nur identische Positionen zurück. Die Preis-Historie bewahrt die Packungsgröße ebenfalls.
 - Root und `dist` bleiben bytegleich. Ein synthetischer Regressionstest prüft gleichpreisige Packungsvarianten sowie die Verwendung des Schlüssels in den Quellen und im App-Import. Keine Live-Angebotsdaten wurden aktualisiert oder erfunden; Nutzer-, Supabase-, Schema-, Cloud- und Deploymentdaten blieben unverändert.
 
+## Fortschritt 08.11.2026 – Lidl-Parser erkennt beobachtete Lebensmittelbegriffe
+
+- Der fehlgeschlagene Lidl-Workflow `42474845673` wurde read-only anhand seines Logs und des vorhandenen Snapshots geprüft. Der Lauf veröffentlichte keine Datei; die Pipeline brach konservativ ab, weil die Parserklassifikation keine verwertbaren Lebensmittelangebote erkannte.
+- Der Parser hatte eine zu enge Lebensmittel-Hinweisliste. Gegen die 211 bereits eingecheckten, quellenbelegten Lidl-Angebote blieben 39 eindeutige Lebensmittelbezeichnungen unklassifiziert, darunter Orangen, Mandeln, Haferdrink, Garnelen, Schoko-Bons und Vanillin-Zucker. Die Hinweisliste wurde deshalb nur um beobachtete Lebensmittelkategorien und -bezeichnungen erweitert; Nichtlebensmittel- und Metadatenfilter bleiben aktiv.
+- Synthetische Regressionen sichern die neuen Begriffe und den bestehenden konservativen Filter. Es wurden keine Angebotsdateien aktualisiert, keine Preise erfunden und keine Supabase-, Nutzdaten-, Schema-, Cloud- oder Deploymentänderung vorgenommen.
