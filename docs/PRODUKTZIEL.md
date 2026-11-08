@@ -366,6 +366,13 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Ein `APP_BUILD`-Wechsel leert den aktiven Shell-Cache nicht mehr vorzeitig. Die bestehende Offline-Shell bleibt erhalten, bis ein neuer Service Worker installiert und aktiviert ist; erst dessen versionierter Aktivierungspfad räumt alte Caches auf.
 - Root und `dist` werden zusätzlich auf identische App-Shell-Quellen geprüft. Persönliche Daten und lokale Einstellungen werden vom Updatepfad nicht verändert.
+
+## Fortschritt 08.11.2026 – deterministische Rezeptmengen und Packungsgrundlage
+
+- [PR #212](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/212) ergänzt mit `ingredient-quantity.js` ein kleines deterministisches Mengenmodell. Es berücksichtigt ausschließlich eindeutige Rezeptangaben in g/kg, ml/l und Stück sowie klar erkennbare Multipacks.
+- Inkompatible, unklare oder rein textliche Zutaten bleiben beim bisherigen personen-/vorkommensbasierten Legacy-Fallback; Mengen werden nicht geraten oder erfunden. Bekannte, kompatible Angebots-Packungen werden vor der bestehenden Packungsrundung verwendet.
+- Die Mengenbasis ist nur eine Laufzeitberechnung der Einkaufsliste. Manuelle Artikel, bestehende Rezepte, Backups, Cloud-Payloads und sonstige Nutzdatenformate bleiben unverändert; Root, `dist`, Service Worker und Regressionstests sind synchron.
+- Echte Kassenhistorie, Supabase-Schema/-Daten, Live-Angebotsparser und kostenpflichtige Dienste wurden nicht verändert und bleiben für spätere, separat zu prüfende Schritte offen.
 ## Fortschritt 07.11.2026 – Restelogik mit optionalem Abendessen
 
 - Die bestehende Restelogik wertet Mittagessen und vorhandene optionale Abendessen jetzt gemeinsam in Tagesreihenfolge aus. Dadurch werden gemeinsam verwendete Zutaten auch über die Grenze zwischen Mittagessen und Abendessen erkannt.

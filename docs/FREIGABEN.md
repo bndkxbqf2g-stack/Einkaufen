@@ -628,3 +628,9 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - [PR #204](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/204) führt einen tri-state Supabase-Sessionstatus (`true`/`false`/`null`) ein. Spätere `getSession()`-Fehler öffnen keinen Login-/Settings-Dialog und nutzen keinen D1-Fallback.
 - Regressionstests für SDK-/UI-Pfade und die CI-Validierung waren grün. Es gab keinen Supabase-Projekt-, Schema-, Daten-, Auth-Konfigurations-, Redirect- oder Deployment-Schritt.
 - Der echte Auth-/E-Mail-Bestätigungs-E2E-Test bleibt offen und benötigt weiterhin ein vom Nutzer angelegtes Testkonto.
+
+## Fortschritt 08.11.2026 – additive Rezeptmengen ohne neue Freigabe
+
+- [PR #212](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/212) setzt den risikoarmen Mengenblock ohne neue Nutzerentscheidung um: Eindeutige g/kg, ml/l, Stück und klare Multipacks werden deterministisch auf kompatible Angebots-Packungen abgebildet.
+- Unklare, inkompatible oder textliche Angaben bleiben im bestehenden Legacy-Fallback. Manuelle Einkaufsartikel, bestehende Nutzdatenformate, Backups und Synchronisationsdaten werden nicht umgeschrieben.
+- Offen und ausdrücklich nicht Bestandteil dieses Blocks bleiben echte Kassenhistorie, Supabase-Schema oder Supabase-Datenänderungen sowie kostenpflichtige Dienste. Es wurden keine solchen Ressourcen erstellt oder verändert.
