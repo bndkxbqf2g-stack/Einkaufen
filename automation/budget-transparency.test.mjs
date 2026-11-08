@@ -48,6 +48,24 @@ test('lässt unbekannte Angebotswerte und tatsächliche Ausgaben ausdrücklich o
   assert.equal(unknown.actualSpendStatus, 'not-recorded');
 });
 
+test('unterscheidet leere und vollständig bekannte Angebotssnapshots vom IST-Status', () => {
+  const empty = model.summarizeBudgetTransparency({
+    knownOfferTotalCents: null,
+    unresolvedPositionCount: 0,
+  });
+  const known = model.summarizeBudgetTransparency({
+    knownOfferTotalCents: 2_499,
+    unresolvedPositionCount: 0,
+  });
+
+  assert.equal(empty.knownOfferStatus, 'unknown');
+  assert.equal(empty.knownOfferTotalCents, null);
+  assert.equal(empty.actualSpendCents, null);
+  assert.equal(known.knownOfferStatus, 'known-offer-only');
+  assert.equal(known.knownOfferTotalCents, 2_499);
+  assert.equal(known.actualSpendCents, null);
+});
+
 test('hält Budgetmodell und veröffentlichte App synchron', () => {
   assert.equal(publishedModelSource, modelSource);
   assert.equal(published, source);

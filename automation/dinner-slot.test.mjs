@@ -16,8 +16,10 @@ const dinnersMatch = source.match(/function buildCurrentPlanDinners\(lunches\) \
 const dinnerCardMatch = source.match(/function renderDinnerCard\(dinner, index, people\) \{[\s\S]*?\n    \}/);
 const lunchAssignmentMatch = source.match(/function assignRecipeToDay\(recipeId, dayIndex\) \{[\s\S]*?\n    \}/);
 const currentPlanMatch = source.match(/function buildCurrentPlanLunches\(\) \{[\s\S]*?\n    \}/);
+const sectionsMatch = source.match(/function getCurrentPlanSections\(\) \{[\s\S]*?\n    \}/);
+const plannedDinnersMatch = source.match(/function getPlannedDinnerMeals\(\) \{[\s\S]*?\n    \}/);
 
-for (const [label, match] of Object.entries({ normalizeMatch, purposeMatch, allowsMatch, candidatesMatch, assignmentMatch, dinnersMatch, dinnerCardMatch, lunchAssignmentMatch, currentPlanMatch })) {
+for (const [label, match] of Object.entries({ normalizeMatch, purposeMatch, allowsMatch, candidatesMatch, assignmentMatch, dinnersMatch, dinnerCardMatch, lunchAssignmentMatch, currentPlanMatch, sectionsMatch, plannedDinnersMatch })) {
   assert.ok(match, `${label} must be present in index.html`);
 }
 
@@ -112,6 +114,42 @@ test('hides a stale dinner assignment when lunch now uses the same recipe', () =
   );
 
   assert.equal(dinnerContext.buildCurrentPlanDinners([{ recipeId: 'flex' }])[0], null);
+});
+
+test('ignores stale dinner assignments for removed or ineligible legacy recipes', () => {
+  const dinnerContext = {
+    manualDinnerPlan: { '0': 'breakfast', '1': 'removed', '2': 'bread' },
+    getPlanCandidates: () => recipes,
+    mealPurposeAllowsSlot,
+    getCurrentPlanMeals: () => [null, null, null],
+    getPlanCandidateById: id => recipes.find(recipe => recipe.id === id) || null,
+    $: () => ({ value: 3 }),
+    getPlanDateInfo: index => ({ day: `Tag ${index + 1}`, short: `T${index + 1}` }),
+    suggestionAsMeal: recipe => ({ ...recipe, recipeId: recipe.id, kind: 'dinner' }),
+  };
+  vm.runInNewContext(
+    `${dinnersMatch[0]}\nglobalThis.buildCurrentPlanDinners = buildCurrentPlanDinners;`,
+    dinnerContext,
+  );
+
+  const dinners = dinnerContext.buildCurrentPlanDinners([null, null, null]);
+  assert.deepEqual(Array.from(dinners, dinner => dinner?.recipeId || null), [null, null, 'bread']);
+});
+
+test('respects the optional evening toggle when reading planned dinners', () => {
+  const plannedContext = {
+    eveningEnabled: false,
+    $: () => ({ checked: plannedContext.eveningEnabled }),
+    getCurrentPlanSections: () => ({ dinners: [{ recipeId: 'bread' }, null] }),
+  };
+  vm.runInNewContext(
+    `${plannedDinnersMatch[0]}\nglobalThis.getPlannedDinnerMeals = getPlannedDinnerMeals;`,
+    plannedContext,
+  );
+
+  assert.deepEqual(Array.from(plannedContext.getPlannedDinnerMeals()), []);
+  plannedContext.eveningEnabled = true;
+  assert.deepEqual(Array.from(plannedContext.getPlannedDinnerMeals(), dinner => dinner.recipeId), ['bread']);
 });
 
 test('shows a recipe source link on dinner cards when available', () => {
