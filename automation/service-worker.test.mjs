@@ -343,6 +343,7 @@ test('Pages root sync keeps published PWA icons aligned with dist', async () => 
   const workflow = await readFile(resolve(root, '.github/workflows/sync-pages-root.yml'), 'utf8');
 
   assert.ok(workflow.includes('dist/icons/**'));
+  assert.ok(workflow.includes('rm -rf icons'));
   assert.ok(workflow.includes('cp -R dist/icons/. icons/'));
   assert.ok(workflow.includes('git add index.html manifest.json icons sw.js supabase-sync.js'));
 });

@@ -32,6 +32,7 @@ jobs:
         run: |
           cp dist/index.html index.html
           cp dist/manifest.json manifest.json
+          rm -rf icons
           mkdir -p icons
           cp -R dist/icons/. icons/
           cp dist/sw.js sw.js

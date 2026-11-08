@@ -681,3 +681,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - `scripts/validate-worker.mjs` prüft zusätzlich den Cache-Namensraum im eingebetteten `dist/server/index.js`; ein künftiger Build kann den PWA-Scope-Fix dadurch nicht unbemerkt verlieren.
 - Es handelt sich ausschließlich um eine additive Validatorprüfung. Keine neue Nutzerfreigabe erforderlich; keine Nutz-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentänderung.
+
+## Fortschritt 08.11.2026 – vollständige Pages-Icon-Synchronisierung
+
+- Der Root-Synchronisierungsworkflow entfernt vor dem Kopieren nur den ausdrücklich generierten Root-Ordner `icons` und spiegelt danach `dist/icons`. Ein Regressionstest schützt diesen Synchronitätsvertrag.
+- Dies ist eine deterministische CI-/PWA-Stabilitätskorrektur ohne neue Nutzerfreigabe. Keine Nutz-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentänderung.
