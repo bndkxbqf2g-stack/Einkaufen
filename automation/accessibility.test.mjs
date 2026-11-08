@@ -25,7 +25,7 @@ test('announces pantry and manual shopping input feedback', () => {
 
 
 test('gives rating buttons an explicit accessible name', () => {
-  const buttons = [...source.matchAll(/<button data-rating="(\\d)"([^>]*)>/g)];
+  const buttons = [...source.matchAll(/<button data-rating="([1-5])"([^>]*)>/g)];
   assert.equal(buttons.length, 5, 'the rating control should expose five choices');
   buttons.forEach(([markup, rating, attributes]) => {
     assert.match(attributes, new RegExp(`aria-label="${rating} von 5 Sternen"`), markup);
