@@ -1,10 +1,21 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
+import { runInNewContext } from 'node:vm';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const worker = (await import(pathToFileURL(resolve(root, 'dist/server/index.js')).href)).default;
+const workerSource = await readFile(resolve(root, 'worker/index.js'), 'utf8');
+const workerDedupStart = workerSource.indexOf('function offerPackSize');
+const workerDedupEnd = workerSource.indexOf('\nfunction parseKauflandOffers', workerDedupStart);
+assert.ok(workerDedupStart >= 0 && workerDedupEnd > workerDedupStart, 'Worker-Angebotsnormalisierung muss vorhanden sein');
+const workerTestContext = {};
+runInNewContext(`${workerSource.slice(workerDedupStart, workerDedupEnd)}\nglobalThis.__workerOfferDeduplicationKey = offerDeduplicationKey;`, workerTestContext);
+const workerOfferDeduplicationKey = workerTestContext.__workerOfferDeduplicationKey;
+const workerOfferBase = { name: 'Butter', price: '1,99 €', validUntil: '12.11.2026' };
+assert.notEqual(workerOfferDeduplicationKey({ ...workerOfferBase, packSize: '200 g' }), workerOfferDeduplicationKey({ ...workerOfferBase, packSize: '250 g' }));
+assert.equal(workerOfferDeduplicationKey({ ...workerOfferBase, packSize: '200 g' }), workerOfferDeduplicationKey({ ...workerOfferBase, packSize: ' 200   g ' }));
 assert.equal(typeof worker.fetch, 'function');
 const page = await worker.fetch(new Request('https://example.test/'));
 assert.equal(page.status, 200);
