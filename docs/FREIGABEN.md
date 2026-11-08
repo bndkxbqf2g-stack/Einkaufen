@@ -634,3 +634,16 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - [PR #212](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/212) setzt den risikoarmen Mengenblock ohne neue Nutzerentscheidung um: Eindeutige g/kg, ml/l, Stück und klare Multipacks werden deterministisch auf kompatible Angebots-Packungen abgebildet.
 - Unklare, inkompatible oder textliche Angaben bleiben im bestehenden Legacy-Fallback. Manuelle Einkaufsartikel, bestehende Nutzdatenformate, Backups und Synchronisationsdaten werden nicht umgeschrieben.
 - Offen und ausdrücklich nicht Bestandteil dieses Blocks bleiben echte Kassenhistorie, Supabase-Schema oder Supabase-Datenänderungen sowie kostenpflichtige Dienste. Es wurden keine solchen Ressourcen erstellt oder verändert.
+
+## Fortschritt 08.11.2026 – additive lokale Vorratsmengen
+
+- Der neue lokale Zusatzschlüssel `angebotskueche.pantryQuantities` ergänzt die unveränderte Legacy-Stringliste `angebotskueche.pantry` um positive, normalisierte Mengen in g/kg, ml/l oder Stück. Fehlende oder unklare Mengen bleiben ausdrücklich unbekannt.
+- Der Zusatzschlüssel wird in diesem Block nicht in Backup-/Cloud-Payloads aufgenommen und nicht nach Supabase synchronisiert. Alte Backups, Cloud-Stände und persönliche Einstellungen bleiben deshalb auf ihrer bisherigen Datenform und weiterhin ladbar.
+- Einkaufsliste, Packungs- und Kostenberechnung verbrauchen diese Vorratsmengen noch nicht. Ohne explizite Rezeptmengen-/Verbrauchsentscheidung würde eine Teilabziehung falsche Einkaufs- oder Preiswerte erzeugen.
+- Keine Supabase-Migration, keine Cloud-/Nutzdatenänderung, kein Deployment und keine kostenpflichtige Ressource.
+
+### Bündelbare Nutzerentscheidungen für den nächsten Vorratsblock
+
+- Sollen lokale Vorratsmengen künftig in Backups und im gemeinsamen Supabase-Haushalt synchronisiert werden?
+- Wie sollen Verbrauch, Teilbestände, Nullbestand und Konflikte zwischen Geräten fachlich behandelt werden?
+- Welche Einheiten und Umrechnungen sind für Einkauf, Packungszahl und Kosten verbindlich freigegeben?
