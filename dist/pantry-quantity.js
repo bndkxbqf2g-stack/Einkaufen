@@ -73,6 +73,47 @@
     return Object.fromEntries(Object.entries(normalizeDetails(value)).filter(([key]) => allowed.has(key)));
   }
 
+
+  function normalizeComparableQuantity(value) {
+    if (typeof value === 'string') {
+      const parser = root.AngebotskuecheIngredientQuantityModel;
+      const parsed = parser?.parseOfferPackSize?.(value);
+      if (!parsed || !Number.isFinite(parsed.amount) || parsed.amount <= 0 || parsed.amount > 1000000000) return null;
+      return { family: parsed.family, unit: parsed.unit, amount: parsed.amount };
+    }
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+    return normalizeQuantity(value.amount ?? value.quantity, value.unit);
+  }
+
+  function roundedAmount(value) {
+    return Number(value.toFixed(6));
+  }
+
+  function reconcilePantryQuantity(demand, pantryQuantity) {
+    const normalizedDemand = normalizeComparableQuantity(demand);
+    const normalizedPantry = normalizeComparableQuantity(pantryQuantity);
+    const base = {
+      demand: normalizedDemand?.amount ?? null,
+      coveredAmount: null,
+      remainingDemand: null,
+      family: normalizedDemand?.family || normalizedPantry?.family || null,
+      unit: normalizedDemand?.unit || normalizedPantry?.unit || null,
+      status: 'unknown',
+    };
+    if (!normalizedDemand || !normalizedPantry) return base;
+    if (normalizedDemand.family !== normalizedPantry.family) {
+      return { ...base, pantryAmount: normalizedPantry.amount, status: 'incompatible' };
+    }
+    const coveredAmount = Math.min(normalizedDemand.amount, normalizedPantry.amount);
+    const remainingDemand = Math.max(0, normalizedDemand.amount - normalizedPantry.amount);
+    return {
+      ...base,
+      coveredAmount: roundedAmount(coveredAmount),
+      remainingDemand: roundedAmount(remainingDemand),
+      status: remainingDemand === 0 ? 'covered' : 'partially-covered',
+    };
+  }
+
   function formatNumber(value) {
     const rounded = Number(value.toFixed(3));
     return String(rounded).replace('.', ',');
@@ -97,6 +138,7 @@
     setQuantity,
     removeQuantity,
     retainForPantry,
+    reconcilePantryQuantity,
     formatQuantity,
   });
 }(typeof window !== 'undefined' ? window : globalThis));
