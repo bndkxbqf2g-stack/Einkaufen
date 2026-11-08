@@ -676,3 +676,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - Der Cache-Scope-Fix ist mit [PR #220](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/220) in `main` gemergt; die CI-Validierung war grün. Für diesen deterministischen, datenschonenden Fix ist keine weitere fachliche Freigabe offen.
 - PR #218 bleibt als verworfener, fehlerhafter API-Dateiupload offen und darf nicht gemergt werden. Der Ersatz-PR wurde mit exakt drei erwarteten PWA-Dateien, bytegenauem Remote-Abgleich und erfolgreicher CI erstellt und anschließend gemergt.
 - Keine Nutz-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentänderung. Weiterhin separat freigabepflichtig bleiben fachliche Vorrats-/IST-/Routing-/Supabase-Schritte.
+
+## Fortschritt 08.11.2026 – Regressionstest für den generierten Worker
+
+- `scripts/validate-worker.mjs` prüft zusätzlich den Cache-Namensraum im eingebetteten `dist/server/index.js`; ein künftiger Build kann den PWA-Scope-Fix dadurch nicht unbemerkt verlieren.
+- Es handelt sich ausschließlich um eine additive Validatorprüfung. Keine neue Nutzerfreigabe erforderlich; keine Nutz-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentänderung.

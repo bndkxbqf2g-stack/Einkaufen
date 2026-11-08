@@ -421,3 +421,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Der Cache-Scope-Fix ist mit [PR #220](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/220) in `main` übernommen. Die CI-Validierung war grün; der Deployment-Job blieb im Pull-Request-Lauf übersprungen.
 - PR #218 wurde wegen eines fehlerhaften API-Dateiuploads nicht gemergt. Ein neuer, bytegenau geprüfter PR enthielt ausschließlich die drei erwarteten PWA-Dateien; dadurch bleiben abgeschnittene oder verfälschte Großdateien ausgeschlossen.
 - Der erreichte Stand ändert keine Nutz-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentdaten. Die Korrektur ist auf die Bereinigung fremder Origin-Caches begrenzt.
+
+## Fortschritt 08.11.2026 – Regressionstest für den generierten Worker
+
+- `scripts/validate-worker.mjs` prüft zusätzlich, dass der eingebettete Service Worker im generierten `dist/server/index.js` den eigenen `angebotskueche-shell-*`-Namensraum verwendet.
+- Dies ist eine additive Build-/Artefaktprüfung ohne Laufzeit-, Nutzdaten-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentänderung.

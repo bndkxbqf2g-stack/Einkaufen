@@ -15,7 +15,9 @@ assert.equal((await worker.fetch(new Request('https://example.test/api/sync'))).
 const manifest = await worker.fetch(new Request('https://example.test/manifest.json'));
 assert.equal(JSON.parse(await manifest.text()).short_name, 'Angebotsküche');
 const serviceWorker = await worker.fetch(new Request('https://example.test/sw.js'));
-assert.match(await serviceWorker.text(), /angebotskueche-shell-v32/);
+const serviceWorkerText = await serviceWorker.text();
+assert.match(serviceWorkerText, /angebotskueche-shell-v32/);
+assert.match(serviceWorkerText, /key\.startsWith\('angebotskueche-shell-'\)/);
 const supabaseSync = await worker.fetch(new Request('https://example.test/supabase-sync.js'));
 assert.equal(supabaseSync.status, 200);
 assert.match(await supabaseSync.text(), /save_household_state/);
