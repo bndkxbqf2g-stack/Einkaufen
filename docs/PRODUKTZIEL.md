@@ -431,3 +431,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 
 - Der Root-Synchronisierungsworkflow leert vor dem Kopieren den generierten Root-Ordner `icons` und übernimmt anschließend den aktuellen Inhalt aus `dist/icons`. Entfernte oder umbenannte PWA-Icons bleiben dadurch nicht versehentlich im Pages-Root liegen.
 - Der Workflowvertrag ist durch einen Regressionstest abgesichert. Es wurden keine App-Laufzeit-, Nutzer-, Angebots-, Supabase-, Cloud-, Schema- oder Deploymentdaten verändert.
+
+## Audit 08.11.2026 – Offline-/Auth-Fehlerpfade ohne Laufzeitänderung
+
+- Fehlgeschlagene Supabase-Initialisierung und fehlgeschlagene Session-Abfragen werden als Offline-/unbekannter Sessionstatus behandelt. Auf GitHub Pages wird dabei kein irreführender Login-Dialog geöffnet; lokale Einstellungen, Vorräte, Wochenplanung, Einkaufschecks und manuelle Artikel bleiben unangetastet.
+- Bestätigtes Cloud-Laden, Revisionsschutz und Fehlerpfade wurden erneut geprüft. Fokustests (28/28), Vollsuite (227/227), Worker-Validator und Diff-Check waren grün. Es wurde kein reproduzierbarer Laufzeitfehler gefunden; keine Produkt-, Supabase-, Schema-, Nutzdaten- oder Deploymentänderung.
