@@ -494,3 +494,11 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Fehlende/ungültige Werte, unbekannte Angebotspreise, doppelte oder unklare Marktzuordnungen führen zu `unknown` bzw. `not-recommended`. Entfernungen, Benzinkosten, reguläre Preise und Angebote werden nicht geschätzt.
 - Bestehende Marktauswahl, Einkaufsliste, Settings, Backup, Worker und Supabase bleiben unverändert. Das Modell ist noch nicht in UI oder automatische Routenplanung integriert; die bestätigte Fahrtkostenbasis und eine produktive Schwelle bleiben fachlich offen.
 - Fokustests (5/5), Vollsuite (245/245) und Worker-Validator liefen grün. Root-/`dist`-Rechenkern und veröffentlichte App bleiben synchron.
+
+## Fortschritt 08.11.2026 – transparenter Abwechslungs-Rechenkern
+
+- Das neue reine Modul `variety.js` wertet ausdrücklich gelieferte Planabschnitte chronologisch aus: Mittagessen und vorhandene optionale Abendessen werden pro Tag zusammengeführt; Frühstücks-, Snack- und Getränkesegmente werden nicht berücksichtigt.
+- Der Rechenkern trennt eindeutige Gerichte, belegte Hauptzutaten und belegte Zubereitungsarten. Für jedes Merkmal werden bekannte, fehlende und eindeutige Werte transparent ausgewiesen; fehlende Hauptzutaten oder Zubereitungsarten werden nicht geraten.
+- Die bestehende gemeinsame Text-/Zutaten-Normalisierung wird für die Identität genutzt. Namensvarianten desselben Gerichts werden nicht doppelt gezählt. Explizit markierte Restetage bleiben als bewusste Wiederholung sichtbar und erzeugen keine neue Gericht-Abwechslung.
+- Der Rechenkern ist noch nicht in die bestehende UI-Anzeige `calculateVariety` eingebunden, damit der vorhandene Score und die Nutzerdarstellung nicht ohne gesonderte Abnahmekriterien verändert werden. Es gibt keine neue Speicherung, Backup-, Worker-, Supabase-, SQL-, Auth- oder Sync-Struktur.
+- Fokustests (6/6), Vollsuite (251/251) und Worker-Validator liefen grün. Root und `dist` des neuen Moduls bleiben bytegleich.
