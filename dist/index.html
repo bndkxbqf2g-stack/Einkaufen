@@ -534,6 +534,7 @@
 <script src="./shopping-costs.js"></script>
   <script src="./meal-planning.js"></script>
   <script src="./day-planning.js"></script>
+  <script src="./ingredient-quantity.js"></script>
   <script src="./supabase-sync.js"></script>
   <script>
     const seedOffers = [
@@ -1258,6 +1259,9 @@
         const quantity = Number(item.manualQuantity);
         return Number.isInteger(quantity) && quantity >= 1 ? Math.min(quantity, 99) : 1;
       }
+      const quantityModel = typeof window !== 'undefined' ? window.AngebotskuecheIngredientQuantityModel : null;
+      const exactPackCount = quantityModel?.calculateExactPackCount(item);
+      if (exactPackCount !== null && exactPackCount !== undefined) return exactPackCount;
       const portionUnits = Number(item?.portionUnits);
       return Math.max(1, Math.ceil(Number.isFinite(portionUnits) ? portionUnits : (item.count * people) / 2));
     }
@@ -1270,23 +1274,28 @@
         : { lunches: getCurrentPlanMeals(), dinners: [] };
       const globalPeople = Number($('#peopleSelect')?.value || settings.people || 2);
       const people = globalPeople;
+      const quantityModel = typeof window !== 'undefined' ? window.AngebotskuecheIngredientQuantityModel : null;
       const plannedMeals = [
         ...(planSections.lunches || []).map((meal, index) => ({ meal, people: typeof getPlanPeople === 'function' ? getPlanPeople(index) : globalPeople })),
         ...(planSections.dinners || []).map((meal, index) => ({ meal, people: typeof getPlanPeople === 'function' ? getPlanPeople(index) : globalPeople })).filter(entry => entry.meal),
       ];
       plannedMeals.forEach(({ meal, people }) => {
         getMealIngredients(meal).forEach(rawIngredient => {
-          const ingredient = String(rawIngredient || '').trim();
+          const rawText = String(rawIngredient || '').trim();
+          const parsedIngredient = quantityModel?.parseRecipeIngredient(rawText);
+          const ingredient = parsedIngredient?.explicit ? parsedIngredient.name : rawText;
           if (!ingredient || isPantryIngredient(ingredient)) return;
           const key = shoppingIngredientKey(ingredient);
           const identity = shoppingIngredientIdentity(ingredient);
           if (!key) return;
           const existingKey = [...items.keys()].find(candidate => shoppingIngredientIdentity(candidate) === identity);
           const itemKey = existingKey || key;
-          const current = items.get(itemKey) || { id: `shopping-${key.replace(/[^a-z0-9]+/g, '-')}`, name: ingredient, count: 0, portionUnits: 0, meals: [], offer: null };
+          const current = items.get(itemKey) || { id: `shopping-${key.replace(/[^a-z0-9]+/g, '-')}`, name: ingredient, count: 0, portionUnits: 0, quantityBasis: quantityModel?.createQuantityBasis?.() || null, meals: [], offer: null };
           current.count += 1;
           const dayModel = typeof window !== 'undefined' ? window.AngebotskuecheDayPlanningModel : null;
-          current.portionUnits += (dayModel?.portionUnitsForPeople(people) || (people / 2));
+          const portionUnits = dayModel?.portionUnitsForPeople(people) || (people / 2);
+          current.portionUnits += portionUnits;
+          if (quantityModel?.addRecipeQuantity) current.quantityBasis = quantityModel.addRecipeQuantity(current.quantityBasis, parsedIngredient, portionUnits);
           if (!current.meals.includes(meal.title)) current.meals.push(meal.title);
           const candidates = matchingOfferCandidates(ingredient, activeOffers);
           if (candidates[0] && !current.offer) current.offer = candidates[0];
@@ -1676,7 +1685,9 @@
     }
 
     function isPantryIngredient(ingredient) {
-      const normalizedIngredient = normalizeIngredient(ingredient).trim();
+      const quantityModel = typeof window !== 'undefined' ? window.AngebotskuecheIngredientQuantityModel : null;
+      const parsedIngredient = quantityModel?.parseRecipeIngredient(ingredient);
+      const normalizedIngredient = normalizeIngredient(parsedIngredient?.explicit ? parsedIngredient.name : ingredient).trim();
       return pantry.some(item => {
         const normalizedPantryItem = normalizeIngredient(item).trim();
         if (!normalizedIngredient || !normalizedPantryItem) return false;
@@ -2195,7 +2206,9 @@
 
     function offerMatchesIngredient(ingredient, offer) {
       const normalizedOffer = normalizeIngredient(offer.name);
-      return ingredientTextMatches(ingredient, normalizedOffer);
+      const quantityModel = typeof window !== 'undefined' ? window.AngebotskuecheIngredientQuantityModel : null;
+      const parsedIngredient = quantityModel?.parseRecipeIngredient(ingredient);
+      return ingredientTextMatches(parsedIngredient?.explicit ? parsedIngredient.name : ingredient, normalizedOffer);
     }
 
     function matchingOfferCandidates(ingredient, activeOffers = getActiveOffers()) {
@@ -2859,7 +2872,7 @@
         if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(registration => registration.update())).catch(() => {});
       }
     } catch {}
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=30', { updateViaCache: 'none' }).catch(() => {}));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=31', { updateViaCache: 'none' }).catch(() => {}));
   </script>
 </body>
 </html>
