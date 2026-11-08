@@ -293,7 +293,7 @@ test('round-trips legacy manual items, local fields, and shopping checks togethe
 
 test('keeps every local v1 field that an older cloud snapshot omits', () => {
   const localFields = {
-    settings: { markets: 3 },
+    settings: { markets: 3, dayPeople: { '1': 4 } },
     pantry: ['Milch'],
     favorites: [{ name: 'Lieblingsrezept' }],
     dismissedRecipes: ['rezept-abgelehnt'],
@@ -310,7 +310,7 @@ test('keeps every local v1 field that an older cloud snapshot omits', () => {
   };
   const initial = Object.entries(localFields)
     .map(([key, value]) => [`angebotskueche.${key}`, JSON.stringify(value)]);
-  const { applyUserDataPayload, storage } = createPayloadHarness(initial);
+  const { applyUserDataPayload, storage } = createPayloadHarness(initial, localFields.settings);
 
   applyUserDataPayload({ version: 1, pantry: ['Reis'] }, 'geladen');
 
@@ -411,6 +411,7 @@ test('round-trips unknown settings through backup export and confirmed cloud-loa
       leftovers: true,
       evening: true,
       selectedMarkets: ['Aldi', 'Lidl'],
+      dayPeople: { '0': 4, '1': 2 },
       customSetting: 'preserved-from-export',
       personalPreferences: { variety: 'high' },
     };
@@ -451,6 +452,7 @@ test('round-trips unknown settings through backup export and confirmed cloud-loa
         people: 4,
         markets: 3,
         selectedMarkets: ['Aldi', 'Lidl'],
+        dayPeople: { '0': 4, '1': 2 },
         customSetting: 'preserved-from-export',
         personalPreferences: { variety: 'high' },
       },

@@ -35,9 +35,11 @@ freigegeben oder entschieden wurden.
 8. **Umfang des ersten zusätzlichen Mahlzeiten-Slots** – entschieden:
    Es gibt keinen Frühstücks-Slot. Der bestehende Hauptgericht-Slot gilt als
    Mittagessen; zusätzlich ist ausschließlich ein optionaler Abendessen-Slot
-   vorgesehen. Die Umsetzung bleibt global je Planungstag und zunächst leer,
-   sofern kein Abendessen gewählt wird; eine Auswahl pro Person und eine
-   automatische Umklassifizierung bestehender Rezepte sind nicht vorgesehen.
+   vorgesehen. Die additive Umsetzung kann je Planungstag zunächst nur die
+   Personenzahl `2`, `3` oder `4` festlegen und nutzt den globalen Wert als
+   Default; eine benannte Auswahl einzelner Haushaltsteilnehmer/Kinderprofile
+   und eine automatische Umklassifizierung bestehender Rezepte sind nicht
+   vorgesehen.
    Der Pilot darf das vorhandene optionale mealPurpose-Feld nutzen und braucht
    laut aktuellem Code keine Datenbankmigration; Settings-Schreibpfad sowie
    alte Sync- und Backup-Payloads müssen rückwärtskompatibel bleiben und durch
@@ -291,6 +293,13 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - Der Nutzer hat klargestellt: kein Frühstücks-Slot; nur Mittagessen und bei Bedarf ein optionales Abendessen.
 - Diese Entscheidung ersetzt die frühere offene Frühstücksfrage in Freigabepunkt 8. Sie ist keine Freigabe für Supabase-, Datenbank-, Kosten- oder Deployment-Änderungen.
 - Für die technische Umsetzung wird als kleinster rückwärtskompatibler Umfang ein optionaler Abendessen-Slot je Planungstag angenommen. Bestehende Mittagessen-/manualPlan-Daten bleiben unverändert; alte Backups und Sync-Payloads ohne Abendessen bleiben gültig.
+
+## Umgesetzt ohne zusätzliche Freigabe – additive Tagespersonenzahl – 08.11.2026
+
+- `settings.dayPeople` speichert ausschließlich explizite Abweichungen vom globalen `peopleSelect`-Wert je nullbasiertem Planungstag. Nicht belegte Tage und alte Einstellungen ohne dieses Feld fallen auf den bisherigen globalen Default zurück.
+- Mittagessen und optionales Abendessen eines Tages greifen auf denselben Tageswert zu. Einkaufsmengen, Packungsrundung und bekannte Angebotssummen verwenden die daraus summierten Portionsanteile; unbekannte Preise bleiben aus dem bekannten Angebotsbetrag ausgeschlossen.
+- Root/`dist`, Backup-Export, lokaler Restore, bestätigter Cloud-Merge und Offline-App-Shell sind durch Regressionstests abgesichert. Es wurde keine Supabase-Migration angewendet und keine Supabase- oder Nutzerdatenänderung ausgeführt.
+- Offen bleiben benannte Teilnehmer-/Kinderprofile, die echte Kassenhistorie aus Punkt 9, die späteren Sync-/Konfliktentscheidungen und kostenpflichtige Dienste.
 
 ## Nutzerentscheidung – Mittagessen und optionales Abendessen – 07.11.2026
 

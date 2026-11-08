@@ -107,6 +107,8 @@
     .day-date { align-self: stretch; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding-right: 12px; border-right: 1px solid var(--line); }
     .day-name { font-size: 12px; font-weight: 850; }
     .day-date small { color: var(--ink-soft); font-size: 10px; font-weight: 650; }
+    .day-people-filter { display: inline-flex; align-items: center; gap: 3px; color: var(--ink-soft); font-size: 9px; font-weight: 750; white-space: nowrap; }
+    .day-people-filter select { max-width: 42px; padding: 1px 0; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 10px; font-weight: 850; }
     .today-tag { width: fit-content; padding: 3px 6px; border-radius: 5px; color: #98502f; background: #f9dcc8; font-size: 9px; font-weight: 850; text-transform: uppercase; }
     .meal-row { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
     .meal-emoji { width: 48px; height: 48px; display: grid; place-items: center; flex: 0 0 auto; border-radius: 14px; background: var(--mint); font-size: 25px; }
@@ -531,6 +533,7 @@
   <script src="./ingredient-normalization.js"></script>
 <script src="./shopping-costs.js"></script>
   <script src="./meal-planning.js"></script>
+  <script src="./day-planning.js"></script>
   <script src="./supabase-sync.js"></script>
   <script>
     const seedOffers = [
@@ -676,7 +679,7 @@
         if (value === 0 || normalized === '0' || normalized === 'false') return false;
         return fallback;
       };
-      return {
+      const normalized = {
         ...source,
         people: normalizeNumber(source.people, [2, 3, 4], 2),
         days: normalizeNumber(source.days, [4, 5], 5),
@@ -685,8 +688,24 @@
         evening: normalizeBoolean(source.evening, true),
         selectedMarkets: Array.isArray(source.selectedMarkets) ? source.selectedMarkets : [...DEFAULT_SELECTED_MARKETS],
       };
+      if (Object.prototype.hasOwnProperty.call(source, 'dayPeople')) {
+        const model = typeof window !== 'undefined' ? window.AngebotskuecheDayPlanningModel : null;
+        normalized.dayPeople = model ? model.normalizeDayPeople(source.dayPeople) : source.dayPeople;
+      }
+      return normalized;
     }
     const settings = normalizeSettings(stored('angebotskueche.settings', { people: 2, days: 5, markets: 2, leftovers: true, evening: true, selectedMarkets: [...DEFAULT_SELECTED_MARKETS] }));
+    function getPlanPeople(index) {
+      const model = typeof window !== 'undefined' ? window.AngebotskuecheDayPlanningModel : null;
+      const globalPeople = Number($('#peopleSelect')?.value || settings.people || 2);
+      return model ? model.resolveDayPeople(settings.dayPeople, index, globalPeople) : [2, 3, 4].includes(globalPeople) ? globalPeople : 2;
+    }
+    function planPeopleSummary() {
+      const days = Number($('#daysSelect')?.value || settings.days || 5);
+      const values = Array.from({ length: days }, (_, index) => getPlanPeople(index));
+      const unique = [...new Set(values)];
+      return unique.length === 1 ? `für ${unique[0]} Personen` : `für ${unique.join('/')} Personen je Tag`;
+    }
     function isManualOffer(offer) {
       const source = String(offer?.source || '').trim().toLowerCase();
       const note = String(offer?.note || '').trim().toLowerCase();
@@ -1069,10 +1088,8 @@
     }
     function renderPlan() {
       const days = Number($('#daysSelect').value);
-      const people = Number($('#peopleSelect').value);
       const leftovers = $('#leftoverToggle').checked;
       const evening = $('#eveningToggle').checked;
-      const multiplier = people / 2;
       $('#dayCount').textContent = `${days} Tage`;
       $('#planRangeNote').textContent = planRangeLabel(days);
       const planSections = getCurrentPlanSections();
@@ -1094,12 +1111,12 @@
       $('#pinnedNote').textContent = pinnedLabels.length ? `Vorgemerkt und bevorzugt: ${pinnedLabels.join(' · ')}.` : 'Noch keine zusätzlichen Rezepte vorgemerkt.';
       const reused = [...new Set(visible.flatMap(meal => meal.reusedIngredients || []))];
       $('#leftoverNote').textContent = reused.length ? `Restelogik aktiv: ${reused.slice(0, 3).join(' · ')} werden in mehreren Gerichten weiterverwendet.` : 'Noch keine sinnvolle Zutatenüberschneidung für die Resteverwertung erkannt.';
-      $('#dayList').innerHTML = visible.map((meal, index) => { const tags = Array.isArray(meal.tags) ? meal.tags : []; const costValue = parseKnownMoney(meal.cost); const costKnown = meal.costSource === 'offer-subtotal' && costValue !== null; const cost = costKnown ? costValue : 0; const costLabel = costKnown ? `Bekannter Angebotsanteil · ${(cost * multiplier).toFixed(2).replace('.', ',')} €` : 'Preis unbekannt'; const rating = recipeRatings[mealRatingKey(meal)]?.rating; return `
+      $('#dayList').innerHTML = visible.map((meal, index) => { const dayPeople = getPlanPeople(index); const peopleOptions = (window.AngebotskuecheDayPlanningModel?.peopleOptions || [2, 3, 4]).map(option => `<option value="${option}" ${option === dayPeople ? 'selected' : ''}>${option}</option>`).join(''); const tags = Array.isArray(meal.tags) ? meal.tags : []; const costValue = parseKnownMoney(meal.cost); const costKnown = meal.costSource === 'offer-subtotal' && costValue !== null; const cost = costKnown ? costValue : 0; const costLabel = costKnown ? `Bekannter Angebotsanteil · ${(cost * (dayPeople / 2)).toFixed(2).replace('.', ',')} €` : 'Preis unbekannt'; const rating = recipeRatings[mealRatingKey(meal)]?.rating; return `
         <article class="day-card ${index === 0 ? 'today' : ''}">
-          <div class="day-date">${index === 0 ? '<span class="today-tag">Heute</span>' : ''}<span class="day-name">${escapeHtml(meal.day)}</span><small>${escapeHtml(meal.date)}</small></div>
-          <div class="meal-row"><div class="meal-emoji ${meal.kind === 'warm' ? 'warm' : ''}">${escapeHtml(meal.emoji)}</div><div class="meal-info"><div class="meal-type">${meal.kind === 'warm' ? 'Mittagessen' : 'Abendessen'}${meal.manual ? '<span class="manual-choice">· deine Auswahl</span>' : ''}</div><div class="meal-title">${escapeHtml(meal.title)}</div><div class="meal-meta"><span>für <b>${people} Personen</b></span><span>${escapeHtml(costLabel)}</span><span>${escapeHtml(marketDisplayString(meal.store))}</span></div><div class="meal-tags">${tags.map((tag, tagIndex) => `<span class="tag ${tagIndex === 1 ? 'yellow' : ''}">${escapeHtml(tag)}</span>`).join('')}</div><div class="recipe-preview"><span class="recipe-preview-label">Rezept · Zutaten</span><div class="recipe-preview-list">${getMealIngredients(meal).slice(0, 6).map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('') || '<span class="source-note">Zutaten noch nicht hinterlegt</span>'}</div></div></div></div>
+          <div class="day-date">${index === 0 ? '<span class="today-tag">Heute</span>' : ''}<span class="day-name">${escapeHtml(meal.day)}</span><small>${escapeHtml(meal.date)}</small><label class="day-people-filter">Personen <select data-day-people="${index}" aria-label="Personen für ${escapeHtml(meal.day)}">${peopleOptions}</select></label></div>
+          <div class="meal-row"><div class="meal-emoji ${meal.kind === 'warm' ? 'warm' : ''}">${escapeHtml(meal.emoji)}</div><div class="meal-info"><div class="meal-type">${meal.kind === 'warm' ? 'Mittagessen' : 'Abendessen'}${meal.manual ? '<span class="manual-choice">· deine Auswahl</span>' : ''}</div><div class="meal-title">${escapeHtml(meal.title)}</div><div class="meal-meta"><span>für <b>${dayPeople} Personen</b></span><span>${escapeHtml(costLabel)}</span><span>${escapeHtml(marketDisplayString(meal.store))}</span></div><div class="meal-tags">${tags.map((tag, tagIndex) => `<span class="tag ${tagIndex === 1 ? 'yellow' : ''}">${escapeHtml(tag)}</span>`).join('')}</div><div class="recipe-preview"><span class="recipe-preview-label">Rezept · Zutaten</span><div class="recipe-preview-list">${getMealIngredients(meal).slice(0, 6).map(ingredient => `<span class="ingredient">${escapeHtml(ingredient)}</span>`).join('') || '<span class="source-note">Zutaten noch nicht hinterlegt</span>'}</div></div></div></div>
           <div class="day-score"><div class="score"><span class="score-ring" style="background:conic-gradient(var(--green-2) 0 ${meal.score}%, #e1ece2 ${meal.score}% 100%)"><span>${meal.score}</span></span> Match</div><div class="day-actions"><button class="text-button meal-detail" data-day-index="${index}" data-title="${escapeHtml(meal.title)}" data-note="${escapeHtml(meal.note)}">Details&nbsp;→</button><button class="small-button" data-choose-day="${index}">Rezept wählen</button>${meal.manual ? `<button class="small-button remove" data-clear-day="${index}">Auswahl lösen</button>` : ''}<button class="small-button" data-rate-meal="${index}">${rating ? `Bewertet: ${'★'.repeat(rating)}` : 'Gekocht? Bewerten'}</button></div></div>
-        </article>`; }).join('') + (evening ? dinnerSlots.map((dinner, index) => renderDinnerCard(dinner, index, people)).join('') : '');
+        </article>`; }).join('') + (evening ? dinnerSlots.map((dinner, index) => renderDinnerCard(dinner, index, getPlanPeople(index))).join('') : '');
       renderPlanSuggestions();
       decoratePlanSourceLinks(visible);
       renderShoppingList();
@@ -1241,15 +1258,23 @@
         const quantity = Number(item.manualQuantity);
         return Number.isInteger(quantity) && quantity >= 1 ? Math.min(quantity, 99) : 1;
       }
-      return Math.max(1, Math.ceil((item.count * people) / 2));
+      const portionUnits = Number(item?.portionUnits);
+      return Math.max(1, Math.ceil(Number.isFinite(portionUnits) ? portionUnits : (item.count * people) / 2));
     }
 
     function getShoppingItems() {
       const activeOffers = getActiveOffers();
       const items = new Map();
-      const plannedDinners = typeof getPlannedDinnerMeals === 'function' ? getPlannedDinnerMeals() : [];
-      const plannedMeals = [...getCurrentPlanMeals(), ...plannedDinners];
-      plannedMeals.forEach(meal => {
+      const planSections = typeof getCurrentPlanSections === 'function'
+        ? getCurrentPlanSections()
+        : { lunches: getCurrentPlanMeals(), dinners: [] };
+      const globalPeople = Number($('#peopleSelect')?.value || settings.people || 2);
+      const people = globalPeople;
+      const plannedMeals = [
+        ...(planSections.lunches || []).map((meal, index) => ({ meal, people: typeof getPlanPeople === 'function' ? getPlanPeople(index) : globalPeople })),
+        ...(planSections.dinners || []).map((meal, index) => ({ meal, people: typeof getPlanPeople === 'function' ? getPlanPeople(index) : globalPeople })).filter(entry => entry.meal),
+      ];
+      plannedMeals.forEach(({ meal, people }) => {
         getMealIngredients(meal).forEach(rawIngredient => {
           const ingredient = String(rawIngredient || '').trim();
           if (!ingredient || isPantryIngredient(ingredient)) return;
@@ -1258,8 +1283,10 @@
           if (!key) return;
           const existingKey = [...items.keys()].find(candidate => shoppingIngredientIdentity(candidate) === identity);
           const itemKey = existingKey || key;
-          const current = items.get(itemKey) || { id: `shopping-${key.replace(/[^a-z0-9]+/g, '-')}`, name: ingredient, count: 0, meals: [], offer: null };
+          const current = items.get(itemKey) || { id: `shopping-${key.replace(/[^a-z0-9]+/g, '-')}`, name: ingredient, count: 0, portionUnits: 0, meals: [], offer: null };
           current.count += 1;
+          const dayModel = typeof window !== 'undefined' ? window.AngebotskuecheDayPlanningModel : null;
+          current.portionUnits += (dayModel?.portionUnitsForPeople(people) || (people / 2));
           if (!current.meals.includes(meal.title)) current.meals.push(meal.title);
           const candidates = matchingOfferCandidates(ingredient, activeOffers);
           if (candidates[0] && !current.offer) current.offer = candidates[0];
@@ -1276,7 +1303,6 @@
         const manualQuantity = Number.isInteger(rawManualQuantity) && rawManualQuantity >= 1 && rawManualQuantity <= 99 ? rawManualQuantity : 1;
         items.set(key, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id, manualQuantity });
       });
-      const people = Number($('#peopleSelect')?.value || settings.people || 2);
       return [...items.values()].map(item => {
         // Zutaten werden ohne Mengenangabe im Rezept geführt. Ein Vorkommen entspricht deshalb
         // einer Basisportion für zwei Personen; manuelle Artikel nutzen die gespeicherte Packungszahl (Standard: 1).
@@ -1326,7 +1352,7 @@
       $('#shoppingOpenNote').textContent = `${items.length ? `${items.length - openItems.length} von ${items.length} ` : ''}abgehakt`;
       $('#shoppingOfferLabel').textContent = unknownOfferItems.length ? 'Bekannter Angebotsbetrag' : 'Angebotswert';
       $('#shoppingOfferTotal').textContent = knownOfferItems.length ? formatEuro(offerTotal) : (unknownOfferItems.length ? '–' : formatEuro(offerTotal));
-      $('#shoppingOfferNote').textContent = `${knownOfferItems.length} von ${offerItems.length} Angebotspositionen mit Preis · Packungen für ${Number($('#peopleSelect').value || 2)} Personen${unknownOfferItems.length ? ` · ${unknownOfferItems.length} Preis${unknownOfferItems.length === 1 ? '' : 'e'} unbekannt` : ''}`;
+      $('#shoppingOfferNote').textContent = `${knownOfferItems.length} von ${offerItems.length} Angebotspositionen mit Preis · Packungsbedarf ${planPeopleSummary()}${unknownOfferItems.length ? ` · ${unknownOfferItems.length} Preis${unknownOfferItems.length === 1 ? '' : 'e'} unbekannt` : ''}`;
       $('#shoppingMissingCount').textContent = String(missingItems.length);
       const pantryNote = pantryCoverage.coveredCount ? `${pantryCoverage.coveredCount} Vorratszutat${pantryCoverage.coveredCount === 1 ? '' : 'en'} aus dem Bestand berücksichtigt` : 'keine Vorratszutat aus dem Bestand berücksichtigt';
       const pantryPreview = pantryCoverage.coveredItems.slice(0, 4);
@@ -1344,7 +1370,7 @@
         if (second[0] === 'Ergänzen') return -1;
         return (marketOrder.indexOf(first[0]) === -1 ? 99 : marketOrder.indexOf(first[0])) - (marketOrder.indexOf(second[0]) === -1 ? 99 : marketOrder.indexOf(second[0]));
       });
-       $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group">${renderShoppingGroupHeader(group, groupItems)}<div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const useLabel = item.manual && item.packCount > 1 ? `${item.packCount} Packungen · zusätzlich ergänzt` : item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; const packLabel = item.offer ? (item.packCount > 1 ? `${item.packCount} Packungen · ${item.offer.packSize || 'Packungsgröße'} · für ${Number($('#peopleSelect').value || 2)} Personen` : `${item.offer.packSize || '1 Packung'} · ${item.offer.saving || 'Angebot'}`) : ''; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.packCount > 1 ? `${item.packCount} × ${item.offer.price}` : item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(packLabel)}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
+       $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group">${renderShoppingGroupHeader(group, groupItems)}<div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const useLabel = item.manual && item.packCount > 1 ? `${item.packCount} Packungen · zusätzlich ergänzt` : item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; const packLabel = item.offer ? (item.packCount > 1 ? `${item.packCount} Packungen · ${item.offer.packSize || 'Packungsgröße'}` : `${item.offer.packSize || '1 Packung'} · ${item.offer.saving || 'Angebot'}`) : ''; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.packCount > 1 ? `${item.packCount} × ${item.offer.price}` : item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(packLabel)}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
     }
 
     function openShoppingItemModal() {
@@ -1611,6 +1637,20 @@
       settings.leftovers = $('#leftoverToggle').checked;
       settings.evening = $('#eveningToggle').checked;
       localStorage.setItem('angebotskueche.settings', JSON.stringify({ ...settings }));
+    }
+
+    function setPlanPeople(index, value) {
+      const model = typeof window !== 'undefined' ? window.AngebotskuecheDayPlanningModel : null;
+      const days = Number($('#daysSelect').value);
+      if (!model || !Number.isInteger(Number(index)) || Number(index) < 0 || Number(index) >= days) return false;
+      const globalPeople = model.normalizePeople($('#peopleSelect').value || settings.people);
+      const normalized = model.normalizePeople(value, globalPeople);
+      const dayPeople = model.normalizeDayPeople(settings.dayPeople);
+      if (normalized === globalPeople) delete dayPeople[String(Number(index))];
+      else dayPeople[String(Number(index))] = normalized;
+      settings.dayPeople = dayPeople;
+      persistSettings();
+      return true;
     }
 
     function calculateVariety(meals) {
@@ -1897,7 +1937,7 @@
       }
       return selected.slice(0, days).map((meal, index) => {
         const date = getPlanDateInfo(index);
-        return { ...meal, day: date.day, date: date.short };
+        return { ...meal, day: date.day, date: date.short, ...(typeof getPlanPeople === 'function' ? { people: getPlanPeople(index) } : {}) };
       });
     }
 
@@ -1911,7 +1951,7 @@
         if (!recipe || !mealPurposeAllowsSlot(recipe, 'dinner') || lunch?.recipeId === recipe.id) return null;
         const date = getPlanDateInfo(index);
         const meal = suggestionAsMeal(recipe, index, 'dinner');
-        return { ...meal, manual: true, day: date.day, date: date.short, tags: [...(meal.tags || []), 'Abendessen'] };
+        return { ...meal, manual: true, day: date.day, date: date.short, people: typeof getPlanPeople === 'function' ? getPlanPeople(index) : undefined, tags: [...(meal.tags || []), 'Abendessen'] };
       });
     }
 
@@ -2586,6 +2626,7 @@
     $('#changePlan').addEventListener('click', () => { $('#peopleSelect').focus(); showToast('Passe Personen, Tage oder Marktlimit direkt oben im Plan an.'); });
     $('#daysSelect').addEventListener('change', () => { renderPlan(); persistSettings(); });
     $('#peopleSelect').addEventListener('change', () => { renderPlan(); persistSettings(); });
+     $('#dayList').addEventListener('change', event => { const select = event.target.closest('[data-day-people]'); if (!select) return; if (setPlanPeople(select.dataset.dayPeople, select.value)) { renderPlan(); showToast(`Tagesplanung auf ${select.value} Personen gesetzt.`); } });
     $('#marketsSelect').addEventListener('change', () => { persistSettings(); renderMarkets(); renderPlan(); renderSourceStatus(); showToast(`Marktlimit auf ${$('#marketsSelect').value} gesetzt.`); });
     $('#leftoverToggle').addEventListener('change', () => { renderPlan(); persistSettings(); });
     $('#eveningToggle').addEventListener('change', () => { renderPlan(); persistSettings(); });
@@ -2818,7 +2859,7 @@
         if ('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(registrations => registrations.forEach(registration => registration.update())).catch(() => {});
       }
     } catch {}
-    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=29', { updateViaCache: 'none' }).catch(() => {}));
+    if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js?v=30', { updateViaCache: 'none' }).catch(() => {}));
   </script>
 </body>
 </html>
