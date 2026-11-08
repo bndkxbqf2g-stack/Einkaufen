@@ -60,4 +60,12 @@ test('keeps unknown prices explicit and does not invent missing offers', () => {
   assert.doesNotMatch(html, /formatEuro\(unitPrice \* packCount\)/);
 });
 
+test('offers market-scoped progress actions without changing the checklist contract', () => {
+  assert.match(html, /data-shopping-group-check/);
+  assert.match(html, /data-shopping-group-state="check"/);
+  assert.match(html, /data-shopping-group-state="clear"/);
+  assert.match(html, /getShoppingItems\(\)\.filter\(item => \(item\.offer\?\.store \|\| 'Ergänzen'\) === group\)/);
+  assert.match(html, /localStorage\.setItem\('angebotskueche\.shoppingChecks', JSON\.stringify\(shoppingChecks\)\)/);
+  assert.match(html, /itemNote = `\$\{checkedCount\}\/\$\{groupItems\.length\} erledigt/);
+});
 console.log('Shopping share cost checks passed');
