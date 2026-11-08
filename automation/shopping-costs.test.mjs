@@ -34,6 +34,9 @@ test('sums only explicit offer prices in integer cents and keeps unknown prices 
 
   assert.equal(summary.totalCents, 240);
   assert.equal(summary.total, 2.4);
+  assert.equal(summary.knownOfferPackCount, 2);
+  assert.equal(summary.unknownPricePackCount, 1);
+  assert.equal(summary.estimatedPackCount, 3);
   assert.deepEqual(Array.from(summary.knownItems, item => item.id), ['known']);
   assert.deepEqual(Array.from(summary.unknownItems, item => item.id), ['unknown']);
 });
@@ -70,6 +73,9 @@ test('exposes one canonical, traceable contract for known, unknown, missing, and
   assert.equal(summary.unanchoredMissingCount, 1);
   assert.equal(summary.knownOfferTotalCents, 240);
   assert.equal(summary.knownOfferTotal, 2.4);
+  assert.equal(summary.estimatedPackCount, 7);
+  assert.equal(summary.offerEstimatedPackCount, 3);
+  assert.equal(summary.missingPackCount, 4);
   assert.deepEqual(Array.from(summary.knownOfferItems, item => item.id), ['known']);
   assert.deepEqual(Array.from(summary.unknownPriceItems, item => item.id), ['unknown']);
   assert.deepEqual(Array.from(summary.manualMissingItems, item => item.id), ['manual']);
@@ -90,3 +96,4 @@ test('treats invalid or nonpositive pack counts as one pack', () => {
 
   assert.equal(summary.totalCents, 220);
 });
+
