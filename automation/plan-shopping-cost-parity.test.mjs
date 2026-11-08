@@ -37,7 +37,9 @@ test('Planpreis und Einkaufssumme nutzen bei drei Personen dieselbe Packungsbasi
   assert.equal(Math.round((1.20 + 0.79) * 1.5 * 2 * 100), 597, 'die frühere anteilige Planrechnung wäre abweichend');
 
   const planRenderer = source.slice(source.indexOf('function renderPlan'), source.indexOf('function renderPlanSuggestions'));
-  assert.match(planRenderer, /summarizeShoppingCosts\(getShoppingItems\(\)\.filter\(item => !item\.manual\), parseKnownMoney\)/);
+  assert.match(planRenderer, /const shoppingCostSummary = getShoppingCostSummary\(\);/);
+  assert.match(planRenderer, /const knownOfferTotal = shoppingCostSummary\.knownOfferTotal;/);
+  assert.doesNotMatch(planRenderer, /getShoppingItems\(\)\.filter\(item => !item\.manual\)/);
   assert.doesNotMatch(planRenderer, /pricedMeals\.reduce\([\s\S]*\* multiplier/);
 });
 

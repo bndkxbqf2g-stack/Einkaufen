@@ -6,6 +6,24 @@
     return Number.isFinite(raw) && raw > 0 ? Math.ceil(raw) : 1;
   }
 
+  function createOfferAmountSummary(totalCents, knownItems, unknownItems) {
+    const hasKnownOffer = knownItems.length > 0;
+    return {
+      // Keep the legacy numeric subtotal for callers that already inspect it.
+      // The explicit knownOfferTotal fields are null when no verified price exists.
+      total: totalCents / 100,
+      totalCents,
+      knownItems,
+      unknownItems,
+      knownOfferItems: knownItems,
+      unknownPriceItems: unknownItems,
+      knownOfferTotal: hasKnownOffer ? totalCents / 100 : null,
+      knownOfferTotalCents: hasKnownOffer ? totalCents : null,
+      knownOfferCount: knownItems.length,
+      unknownPriceCount: unknownItems.length,
+    };
+  }
+
   function calculateOfferAmount(items, parseUnitPrice) {
     const parsePrice = typeof parseUnitPrice === 'function' ? parseUnitPrice : () => null;
     let totalCents = 0;
@@ -23,7 +41,7 @@
       totalCents += Math.round(unitPrice * 100) * packCount;
     }
 
-    return { total: totalCents / 100, totalCents, knownItems, unknownItems };
+    return createOfferAmountSummary(totalCents, knownItems, unknownItems);
   }
 
   function pantryIngredientIdentity(value) {
@@ -67,11 +85,23 @@
     const offerItems = list.filter(item => item && item.offer);
     const missingItems = list.filter(item => !item || !item.offer);
     const offerSummary = calculateOfferAmount(offerItems, parseUnitPrice);
+    const manualItems = list.filter(item => item?.manual === true);
+    const manualMissingItems = missingItems.filter(item => item?.manual === true);
+    const unanchoredMissingItems = missingItems.filter(item => item?.manual !== true);
     return {
       ...offerSummary,
       offerItems,
       missingItems,
+      manualItems,
+      manualMissingItems,
+      unanchoredMissingItems,
+      itemCount: list.length,
+      offerItemCount: offerItems.length,
       missingCount: missingItems.length,
+      manualItemCount: manualItems.length,
+      manualMissingCount: manualMissingItems.length,
+      unanchoredMissingCount: unanchoredMissingItems.length,
+      classifiedItemCount: offerSummary.knownOfferCount + offerSummary.unknownPriceCount + missingItems.length,
     };
   }
 

@@ -10,16 +10,19 @@ runInNewContext(modelSource, browserGlobal);
 const costModel = browserGlobal.AngebotskuecheCostModel;
 const parseMoneyMatch = html.match(/function parseKnownMoney\(value\) \{[\s\S]*?\n    \}/);
 const formatEuroMatch = html.match(/function formatEuro\(value\) \{[\s\S]*?\n    \}/);
+const costSummaryMatch = html.match(/function getShoppingCostSummary\(items = getShoppingItems\(\)\) \{[\s\S]*?\n    \}/);
 const shareAmountMatch = html.match(/function shoppingShareAmountLabel\(item\) \{[\s\S]*?\n    \}/);
 const shareSummaryMatch = html.match(/function shoppingShareSummary\(items\) \{[\s\S]*?\n    \}/);
 assert.ok(parseMoneyMatch, 'parseKnownMoney muss im App-Bundle vorhanden sein');
 assert.ok(formatEuroMatch, 'formatEuro muss im App-Bundle vorhanden sein');
+assert.ok(costSummaryMatch, 'getShoppingCostSummary muss im App-Bundle vorhanden sein');
 assert.ok(shareAmountMatch, 'shoppingShareAmountLabel muss im App-Bundle vorhanden sein');
 assert.ok(shareSummaryMatch, 'shoppingShareSummary muss im App-Bundle vorhanden sein');
 
 const parseKnownMoney = new Function(`${parseMoneyMatch[0]}; return parseKnownMoney;`)();
 const calculateOfferAmount = items => costModel.calculateOfferAmount(items, parseKnownMoney);
-const shoppingShareFunctions = new Function('calculateOfferAmount', `${formatEuroMatch[0]}\n${shareAmountMatch[0]}\n${shareSummaryMatch[0]}; return { shoppingShareAmountLabel, shoppingShareSummary };`)(calculateOfferAmount);
+const getShoppingCostSummary = items => costModel.summarizeShoppingCosts(items, parseKnownMoney);
+const shoppingShareFunctions = new Function('calculateOfferAmount', 'getShoppingCostSummary', `${formatEuroMatch[0]}\n${shareAmountMatch[0]}\n${shareSummaryMatch[0]}; return { shoppingShareAmountLabel, shoppingShareSummary };`)(calculateOfferAmount, getShoppingCostSummary);
 
 const { shoppingShareAmountLabel, shoppingShareSummary } = shoppingShareFunctions;
 
@@ -38,6 +41,17 @@ test('shares the known subtotal and open cash boundary explicitly', () => {
   );
   assert.match(html, /shoppingShareSummary\(pending\)/);
   assert.match(html, /Fehlende Artikel und Vorräte sind nicht enthalten/);
+});
+
+test('keeps manual and unanchored items explicit in a shared list summary', () => {
+  assert.equal(
+    shoppingShareSummary([
+      { packCount: 1, offer: { price: '2,49 €' } },
+      { packCount: 1, offer: null, manual: true },
+      { packCount: 1, offer: null },
+    ]),
+    'Bekannter Angebotsbetrag 2,49 € · 1 manueller Artikel ohne Angebotsanker · 1 weiterer Artikel ohne Angebotsanker · Kassenbetrag offen',
+  );
 });
 
 test('keeps unknown prices explicit and does not invent missing offers', () => {

@@ -380,6 +380,13 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Die bestehende `angebotskueche.pantry`-Stringliste bleibt die verbindliche Rückwärtskompatibilitätsgrenze. Mengen liegen ausschließlich zusätzlich unter `angebotskueche.pantryQuantities`; alte Stringlisten werden weder in Objekte umgewandelt noch überschrieben. Gemischte Alt-/Neu-Stände bleiben dadurch ladbar.
 - Der lokale Zusatzschlüssel ist in diesem Schritt bewusst nicht Bestandteil von Backup-Payload, Supabase-Cloud-Payload, Worker-Vertrag, Einkaufsliste oder Kostenberechnung. Es werden keine Mengenverbräuche, Packungen, Preise oder Teilbestände erfunden; eine spätere Abziehung darf nur innerhalb derselben Einheitenfamilie und nach gesonderter fachlicher Freigabe erfolgen.
 - Root, `dist`, Service Worker und Worker-Artefakt bleiben synchron. Es gab keine Supabase-Migration, keine Cloud-Datenänderung, kein Deployment und keine kostenpflichtige Ressource.
+
+## Fortschritt 08.11.2026 – kanonischer Kostenvertrag für Plan und Einkaufsliste
+
+- `shopping-costs.js` liefert jetzt neben den rückwärtskompatiblen Zahlenfeldern einen expliziten Kostenvertrag: verankerte Angebotspackungen (`knownOfferItems`), Angebote mit unbekanntem Preis (`unknownPriceItems`) und nicht verankerte Artikel (`missingItems`) bleiben getrennt und nachvollziehbar.
+- `summarizeShoppingCosts` verwendet für jede übergebene Einkaufsliste dieselbe vollständige Positionenmenge. Die Invariante `knownOfferCount + unknownPriceCount + missingCount === itemCount` wird getestet; manuelle Artikel ohne Angebotsanker werden als eigene Untergruppe der fehlenden Artikel ausgewiesen.
+- Plan, Einkaufsliste und Teilen nutzen denselben Snapshot aus `getShoppingItems()`. Der Plan zeigt bei gemischten Positionen den bekannten Angebots-Teilbetrag mit Scope-Hinweis; unbekannte Preise, manuelle/fehlende Artikel, Vorräte, Fahrtkosten und der echte Kassenbetrag werden nicht als `0 €` ausgegeben oder eingerechnet.
+- Die Euroformatierung weist fehlende oder nicht endliche Werte als `–` aus. Root und `dist` bleiben bytegleich; der Worker- und Supabase-Vertrag bleiben unverändert. Echte Kassenhistorie, Vorratsmengenverbrauch, Supabase-Schema/-Daten und kostenpflichtige Dienste wurden nicht verändert.
 ## Fortschritt 07.11.2026 – Restelogik mit optionalem Abendessen
 
 - Die bestehende Restelogik wertet Mittagessen und vorhandene optionale Abendessen jetzt gemeinsam in Tagesreihenfolge aus. Dadurch werden gemeinsam verwendete Zutaten auch über die Grenze zwischen Mittagessen und Abendessen erkannt.

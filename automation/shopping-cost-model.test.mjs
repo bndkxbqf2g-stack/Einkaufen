@@ -98,10 +98,21 @@ test('calculates known offer amounts in cents and keeps unknown positions separa
   assert.deepEqual(Array.from(result.unknownItems, item => item.id), ['unknown', 'empty', 'invalid']);
 });
 
+test('does not format absent or non-finite amounts as a zero price', () => {
+  const formatEuro = new Function(`${formatEuroMatch[0]}; return formatEuro;`)();
+
+  assert.equal(formatEuro(null), '–');
+  assert.equal(formatEuro(undefined), '–');
+  assert.equal(formatEuro(Number.NaN), '–');
+  assert.equal(formatEuro(0), '0,00 €');
+});
+
 test('keeps unknown offer prices out of the displayed subtotal and shared list', () => {
   assert.match(html, /Bekannter Angebotsbetrag/);
-  assert.match(html, /const costSummary = window\.AngebotskuecheCostModel\.summarizeShoppingCosts\(items, parseKnownMoney\)/);
+  assert.match(html, /return window\.AngebotskuecheCostModel\.summarizeShoppingCosts\(items, parseKnownMoney\)/);
   assert.match(html, /knownOfferItems/);
+  assert.match(html, /function getShoppingCostSummary\(items = getShoppingItems\(\)\)/);
+  assert.match(html, /const costSummary = getShoppingCostSummary\(items\)/);
   assert.match(html, /Unbekannte Preise sind im bekannten Angebotsbetrag nicht enthalten/);
   assert.match(html, /Preis unbekannt/);
   assert.doesNotMatch(html, /const pricedOfferItems =/);
