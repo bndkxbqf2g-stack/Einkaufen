@@ -405,3 +405,8 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Tatsächliche IST-Ausgaben werden weiterhin mit „Noch nicht erfasst“ angezeigt. Es gibt keinen `purchaseRecords`-Lese-/Schreibpfad, keine Belegerfassung/OCR, keine lokale Historie und keine Berechnung eines Restbudgets.
 - Das getrennte lokale Budgetmodell liegt in `budget-transparency.js`; Root und `dist` sind synchron. Der Service-Worker-Cache wurde für das neue statische Modul auf v32 angehoben.
 - Es gab keine Supabase-/Cloud-/Schemaänderung, keine Nutzdatenänderung, kein Deployment und keine kostenpflichtige Ressource. Vollsuite und Worker-Validierung waren grün.
+
+## Fortschritt 08.11.2026 – Regressionstest für taggenaue Mengen bei Abendessen
+
+- Der Einkaufslisten-/Kostenpfad ist jetzt zusätzlich gegen einen optionalen Abendessen-Slot an einem späteren Planungstag abgesichert: Die für diesen Tag gespeicherte Personenzahl fließt in die gemeinsame Zutatenmenge, Packungszahl und bekannte Angebotssumme ein.
+- Der Test deckt eine zuvor nur statisch geprüfte Verbindung zwischen Wochenplanung, exakter Rezeptmenge, Packungsberechnung und Kostenmodell ab. Es wurden keine Laufzeitdaten, Preise, Angebotsquellen, Vorratsmengen, Supabase-/Cloud-Daten oder Nutzdaten verändert.

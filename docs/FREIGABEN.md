@@ -660,3 +660,8 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - Keine neue fachliche Freigabe ist für diese Anzeige erforderlich. Der bekannte Plan-/Angebotswert darf nicht als Kassenbetrag, bestätigte Ausgabe oder Restbudget interpretiert werden.
 - Weiterhin gebündelt offen bleiben echte IST-Kassenhistorie und Belege/OCR, Vorratsmengenverbrauch/-synchronisierung, Fahrtkosten/Routing sowie weitere Supabase-Migrationen oder neue Cloud-Felder.
 - Dieser Block änderte keine `purchaseRecords`, keine Supabase-/Cloud-/Schema-Daten, keine Angebotsdaten und keine kostenpflichtigen Ressourcen. Die CI/Vollsuite und Worker-Validierung waren lokal grün; der PR wird zur Prüfung erstellt und nicht automatisch gemergt.
+
+## Fortschritt 08.11.2026 – Regressionstest für taggenaue Abendessenmengen
+
+- Der Testblock prüft den bestehenden lokalen Pfad von Wochenplanung über Mengen-/Packungsberechnung bis zur Angebotssumme mit einem optionalen Abendessen an einem späteren Tag und einer abweichenden Tagespersonenzahl.
+- Es handelt sich um eine additive Test- und Dokumentationsänderung. Keine neue Freigabe ist erforderlich; es wurden keine Preise oder Angebotsdaten erfunden und keine Vorrats-, Supabase-, Cloud-, Schema- oder Deploymentänderung vorgenommen.
