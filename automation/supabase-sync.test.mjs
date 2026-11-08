@@ -7,7 +7,7 @@ import { dirname, resolve } from 'node:path';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const source = await readFile(resolve(root, 'dist/supabase-sync.js'), 'utf8');
-const workerSource = await readFile(resolve(root, 'worker/index.js'), 'utf8');
+const workerSource = (await readFile(resolve(root, 'worker/index.js'), 'utf8')).replace(/\r\n/g, '\n');
 const workerPublished = await readFile(resolve(root, 'dist/server/index.js'), 'utf8');
 const html = await readFile(resolve(root, 'dist/index.html'), 'utf8');
 const serviceWorker = await readFile(resolve(root, 'dist/sw.js'), 'utf8');
