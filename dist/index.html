@@ -224,6 +224,9 @@
     .shopping-group-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 11px 13px; color: var(--green); background: #f4f8f1; font-size: 12px; font-weight: 850; }
     .shopping-group-title span { color: var(--ink-soft); font-size: 10px; font-weight: 700; }
     .shopping-group-title span:last-child { margin-left: auto; text-align: right; }
+    .shopping-group-progress { margin-left: auto; text-align: right; }
+    .shopping-group-title-actions { display: inline-flex; align-items: center; gap: 7px; margin-left: 4px; }
+    .shopping-group-title-actions .small-button { padding: 5px 8px; font-size: 10px; }
     .shopping-items { display: grid; }
     .shopping-item { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 12px 13px; border-top: 1px solid var(--line); }
     .shopping-item:first-child { border-top: 0; }
@@ -1449,9 +1452,13 @@
     }
     function renderShoppingGroupHeader(group, groupItems) {
       const offerSummary = formatShoppingGroupOfferSummary(group, groupItems);
-      const itemNote = `${groupItems.length} Artikel${offerSummary ? ` · ${offerSummary}` : ''}`;
+      const checkedCount = groupItems.filter(item => shoppingChecks[item.id]).length;
+      const itemNote = `${checkedCount}/${groupItems.length} erledigt · ${groupItems.length} Artikel${offerSummary ? ` · ${offerSummary}` : ''}`;
       const marketName = group === 'Ergänzen' ? 'Noch zu ergänzen' : marketDisplayName(group);
-      return `<div class="shopping-group-title"><span>${escapeHtml(marketName)}</span><span>${escapeHtml(itemNote)}</span></div>`;
+      const groupAction = checkedCount === groupItems.length
+        ? `<button type="button" class="small-button" data-shopping-group-check="${escapeHtml(group)}" data-shopping-group-state="clear" aria-label="${escapeHtml(marketName)} wieder öffnen">Öffnen</button>`
+        : `<button type="button" class="small-button" data-shopping-group-check="${escapeHtml(group)}" data-shopping-group-state="check" aria-label="${escapeHtml(marketName)} vollständig abhaken">Markt abhaken</button>`;
+      return `<div class="shopping-group-title"><span>${escapeHtml(marketName)}</span><span class="shopping-group-progress">${escapeHtml(itemNote)}</span><span class="shopping-group-title-actions">${groupAction}</span></div>`;
     }
 
     function renderShoppingList() {
@@ -2774,7 +2781,27 @@
     $('#clearShoppingChecks').addEventListener('click', () => { shoppingChecks = {}; localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks)); renderShoppingList(); showToast('Die Haken wurden zurückgesetzt.'); });
     $('#refreshShoppingList').addEventListener('click', () => { renderShoppingList(); showToast('Einkaufsliste aus dem aktuellen Plan aktualisiert.'); });
     $('#shoppingList').addEventListener('change', event => { const input = event.target.closest('[data-shopping-check]'); if (!input) return; shoppingChecks[input.dataset.shoppingCheck] = input.checked; localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks)); renderShoppingList(); });
-     $('#shoppingList').addEventListener('click', event => { const remove = event.target.closest('[data-remove-shopping]'); if (!remove) return; const id = remove.dataset.removeShopping; manualShoppingItems = manualShoppingItems.filter(item => item.id !== id); delete shoppingChecks[`manual-${id}`]; localStorage.setItem('angebotskueche.manualShoppingItems', JSON.stringify(manualShoppingItems)); localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks)); renderShoppingList(); showToast('Zusätzlicher Artikel entfernt.'); });
+     $('#shoppingList').addEventListener('click', event => {
+       const groupToggle = event.target.closest('[data-shopping-group-check]');
+       if (groupToggle) {
+         const group = groupToggle.dataset.shoppingGroupCheck;
+         const shouldCheck = groupToggle.dataset.shoppingGroupState === 'check';
+         getShoppingItems().filter(item => (item.offer?.store || 'Ergänzen') === group).forEach(item => { shoppingChecks[item.id] = shouldCheck; });
+         localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks));
+         renderShoppingList();
+         showToast(shouldCheck ? `${marketDisplayName(group)} vollständig abgehakt.` : `${marketDisplayName(group)} wieder geöffnet.`);
+         return;
+       }
+       const remove = event.target.closest('[data-remove-shopping]');
+       if (!remove) return;
+       const id = remove.dataset.removeShopping;
+       manualShoppingItems = manualShoppingItems.filter(item => item.id !== id);
+       delete shoppingChecks[`manual-${id}`];
+       localStorage.setItem('angebotskueche.manualShoppingItems', JSON.stringify(manualShoppingItems));
+       localStorage.setItem('angebotskueche.shoppingChecks', JSON.stringify(shoppingChecks));
+       renderShoppingList();
+       showToast('Zusätzlicher Artikel entfernt.');
+     });
      $('#openShoppingItem').addEventListener('click', openShoppingItemModal);
      $('#closeShoppingModal').addEventListener('click', () => $('#shoppingModal').classList.remove('open'));
      $('#cancelShoppingModal').addEventListener('click', () => $('#shoppingModal').classList.remove('open'));
