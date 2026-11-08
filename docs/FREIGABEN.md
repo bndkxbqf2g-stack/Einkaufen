@@ -895,3 +895,8 @@ Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvolls
 - Die Einkaufsliste verwendet für Monatsziel, bekannten Angebots-Teilbetrag und „IST noch nicht erfasst“ denselben bestehenden Kosten-/Budgetkern wie die Planansicht. Die Anzeige bleibt rein lokal und lesend.
 - Unbekannte Preise, fehlende Artikel, Vorräte und Fahrtkosten bleiben ausdrücklich außerhalb. Es gibt keine echte Kassenbuchung, keinen neuen Speicher-/Sync-Vertrag und keine Änderung an Backup, Supabase, SQL, Auth oder Cloud.
 - Fokustests, Vollsuite und Worker-Validator liefen nach der Integration grün. Für diesen deterministischen UI-Transparenzblock ist keine neue fachliche Freigabe erforderlich; die produktive IST-Erfassung bleibt Freigabepunkt 9.
+## Fortschritt 08.11.2026 – Worker-Deduplizierung nach Packungsgröße
+
+- Der Worker verwendet für Live-Angebote nun den bereits etablierten packungsbewussten Deduplizierungsschlüssel. Die Änderung ist deterministisch, rückwärtskompatibel und rein lesend.
+- Regressionen decken 200 g/250 g bei gleichem Namen und Preis sowie echte Duplikate mit abweichenden Leerzeichen ab. Worker-Build und Validator bleiben erfolgreich.
+- Keine neue fachliche Freigabe erforderlich; es wurden keine Quellen-, Preis-, Datenbank-, Supabase-, Auth-, Sync- oder Cloud-Verträge geändert.
