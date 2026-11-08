@@ -528,3 +528,8 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Die Einkaufsliste zeigt nun zusätzlich dasselbe lokale Monatsziel von 400,00 €, denselben bekannten Angebots-Teilbetrag und denselben Status „IST noch nicht erfasst“ wie die Planansicht.
 - Die Anzeige wird aus dem bestehenden `shoppingCostSummary` und dem bestehenden Budgetmodell gespeist. Unbekannte Preise, fehlende Artikel, Vorräte und Fahrtkosten bleiben außerhalb; es werden keine Kassenbeträge, Käufe oder Restbudgets erfunden.
 - Root/`dist` und das generierte Worker-Artefakt bleiben synchron. Es wurden keine neuen LocalStorage-, Backup-, Worker-, Supabase-, SQL-, Auth- oder Cloud-Felder eingeführt; die Einkaufsliste bleibt rückwärtskompatibel.
+## Fortschritt 08.11.2026 – Packungsbewusste Worker-Angebotsdeduplizierung
+
+- Die serverseitige Angebotsnormalisierung dedupliziert nun mit demselben deterministischen Schlüssel wie der bestehende Automationskern: Produktname, Preis, Packungsgröße, Angebotsende und optionaler Markt bleiben berücksichtigt.
+- Gleichnamige und gleichpreisige Varianten mit unterschiedlichen Packungsgrößen bleiben dadurch getrennt; echte Duplikate werden weiterhin nach stabiler Leerzeichen-Normalisierung zusammengeführt.
+- Es wurden keine Angebotsquellen, Preise, Nutzerdaten, Supabase-/SQL-/Auth-/Sync-/Cloud-Verträge oder produktiven Einkaufsdaten verändert.
