@@ -888,3 +888,10 @@ Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvolls
 
 - PR [#246](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/246) wurde nach grüner PR-CI in Merge-Commit `806f07ab67bce6bc85ff7696f0a7dcce4bd3cd52` übernommen. Der Frontend-Validator verwirft nun Snapshot- und Einzelangebotsenden vor dem protokollierten `fetchedAt`, entsprechend dem bestehenden Worker-Vertrag.
 - Der synthetische Regressionstest sowie Root-/`dist`-Synchronität und Worker-Validierung wurden geprüft. Keine neue fachliche Freigabe, da ausschließlich eine deterministische Validierungslücke geschlossen wurde; keine Live-Angebote, Preise, Nutzdaten, Supabase-, SQL-, Auth- oder Cloud-Änderung.
+
+
+## Fortschritt 08.11.2026 – Budgettransparenz in der Einkaufsliste
+
+- Die Einkaufsliste verwendet für Monatsziel, bekannten Angebots-Teilbetrag und „IST noch nicht erfasst“ denselben bestehenden Kosten-/Budgetkern wie die Planansicht. Die Anzeige bleibt rein lokal und lesend.
+- Unbekannte Preise, fehlende Artikel, Vorräte und Fahrtkosten bleiben ausdrücklich außerhalb. Es gibt keine echte Kassenbuchung, keinen neuen Speicher-/Sync-Vertrag und keine Änderung an Backup, Supabase, SQL, Auth oder Cloud.
+- Fokustests, Vollsuite und Worker-Validator liefen nach der Integration grün. Für diesen deterministischen UI-Transparenzblock ist keine neue fachliche Freigabe erforderlich; die produktive IST-Erfassung bleibt Freigabepunkt 9.

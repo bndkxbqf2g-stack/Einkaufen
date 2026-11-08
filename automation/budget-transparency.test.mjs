@@ -121,6 +121,9 @@ test('hält Budgetmodell und veröffentlichte App synchron', () => {
   assert.match(source, /Tatsächliche IST-Ausgaben/);
   assert.match(source, /Noch nicht erfasst/);
   assert.match(source, /renderBudgetTransparency\(shoppingCostSummary\)/);
+  assert.match(source, /shoppingBudgetTransparencyTitle/);
+  assert.match(source, /renderBudgetTransparency\(costSummary, 'shoppingBudget'\)/);
+  assert.match(source, /function renderBudgetTransparency\(costSummary, prefix = 'budget'\)/);
   assert.match(source, /budget-transparency\.js/);
 });
 

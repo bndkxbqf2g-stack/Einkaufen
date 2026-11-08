@@ -492,7 +492,21 @@
           <div class="shopping-stat accent"><div class="shopping-stat-label" id="shoppingOfferLabel">Bekannter Angebotsbetrag</div><div class="shopping-stat-value" id="shoppingOfferTotal">–</div><div class="shopping-stat-note" id="shoppingOfferNote">Noch keine verifizierte Preisbasis</div></div>
           <div class="shopping-stat"><div class="shopping-stat-label">Ergänzen</div><div class="shopping-stat-value" id="shoppingMissingCount">0</div><div class="shopping-stat-note">nicht als Angebot hinterlegt</div></div>
         </div>
-        <section class="panel">
+        <section class="panel budget-transparency" aria-labelledby="shoppingBudgetTransparencyTitle">
+  <div class="panel-header">
+    <div><h2 class="panel-title" id="shoppingBudgetTransparencyTitle">Einkauf · Budgettransparenz</h2><p class="panel-subtitle">Derselbe bekannte Angebots-Teilbetrag wie im Plan; offene Positionen bleiben sichtbar.</p></div>
+    <span class="tag muted">lokal</span>
+  </div>
+  <div class="panel-body">
+    <div class="budget-summary-grid">
+      <div class="budget-summary-stat"><div class="budget-summary-label">Monatsziel</div><div class="budget-summary-value" id="shoppingBudgetTargetValue">–</div><div class="budget-summary-note" id="shoppingBudgetTargetNote">Planungsziel · Lebensmittel und Getränke</div></div>
+      <div class="budget-summary-stat"><div class="budget-summary-label">Bekannter Angebotswert</div><div class="budget-summary-value" id="shoppingBudgetKnownOfferValue">–</div><div class="budget-summary-note" id="shoppingBudgetKnownOfferNote">Noch keine verifizierte Preisbasis</div></div>
+      <div class="budget-summary-stat"><div class="budget-summary-label">Tatsächliche IST-Ausgaben</div><div class="budget-summary-value" id="shoppingBudgetActualValue">–</div><div class="budget-summary-note actual" id="shoppingBudgetActualNote">Noch nicht erfasst</div></div>
+    </div>
+    <div class="source-note" id="shoppingBudgetTransparencyNote" role="status" aria-live="polite" style="margin-top:12px">Der Angebotswert ist kein Kassenbetrag und keine bestätigte Ausgabe.</div>
+  </div>
+</section>
+<section class="panel">
           <div class="panel-header"><div><h2 class="panel-title">Nach Markt sortiert</h2><p class="panel-subtitle">Mehrfach benötigte Zutaten werden als größerer Einkauf markiert und für spätere Restegerichte eingeplant.</p></div><div class="shopping-actions"><button class="outline-button" id="checkAllShopping">Alles abhaken</button><button class="text-button" id="refreshShoppingList">Liste aktualisieren</button></div></div>
           <div class="panel-body"><div class="source-note" id="shoppingHint" style="margin-bottom:13px"></div><div class="source-note" id="shoppingPantryDetail" role="status" aria-live="polite" aria-atomic="true" style="margin-bottom:13px"></div><div id="shoppingList"></div></div>
         </section>
@@ -1386,30 +1400,31 @@
       return window.AngebotskuecheCostModel.summarizeShoppingCosts(items, parseKnownMoney);
     }
 
-    function renderBudgetTransparency(costSummary) {
+    function renderBudgetTransparency(costSummary, prefix = 'budget') {
       const budgetModel = window.AngebotskuecheBudgetModel;
       if (!budgetModel || typeof budgetModel.summarizeBudgetTransparency !== 'function') return;
+      const field = suffix => $(`#${prefix}${suffix}`);
       const budget = budgetModel.summarizeBudgetTransparency({
         knownOfferTotalCents: costSummary?.knownOfferTotalCents,
         unresolvedPositionCount: (costSummary?.unknownPriceCount || 0) + (costSummary?.missingCount || 0),
       });
-      $('#budgetTargetValue').textContent = formatEuro(budget.monthlyTargetCents / 100);
-      $('#budgetTargetNote').textContent = 'Planungsziel · Lebensmittel und Getränke';
-      $('#budgetKnownOfferValue').textContent = budget.knownOfferTotalCents === null
+      field('TargetValue').textContent = formatEuro(budget.monthlyTargetCents / 100);
+      field('TargetNote').textContent = 'Planungsziel · Lebensmittel und Getränke';
+      field('KnownOfferValue').textContent = budget.knownOfferTotalCents === null
         ? '–'
         : formatEuro(budget.knownOfferTotalCents / 100);
-      $('#budgetKnownOfferNote').textContent = budget.knownOfferStatus === 'partial'
+      field('KnownOfferNote').textContent = budget.knownOfferStatus === 'partial'
         ? 'Bekannter Teilbetrag · offene Positionen nicht eingerechnet'
         : budget.knownOfferStatus === 'known-offer-only'
           ? 'Nur verifizierte Angebots-Packungen · kein Kassenbetrag'
           : 'Noch keine verifizierte Preisbasis';
-      $('#budgetActualValue').textContent = budget.actualSpendCents === null
+      field('ActualValue').textContent = budget.actualSpendCents === null
         ? '–'
         : formatEuro(budget.actualSpendCents / 100);
-      $('#budgetActualNote').textContent = budget.actualSpendStatus === 'not-recorded'
+      field('ActualNote').textContent = budget.actualSpendStatus === 'not-recorded'
         ? 'Noch nicht erfasst'
         : 'Status unbekannt';
-      $('#budgetTransparencyNote').textContent = budget.knownOfferStatus === 'partial'
+      field('TransparencyNote').textContent = budget.knownOfferStatus === 'partial'
         ? 'Der Plan-/Angebotswert ist kein Kassenbetrag. Unbekannte Preise und fehlende Artikel bleiben außerhalb; tatsächliche IST-Ausgaben sind noch nicht erfasst.'
         : 'Der Plan-/Angebotswert ist kein Kassenbetrag oder bestätigte Ausgabe; tatsächliche IST-Ausgaben sind noch nicht erfasst.';
     }
@@ -1460,6 +1475,7 @@
       const offerTotal = costSummary.knownOfferTotal;
       const reusedItems = items.filter(item => item.reused);
       const hasUnresolvedCostItems = costSummary.unknownPriceCount > 0 || costSummary.missingCount > 0;
+      renderBudgetTransparency(costSummary, 'shoppingBudget');
       $('#shoppingOpenCount').textContent = String(openItems.length);
       $('#shoppingOpenNote').textContent = `${items.length ? `${items.length - openItems.length} von ${items.length} ` : ''}abgehakt`;
       $('#shoppingOfferLabel').textContent = hasUnresolvedCostItems ? 'Bekannter Angebotsbetrag' : 'Angebotswert';
