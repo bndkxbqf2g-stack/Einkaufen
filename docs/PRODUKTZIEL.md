@@ -87,7 +87,7 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 - Gemeinsames Monatsbudgetmodell mit 400-€-Ziel, optional begründetem 440-€-Szenario, tatsächlichen Ausgaben und verbleibendem Budget.
 - Vergleich von Angebots- und regulären Preisen inklusive Gesamtwarenkorb.
 - Einstellbare Schwelle, ab der ein weiterer Markt trotz Fahrtkosten lohnt.
-- Personenauswahl pro Tag einschließlich Kindertagen und Auswahl der benötigten Mahlzeittypen.
+- Benannte Personenauswahl pro Tag einschließlich Kindertagen und Auswahl der benötigten Mahlzeittypen. Als additive Grundlage ist eine Tagespersonenzahl von 2, 3 oder 4 Personen umgesetzt; die Identitätsauswahl einzelner Haushaltsteilnehmer bleibt offen.
 - Eigene Planungsslots für Frühstück, Snacks und Getränke sind nicht Bestandteil des bestätigten Produktumfangs.
 - Mengenfähige, schnelle Vorratserfassung mit gezielten Rückfragen bei entscheidenden Beständen.
 - Allergien, Ausschlüsse und weitere individuelle Einschränkungen.
@@ -172,8 +172,15 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Es gibt keinen Frühstücks-Slot.
 - Der bestehende Hauptgericht-Slot wird als Mittagessen verstanden.
 - Zusätzlich ist ausschließlich ein optionales Abendessen vorgesehen.
-- Der bestehende optionale Abendblock bleibt die kleinste rückwärtskompatible Grundlage. Eine per-Person-Auswahl, automatische Umklassifizierung vorhandener Rezepte und eine neue Datenbankstruktur sind nicht Bestandteil dieser Entscheidung.
-- Frühere Passagen, die Frühstück als aktuellen oder nächsten Pflichtumfang nennen, gelten insoweit als überholt. Die nächste Umsetzung darf nur den optionalen Abendessen-Umfang betreffen.
+- Der bestehende optionale Abendblock bleibt die kleinste rückwärtskompatible Grundlage. Eine benannte Auswahl einzelner Haushaltsteilnehmer/Kinderprofile, automatische Umklassifizierung vorhandener Rezepte und eine neue Datenbankstruktur sind nicht Bestandteil dieser Entscheidung.
+- Frühere Passagen, die Frühstück als aktuellen oder nächsten Pflichtumfang nennen, gelten insoweit als überholt. Kleine additive Grundlagen dürfen den bestehenden Mittagessen-/Abendessen-Fluss erweitern, ohne Frühstücks-, Snack- oder Getränkeslots einzuführen.
+
+## Fortschritt 08.11.2026 – additive tagesbezogene Planungsbeteiligung
+
+- `settings.dayPeople` kann für einzelne nullbasierte Planungstage die Personenzahl `2`, `3` oder `4` speichern. Fehlt ein Eintrag, verwendet die App unverändert den globalen `peopleSelect`-Wert; ältere Einstellungen ohne dieses Feld bleiben gültig.
+- Mittagessen und optionales Abendessen eines Tages verwenden denselben Tageswert. Die Packungsberechnung summiert die deterministischen Portionsanteile je geplantem Gericht und rundet erst anschließend auf ganze Packungen auf; bekannte Angebotspreise folgen dieser Einkaufsliste, unbekannte Preise bleiben unbekannt.
+- Die kleine Tagesauswahl ist in Root- und `dist`-App enthalten. Backup-Export, lokaler Restore und bestätigter Cloud-Merge übernehmen das additive Feld, ohne fehlende Felder älterer Payloads zu überschreiben. Der neue Runtime-Baustein ist im Service-Worker-App-Shell-Cache enthalten.
+- Nicht Bestandteil dieses Blocks sind benannte Haushaltsteilnehmer/Kinderprofile, Frühstücks-, Snack- oder Getränkeslots, echte Kassenhistorie/Freigabepunkt 9, Supabase-Migrationen, Supabase-Datenänderungen und kostenpflichtige Dienste.
 
 ## Fortschritt 07.11.2026 – vorbereiteter IST-Budget-Kern
 
