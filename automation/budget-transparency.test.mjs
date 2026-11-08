@@ -21,7 +21,6 @@ test('verwendet ein getrenntes Monatszielmodell ohne IST-Restbudget', () => {
   const partial = model.summarizeBudgetTransparency({
     knownOfferTotalCents: 1_234,
     unresolvedPositionCount: 2,
-    actualSpendCents: 1_234,
   });
 
   assert.deepEqual({ ...partial }, {
@@ -31,6 +30,13 @@ test('verwendet ein getrenntes Monatszielmodell ohne IST-Restbudget', () => {
     unresolvedPositionCount: 2,
     actualSpendCents: null,
     actualSpendStatus: 'not-recorded',
+    plannedExpenseCents: null,
+    plannedExpenseStatus: 'not-recorded',
+    remainingAfterPlannedCents: null,
+    remainingBudgetCents: null,
+    travelCostCents: null,
+    travelCostStatus: 'not-recorded',
+    confirmedOutlayWithTravelCents: null,
   });
   assert.equal('remainingCents' in partial, false);
 });
@@ -44,8 +50,9 @@ test('lässt unbekannte Angebotswerte und tatsächliche Ausgaben ausdrücklich o
 
   assert.equal(unknown.knownOfferTotalCents, null);
   assert.equal(unknown.knownOfferStatus, 'unknown');
-  assert.equal(unknown.actualSpendCents, null);
-  assert.equal(unknown.actualSpendStatus, 'not-recorded');
+  assert.equal(unknown.actualSpendCents, 9_999);
+  assert.equal(unknown.actualSpendStatus, 'confirmed');
+  assert.equal(unknown.remainingBudgetCents, 30_001);
 });
 
 test('unterscheidet leere und vollständig bekannte Angebotssnapshots vom IST-Status', () => {
@@ -66,6 +73,46 @@ test('unterscheidet leere und vollständig bekannte Angebotssnapshots vom IST-St
   assert.equal(known.actualSpendCents, null);
 });
 
+test('berechnet bestätigte Ausgaben, Planrest und Fahrtkosten getrennt in Cent', () => {
+  const summary = model.summarizeBudgetTransparency({
+    knownOfferTotalCents: 12_34,
+    unresolvedPositionCount: 1,
+    plannedExpenseCents: 16_789,
+    actualSpendCents: 12_345,
+    travelCostCents: 1_234,
+  });
+
+  assert.equal(summary.plannedExpenseCents, 16_789);
+  assert.equal(summary.plannedExpenseStatus, 'provided');
+  assert.equal(summary.remainingAfterPlannedCents, 23_211);
+  assert.equal(summary.actualSpendCents, 12_345);
+  assert.equal(summary.actualSpendStatus, 'confirmed');
+  assert.equal(summary.remainingBudgetCents, 27_655);
+  assert.equal(summary.travelCostCents, 1_234);
+  assert.equal(summary.travelCostStatus, 'separate');
+  assert.equal(summary.confirmedOutlayWithTravelCents, 13_579);
+  assert.equal(summary.knownOfferTotalCents, 1_234);
+});
+
+test('hält 440 Euro ohne ausdrückliche Alternative bei 400 Euro und verwirft ungültige Werte', () => {
+  const standard = model.summarizeBudgetTransparency({
+    monthlyTargetCents: 44_000,
+    actualSpendCents: -1,
+    travelCostCents: Number.MAX_SAFE_INTEGER + 1,
+  });
+  assert.equal(standard.monthlyTargetCents, 40_000);
+  assert.equal(standard.actualSpendCents, null);
+  assert.equal(standard.travelCostCents, null);
+
+  const alternative = model.summarizeBudgetTransparency({
+    monthlyTargetCents: 44_000,
+    allowAlternativeTarget: true,
+  });
+  assert.equal(alternative.monthlyTargetCents, 44_000);
+  assert.equal(model.normalizeMonthlyTargetCents(44_000, false), 40_000);
+  assert.equal(model.normalizeMonthlyTargetCents(44_000, true), 44_000);
+});
+
 test('hält Budgetmodell und veröffentlichte App synchron', () => {
   assert.equal(publishedModelSource, modelSource);
   assert.equal(published, source);
@@ -80,7 +127,7 @@ test('hält Budgetmodell und veröffentlichte App synchron', () => {
 test('führt keine purchaseRecords- oder Cloud-Schreiblogik für die Anzeige ein', () => {
   assert.ok(rendererStart >= 0 && rendererEnd > rendererStart, 'Budgetrenderer muss vorhanden sein');
   assert.doesNotMatch(renderer, /purchaseRecords|supabase|cloud/i);
-  assert.doesNotMatch(modelSource, /remainingCents/);
 });
 
 console.log('Budget transparency checks passed');
+
