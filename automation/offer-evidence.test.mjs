@@ -68,4 +68,10 @@ test('renders evidence and saving status in shopping items without calculating c
   assert.match(source, /Quellenhinweis des Angebots/);
   assert.doesNotMatch(source, /regularPrice/);
 });
+test('shares the same evidence status with the open shopping list', () => {
+  assert.ok(source.includes("const evidenceLabel = item.offer ? shoppingOfferEvidenceLabel(item.offer) : '';"));
+  assert.ok(source.includes("const savingLabel = item.offer ? shoppingOfferSavingLabel(item.offer) : '';"));
+  assert.ok(source.includes('${amountLabel} · ${evidenceLabel} · ${savingLabel}'));
+  assert.equal(published, source);
+});
 console.log('Offer evidence checks passed');

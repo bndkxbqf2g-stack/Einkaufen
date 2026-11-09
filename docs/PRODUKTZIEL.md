@@ -543,3 +543,8 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Einkaufsartikel zeigen jetzt getrennt Quelle, Gültigkeit und den Status des Vergleichspreises. Ein vorhandenes `saving` wird ausdrücklich als quellenbereitgestellter Hinweis und nicht als eigene Berechnung bezeichnet.
 - Manuelle Importe, abgelaufene Angebote und fehlgeschlagene bzw. cachebasierte Prüfungen erscheinen nicht als verifiziert; fehlende Vergleichspreise bleiben sichtbar offen.
 - Es wurden keine Angebotsquellen, Preise, Nutzdaten, Speicher-/Sync-Felder oder Kassen-/Vorratslogik verändert. Root, `dist` und das Server-Artefakt bleiben synchron.
+## Fortschritt 09.11.2026 – Evidenzstatus beim Teilen der Einkaufsliste
+
+- Die geteilte offene Einkaufsliste übernimmt nun denselben Quellen-, Gültigkeits- und Vergleichspreisstatus wie die lokale Artikelansicht.
+- `saving` bleibt ein quellenbereitgestellter Hinweis; fehlende, manuelle, abgelaufene oder nicht bestätigte Werte werden auch im geteilten Text nicht als Ersparnis dargestellt.
+- Es wurden keine neuen Speicher-, Sync- oder Angebotsdaten eingeführt. Root, `dist` und Server-Artefakt bleiben synchron.
