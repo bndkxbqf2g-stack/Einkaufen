@@ -1016,3 +1016,10 @@ Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfigura
 - PR #289 wurde nach grüner CI in Merge-Commit `d4762d21d0417feca9b96691653616814b85b02c` integriert. Der End-to-End-Audit reproduzierte, dass `500 g Öl` aus dem Mittagessen und `1 l Öl` aus dem Abendessen zuvor still in einer Einkaufsposition zusammengelegt wurden.
 - Inkompatible explizite Einheitenfamilien bleiben nun getrennt; kompatible `g/kg`- und `ml/l`-Mengen aggregieren weiterhin. Die Regressionstests und CI #42608250639 waren vollständig grün; der Deploy wurde übersprungen.
 - Keine Supabase-, SQL-, Auth-, Nutzer-/Angebotsdaten-, Preis- oder Deploymentänderung.
+
+
+## Fortschritt 09.11.2026 – konservative Angebotszuordnung
+
+- PR #291 wurde nach grüner CI in Merge-Commit `996c1c6a8929104bab99c5622766b0832222e55d` integriert. Der Audit reproduzierte, dass ein explizites `500 g Hackfleisch` bisher ein gleichnamiges `1 l`-Angebot sowie eine unbekannte `1 Packung`-Größe matchen durfte.
+- Explizite Rezeptmengen matchen nun nur Angebote derselben Mengenfamilie; unbekannte oder fehlende Packungsgrößen werden konservativ ausgeschlossen. Textuelle Zutaten ohne explizite Einheit behalten das Namensmatching. Regressionstests und CI #42609169843 waren vollständig grün; der Deploy wurde übersprungen.
+- Keine Supabase-, SQL-, Auth-, Nutzer-/Angebotsdaten-, Preis- oder Deploymentänderung.
