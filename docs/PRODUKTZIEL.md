@@ -563,3 +563,8 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Beide Änderungen verbessern ausschließlich die Bedienbarkeit mit Screenreadern. Es wurden keine Daten-, Sync-, Supabase-, Auth-, Cloud-, Preis- oder Angebotsverträge und keine Nutzerdaten verändert; Root, dist und das Server-Artefakt bleiben synchron.
 - Die nächsten fachlichen Freigabepunkte bleiben unverändert: insbesondere Mengen-/Vorratsverbrauch, echte IST-/Belegerfassung, Vergleichspreise und Ersparnis, Fahrtkosten/Mehrstopp-Routing, Offline-Konfliktstrategie sowie Supabase-/Auth-Erweiterungen.
 
+## Fortschritt 09.11.2026 – source-bezogener Vollständigkeitsnachweis
+
+- `automation/market-completeness-evidence.mjs` bildet aus jedem Angebots-Snapshot einen deterministischen Nachweis je Quelle und Markt. Ladeziele, erkannte Angebote und ausdrücklich quellenbezogene Gesamtzahlen bleiben getrennt.
+- Eine Vollständigkeit wird nur bei gleichzeitig vorhandener `sourceExpectedTotalCount`- und `sourceObservedTotalCount`-Angabe ausgewiesen. Fehlt die Sollzahl, bleibt der Status `unknown`; aus Ladezielen oder `offers.length` werden keine Sollmengen abgeleitet.
+- Der Baustein ist rein lesend und aggregiert keine Angebote, Preise oder Nutzer-/Cloud-Daten. Quelladressen werden für den Nachweis ohne Query-/Fragmentdaten ausgegeben; vorhandene Snapshotdaten bleiben unverändert.
