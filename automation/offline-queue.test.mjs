@@ -29,6 +29,20 @@ test('normalisiert gültige Operationen und bewahrt den Payload-Inhalt', () => {
   }
 });
 
+test('weist nicht JSON-stabile Objekte und löchrige Arrays zurück', () => {
+  const invalidPayloads = [
+    new Date('2026-01-01T00:00:00.000Z'),
+    new Map([['unexpected', 1]]),
+    new Set(['unexpected']),
+    [, 'sparse'],
+    { nested: new Date('2026-01-01T00:00:00.000Z') },
+  ];
+
+  for (const payload of invalidPayloads) {
+    assert.equal(model.validateOperation({ ...operation('invalid-payload'), payload }), false);
+  }
+});
+
 test('reiht Operationen FIFO ein und schützt doppelte IDs', () => {
   const first = model.enqueue([], operation('op-1'));
   assert.equal(first.accepted, true);
