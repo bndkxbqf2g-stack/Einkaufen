@@ -1061,3 +1061,8 @@ Dieser Audit änderte keine Angebote, Nutzer-/Haushaltsdaten, Supabase-/Schema-D
 - CI #42615733985 bestätigte 325/325 Tests sowie den generierten Worker-Artefaktvergleich und die Endpoint-Validierung. Der Deploy-Schritt blieb übersprungen.
 - Keine Angebote, Nutzer-/Haushaltsdaten, Supabase-/Schema-Daten, Deployments oder kostenpflichtigen Ressourcen wurden verändert.
 - Der nächste Runtime-Schritt bleibt der gebündelt freizugebende lokale Dialog „Einkauf abschließen“ mit manueller IST-Summe, Datum und optionalem Markt; zunächst ohne Pantry-Verbrauch, Cloud-/Backup-/OCR-Erweiterung oder automatische Preisübernahme.
+## Kleine UX-Klarstellung 09.11.2026 – statische Marktdistanzen
+
+- Marktlisten kennzeichnen numerische Entfernungen jetzt ausdrücklich als „statische Anzeigeentfernung“.
+- Nichtnumerische Werte wie `Cloud-Browser` werden als „keine Routendaten“ angezeigt und nicht als Entfernung, Nullwert oder Fahrtkostenbasis dargestellt.
+- Regressionstests prüfen Root-/Dist-Parität und beide Anzeigevarianten. Keine Routen-, Karten-, Angebots-, Nutzer-, Supabase- oder Deploymentänderung.
