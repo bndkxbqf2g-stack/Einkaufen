@@ -1054,3 +1054,11 @@ Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfigura
 
 Dieser Audit änderte keine Angebote, Nutzer-/Haushaltsdaten, Supabase-/Schema-Daten, Deployments oder kostenpflichtigen Ressourcen.
 
+
+## Kleine Robustheitsverbesserung 09.11.2026 – Marktsortierung
+
+- Die Marktauswahl sortiert bekannte numerische Anzeigeentfernungen weiterhin aufsteigend.
+- Fehlende oder nichtnumerische Entfernungen werden nicht als `0`, `null` oder Ersparnis interpretiert, sondern deterministisch hinter bekannten Werten belassen; bei Gleichstand bleibt die konfigurierte Reihenfolge erhalten.
+- Der Umfang bleibt eine Auswahl-/Darstellungshilfe. Eine echte Routen- oder Fahrtkostenberechnung wurde nicht eingeführt.
+- Regressionstests prüfen Root-/Dist-Gleichheit sowie das Verhalten mit `Cloud-Browser` und gleichen Distanzen.
+- Keine Angebote, Nutzerdaten, Supabase-/Schema-Daten, Deployments oder kostenpflichtigen Ressourcen wurden verändert.

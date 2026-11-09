@@ -593,15 +593,21 @@ function extractFrontendFunction(source, name) {
 
 function createMarketSelectionHarness({ selectedMarkets, markets } = {}) {
   const normalizedHtml = html.replace(/\r\n?/g, '\n');
+  const distanceStart = normalizedHtml.indexOf('function parseMarketDistanceKm(value) {');
+  const distanceEnd = normalizedHtml.indexOf('\n    function sortedSelectedMarkets', distanceStart);
+  const distanceDeclaration = normalizedHtml.slice(distanceStart, distanceEnd);
   const sortedDeclaration = [extractFrontendFunction(normalizedHtml, 'sortedSelectedMarkets')];
   const activeDeclaration = [extractFrontendFunction(normalizedHtml, 'getActiveOffers')];
   const demoStart = normalizedHtml.indexOf('function isDemoOffer(offer) {');
   const demoEnd = normalizedHtml.indexOf('\n    function isOfferCurrent', demoStart);
   const demoDeclaration = normalizedHtml.slice(demoStart, demoEnd);
+  assert.notEqual(distanceStart, -1, 'market distance parser is present');
+  assert.ok(distanceDeclaration, 'market distance parser body is present');
   assert.ok(sortedDeclaration, 'selected market sorter is present');
   assert.ok(activeDeclaration, 'active offer selector is present');
   assert.ok(demoDeclaration, 'demo offer helper is present');
   return vm.runInNewContext(`(() => {
+    ${distanceDeclaration}
     ${sortedDeclaration[0]}
     ${demoDeclaration}
     ${activeDeclaration[0]}

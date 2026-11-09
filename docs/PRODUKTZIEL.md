@@ -734,3 +734,7 @@ Der aktuelle Stand auf `main@0e376158e1c10dde1842268e01db1df1b35708cf` wurde geg
 
 Eine produktive Mehrstopp- oder Routenfunktion bleibt bis zur fachlichen Entscheidung über Verkehrsmittel, Strecke, Parken, Fahrtkostenquelle, reguläre Vergleichspreise, Marktzuordnung, Schwellenwert und UI-/Sync-Verhalten ausgeschlossen. Externe Karten-, Geocoding- oder Routingdienste sowie neue Cloudverarbeitung werden dafür nicht automatisch eingeführt.
 
+
+## Laufende Robustheitsverbesserung 09.11.2026 – Marktsortierung
+
+Die aktive Marktauswahl behandelt unbekannte oder nichtnumerische Distanzanzeigen konservativ: Solche Werte werden weder als null noch als wirtschaftlicher Vorteil verwendet und deterministisch hinter bekannten numerischen Entfernungen einsortiert. Bei gleichen oder unbekannten Werten bleibt die konfigurierte Reihenfolge erhalten. Dies ändert nichts am ausdrücklich offenen Umfang von Routenoptimierung und Fahrtkostenberechnung.
