@@ -62,6 +62,7 @@ export function validateOfferSnapshot(snapshot, { now = new Date() } = {}) {
     throw new Error('Angebotssnapshot muss ein Objekt sein.');
   }
 
+  const currentMoment = now instanceof Date ? new Date(now.getTime()) : new Date(now);
   const currentDate = currentDateOrdinal(now);
   if (currentDate === null) {
     throw new Error('Angebotssnapshot: "now" muss ein gültiger Zeitpunkt sein.');
