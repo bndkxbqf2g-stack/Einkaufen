@@ -95,7 +95,9 @@
     if (!basis?.valid || !pack || basis.family !== pack.family || !Number.isFinite(basis.amount) || basis.amount <= 0) return null;
     const ratio = basis.amount / pack.amount;
     if (!Number.isFinite(ratio) || ratio <= 0) return null;
-    return Math.max(1, Math.ceil(ratio - 1e-9));
+    // Only absorb IEEE-754 noise; a real positive overage must round up.
+    const tolerance = Number.EPSILON * Math.max(1, Math.abs(ratio)) * 8;
+    return Math.max(1, Math.ceil(ratio - tolerance));
   }
 
   root.AngebotskuecheIngredientQuantityModel = Object.freeze({
