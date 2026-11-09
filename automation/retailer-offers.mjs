@@ -58,7 +58,7 @@ function euroAmountPattern() {
 
 function formatEuroAmount(value) {
   const normalized = String(value || '').replace(/\s+/g, '');
-  if (normalized.includes(',')) return normalized.replace(/\./g, '') + ' €';
+  if (normalized.includes(',')) return normalized + ' €';
   if (/^\d{1,3}(?:\.\d{3})+$/.test(normalized)) return normalized + ' €';
   return normalized.replace('.', ',') + ' €';
 }
