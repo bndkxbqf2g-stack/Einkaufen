@@ -982,12 +982,12 @@
       if (!sourceUrlForDisplay(payload.sourceUrl)) return 'Angebotsdatensatz ohne sichere HTTPS-Quelle';
       if (!/^\d{4}-\d{2}-\d{2}T([01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?Z$/.test(String(payload.fetchedAt || '').trim()) || !normalizeSourceTimestamp(payload.fetchedAt)) return 'Angebotsdatensatz ohne gültigen UTC-Abrufzeitpunkt';
       const fetchedAt = new Date(payload.fetchedAt);
-      if (fetchedAt.getTime() > now.getTime()) return 'Angebotsdatensatz hat einen Abrufzeitpunkt in der Zukunft';
       const snapshotEnd = offerEndDate(payload.validUntil);
       if (!snapshotEnd || snapshotEnd < now) return 'Angebotsdatensatz ist abgelaufen oder ohne gültiges Ende';
       const dateOrdinal = date => date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
       const fetchedAtOrdinal = fetchedAt.getUTCFullYear() * 10000 + (fetchedAt.getUTCMonth() + 1) * 100 + fetchedAt.getUTCDate();
       if (dateOrdinal(snapshotEnd) < fetchedAtOrdinal) return 'Angebotsdatensatz endet vor dem Abrufzeitpunkt';
+      if (fetchedAt.getTime() > now.getTime()) return 'Angebotsdatensatz hat einen Abrufzeitpunkt in der Zukunft';
       if (!Array.isArray(payload.offers) || !payload.offers.length) return 'Leerer Angebotsdatensatz';
       if (payload.recognizedCount !== undefined && payload.recognizedCount !== payload.offers.length) return 'Angebotsanzahl ist widersprüchlich';
       const pricePattern = /^(?:ab\s+)?\d{1,3}(?:\.\d{3})*(?:,\d{2})?\s*€$/i;
