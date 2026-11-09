@@ -1037,3 +1037,10 @@ Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfigura
 - PR #295 wurde in Merge-Commit `b984d7122546b2d4f51715b1fef8fd15f77e13aa` integriert. Der Angebotsvergleich interpretierte deutsche Gruppenschreibweisen wie `1.000 g` zuvor als `1 g`; dadurch konnten unterschiedlich große Packungen im Tie-Break gleichgesetzt werden.
 - `parseKnownPackageSize` normalisiert nun deutsche Tausender- und gemischte Dezimal-Packungsgrößen deterministisch. Regressionen für `1.000 g`, `1.234,56 g` und `2 x 1.000 ml` sichern den Pfad; CI #42611276092 war vollständig grün (321 Tests, Worker-Artefakt und Endpoint-Validierung).
 - Keine Preis- oder Angebotsdaten, Nutzerdaten, Supabase-/Datenbankverträge oder Deployments wurden fachlich geändert.
+
+
+## Audit 09.11.2026 – Evidenzgrenze für bekannte Angebotskosten
+
+- PR #297 wurde in Merge-Commit `7ad6add32c94c7b3dd3f5e8bbf243e0bf95e02f2` integriert. Manuelle, abgelaufene, unsichere und Cache-Fallback-Angebote konnten zuvor trotz Nichtverifizierung in bekannte Angebots-Teilbeträge eingehen.
+- Der deterministische Kostenpfad zählt nun nur aktuelle, HTTPS-quellenbelegte, gültige und hoch-konfidente Live-Angebote als bekannt; alle anderen Angebote bleiben `unknown` und werden separat sichtbar gehalten. CI #42612829175 bestätigte 321 Tests sowie Worker- und Endpoint-Prüfungen.
+- Keine Preis- oder Angebotsdaten, Nutzdaten, Supabase-/Datenbankverträge oder Deployments wurden geändert.
