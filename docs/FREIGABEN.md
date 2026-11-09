@@ -971,3 +971,9 @@ Dieser Abschnitt ist der maßgebliche aktuelle Koordinationsstand. Frühere Absc
 - Der nächste fachliche Schritt ist keine weitere autonome Daten- oder Cloudänderung. Vor produktiver Erweiterung sind die jeweils gebündelten Freigaben und externen Verifikationen aus diesem Dokument maßgeblich.
 
 Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfiguration, Secrets oder Deployments.
+
+## Fortschritt 09.11.2026 – Parser-Härtung für deutsche Preisbeträge
+
+- PR #278 wurde in Merge-Commit `bcaa0a3f26afd3082af0080a9011684dba413f40` integriert. Negative und mehrdeutige Preis-Tokens werden verworfen; deutsche Tausender- und Dezimalbeträge bleiben erhalten; Grundpreise werden nicht als Angebotspreise übernommen.
+- CI #42599370232 bestätigte 309 erfolgreiche Tests sowie grüne Worker-, Artefakt- und Endpoint-Prüfungen. Der Deploy-Schritt wurde übersprungen.
+- Die Änderung ist rein parser- und testbezogen. Es gab keine Runtime-, Supabase-, SQL-, Auth-, Daten- oder Deploymentänderung.
