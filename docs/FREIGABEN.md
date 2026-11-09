@@ -78,6 +78,18 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 - **Datenhoheit:** nur lokal, im Backup, oder haushaltsweit synchronisiert; inklusive Löschung und Konfliktbehandlung.
 - **Angebotswert:** Vorräte weiterhin vollständig aus dem Angebots-Zwischenwert und dem bestätigten Monatsbudget ausnehmen.
 
+### Freigegebener Pilotumfang 09.11.2026
+
+Die lokale, lesende erste Einkaufslistenintegration ist freigegeben und umgesetzt:
+
+- Bedarf aus Mittagessen und optionalem Abendessen wird je Zutatenidentität vor der Deckung zusammengeführt.
+- Es werden ausschließlich positive, explizite Mengen in g/kg, ml/l oder Stück verrechnet; Familienwechsel werden nicht angenommen.
+- Vollständige Deckung wird aus der Einkaufsliste entfernt, Teildeckung reduziert nur den Restbedarf. Unbekannte, null/negative und inkompatible Bestände erhalten den vollen Bedarf.
+- Packungsrundung erfolgt erst nach der Deckung und nur bei passender Packungsgröße; manuelle, mengenlose und alte String-Pantry-Positionen bleiben unverändert.
+- Der Pilot liest `pantryQuantities` nur lokal und verändert weder Vorrat, Mengenbestand, LocalStorage, Backup, Cloud, Supabase noch Sync-Payloads. Frühstück und automatische Verbrauchsbuchung gehören nicht dazu.
+
+Die weitergehenden Entscheidungen oben bleiben für Verbrauchsreservierung, Genauigkeit, Nullbestand, Zeitbezug, Datenhoheit und Budgetausnahme offen.
+
 
 ## Benötigt später Nutzeraktion, keine Zugangsdaten im Chat
 
@@ -919,3 +931,4 @@ Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvolls
 - PR #255 wurde gemergt und macht den bereits vorhandenen Gesamtfortschritt sowie den bereits vorhandenen Fortschritt je Marktgruppe als höfliche, atomare Statusbereiche für Screenreader ankündigbar.
 - Beide PRs enthalten ausschließlich Accessibility-/Regressionstest- und synchronisierte Artefaktänderungen. Keine neue Fachlogik, keine Daten-, Sync-, Supabase-, Auth- oder Cloudänderung und keine Preis-/Angebotsänderung.
 - Dafür ist keine neue fachliche Freigabe erforderlich. Die bisher gebündelten Freigabepunkte bleiben unverändert, insbesondere Vorrats-/Mengenverbrauch, echte IST-/Belegerfassung, Vergleichspreise/Ersparnis, Fahrtkosten/Mehrstopp-Routing, Offline-Konfliktstrategie und weitergehende Supabase-/Auth-Verträge.
+

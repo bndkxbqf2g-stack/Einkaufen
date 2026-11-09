@@ -3,12 +3,14 @@ import { readFile } from 'node:fs/promises';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 
-const [normalization, quantitySource, pantrySource, rootSource, distSource] = await Promise.all([
+const [normalization, quantitySource, pantrySource, rootSource, distSource, indexSource, distIndexSource] = await Promise.all([
   readFile(new URL('../ingredient-normalization.js', import.meta.url), 'utf8'),
   readFile(new URL('../ingredient-quantity.js', import.meta.url), 'utf8'),
   readFile(new URL('../pantry-quantity.js', import.meta.url), 'utf8'),
   readFile(new URL('../pantry-shopping-coverage.js', import.meta.url), 'utf8'),
   readFile(new URL('../dist/pantry-shopping-coverage.js', import.meta.url), 'utf8'),
+  readFile(new URL('../index.html', import.meta.url), 'utf8'),
+  readFile(new URL('../dist/index.html', import.meta.url), 'utf8'),
 ]);
 
 function loadModel(source = rootSource) {
@@ -20,7 +22,15 @@ function loadModel(source = rootSource) {
   return context.AngebotskuechePantryShoppingCoverageModel;
 }
 
+function loadQuantityModel() {
+  const context = {};
+  runInNewContext(normalization, context);
+  runInNewContext(quantitySource, context);
+  return context.AngebotskuecheIngredientQuantityModel;
+}
+
 const model = loadModel();
+const quantityModel = loadQuantityModel();
 const plain = value => JSON.parse(JSON.stringify(value));
 const basis = (amount, unit, family = unit === 'g' || unit === 'kg' ? 'mass' : unit === 'ml' || unit === 'l' ? 'volume' : 'count') => ({ valid: true, amount, unit, family });
 
@@ -77,5 +87,62 @@ test('Root- und dist-Adapter bleiben synchron', () => {
   assert.ok(loadModel(distSource));
 });
 
+test('bindet die mengenbasierte Coverage nur für explizite Bedarfe in beide App-Artefakte ein', () => {
+  assert.equal(distIndexSource, indexSource);
+  assert.match(indexSource, /pantry-shopping-coverage\.js/);
+  assert.match(indexSource, /applyPantryCoverageToShoppingItems/);
+  assert.match(indexSource, /isPantryIngredient\(ingredient\) && !parsedIngredient\?\.explicit/);
+  assert.match(indexSource, /pantryQuantityModel\?\.getQuantity/);
+});
+
+test('wendet partielle Deckung erst nach der Bedarfssumme an und lässt Packungsrundung danach zu', () => {
+  const items = [
+    { name: 'Milch', count: 1, portionUnits: 1, meals: ['Mittag'], quantityBasis: basis(1000, 'g'), offer: { packSize: '500 g' } },
+    { name: 'Milch', count: 1, portionUnits: 1, meals: ['Abend'], quantityBasis: basis(500, 'g'), offer: { packSize: '500 g' } },
+  ];
+  const result = model.applyPantryCoverageToShoppingItems(items, { milch: { name: 'Milch', amount: 500, unit: 'g' } });
+  assert.equal(result.items.length, 1);
+  assert.equal(result.items[0].quantityBasis.amount, 1000);
+  assert.equal(result.items[0].pantryCoverage, 'partially-covered');
+  assert.equal(result.items[0].count, 2);
+  assert.equal(quantityModel.calculateExactPackCount(result.items[0]), 2);
+});
+
+test('entfernt vollständig gedeckte Mengen, ohne Vorratsdaten zu verändern', () => {
+  const pantry = { milch: { name: 'Milch', amount: 1, unit: 'l' } };
+  const result = model.applyPantryCoverageToShoppingItems([
+    { name: 'Milch', count: 1, quantityBasis: basis(500, 'ml') },
+  ], pantry);
+  assert.deepEqual(plain(result.items), []);
+  assert.equal(result.coverage.coveredCount, 1);
+  assert.deepEqual(pantry, { milch: { name: 'Milch', amount: 1, unit: 'l' } });
+});
+
+test('liefert bei unbekanntem, null/negativem oder inkompatiblem Vorrat den vollen Bedarf zurück', () => {
+  const item = { name: 'Öl', count: 1, quantityBasis: basis(500, 'g'), offer: { packSize: '500 g' } };
+  for (const pantry of [
+    {},
+    { ol: { name: 'Öl', amount: 0, unit: 'l' } },
+    { ol: { name: 'Öl', amount: -1, unit: 'l' } },
+    { ol: { name: 'Öl', amount: 1, unit: 'l' } },
+  ]) {
+    const result = model.applyPantryCoverageToShoppingItems([item], pantry);
+    assert.equal(result.items.length, 1);
+    assert.equal(result.items[0].quantityBasis.amount, 500);
+    assert.equal(result.items[0].pantryCoverage, result.coverage.groups[0].status);
+    assert.notEqual(result.coverage.groups[0].status, 'covered');
+  }
+});
+
+test('belässt manuelle und mengenlose Legacy-Positionen unverändert', () => {
+  const items = [
+    { name: 'Küchenrolle', manual: true, manualQuantity: 2 },
+    { name: 'Gewürze', count: 1 },
+  ];
+  const result = model.applyPantryCoverageToShoppingItems(items, {});
+  assert.deepEqual(plain(result.items), plain(items));
+});
+
 console.log('Pantry shopping coverage adapter checks passed');
+
 
