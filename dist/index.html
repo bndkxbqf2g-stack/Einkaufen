@@ -1484,6 +1484,18 @@
       return details.join(' · ');
     }
 
+    function shoppingPantryCoverageLabel(item) {
+      if (item?.pantryCoverage !== 'partially-covered') return '';
+      const quantityModel = typeof window !== 'undefined' ? window.AngebotskuechePantryQuantityModel : null;
+      const unit = item?.quantityBasis?.unit;
+      const formatQuantity = amount => typeof quantityModel?.formatQuantity === 'function' && Number.isFinite(Number(amount)) && unit
+        ? quantityModel.formatQuantity({ name: item.name, amount: Number(amount), unit })
+        : '';
+      const covered = formatQuantity(item.pantryCoveredAmount);
+      const remaining = formatQuantity(item.pantryRemainingDemand);
+      return covered && remaining ? `Vorrat deckt ${covered} · Restbedarf ${remaining}` : 'Vorrat teilweise berücksichtigt';
+    }
+
     function reconcileShoppingChecks(checks, items) {
       const currentIds = new Set((Array.isArray(items) ? items : []).map(item => item?.id).filter(Boolean));
       const normalizedChecks = {};
@@ -1578,7 +1590,7 @@
         return (marketOrder.indexOf(first[0]) === -1 ? 99 : marketOrder.indexOf(first[0])) - (marketOrder.indexOf(second[0]) === -1 ? 99 : marketOrder.indexOf(second[0]));
       });
       queueMicrotask(() => decorateShoppingItemEvidence(items));
-       $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group" aria-label="${escapeHtml(marketDisplayName(group))}">${renderShoppingGroupHeader(group, groupItems)}<div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const useLabel = item.manual && item.packCount > 1 ? `${item.packCount} Packungen · zusätzlich ergänzt` : item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; const packLabel = item.offer ? (item.packCount > 1 ? `${item.packCount} Packungen · ${item.offer.packSize || 'Packungsgröße'}` : `${item.offer.packSize || '1 Packung'} · ${item.offer.saving || 'Angebot'}`) : ''; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.packCount > 1 ? `${item.packCount} × ${item.offer.price}` : item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(packLabel)}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
+       $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group" aria-label="${escapeHtml(marketDisplayName(group))}">${renderShoppingGroupHeader(group, groupItems)}<div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const baseUseLabel = item.manual && item.packCount > 1 ? `${item.packCount} Packungen · zusätzlich ergänzt` : item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; const pantryLabel = shoppingPantryCoverageLabel(item); const useLabel = [baseUseLabel, pantryLabel].filter(Boolean).join(' · '); const packLabel = item.offer ? (item.packCount > 1 ? `${item.packCount} Packungen · ${item.offer.packSize || 'Packungsgröße'}` : `${item.offer.packSize || '1 Packung'} · ${item.offer.saving || 'Angebot'}`) : ''; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.packCount > 1 ? `${item.packCount} × ${item.offer.price}` : item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(packLabel)}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
     }
 
     function openShoppingItemModal() {

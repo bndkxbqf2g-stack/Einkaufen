@@ -1091,3 +1091,8 @@ Der read-only Sync-Härtungsblock ergänzt einen Test für den bislang nur indir
 ## Fortschritt 09.11.2026 – bekannte Packungspreise bleiben eindeutig
 
 Der Preisparser-Audit bestätigte die bestehende Regel: Nur ein eindeutiger positiver Euro-Packungspreis darf in bekannte Angebotsbeträge eingehen; Grundpreise, negative oder mehrdeutige Tokens bleiben unbekannt. Die Regressionen sichern diesen Vertrag für Root und `dist`; keine Runtime- oder Datenänderung.
+
+
+## Fortschritt 09.11.2026 – Transparenz bei Teilbeständen
+
+Der bestehende lokale Vorratsabgleich wird im Einkaufsartikel sichtbar: Bei teilweiser Deckung werden gedeckter Anteil und verbleibender Bedarf angezeigt. Vollständig gedeckte, unbekannte oder inkompatible Positionen behalten ihre bisherigen konservativen Regeln. Es wurden keine Vorrats-, Nutzer-, Supabase-, SQL-, Backup-, Sync- oder Deploymentverträge geändert.

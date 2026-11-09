@@ -766,3 +766,8 @@ Der bestehende Sync-Pfad schreibt Haushaltsbindung und Revision erst nach erfolg
 ## Fortschritt 09.11.2026 – Preisparser-Regressionsschutz
 
 Der Kosten-/Angebotspfad ist durch zusätzliche Regressionen gegen deutsche Tausender- und Dezimalbeträge, mehrdeutige Schreibweisen, negative Werte und explizite Grundpreise abgesichert. Root- und veröffentlichtes `dist`-Dokument müssen dabei denselben konservativen Parservertrag erfüllen. Es wurden keine Preise oder Angebotsdaten geändert und keine Supabase-, Daten-, Deployment- oder Kostenressource verwendet.
+
+
+## Fortschritt 09.11.2026 – Teilbestände in der Einkaufsliste sichtbar
+
+Die mengenbasierte Vorratsdeckung war bereits rein lesend umgesetzt: vollständige Bedarfe verschwinden, Teilbestände reduzieren den Restbedarf, unbekannte oder inkompatible Mengen bleiben offen. Die Einkaufslistenposition zeigt bei Teildeckung jetzt zusätzlich „Vorrat deckt … · Restbedarf …“. Damit bleibt die Berechnung nachvollziehbar, ohne Vorratsdaten zu mutieren oder neue Speicher-/Sync-Felder einzuführen. Root- und `dist`-UI bleiben synchron.

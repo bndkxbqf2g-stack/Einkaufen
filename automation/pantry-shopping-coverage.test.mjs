@@ -87,6 +87,14 @@ test('Root- und dist-Adapter bleiben synchron', () => {
   assert.ok(loadModel(distSource));
 });
 
+test('zeigt bei teilweiser Vorratsdeckung den gedeckten Anteil und den Restbedarf an', () => {
+  assert.match(indexSource, /function shoppingPantryCoverageLabel\(item\)/);
+  assert.match(indexSource, /Vorrat deckt \$\{covered\} · Restbedarf \$\{remaining\}/);
+  assert.match(indexSource, /shoppingPantryCoverageLabel\(item\)/);
+  assert.match(distIndexSource, /function shoppingPantryCoverageLabel\(item\)/);
+  assert.match(distIndexSource, /shoppingPantryCoverageLabel\(item\)/);
+});
+
 test('bindet die mengenbasierte Coverage nur für explizite Bedarfe in beide App-Artefakte ein', () => {
   assert.equal(distIndexSource, indexSource);
   assert.match(indexSource, /pantry-shopping-coverage\.js/);
