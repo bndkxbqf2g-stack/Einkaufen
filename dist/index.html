@@ -580,6 +580,7 @@
   <script src="./day-planning.js"></script>
   <script src="./ingredient-quantity.js"></script>
   <script src="./pantry-quantity.js"></script>
+  <script src="./pantry-shopping-coverage.js"></script>
   <script src="./supabase-sync.js"></script>
   <script>
     const seedOffers = [
@@ -823,6 +824,7 @@
     const pantryQuantityStorageKey = pantryQuantityModel?.storageKey || 'angebotskueche.pantryQuantities';
     const rawPantryQuantities = (() => { try { const value = JSON.parse(localStorage.getItem(pantryQuantityStorageKey)); return value ?? null; } catch { return null; } })();
     let pantryQuantities = pantryQuantityModel?.normalizeDetails?.(rawPantryQuantities) || {};
+    let shoppingPantryCoverage = null;
     if (pantryQuantityModel) {
       const retainedPantryQuantities = pantryQuantityModel.retainForPantry(pantryQuantities, pantry);
       pantryQuantities = retainedPantryQuantities;
@@ -1366,7 +1368,7 @@
           const rawText = String(rawIngredient || '').trim();
           const parsedIngredient = quantityModel?.parseRecipeIngredient(rawText);
           const ingredient = parsedIngredient?.explicit ? parsedIngredient.name : rawText;
-          if (!ingredient || isPantryIngredient(ingredient)) return;
+          if (!ingredient || (isPantryIngredient(ingredient) && !parsedIngredient?.explicit)) return;
           const key = shoppingIngredientKey(ingredient);
           const identity = shoppingIngredientIdentity(ingredient);
           if (!key) return;
@@ -1394,7 +1396,11 @@
         const manualQuantity = Number.isInteger(rawManualQuantity) && rawManualQuantity >= 1 && rawManualQuantity <= 99 ? rawManualQuantity : 1;
         items.set(key, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id, manualQuantity });
       });
-      return [...items.values()].map(item => {
+      const coverageModel = typeof window !== 'undefined' ? window.AngebotskuechePantryShoppingCoverageModel : null;
+      const reconciled = coverageModel?.applyPantryCoverageToShoppingItems?.([...items.values()], pantryQuantities);
+      shoppingPantryCoverage = reconciled?.coverage || null;
+      const reconciledItems = reconciled?.items || [...items.values()];
+      return reconciledItems.map(item => {
         // Zutaten werden ohne Mengenangabe im Rezept geführt. Ein Vorkommen entspricht deshalb
         // einer Basisportion für zwei Personen; manuelle Artikel nutzen die gespeicherte Packungszahl (Standard: 1).
         const packCount = shoppingPackCount(item, people);
@@ -1484,11 +1490,22 @@
 
     function renderShoppingList() {
       const plannedDinners = typeof getPlannedDinnerMeals === 'function' ? getPlannedDinnerMeals() : [];
-      const pantryCoverage = window.AngebotskuecheCostModel.summarizePantryCoverage(
+      const legacyPantryCoverage = window.AngebotskuecheCostModel.summarizePantryCoverage(
         [...getCurrentPlanMeals(), ...plannedDinners].flatMap(getMealIngredients),
-        isPantryIngredient,
+        ingredient => {
+          const parsed = window.AngebotskuecheIngredientQuantityModel?.parseRecipeIngredient(ingredient);
+          return !parsed?.explicit && isPantryIngredient(ingredient);
+        },
       );
       const items = getShoppingItems();
+      const pantryCoverage = {
+        coveredItems: [...new Set([
+          ...legacyPantryCoverage.coveredItems,
+          ...(shoppingPantryCoverage?.coveredItems || []),
+          ...(shoppingPantryCoverage?.partialItems || []),
+        ])],
+        coveredCount: legacyPantryCoverage.coveredCount + (shoppingPantryCoverage?.coveredCount || 0) + (shoppingPantryCoverage?.partialCount || 0),
+      };
       const normalizedShoppingChecks = reconcileShoppingChecks(shoppingChecks, items);
       if (JSON.stringify(normalizedShoppingChecks) !== JSON.stringify(shoppingChecks)) {
         shoppingChecks = normalizedShoppingChecks;
