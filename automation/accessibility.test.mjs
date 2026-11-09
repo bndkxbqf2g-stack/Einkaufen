@@ -45,3 +45,14 @@ test('gives each shopping market group an accessible name', () => {
     'shopping market groups need an accessible name',
   );
 });
+test('announces shopping progress changes', () => {
+  const openNote = source.match(/<div class="shopping-stat-note" id="shoppingOpenNote"[^>]*>/)?.[0] || '';
+  for (const attribute of ['role="status"', 'aria-live="polite"', 'aria-atomic="true"']) {
+    assert.match(openNote, new RegExp(attribute), `shoppingOpenNote needs ${attribute}`);
+  }
+  assert.match(
+    source,
+    /<span class="shopping-group-progress" role="status" aria-live="polite" aria-atomic="true">\$\{escapeHtml\(itemNote\)\}<\/span>/,
+    'shopping group progress needs a polite atomic live region',
+  );
+});
