@@ -92,5 +92,25 @@ test('Root- und dist-Rechenkern bleiben bytegleich', () => {
   assert.equal(publishedSource, rootSource);
 });
 
+
+test('ordnet unbekannte Marktdistanzen deterministisch hinter bekannten Werten', () => {
+  function loadSorter(source, marketDetails, selectedMarkets) {
+    const helper = source.match(/function parseMarketDistanceKm\(value\) \{[\s\S]*?\n    \}/);
+    const sorter = source.match(/function sortedSelectedMarkets\(\) \{[\s\S]*?\n    \}/);
+    assert.ok(helper && sorter, 'market sorting helpers must remain directly testable');
+    const factory = runInNewContext('(function() { ' + helper[0] + sorter[0] + ' return sortedSelectedMarkets; })', { marketDetails, settings: { selectedMarkets } });
+    return factory()();
+  }
+
+  const marketDetails = {
+    Aldi: { distance: '4,8 km' },
+    Lidl: { distance: '6,2 km' },
+    Tie: { distance: '4,8 km' },
+    Bring: { distance: 'Cloud-Browser' },
+  };
+  const expected = ['Tie', 'Aldi', 'Lidl', 'Bring'];
+  assert.deepEqual(loadSorter(appSource, marketDetails, ['Bring', 'Tie', 'Aldi', 'Lidl']), expected);
+  assert.deepEqual(loadSorter(publishedAppSource, marketDetails, ['Bring', 'Tie', 'Aldi', 'Lidl']), expected);
+});
 console.log('Market stop recommendation checks passed');
 
