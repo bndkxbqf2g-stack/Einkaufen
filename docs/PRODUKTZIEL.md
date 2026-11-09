@@ -684,6 +684,6 @@ Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, 
 
 ## Fortschritt 09.11.2026 – Grenzwertstabile Packungsberechnung
 
-- Der Anschlussaudit der deterministischen Packungsberechnung fand eine stille Unterdeckung durch die feste `1e-9)-Toleranz: `1000.0000001 g` Bedarf mit 500-g-Packungen wurde auf 2 statt 3 Packungen abgerundet.
-- PR #287 ersetzt die starre Toleranz durch ein skaliertes `Number.EPSILON)-Fenster. Exakte Dezimalverhältnisse bleiben stabil, echte positive Überbedarfe werden strikt aufgerundet; Stück-/Masseneinheiten werden nicht zusammengeführt.
+- Der Anschlussaudit der deterministischen Packungsberechnung fand eine stille Unterdeckung durch die feste `1e-9`-Toleranz: `1000.0000001 g` Bedarf mit 500-g-Packungen wurde auf 2 statt 3 Packungen abgerundet.
+- PR #287 ersetzt die starre Toleranz durch ein skaliertes `Number.EPSILON`-Fenster. Exakte Dezimalverhältnisse bleiben stabil, echte positive Überbedarfe werden strikt aufgerundet; Stück-/Masseneinheiten werden nicht zusammengeführt.
 - Merge-Commit: `fde374a05bc4b6a653c221c3aeabd976251d9f26`; CI #42606542412 vollständig grün. Keine Produkt-, Supabase-, Daten-, Preis-, Angebots- oder Deploymentverträge geändert.
