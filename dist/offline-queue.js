@@ -25,10 +25,19 @@
     if (value === null || typeof value === 'string' || typeof value === 'boolean') return true;
     if (typeof value === 'number') return Number.isFinite(value);
     if (typeof value !== 'object' || seen.has(value)) return false;
+    if (!Array.isArray(value) && Object.prototype.toString.call(value) !== '[object Object]') return false;
     seen.add(value);
-    const valid = Array.isArray(value)
-      ? value.every(item => isJsonValue(item, seen))
-      : Object.keys(value).every(key => isJsonValue(value[key], seen));
+    let valid = true;
+    if (Array.isArray(value)) {
+      for (let index = 0; index < value.length; index += 1) {
+        if (!Object.prototype.hasOwnProperty.call(value, index) || !isJsonValue(value[index], seen)) {
+          valid = false;
+          break;
+        }
+      }
+    } else {
+      valid = Object.keys(value).every(key => isJsonValue(value[key], seen));
+    }
     seen.delete(value);
     return valid;
   }

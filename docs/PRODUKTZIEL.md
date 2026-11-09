@@ -534,6 +534,12 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Es gibt keinen automatischen Merge, kein stilles Überschreiben und keine erfundenen Revisionen. Queue, UI, localStorage, Service Worker, Supabase-Client, Worker/D1 und Datenbank bleiben unverändert.
 - Dies ist ausschließlich eine Vorbereitungsgrundlage. Die produktive Offline-Queue, Wiederholung, Konflikt-UX und Datenhoheit bleiben Freigabepunkt 6.
 
+## Fortschritt 09.11.2026 – Offline-Outbox-Payloadgrenze gehärtet
+
+- Das vorbereitende Offline-Queue-Modell weist jetzt auch nicht JSON-stabile Objektwerte wie `Date`, `Map` und `Set` sowie löchrige Arrays zurück. Zuvor konnten diese Werte die Validierung passieren und beim Klonen bzw. späteren JSON-Transport ihren Inhalt verändern.
+- Der Regressionstest prüft die Ablehnung auf verschachtelter Ebene. FIFO, Duplikat-ID-Schutz, Revisionsklassifikation und der unveränderte Eingabevertrag bleiben unverändert.
+- Die Änderung bleibt rein deterministisch und vorbereitend: keine Queue-Persistenz, keine LocalStorage-/Backup-/Service-Worker-/Supabase-/Sync-/Auth-/Datenbankänderung und keine automatische Konfliktentscheidung.
+
 
 ## Fortschritt 08.11.2026 – Budgettransparenz direkt in der Einkaufsliste
 
