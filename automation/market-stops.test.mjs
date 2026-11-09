@@ -59,6 +59,23 @@ test('behandelt fehlende, ungültige und unbekannte Werte konservativ', () => {
   assert.equal(model.recommendAdditionalMarket({ ...validInput, additionalMarket: ' Aldi ' }).reason, 'invalid-market-assignment');
 });
 
+test('bleibt bei unsicherer Cent-Aggregation unknown und mutiert Eingaben nicht', () => {
+  const input = {
+    ...validInput,
+    baseBasketCents: 0,
+    alternativeBasketCents: Number.MAX_SAFE_INTEGER,
+    travelCostCents: 1,
+  };
+  const before = structuredClone(input);
+  const result = model.recommendAdditionalMarket(input);
+
+  assert.equal(result.status, 'unknown');
+  assert.equal(result.reason, 'unsafe-cent-aggregate');
+  assert.equal(result.grossSavingsCents, null);
+  assert.equal(result.netSavingsCents, null);
+  assert.deepEqual(input, before);
+});
+
 test('beachtet das Marktlimit und verändert keine bestehenden Legacy-Felder', () => {
   const result = model.recommendAdditionalMarket({ ...validInput, marketLimit: 1 });
   assert.deepEqual({ status: result.status, reason: result.reason, netSavingsCents: result.netSavingsCents }, {
