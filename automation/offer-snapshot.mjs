@@ -88,6 +88,9 @@ export function validateOfferSnapshot(snapshot, { now = new Date() } = {}) {
   if (snapshotEndDate < fetchedAtDate) {
     throw new Error('Angebotssnapshot: "validUntil" liegt vor dem Abrufzeitpunkt.');
   }
+  if (fetchedAt.getTime() > currentMoment.getTime()) {
+    throw new Error('Angebotssnapshot: "fetchedAt" liegt in der Zukunft.');
+  }
   if (snapshotEndDate < currentDate) {
     throw new Error('Angebotssnapshot: "validUntil" ist bereits abgelaufen.');
   }
