@@ -2033,8 +2033,11 @@
     function estimateMealCost(recipe) {
       const match = getRecipeMatchDetails(recipe);
       if (match.matchedOffers.length < 2) return '';
-      if (match.estimatedCost === 'Preis unbekannt') return '';
-      return match.estimatedCost;
+      if (match.matchedOffers.some(offer => !isShoppingOfferCostUsable(offer))) return '';
+      const offerPrices = match.matchedOffers.map(offer => parseKnownMoney(offer.price));
+      if (offerPrices.some(price => price === null)) return '';
+      const offerTotal = offerPrices.reduce((sum, price) => sum + price, 0);
+      return formatEuro(offerTotal);
     }
 
     function favoriteAsCandidate(item, index) {
