@@ -33,7 +33,7 @@ function workerPayloadValidator() {
   return workerContext.validSyncPayload;
 }
 
-function createSyncHarness({ remoteState = null, confirm = true, initialStorage = {}, rpcErrors = {}, saveResponse = undefined, payload = { version: 1, settings: { people: 2 }, pantry: [] } } = {}) {
+function createSyncHarness({ remoteState = null, confirm = true, initialStorage = {}, rpcErrors = {}, saveResponse = undefined, applyPayloadError = null, payload = { version: 1, settings: { people: 2 }, pantry: [] } } = {}) {
   const storage = new Map(Object.entries(initialStorage));
   const elements = new Map();
   const rpcCalls = [];
@@ -110,7 +110,10 @@ function createSyncHarness({ remoteState = null, confirm = true, initialStorage 
       await api.initialize({
         buildPayload: () => validPayload,
         validatePayload: payload => api.validatePayload(payload),
-        applyPayload: payload => appliedPayloads.push(payload),
+        applyPayload: payload => {
+          if (applyPayloadError) throw applyPayloadError;
+          appliedPayloads.push(payload);
+        },
         showToast() {},
       });
     },
@@ -494,6 +497,24 @@ test('round-trips dayPeople through Supabase RPC and Worker validation', async (
   assert.deepEqual(harness.appliedPayloads[harness.appliedPayloads.length - 1], payload);
 });
 
+
+test('schreibt Haushaltsbindung und Revision nicht, wenn das Anwenden des Cloud-Stands scheitert', async () => {
+  const harness = createSyncHarness({
+    remoteState: { payload: { version: 1, settings: { people: 5 } }, revision: '3', updated_at: '2026-11-06T12:00:00Z' },
+    initialStorage: {
+      'angebotskueche.settings': '{"people":2}',
+      'angebotskueche.supabase.localHousehold': 'house-1',
+      'angebotskueche.supabase.revision.house-1': '2',
+    },
+    applyPayloadError: new Error('local apply failed'),
+  });
+  await harness.initialize();
+  const before = [...harness.storage.entries()];
+
+  await assert.rejects(harness.api.load(), /local apply failed/);
+  assert.equal(harness.appliedPayloads.length, 0);
+  assert.deepEqual([...harness.storage.entries()], before);
+});
 
 test('preserves local data when reading the household state fails', async () => {
   const harness = createSyncHarness({

@@ -1081,3 +1081,8 @@ Dieser Audit änderte keine Angebote, Nutzer-/Haushaltsdaten, Supabase-/Schema-D
 ## Fortschritt 09.11.2026 – Volumenparser synchronisiert
 
 Der Audit fand eine echte Drift: `parseKnownPackageSize` kann `cl`/`dl` bereits auf `ml` normalisieren, während der zentrale Angebotsparser diese Einheiten beim Matching ablehnte. Der gemeinsame Parser unterstützt beide Schreibweisen nun ebenfalls einschließlich gruppierter Packungen; CI soll die Root-/`dist`-Parität und die deterministische Normalisierung absichern. Keine Angebots-, Nutzer-, Supabase-, SQL-, Verbrauchs- oder Deploymentänderung.
+
+
+## Fortschritt 09.11.2026 – Regression für atomaren Cloud-Load
+
+Der read-only Sync-Härtungsblock ergänzt einen Test für den bislang nur indirekt abgesicherten Fehlerpfad beim Anwenden eines bestätigten Cloud-Stands. Erst nach erfolgreichem `applyPayload()` dürfen Haushaltsbindung und Revision geschrieben werden; bei einem lokalen Fehler bleibt der lokale Zustand unverändert. Es wurden keine Runtime-, Supabase-, SQL-, Daten- oder Deploymentverträge geändert.
