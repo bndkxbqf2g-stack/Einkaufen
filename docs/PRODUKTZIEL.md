@@ -701,3 +701,10 @@ Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, 
 - Der Audit fand eine falsche Angebotszuordnung: `500 g Hackfleisch` durfte ein gleichnamiges `1 l`-Angebot beziehungsweise eine unbekannte `1 Packung`-Größe verwenden.
 - PR #291 akzeptiert bei expliziten Rezeptmengen nur noch kompatible mass/volume/count-Familien und lässt unbekannte Packungsgrößen konservativ offen; textuelle Zutaten ohne Einheit behalten das Namensmatching. Merge-Commit: `996c1c6a8929104bab99c5622766b0832222e55d`.
 - Regressionstests und CI #42609169843 waren vollständig grün. Keine Produkt-, Supabase-, Daten-, Preis-, Angebots- oder Deploymentverträge geändert.
+
+
+## Audit 09.11.2026 – Kaufbestätigung vor Vorratsverbrauch
+
+- Die aktuelle Einkaufslistenlogik trennt Listenstatus und Vorrat: Checkboxen und Listenaktionen speichern nur `shoppingChecks`; der Vorratsabgleich berechnet Deckung und Restbedarf ohne Bestandsmutation.
+- Teilbestände bleiben erhalten, unbekannte Mengen werden konservativ offen gelassen, und inkompatible Einheiten werden nicht als Verbrauch zusammengeführt. Die Sync-Übernahme verlangt eine ausdrückliche Bestätigung; ein bloßes Laden oder Offline-Sync reduziert den Bestand nicht automatisch.
+- Eine echte Kaufbestätigung/Verbrauchsbuchung ist noch nicht implementiert. Sie bleibt ein eigener, später freizugebender Produkt-/Datenvertrag und darf nicht aus „abgehakt“ abgeleitet werden. Auditbasis: `main@ce5786f5ac36f9499c44038112b0bfd500b6ef37`; keine Runtime-, Supabase-, Daten- oder Deploymentänderung.
