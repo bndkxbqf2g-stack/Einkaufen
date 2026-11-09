@@ -56,3 +56,11 @@ test('announces shopping progress changes', () => {
     'shopping group progress needs a polite atomic live region',
   );
 });
+test('dismisses open modal with Escape', () => {
+  assert.match(source, /function dismissOpenModalOnEscape\(event\)/);
+  assert.match(source, /if \(event\.key !== 'Escape'\) return;/);
+  assert.match(source, /document\.querySelector\('\.modal-backdrop\.open'\)/);
+  assert.match(source, /event\.preventDefault\(\)/);
+  assert.match(source, /modal\.querySelector\('\.close'\)\?\.click\(\)/);
+  assert.match(source, /document\.addEventListener\('keydown', dismissOpenModalOnEscape\)/);
+});
