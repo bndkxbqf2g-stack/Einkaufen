@@ -1002,3 +1002,10 @@ Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfigura
 - PR #285 wurde nach grüner CI in Merge-Commit `81a1a3034d79f21f36758745bf56725591e48688` integriert. Der Audit reproduzierte, dass `1.000 g Mehl` im Mengenparser als `1 g` interpretiert wurde; Rezeptmengen und Angebots-Packungsgrößen verarbeiten deutsche Tausender- sowie gemischte Dezimalangaben nun korrekt.
 - Regressionstests, Worker-Build, generiertes Artefakt-Gate und Endpoint-Validierung waren in CI #42605779628 erfolgreich; der Deploy wurde übersprungen.
 - Keine Supabase-, SQL-, Auth-, Nutzer-/Angebotsdaten-, Preis- oder Deploymentänderung.
+
+
+## Fortschritt 09.11.2026 – Packungsrundung an Grenzwerten
+
+- PR #287 wurde nach grüner CI in Merge-Commit `fde374a05bc4b6a653c221c3aeabd976251d9f26` integriert. Der Anschlussaudit reproduzierte, dass die feste `1e-9`-Toleranz echten Überbedarf unterschlug: `1000.0000001 g` bei einer 500-g-Packung ergab 2 statt 3 Packungen.
+- Die Rundung nutzt nun ein skaliertes `Number.EPSILON`-Fenster, das nur IEEE-754-Rauschen absorbiert. Regressionstests decken exakte Grenze, knappen Überbedarf, Dezimalverhältnisse, Stück und inkompatible Einheiten ab; CI #42606542412 war vollständig grün.
+- Keine Supabase-, SQL-, Auth-, Nutzer-/Angebotsdaten-, Preis- oder Deploymentänderung.
