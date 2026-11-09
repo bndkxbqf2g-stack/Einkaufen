@@ -912,3 +912,9 @@ Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvolls
 
 - Der bestehende Evidenzstatus wird beim Teilen wiederverwendet; es gibt keine neue Berechnung und keinen neuen Datenvertrag.
 - Regression, Vollsuite, Worker-Build und Validator sind grün. Keine neue fachliche Freigabe erforderlich; echte Vergleichspreise und IST-/Belegerfassung bleiben freigabepflichtig.
+## Fortschritt 09.11.2026 – Zugänglichkeit der Einkaufslisten-Fortschritte
+
+- PR #254 wurde gemergt und gibt den bereits vorhandenen dynamischen Marktgruppen der Einkaufsliste zugängliche Namen.
+- PR #255 wurde gemergt und macht den bereits vorhandenen Gesamtfortschritt sowie den bereits vorhandenen Fortschritt je Marktgruppe als höfliche, atomare Statusbereiche für Screenreader ankündigbar.
+- Beide PRs enthalten ausschließlich Accessibility-/Regressionstest- und synchronisierte Artefaktänderungen. Keine neue Fachlogik, keine Daten-, Sync-, Supabase-, Auth- oder Cloudänderung und keine Preis-/Angebotsänderung.
+- Dafür ist keine neue fachliche Freigabe erforderlich. Die bisher gebündelten Freigabepunkte bleiben unverändert, insbesondere Vorrats-/Mengenverbrauch, echte IST-/Belegerfassung, Vergleichspreise/Ersparnis, Fahrtkosten/Mehrstopp-Routing, Offline-Konfliktstrategie und weitergehende Supabase-/Auth-Verträge.
