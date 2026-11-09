@@ -108,6 +108,18 @@ test('behandelt unsichere Centbeträge konservativ als unbekannt', () => {
   assert.deepEqual(Array.from(unsafeSingle.unknownItems, item => item.id), ['unsafe-single']);
 });
 
+test('behandelt eine unsichere Packungsmultiplikation als unbekannt', () => {
+  const item = { id: 'pack-overflow', packCount: Number.MAX_SAFE_INTEGER, offer: { price: '0,02 €' } };
+  const summary = model.calculateOfferAmount([item], parseEuro);
+
+  assert.equal(summary.totalCents, 0);
+  assert.equal(summary.knownOfferCount, 0);
+  assert.equal(summary.knownOfferTotalCents, null);
+  assert.equal(summary.knownOfferPackCount, 0);
+  assert.deepEqual(Array.from(summary.unknownItems, entry => entry.id), ['pack-overflow']);
+  assert.equal(summary.unknownPricePackCount, Number.MAX_SAFE_INTEGER);
+});
+
 test('treats invalid or nonpositive pack counts as one pack', () => {
   const summary = model.calculateOfferAmount([
     { id: 'invalid', packCount: 0, offer: { price: '1,10 €' } },
