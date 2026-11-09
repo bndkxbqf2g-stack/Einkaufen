@@ -64,6 +64,12 @@
       const amount = parsePositiveNumber(countPack[1]);
       return amount ? { family: 'count', unit: 'piece', amount } : null;
     }
+    const grouped = text.match(new RegExp(`^(${QUANTITY_NUMBER_PATTERN})\\s*[x×]\\s*(${QUANTITY_NUMBER_PATTERN})\\s*([a-zäöüß.]+)\\b`, 'i'));
+    if (grouped) {
+      const multiplier = parsePositiveNumber(grouped[1]);
+      const parsed = parsedAmount(grouped[2], grouped[3], multiplier);
+      if (parsed) return parsed;
+    }
     const match = text.match(new RegExp(`^(${QUANTITY_NUMBER_PATTERN})\\s*([a-zäöüß.]+)\\b`, 'i'));
     if (!match) return null;
     return parsedAmount(match[1], match[2]);

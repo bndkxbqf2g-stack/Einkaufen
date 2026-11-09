@@ -747,3 +747,7 @@ Die Marktansicht kennzeichnet statische Anzeigeentfernungen ausdrücklich. Nicht
 ## Sicherheitsgrenze 09.11.2026 – Kaufbuchung bis Freigabe
 
 CI prüft jetzt ausdrücklich, dass App-Runtime und Sync-Adapter keinen `purchaseRecords`-Schreibpfad enthalten. Damit bleibt das Abhaken der Einkaufsliste von tatsächlichen Kassen-/Verbrauchsdaten getrennt, bis der Kaufabschluss-Vertrag freigegeben ist.
+
+## Fortschritt 09.11.2026 – gruppierte Angebots-Packungsgrößen
+
+Der gemeinsame Mengenparser normalisiert gruppierte Packungsangaben wie `2 x 500 g` deterministisch zur Gesamtmenge. Dadurch wird der Packungsbedarf korrekt auf Basis der Gesamtpackung berechnet; die Änderung berührt weder Vorratsverbrauch noch Kaufbuchung.
