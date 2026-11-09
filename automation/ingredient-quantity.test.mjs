@@ -205,4 +205,11 @@ return offerMatchesIngredient;`,
   assert.equal(matches('Hackfleisch', { name: 'Hackfleisch', packSize: '1 Packung' }), true);
 });
 
+
+test('parst gruppierte Angebots-Packungen als Gesamtmenge', () => {
+  assert.deepEqual({ ...quantityModel.parseOfferPackSize('2 x 500 g') }, { family: 'mass', unit: 'g', amount: 1000 });
+  assert.deepEqual({ ...quantityModel.parseOfferPackSize('2 × 1.000 ml') }, { family: 'volume', unit: 'ml', amount: 2000 });
+  assert.deepEqual({ ...quantityModel.parseOfferPackSize('2 x 3 Stück') }, { family: 'count', unit: 'piece', amount: 6 });
+  assert.equal(quantityModel.calculateExactPackCount({ quantityBasis: { valid: true, family: 'mass', unit: 'g', amount: 1000 }, offer: { packSize: '2 x 500 g' } }), 1);
+});
 console.log('Ingredient quantity and packaging checks passed');
