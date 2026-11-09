@@ -656,3 +656,9 @@ Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, 
 - PR #278 wurde in Merge-Commit `bcaa0a3f26afd3082af0080a9011684dba413f40` integriert. Negative und mehrdeutige Preis-Tokens werden verworfen, deutsche Tausender- und Dezimalbeträge bleiben erhalten, und Grundpreise werden nicht als Angebotspreise übernommen.
 - CI #42599370232 lief mit 309 Tests sowie grünen Worker-, Artefakt- und Endpoint-Prüfungen erfolgreich durch; der Deploy-Schritt wurde übersprungen.
 - Bestehende Angebots-, Nutzer-, Supabase- und Speicherdaten bleiben unverändert.
+
+## Security-Audit 09.11.2026 – keine veröffentlichten Geheimnisse
+
+- Gegen `main@9f81650645046022207e69b28640d1dd6b620d2e` wurden 42 veröffentlichbare Root-/`dist`-/Worker-/Workflow-Dateien statisch geprüft.
+- Private Schlüssel, `service_role`/`sb_secret`, Tokens, lange Secret-Literale und private/lokale Endpunkte wurden nicht gefunden. `KAUFDA_STORAGE_STATE_B64` ist ausschließlich die erwartete GitHub-Secret-Eingabe des KaufDA-Workflows und kein veröffentlichter Wert.
+- Es wurden keine Runtime-, Supabase-, Daten-, Auth- oder Deploymentverträge geändert.

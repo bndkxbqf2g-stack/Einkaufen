@@ -977,3 +977,9 @@ Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfigura
 - PR #278 wurde in Merge-Commit `bcaa0a3f26afd3082af0080a9011684dba413f40` integriert. Negative und mehrdeutige Preis-Tokens werden verworfen; deutsche Tausender- und Dezimalbeträge bleiben erhalten; Grundpreise werden nicht als Angebotspreise übernommen.
 - CI #42599370232 bestätigte 309 erfolgreiche Tests sowie grüne Worker-, Artefakt- und Endpoint-Prüfungen. Der Deploy-Schritt wurde übersprungen.
 - Die Änderung ist rein parser- und testbezogen. Es gab keine Runtime-, Supabase-, SQL-, Auth-, Daten- oder Deploymentänderung.
+
+## Security-Audit 09.11.2026 – veröffentlichbare Dateien
+
+- Gegen `main@9f81650645046022207e69b28640d1dd6b620d2e` wurden 42 veröffentlichbare Root-/`dist`-/Worker-/Workflow-Dateien statisch geprüft.
+- Es wurden keine privaten Schlüssel, `service_role`/`sb_secret`, Tokens, langen Secret-Literale oder privaten/lokalen Endpunkte gefunden. Der erwartete Workflow-Verweis `KAUFDA_STORAGE_STATE_B64` bleibt eine GitHub-Secret-Eingabe und wird nicht veröffentlicht.
+- Der Audit war rein dokumentarisch; Runtime, Supabase, Daten, Auth und Deployment blieben unverändert. Es wurde kein Code-PR erstellt.
