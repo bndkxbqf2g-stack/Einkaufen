@@ -662,3 +662,9 @@ Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, 
 - Gegen `main@9f81650645046022207e69b28640d1dd6b620d2e` wurden 42 veröffentlichbare Root-/`dist`-/Worker-/Workflow-Dateien statisch geprüft.
 - Private Schlüssel, `service_role`/`sb_secret`, Tokens, lange Secret-Literale und private/lokale Endpunkte wurden nicht gefunden. `KAUFDA_STORAGE_STATE_B64` ist ausschließlich die erwartete GitHub-Secret-Eingabe des KaufDA-Workflows und kein veröffentlichter Wert.
 - Es wurden keine Runtime-, Supabase-, Daten-, Auth- oder Deploymentverträge geändert.
+
+## Dependency-/Workflow-Audit 09.11.2026
+
+- Gegen `main@b62fd7ac8a142cdadbc703bed3d1c400f4b659c3` wurden Paket-/Lockfiles, 120 JavaScript-/HTML-/JSON-/Workflow-Dateien und alle fünf GitHub-Workflows statisch geprüft.
+- Die Produktiv-Runtime hat keine unerwartete neue Paketabhängigkeit. CI installiert `playwright` und einmal `pdf-parse` ohne feste Version/Lockfile; alle verwendeten Actions sind offizielle `actions/*`-Actions, aber nur über mutable Major-Tags gepinnt. Dies bleibt ein dokumentierter Hardeningpunkt.
+- Keine kostenpflichtigen Dienste, Upgrades oder Produktivänderungen wurden eingeführt. Ein reproduzierbarer kleiner Sicherheitsdefekt wurde nicht festgestellt.
