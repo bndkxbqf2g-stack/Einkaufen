@@ -1922,7 +1922,7 @@
       if (!text || /^1\s+pack(?:ung|ungen)?$/iu.test(text)) return null;
       const packCount = text.match(/^(\d+)\s*[- ]?er\s+pack(?:ung)?$/iu);
       if (packCount) return { amount: Number(packCount[1]), unit: 'pack' };
-      const match = text.match(/^(?:(\d+(?:[.,]\d+)?)\s*[x×]\s*)?(\d+(?:[.,]\d+)?)\s*[- ]*\s*(kg|kilogramm|g|gramm|milliliter|ml|liter|l|zentiliter|cl|deziliter|dl|stück|stk|st\.?)\s*[- ]*(?:pack(?:ungen|ung|g)?|flaschen?|dosen?|beutel|netze?|schalen?|gl(?:as|äser|aeser)|becher|tüten?|kartons?|rollen?)?$/iu);
+      const match = text.match(/^(?:(\d{1,3}(?:\.\d{3})+(?:,\d+)?|\d+(?:[.,]\d+)?)\s*[x×]\s*)?(\d{1,3}(?:\.\d{3})+(?:,\d+)?|\d+(?:[.,]\d+)?)\s*[- ]*\s*(kg|kilogramm|g|gramm|milliliter|ml|liter|l|zentiliter|cl|deziliter|dl|stück|stk|st\.?)\s*[- ]*(?:pack(?:ungen|ung|g)?|flaschen?|dosen?|beutel|netze?|schalen?|gl(?:as|äser|aeser)|becher|tüten?|kartons?|rollen?)?$/iu);
       if (!match) return null;
       const parseQuantityNumber = value => {
         const raw = String(value || '').trim();
