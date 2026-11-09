@@ -680,3 +680,10 @@ Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, 
 - Der Mengen-/Packungs-Audit fand einen konkreten Fehler bei deutscher Gruppenschreibweise: `1.000 g` wurde als `1 g` gelesen und konnte bei 500-g-Packungen eine zu niedrige Packungsanzahl erzeugen.
 - PR #285 korrigiert Rezeptmengen und Angebots-Packungsgrößen für deutsche Tausender- und gemischte Dezimalangaben; Root- und `dist/`-Parser bleiben synchron. Merge-Commit: `81a1a3034d79f21f36758745bf56725591e48688`.
 - CI #42605779628 war vollständig grün. Der Fix ändert keine Produkt-, Supabase-, Daten-, Preis-, Angebots- oder Deploymentverträge.
+
+
+## Fortschritt 09.11.2026 – Grenzwertstabile Packungsberechnung
+
+- Der Anschlussaudit der deterministischen Packungsberechnung fand eine stille Unterdeckung durch die feste `1e-9)-Toleranz: `1000.0000001 g` Bedarf mit 500-g-Packungen wurde auf 2 statt 3 Packungen abgerundet.
+- PR #287 ersetzt die starre Toleranz durch ein skaliertes `Number.EPSILON)-Fenster. Exakte Dezimalverhältnisse bleiben stabil, echte positive Überbedarfe werden strikt aufgerundet; Stück-/Masseneinheiten werden nicht zusammengeführt.
+- Merge-Commit: `fde374a05bc4b6a653c221c3aeabd976251d9f26`; CI #42606542412 vollständig grün. Keine Produkt-, Supabase-, Daten-, Preis-, Angebots- oder Deploymentverträge geändert.
