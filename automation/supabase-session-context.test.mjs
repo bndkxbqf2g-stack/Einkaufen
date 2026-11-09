@@ -11,9 +11,11 @@ assert.equal(published, source, 'published Supabase sync bundle must stay byte-i
 const clearMatch = source.match(/  function clearLocalHouseholdContext\(\) \{[\s\S]*?\n  \}/);
 const updateMatch = source.match(/  function updateSession\(nextSession\) \{[\s\S]*?\n  \}/);
 const signOutMatch = source.match(/  async function signOut\(\) \{[\s\S]*?\n  \}/);
+const errorMessageMatch = source.match(/  function errorMessage\(error\) \{[\s\S]*?\n  \}/);
 assert.ok(clearMatch, 'household context cleaner is present');
 assert.ok(updateMatch, 'session update helper is present');
 assert.ok(signOutMatch, 'signOut is present');
+assert.ok(errorMessageMatch, 'error message helper is present');
 
 function createSessionHarness(initialStorage, initialUser = 'user-1') {
   const storage = new Map(Object.entries(initialStorage));
@@ -87,4 +89,19 @@ test('switching to the next user starts without the previous household context',
 test('signOut is wired to clear the local session context', () => {
   assert.match(signOutMatch[0], /updateSession\(null\)/);
   assert.doesNotMatch(signOutMatch[0], /localStorage\.clear\(\)/);
+});
+
+test('klassifiziert lokale Sync-Fehler deterministisch und begrenzt generische Meldungen', () => {
+  const errorMessage = vm.runInNewContext(`(${errorMessageMatch[0]})`);
+
+  assert.equal(
+    errorMessage({ code: '40001', message: 'Household state changed on another device.' }),
+    'Synchronisierungskonflikt: Der Cloud-Stand wurde auf einem anderen Gerät geändert. Bitte zuerst laden und prüfen; lokale Daten bleiben erhalten.',
+  );
+  assert.equal(
+    errorMessage({ code: '42501', message: 'Household edit permission is required.' }),
+    'Für diesen Haushalt fehlen die nötigen Zugriffsrechte.',
+  );
+  assert.equal(errorMessage({ message: 'x'.repeat(300) }), 'x'.repeat(240));
+  assert.equal(errorMessage(null), 'Supabase-Anfrage fehlgeschlagen.');
 });
