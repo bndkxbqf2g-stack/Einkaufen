@@ -84,6 +84,7 @@ export function validateOfferSnapshot(snapshot, { now = new Date() } = {}) {
   if (fetchedAtDate === null) {
     throw new Error('Angebotssnapshot: "fetchedAt" muss ein gültiger ISO-8601-UTC-Zeitpunkt sein.');
   }
+  const fetchedAt = new Date(snapshot.fetchedAt);
   const snapshotEndDate = dateOrdinal(snapshot.validUntil);
   if (snapshotEndDate < fetchedAtDate) {
     throw new Error('Angebotssnapshot: "validUntil" liegt vor dem Abrufzeitpunkt.');
