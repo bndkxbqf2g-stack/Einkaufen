@@ -39,8 +39,9 @@
     };
   }
 
-  function calculateOfferAmount(items, parseUnitPrice) {
+  function calculateOfferAmount(items, parseUnitPrice, isOfferUsable) {
     const parsePrice = typeof parseUnitPrice === 'function' ? parseUnitPrice : () => null;
+    const canUseOffer = typeof isOfferUsable === 'function' ? isOfferUsable : () => true;
     let totalCents = 0;
     const knownItems = [];
     const unknownItems = [];
@@ -50,7 +51,7 @@
     for (const item of Array.isArray(items) ? items : []) {
       const unitPrice = parsePrice(item?.offer?.price);
       const packCount = normalizePackCount(item?.packCount);
-      if (unitPrice === null || !Number.isFinite(unitPrice) || unitPrice < 0) {
+      if (!canUseOffer(item) || unitPrice === null || !Number.isFinite(unitPrice) || unitPrice < 0) {
         unknownItems.push(item);
         unknownPackCount += packCount;
         continue;
@@ -106,11 +107,11 @@
     };
   }
 
-  function summarizeShoppingCosts(items, parseUnitPrice) {
+  function summarizeShoppingCosts(items, parseUnitPrice, isOfferUsable) {
     const list = Array.isArray(items) ? items : [];
     const offerItems = list.filter(item => item && item.offer);
     const missingItems = list.filter(item => !item || !item.offer);
-    const offerSummary = calculateOfferAmount(offerItems, parseUnitPrice);
+    const offerSummary = calculateOfferAmount(offerItems, parseUnitPrice, isOfferUsable);
     const manualItems = list.filter(item => item?.manual === true);
     const manualMissingItems = missingItems.filter(item => item?.manual === true);
     const unanchoredMissingItems = missingItems.filter(item => item?.manual !== true);
