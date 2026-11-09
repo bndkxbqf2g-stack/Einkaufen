@@ -95,3 +95,15 @@ test('rejects snapshots and offers that expired before their recorded fetch time
   };
   assert.match(validateOfferPayload(offerExpiredBeforeFetch, 'Lidl', now), /ungültige Angebotsdaten/);
 });
+
+
+test('rejects source timestamps in the future', () => {
+  const future = {
+    ...valid,
+    fetchedAt: '2026-11-13T10:00:00.000Z',
+    validUntil: '15.11.2026',
+    offers: [{ name: 'Kartoffeln', price: '1,99 €', validUntil: '15.11.2026' }],
+  };
+
+  assert.match(validateOfferPayload(future, 'Lidl', now), /Abrufzeitpunkt in der Zukunft/);
+});

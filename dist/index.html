@@ -995,7 +995,9 @@
         const offerEnd = offerEndDate(offer.validUntil);
         return !String(offer.name || '').trim() || !pricePattern.test(String(offer.price || '').trim()) || !offerEnd || offerEnd < now || dateOrdinal(offerEnd) < fetchedAtOrdinal || offerEnd > snapshotEnd || /\bverfügbar\s+(?:ab|seit)\b/i.test(offer.name);
       });
-      return invalidOffer ? 'Angebotsdatensatz enthält ungültige Angebotsdaten' : '';
+      if (invalidOffer) return 'Angebotsdatensatz enthält ungültige Angebotsdaten';
+      if (fetchedAt.getTime() > now.getTime()) return 'Angebotsdatensatz hat einen Abrufzeitpunkt in der Zukunft';
+      return '';
     }
 
     function offerCoverageLabel(live) {
