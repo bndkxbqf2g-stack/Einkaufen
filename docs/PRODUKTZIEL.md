@@ -571,7 +571,7 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 
 ## Fortschritt 09.11.2026 – Vergleichspreis-Evidenz als reine Grundlage
 
-- `automation/comparison-price-evidence.mjs` prüft zwei ausdrücklich gelieferte, packungsgleiche Preise nur dann deterministisch, wenn beide Preise, ein expliziter Prüfzeitpunkt und zwei verifizierte HTTPS-Quellen mit gültiger Laufzeit vorliegen.
+- `automation/comparison-price-evidence.mjs` prüft zwei ausdrücklich gelieferte, packungsgleiche Preise nur dann deterministisch, wenn beide Preise, ein expliziter Prüfzeitpunkt und zwei ausdrücklich unterschiedliche, verifizierte HTTPS-Quellen mit gültiger Laufzeit vorliegen. Quellenidentitäten werden nach bereinigter URL und normalisiertem Namen verglichen.
 - Fehlende, abgelaufene, manuelle, unsichere, zukünftige oder nicht vergleichbare Daten bleiben `unknown`; reguläre Preise oder Ersparnisse werden nicht geschätzt. Bei gleicher oder höherer Angebotssumme wird keine Ersparnis ausgewiesen.
 - Der Baustein ist nicht in UI, Parser, Angebotsauswahl, Einkauf, Marktstopp, Supabase oder Synchronisierung integriert und verändert keine Produktionsdaten.
 

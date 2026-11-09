@@ -61,10 +61,20 @@ function safeSourceUrl(value) {
   try {
     const url = new URL(text);
     if (url.protocol !== 'https:' || url.username || url.password) return null;
-    return `${url.origin}${url.pathname}`;
+    const pathname = url.pathname === '/' ? '' : url.pathname.replace(/\/+$/, '');
+    return `${url.origin}${pathname}`;
   } catch {
     return null;
   }
+}
+
+function normalizeSourceName(value) {
+  return String(value ?? '').trim().replace(/\s+/g, ' ');
+}
+
+function sameSourceIdentity(left, right) {
+  return left.sourceUrl === right.sourceUrl
+    || left.sourceName.toLowerCase() === right.sourceName.toLowerCase();
 }
 
 function normalizeProvenance(value, asOf) {
@@ -76,7 +86,7 @@ function normalizeProvenance(value, asOf) {
     return { reason: 'uncertain-source' };
   }
 
-  const sourceName = String(value.sourceName ?? '').trim();
+  const sourceName = normalizeSourceName(value.sourceName);
   const sourceUrl = safeSourceUrl(value.sourceUrl);
   const fetchedAt = evaluationTime(value.fetchedAt);
   const validUntil = calendarDate(value.validUntil);
@@ -124,6 +134,7 @@ export function assessComparisonPriceEvidence(input = {}, options = {}) {
   if (!offerProvenance.value) return unknown(offerProvenance.reason);
   const regularProvenance = normalizeProvenance(input.regular?.provenance, asOf);
   if (!regularProvenance.value) return unknown(regularProvenance.reason);
+  if (sameSourceIdentity(offerProvenance.value, regularProvenance.value)) return unknown('same-source-provenance');
 
   const priceDeltaCents = regularPriceCents - offerPriceCents;
   const hasSaving = priceDeltaCents > 0;

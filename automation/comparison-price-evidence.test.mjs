@@ -82,6 +82,26 @@ test('verlangt sichere HTTPS-Quellen und verwirft zukünftige Quellenstände', (
   assert.equal(future.reason, 'future-source');
 });
 
+test('verwirft identische Quellen nach URL- und Namensnormalisierung', () => {
+  const sameUrl = assessComparisonPriceEvidence({
+    ...validEntry,
+    offer: { ...validEntry.offer, provenance: { ...provenance('Quelle A'), sourceUrl: 'https://same.example/offers?market=offer' } },
+    regular: { ...validEntry.regular, provenance: { ...provenance('Quelle B'), sourceUrl: 'https://same.example/offers?market=regular' } },
+  });
+  const sameName = assessComparisonPriceEvidence({
+    ...validEntry,
+    offer: { ...validEntry.offer, provenance: { ...provenance('  Gemeinsame   Quelle '), sourceUrl: 'https://first.example/offers' } },
+    regular: { ...validEntry.regular, provenance: { ...provenance('gemeinsame quelle'), sourceUrl: 'https://different.example/offers' } },
+  });
+
+  for (const result of [sameUrl, sameName]) {
+    assert.equal(result.status, COMPARISON_STATES.UNKNOWN);
+    assert.equal(result.reason, 'same-source-provenance');
+    assert.equal(result.savingCents, null);
+    assert.equal(result.provenance, null);
+  }
+});
+
 test('summarizes entries deterministically without mutating input', () => {
   const entries = [validEntry, { ...validEntry, regular: { ...validEntry.regular, priceCents: 249 } }];
   const before = structuredClone(entries);
