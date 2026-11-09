@@ -120,6 +120,18 @@ test('behandelt eine unsichere Packungsmultiplikation als unbekannt', () => {
   assert.equal(summary.unknownPricePackCount, Number.MAX_SAFE_INTEGER);
 });
 
+test('excludes offers rejected by an explicit evidence callback from known totals', () => {
+  const summary = model.summarizeShoppingCosts([
+    { id: 'verified', packCount: 2, offer: { price: '1,20 €' } },
+    { id: 'manual', packCount: 1, offer: { price: '2,49 €' } },
+    { id: 'uncertain', packCount: 1, offer: { price: '0,79 €' } },
+  ], parseEuro, item => item.id === 'verified');
+
+  assert.equal(summary.knownOfferTotalCents, 240);
+  assert.deepEqual(Array.from(summary.unknownItems, item => item.id), ['manual', 'uncertain']);
+  assert.equal(summary.unknownPriceCount, 2);
+});
+
 test('treats invalid or nonpositive pack counts as one pack', () => {
   const summary = model.calculateOfferAmount([
     { id: 'invalid', packCount: 0, offer: { price: '1,10 €' } },
