@@ -624,4 +624,9 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Direkte Vorratsänderungen und der lokale Backup-Import bleiben bestehende Bestätigungsrisiken, weil sie unmittelbar durch die Nutzeraktion beziehungsweise Dateiauswahl wirksam werden; Cloud-Laden ist bereits bestätigt. Dieser Audit ändert daran nichts.
 - Als nächster fachlicher Schritt ist vor einer Runtime-/Datenänderung gebündelt freizugeben: ein lokaler Dialog „Einkauf abschließen“ mit manueller IST-Summe, Datum und optionalem Markt, zunächst ohne Pantry-Verbrauch, Cloud-/Backup-/OCR-Erweiterung oder automatische Preisübernahme. Ein separates bestätigtes Verbrauchsmodell für positive kompatible Mengen folgt erst danach.
 
+## Audit 09.11.2026 – CI-Artefakt-Parität
+
+- Der GitHub-Pages-Validate-Job baut `dist/server/index.js` aus `worker/index.js` und prüft jetzt anschließend mit `git diff --exit-code`, dass das generierte Worker-Artefakt im Commit aktuell ist.
+- Dadurch kann ein veraltetes versioniertes Worker-Artefakt nicht mehr trotz grünem Build-/Validatorlauf unbemerkt bleiben. Pages-Deploy, Secrets, Umgebungen, Supabase, Nutzdaten und Laufzeitlogik bleiben unverändert.
+
 Der Stand ist rein dokumentarisch; Runtime, UI, LocalStorage, Backup, Supabase, Sync, Auth, Schema, Nutzerdaten und Deployment bleiben unverändert.
