@@ -715,3 +715,10 @@ Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, 
 - PR #295 ist in Merge-Commit `b984d7122546b2d4f51715b1fef8fd15f77e13aa` enthalten. Die Packungsgrößen-Normalisierung behandelt deutsche Tausender- und gemischte Dezimalangaben jetzt korrekt; `1.000 g` bleibt 1000 g statt 1 g.
 - Der Fix betrifft nur die deterministische Tie-Break-Basis des Angebotsvergleichs. Regressionstests und CI #42611276092 bestätigten 321/321 Tests sowie Worker-/Endpoint-Prüfungen.
 - Es wurden keine Preise, Angebotsdaten, Nutzerdaten, Supabase-/Datenbankverträge oder Deployments verändert.
+
+
+## Fortschritt 09.11.2026 – konservative Evidenz bei Angebotskosten
+
+- PR #297 ist in Merge-Commit `7ad6add32c94c7b3dd3f5e8bbf243e0bf95e02f2` enthalten. Bekannte Angebots-Teilbeträge berücksichtigen nun ausschließlich aktuelle, HTTPS-quellenbelegte, gültige und hoch-konfidente Live-Angebote.
+- Manuelle, abgelaufene, unsichere und Cache-Fallback-Angebote bleiben `unknown`; dadurch stimmen Kostenbasis und Nichtverifizierungsanzeige überein. CI #42612829175 lief mit 321 Tests und vollständiger Artefakt-/Endpoint-Prüfung grün.
+- Es wurden keine Preise, Angebotsdaten, Nutzerdaten, Supabase-/Datenbankverträge oder Deployments verändert.
