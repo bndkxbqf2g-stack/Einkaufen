@@ -908,3 +908,7 @@ Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvolls
 
 - Quelle und Gültigkeit werden am Einkaufsartikel konservativ ausgewiesen. `saving` bleibt ein Quellenhinweis; reguläre Vergleichspreise und echte Ersparnisse werden nicht berechnet.
 - Regressionen für bekannte/unbekannte Quelle, fehlenden/vorhandenen Hinweis, manuellen Import, abgelaufene Angebote und Cache-Fallback sind grün. Keine neue Freigabe erforderlich; Vergleichspreise, IST-/Belegerfassung und Quellen-/Routenlogik bleiben Freigabepunkte.
+## Fortschritt 09.11.2026 – Evidenzstatus beim Teilen der Einkaufsliste
+
+- Der bestehende Evidenzstatus wird beim Teilen wiederverwendet; es gibt keine neue Berechnung und keinen neuen Datenvertrag.
+- Regression, Vollsuite, Worker-Build und Validator sind grün. Keine neue fachliche Freigabe erforderlich; echte Vergleichspreise und IST-/Belegerfassung bleiben freigabepflichtig.
