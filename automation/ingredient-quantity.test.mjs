@@ -91,6 +91,9 @@ test('parst nur eindeutige Mengen und normiert unterstützte Angebots-Packungen'
   assert.equal(quantityModel.parseRecipeIngredient('Hackfleisch').explicit, false);
   assert.equal(quantityModel.parseOfferPackSize('2,5 kg').amount, 2500);
   assert.equal(quantityModel.parseOfferPackSize('0,33 l').amount, 330);
+  assert.equal(quantityModel.parseOfferPackSize('5 cl').amount, 50);
+  assert.equal(quantityModel.parseOfferPackSize('2 dl').amount, 200);
+  assert.equal(quantityModel.parseOfferPackSize('2 x 5 cl').amount, 100);
   assert.deepEqual({ ...quantityModel.parseOfferPackSize('3er Pack') }, { family: 'count', unit: 'piece', amount: 3 });
   assert.equal(quantityModel.parseOfferPackSize('1 Packung'), null);
 });
