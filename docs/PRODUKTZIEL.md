@@ -616,3 +616,12 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Der bestehende lokale Kostenkern prüft nun auch den Centbetrag je bekanntem Angebot, die Packungsmultiplikation und die laufende Summe auf sichere JavaScript-Ganzzahlen.
 - Ein nicht sicher darstellbarer Einzel- oder Gesamtbetrag wird konservativ als unbekannter Preis geführt; es wird kein ungenauer Angebotswert ausgegeben. Die übrigen bekannten Positionen bleiben separat nachvollziehbar.
 - Die Änderung ist rein deterministisch und lokal. Root und `dist` bleiben synchron; Einkaufsliste, Speicherung, Backup, Supabase, Sync, Angebote, Routing und Produktionsdaten bleiben unverändert.
+
+## Audit 09.11.2026 – tatsächlicher Einkauf und Vorratsverbrauch
+
+- Die aktuelle Einkaufsliste verwendet `shoppingChecks` nur als lokalen Listenfortschritt beziehungsweise Markt-/Artikel-Haken. Es gibt weiterhin keine UI- oder Sync-Integration für `purchaseRecords`, keine Kassen-/Belegbuchung und keine automatische IST-Ausgabe.
+- Der Plan-/Einkaufsfluss liest Vorräte ausschließlich: Die Coverage für Mittagessen und optionales Abendessen erzeugt nur eine abgeleitete Einkaufsliste. Vorrat und `pantryQuantities` werden beim Planen nicht verändert; unbekannte oder inkompatible Mengen in g/kg, ml/l und Stück bleiben unverrechnet.
+- Direkte Vorratsänderungen und der lokale Backup-Import bleiben bestehende Bestätigungsrisiken, weil sie unmittelbar durch die Nutzeraktion beziehungsweise Dateiauswahl wirksam werden; Cloud-Laden ist bereits bestätigt. Dieser Audit ändert daran nichts.
+- Als nächster fachlicher Schritt ist vor einer Runtime-/Datenänderung gebündelt freizugeben: ein lokaler Dialog „Einkauf abschließen“ mit manueller IST-Summe, Datum und optionalem Markt, zunächst ohne Pantry-Verbrauch, Cloud-/Backup-/OCR-Erweiterung oder automatische Preisübernahme. Ein separates bestätigtes Verbrauchsmodell für positive kompatible Mengen folgt erst danach.
+
+Der Stand ist rein dokumentarisch; Runtime, UI, LocalStorage, Backup, Supabase, Sync, Auth, Schema, Nutzerdaten und Deployment bleiben unverändert.
