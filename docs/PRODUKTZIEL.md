@@ -538,3 +538,8 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Jede Marktgruppe der Einkaufsliste zeigt jetzt den erledigten Anteil und bietet eine lokale Gruppenaktion „Markt abhaken“ bzw. „Öffnen“.
 - Die Aktion verwendet ausschließlich den bestehenden `shoppingChecks`-Schlüssel je Artikel. Es entstehen keine neuen Daten-, Backup- oder Sync-Felder; unbekannte Preise, fehlende Artikel und Kassenbeträge bleiben unverändert offen.
 - Root, `dist` und das generierte Worker-Artefakt bleiben synchron. Die Erweiterung unterstützt den tatsächlichen Einkauf ohne Marktvergleich, Routenoptimierung oder Vorratsmutation vorwegzunehmen.
+## Fortschritt 09.11.2026 – Evidenzstatus am Einkaufsartikel
+
+- Einkaufsartikel zeigen jetzt getrennt Quelle, Gültigkeit und den Status des Vergleichspreises. Ein vorhandenes `saving` wird ausdrücklich als quellenbereitgestellter Hinweis und nicht als eigene Berechnung bezeichnet.
+- Manuelle Importe, abgelaufene Angebote und fehlgeschlagene bzw. cachebasierte Prüfungen erscheinen nicht als verifiziert; fehlende Vergleichspreise bleiben sichtbar offen.
+- Es wurden keine Angebotsquellen, Preise, Nutzdaten, Speicher-/Sync-Felder oder Kassen-/Vorratslogik verändert. Root, `dist` und das Server-Artefakt bleiben synchron.
