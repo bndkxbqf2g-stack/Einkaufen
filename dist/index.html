@@ -1374,9 +1374,18 @@
           const key = shoppingIngredientKey(ingredient);
           const identity = shoppingIngredientIdentity(ingredient);
           if (!key) return;
-          const existingKey = [...items.keys()].find(candidate => shoppingIngredientIdentity(candidate) === identity);
-          const itemKey = existingKey || key;
-          const current = items.get(itemKey) || { id: `shopping-${key.replace(/[^a-z0-9]+/g, '-')}`, name: ingredient, count: 0, portionUnits: 0, quantityBasis: quantityModel?.createQuantityBasis?.() || null, meals: [], offer: null };
+          const existingEntry = [...items.entries()].find(([candidateKey, candidate]) => {
+            const basis = candidate?.quantityBasis;
+            const familyCompatible = !parsedIngredient?.explicit
+              || (basis?.valid !== false && (!basis?.family || basis.family === parsedIngredient.family));
+            return shoppingIngredientIdentity(candidate?.name || candidateKey) === identity && familyCompatible;
+          });
+          let itemKey = existingEntry?.[0] || key;
+          if (!existingEntry) {
+            let suffix = 2;
+            while (items.has(itemKey)) itemKey = `${key}::${suffix++}`;
+          }
+          const current = items.get(itemKey) || { id: `shopping-${itemKey.replace(/[^a-z0-9]+/g, '-')}`, name: ingredient, count: 0, portionUnits: 0, quantityBasis: quantityModel?.createQuantityBasis?.() || null, meals: [], offer: null };
           current.count += 1;
           const dayModel = typeof window !== 'undefined' ? window.AngebotskuecheDayPlanningModel : null;
           const portionUnits = dayModel?.portionUnitsForPeople(people) || (people / 2);
