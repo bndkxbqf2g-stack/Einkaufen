@@ -642,3 +642,11 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Es wurden keine UI-, Daten-, Backup-, Sync-, Supabase- oder Fachverträge erweitert.
 
 Der Stand ist rein dokumentarisch; Runtime, UI, LocalStorage, Backup, Supabase, Sync, Auth, Schema, Nutzerdaten und Deployment bleiben unverändert.
+
+## Aktueller Audit-Abgleich – main@2cad1a0db9d3fe628ba382732ede9cf811103f6a – 09.11.2026
+
+- Die aktuelle Dokumentation bildet die geprüften Schutzschritte ab: sichere Remote-Revisionen, sichere Kosten-/Centaggregate, Legacy-Backup-Erhaltung, gemeinsame Mittagessen-/Abendessen-Aggregation und das CI-Gate für das generierte Worker-Artefakt.
+- Die Supabase-/Sicherheitsgrenzen sind als offene Gates dokumentiert: D1 vertraut auf den extern gesetzten `oai-authenticated-user-id`, `manualDinnerPlan` ist zwischen Client/Worker und SQL noch nicht paritätisch, Remote-Auth/RLS/E2E ist nicht unabhängig live verifiziert und jsDelivr-SRI/Self-Hosting bleibt optionales Hardening.
+- Historische Koordinationsnotizen zu früheren Chat-/Worktree-Aktivitäten sind nicht als aktuelle laufende Arbeiten zu lesen. Der bestätigte nächste Schritt bleibt die gebündelte Freigabe fachlicher Produkt-/Cloud-Erweiterungen; es werden daraus keine neuen Runtime-Annahmen abgeleitet.
+
+Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, Backup-/Sync-Struktur, Supabase-/SQL-/Auth-Verträge oder Deployments.
