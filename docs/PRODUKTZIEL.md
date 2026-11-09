@@ -515,6 +515,13 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Es gibt keine Mutation von Vorräten, keine Änderung an `getShoppingItems`, Packungs-/Kostenberechnung, LocalStorage, Backup, Worker, Supabase oder Angeboten. Root und `dist` sind synchron.
 - Dies ist ausschließlich eine Vorbereitungsgrundlage. Die produktive Einkaufslistenintegration bleibt Freigabepunkt 1; insbesondere Verbrauch, Teilbestände, Einheiten/Rundung und Sync müssen vorher fachlich entschieden werden.
 
+## Fortschritt 09.11.2026 – lokale mengenbasierte Vorratsdeckung
+
+- Die ausdrücklich freigegebene erste Integration verwendet `pantry-shopping-coverage.js` nun im bestehenden lokalen Einkaufslistenpfad. Mittagessen und optionales Abendessen werden vor der Vorratsdeckung je Zutatenidentität zusammengeführt; Frühstück bleibt außerhalb des Scopes.
+- Nur explizite, positive Mengen in den Familien g/kg, ml/l und Stück werden kanonisch verrechnet. Vollständig gedeckte Positionen entfallen, Teilbestände zeigen ausschließlich den Restbedarf. Unbekannte, null/negative und inkompatible Mengen lassen den vollen Bedarf bestehen und werden nicht still als verbraucht behandelt.
+- Packungen werden erst nach der Deckung und nur bei passender, zuverlässiger Packungsgröße in derselben Mengenfamilie gerundet. Manuelle, mengenlose und alte String-Pantry-Positionen bleiben rückwärtskompatibel; die lokale Vorratsliste und `pantryQuantities` werden nicht mutiert.
+- Die Umsetzung ist rein lokal und lesend: keine Datenbankmigration, kein Upload, keine Backup-/Cloud-/Supabase-Erweiterung und keine automatische Verbrauchsbuchung. Die fachlichen Entscheidungen zu Verbrauchsreservierung, Nullbestand, Genauigkeit und Synchronisierung bleiben für spätere Ausbaustufen offen.
+
 ## Fortschritt 08.11.2026 – vorbereitendes Offline-Outbox-Modell
 
 - Das neue reine Modul `offline-queue.js` validiert Operationen mit stabiler ID, `operation`, `kind`, `baseRevision` und JSON-sicherem, unverändertem Payload.
@@ -555,3 +562,4 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - PR #255 kennzeichnet den bestehenden Gesamtfortschritt und den bestehenden Marktgruppenfortschritt zusätzlich als höfliche, atomare Statusbereiche (role="status", aria-live="polite", aria-atomic="true"). Es wurde keine neue Fortschrittslogik eingeführt.
 - Beide Änderungen verbessern ausschließlich die Bedienbarkeit mit Screenreadern. Es wurden keine Daten-, Sync-, Supabase-, Auth-, Cloud-, Preis- oder Angebotsverträge und keine Nutzerdaten verändert; Root, dist und das Server-Artefakt bleiben synchron.
 - Die nächsten fachlichen Freigabepunkte bleiben unverändert: insbesondere Mengen-/Vorratsverbrauch, echte IST-/Belegerfassung, Vergleichspreise und Ersparnis, Fahrtkosten/Mehrstopp-Routing, Offline-Konfliktstrategie sowie Supabase-/Auth-Erweiterungen.
+
