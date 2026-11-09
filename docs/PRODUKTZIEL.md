@@ -740,3 +740,6 @@ Eine produktive Mehrstopp- oder Routenfunktion bleibt bis zur fachlichen Entsche
 PR #301 (`611dcadb49963e5587d91e415cea072763706b4b`) behandelt unbekannte oder nichtnumerische Marktdistanzen konservativ und deterministisch. Bekannte numerische Werte werden aufsteigend sortiert; bei gleichen oder unbekannten Werten bleibt die konfigurierte Reihenfolge erhalten. CI #42615733985 lief mit 325/325 Tests, generiertem Worker-Artefaktvergleich und Endpoint-Validierung vollständig grün.
 
 Der nächste Runtime-Schritt bleibt der gebündelt freizugebende lokale Dialog „Einkauf abschließen“ mit manueller IST-Summe, Datum und optionalem Markt – zunächst ohne Pantry-Verbrauch, Cloud-/Backup-/OCR-Erweiterung oder automatische Preisübernahme.
+## UX-Klarstellung 09.11.2026 – statische Marktdistanzen
+
+Die Marktansicht kennzeichnet statische Anzeigeentfernungen ausdrücklich. Nichtnumerische Einträge wie `Cloud-Browser` werden als „keine Routendaten“ dargestellt; daraus werden weder Route noch Fahrtkosten abgeleitet. Der offene Umfang der echten Routenoptimierung bleibt unverändert.
