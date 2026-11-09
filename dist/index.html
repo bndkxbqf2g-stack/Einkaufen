@@ -981,6 +981,8 @@
       if (canonicalMarketName(payload.market) !== canonicalMarketName(expectedMarket)) return 'Angebotsdatensatz gehört zu einem anderen Markt';
       if (!sourceUrlForDisplay(payload.sourceUrl)) return 'Angebotsdatensatz ohne sichere HTTPS-Quelle';
       if (!/^\d{4}-\d{2}-\d{2}T([01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?Z$/.test(String(payload.fetchedAt || '').trim()) || !normalizeSourceTimestamp(payload.fetchedAt)) return 'Angebotsdatensatz ohne gültigen UTC-Abrufzeitpunkt';
+      const fetchedAt = new Date(payload.fetchedAt);
+      if (fetchedAt.getTime() > now.getTime()) return 'Angebotsdatensatz hat einen Abrufzeitpunkt in der Zukunft';
       const snapshotEnd = offerEndDate(payload.validUntil);
       if (!snapshotEnd || snapshotEnd < now) return 'Angebotsdatensatz ist abgelaufen oder ohne gültiges Ende';
       const fetchedAt = new Date(payload.fetchedAt);
