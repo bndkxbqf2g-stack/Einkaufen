@@ -98,4 +98,42 @@ test('uses the original day people for an optional dinner in the combined shoppi
   assert.equal(summary.totalCents, 600);
 });
 
+test('führt kompatible g/kg- und ml/l-Mengen zusammen', () => {
+  const items = buildShoppingItems({
+    lunches: [{ title: 'Mittag', ingredients: ['500 g Mehl', '500 ml Milch'] }],
+    dinners: [{ title: 'Abend', ingredients: ['1 kg Mehl', '1 l Milch'] }],
+    peopleByDay: [2],
+    offers: [],
+  });
+  const byName = Object.fromEntries(items.map(item => [item.name, item]));
+  assert.equal(items.length, 2);
+  assert.deepEqual(
+    { family: byName.Mehl.quantityBasis.family, amount: byName.Mehl.quantityBasis.amount, valid: byName.Mehl.quantityBasis.valid },
+    { family: 'mass', amount: 1500, valid: true },
+  );
+  assert.deepEqual(
+    { family: byName.Milch.quantityBasis.family, amount: byName.Milch.quantityBasis.amount, valid: byName.Milch.quantityBasis.valid },
+    { family: 'volume', amount: 1500, valid: true },
+  );
+});
+
+test('trennt gleiche Zutat bei inkompatiblen Einheiten statt sie still zu verschmelzen', () => {
+  const items = buildShoppingItems({
+    lunches: [{ title: 'Mittag', ingredients: ['500 g Öl'] }],
+    dinners: [{ title: 'Abend', ingredients: ['1 l Öl'] }],
+    peopleByDay: [2],
+    offers: [],
+  });
+  assert.equal(items.length, 2);
+  assert.deepEqual(
+    items.map(item => item.quantityBasis.family).sort(),
+    ['mass', 'volume'],
+  );
+  assert.ok(items.every(item => item.quantityBasis.valid === true));
+  assert.deepEqual(
+    items.flatMap(item => item.meals).sort(),
+    ['Abend', 'Mittag'],
+  );
+});
+
 console.log('Planned shopping quantity checks passed');
