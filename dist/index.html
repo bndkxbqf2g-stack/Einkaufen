@@ -494,7 +494,7 @@
       <section class="page" id="page-shopping">
         <div class="hero"><div><div class="eyebrow"><span></span> Einkaufsliste</div><h1>Ein Plan,<br><em style="font-style:normal;color:var(--coral)">ein klarer Einkauf.</em></h1><p class="hero-copy">Die Liste entsteht aus deinem aktuellen Plan. Vorräte und Zutaten, die als Reste weiterverwendet werden, werden zusammengeführt – Angebote bleiben dem passenden Markt zugeordnet.</p></div><div class="shopping-actions"><button class="outline-button" id="clearShoppingChecks">Abhaken zurücksetzen</button><button class="outline-button" id="openShoppingItem">＋ Artikel ergänzen</button><button class="primary-button" id="shareShoppingList">↗&nbsp; Liste teilen</button></div></div>
         <div class="shopping-summary">
-          <div class="shopping-stat"><div class="shopping-stat-label">Offene Artikel</div><div class="shopping-stat-value" id="shoppingOpenCount">0</div><div class="shopping-stat-note" id="shoppingOpenNote">wird aus dem Plan berechnet</div></div>
+          <div class="shopping-stat"><div class="shopping-stat-label">Offene Artikel</div><div class="shopping-stat-value" id="shoppingOpenCount">0</div><div class="shopping-stat-note" id="shoppingOpenNote" role="status" aria-live="polite" aria-atomic="true">wird aus dem Plan berechnet</div></div>
           <div class="shopping-stat accent"><div class="shopping-stat-label" id="shoppingOfferLabel">Bekannter Angebotsbetrag</div><div class="shopping-stat-value" id="shoppingOfferTotal">–</div><div class="shopping-stat-note" id="shoppingOfferNote">Noch keine verifizierte Preisbasis</div></div>
           <div class="shopping-stat"><div class="shopping-stat-label">Ergänzen</div><div class="shopping-stat-value" id="shoppingMissingCount">0</div><div class="shopping-stat-note">nicht als Angebot hinterlegt</div></div>
         </div>
@@ -1461,7 +1461,7 @@
       const groupAction = checkedCount === groupItems.length
         ? `<button type="button" class="small-button" data-shopping-group-check="${escapeHtml(group)}" data-shopping-group-state="clear" aria-label="${escapeHtml(marketName)} wieder öffnen">Öffnen</button>`
         : `<button type="button" class="small-button" data-shopping-group-check="${escapeHtml(group)}" data-shopping-group-state="check" aria-label="${escapeHtml(marketName)} vollständig abhaken">Markt abhaken</button>`;
-      return `<div class="shopping-group-title"><span>${escapeHtml(marketName)}</span><span class="shopping-group-progress">${escapeHtml(itemNote)}</span><span class="shopping-group-title-actions">${groupAction}</span></div>`;
+      return `<div class="shopping-group-title"><span>${escapeHtml(marketName)}</span><span class="shopping-group-progress" role="status" aria-live="polite" aria-atomic="true">${escapeHtml(itemNote)}</span><span class="shopping-group-title-actions">${groupAction}</span></div>`;
     }
 
     function decorateShoppingItemEvidence(items) {
