@@ -85,7 +85,7 @@ test('rejects snapshots and offers that expired before their recorded fetch time
     validUntil: '12.11.2026',
     offers: [{ name: 'Kartoffeln', price: '1,99 €', validUntil: '12.11.2026' }],
   };
-  assert.match(validateOfferPayload(snapshotExpiredBeforeFetch, 'Lidl', now), /vor dem Abrufzeitpunkt|in der Zukunft/);
+  assert.match(validateOfferPayload(snapshotExpiredBeforeFetch, 'Lidl', now), /vor dem Abrufzeitpunkt/);
 
   const offerExpiredBeforeFetch = {
     ...valid,
