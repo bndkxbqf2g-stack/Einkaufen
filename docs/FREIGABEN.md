@@ -1071,3 +1071,8 @@ Dieser Audit änderte keine Angebote, Nutzer-/Haushaltsdaten, Supabase-/Schema-D
 
 - Ein zusätzlicher Regressionstest prüft, dass weder die App-Runtime noch der Sync-Adapter vor der gebündelten Produktfreigabe einen `purchaseRecords`-Schreibpfad enthält.
 - Die Prüfung verändert keine Runtime und führt keine Datenfelder ein; sie schützt nur die bestehende Grenze zwischen Listenstatus und tatsächlicher Kauf-/Verbrauchsbuchung.
+
+## Fortschritt 09.11.2026 – gruppierte Angebots-Packungsgrößen
+
+- Der zentrale Mengenparser behandelt `2 x 500 g`, `2 × 1.000 ml` und gruppierte Stückpackungen jetzt als Gesamtpackungsmenge. Zuvor konnte die Packungsgröße auf die erste Zahl verkürzt werden und dadurch den Packungsbedarf verfälschen.
+- Root-/`dist`-Mengenmodul und Regressionstests bleiben synchron. Keine Angebotsdaten, Nutzerdaten, Supabase-, Verbrauchs- oder Deploymentänderung.
