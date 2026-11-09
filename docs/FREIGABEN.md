@@ -912,6 +912,7 @@ Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvolls
 
 - Der bestehende Evidenzstatus wird beim Teilen wiederverwendet; es gibt keine neue Berechnung und keinen neuen Datenvertrag.
 - Regression, Vollsuite, Worker-Build und Validator sind grün. Keine neue fachliche Freigabe erforderlich; echte Vergleichspreise und IST-/Belegerfassung bleiben freigabepflichtig.
+
 ## Fortschritt 09.11.2026 – Zugänglichkeit der Einkaufslisten-Fortschritte
 
 - PR #254 wurde gemergt und gibt den bereits vorhandenen dynamischen Marktgruppen der Einkaufsliste zugängliche Namen.
