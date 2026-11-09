@@ -16,6 +16,24 @@ const model = browserGlobal.AngebotskuecheBudgetModel;
 const rendererStart = source.indexOf('function renderBudgetTransparency');
 const rendererEnd = source.indexOf('\n    function formatShoppingCostScope', rendererStart);
 const renderer = source.slice(rendererStart, rendererEnd);
+const moneyStart = source.indexOf('function parseKnownMoney(value) {');
+const moneyEnd = source.indexOf('\n    function parseKnownPackageSize', moneyStart);
+const publishedMoneyStart = published.indexOf('function parseKnownMoney(value) {');
+const publishedMoneyEnd = published.indexOf('\n    function parseKnownPackageSize', publishedMoneyStart);
+assert.ok(moneyStart >= 0 && moneyEnd > moneyStart, 'known money parser is present');
+assert.ok(publishedMoneyStart >= 0 && publishedMoneyEnd > publishedMoneyStart, 'published known money parser is present');
+const parseKnownMoney = new Function(`${source.slice(moneyStart, moneyEnd)}; return parseKnownMoney;`)();
+const publishedParseKnownMoney = new Function(`${published.slice(publishedMoneyStart, publishedMoneyEnd)}; return parseKnownMoney;`)();
+
+test('übernimmt nur eindeutige Packungspreise und verwirft Grundpreise', () => {
+  assert.equal(parseKnownMoney('1.234 €'), 1234);
+  assert.equal(parseKnownMoney('1.234,56 €'), 1234.56);
+  assert.equal(parseKnownMoney('1,234 €'), null);
+  assert.equal(parseKnownMoney('2,49 € / kg'), null);
+  assert.equal(parseKnownMoney('2,49 € pro 100 g'), null);
+  assert.equal(parseKnownMoney('-2,49 €'), null);
+  assert.equal(publishedParseKnownMoney('1.234,56 €'), parseKnownMoney('1.234,56 €'));
+});
 
 test('verwendet ein getrenntes Monatszielmodell ohne IST-Restbudget', () => {
   assert.equal(model.monthlyTargetCents, 40_000);
