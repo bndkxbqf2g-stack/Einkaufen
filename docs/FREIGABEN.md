@@ -1009,3 +1009,10 @@ Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfigura
 - PR #287 wurde nach grüner CI in Merge-Commit `fde374a05bc4b6a653c221c3aeabd976251d9f26` integriert. Der Anschlussaudit reproduzierte, dass die feste `1e-9`-Toleranz echten Überbedarf unterschlug: `1000.0000001 g` bei einer 500-g-Packung ergab 2 statt 3 Packungen.
 - Die Rundung nutzt nun ein skaliertes `Number.EPSILON`-Fenster, das nur IEEE-754-Rauschen absorbiert. Regressionstests decken exakte Grenze, knappen Überbedarf, Dezimalverhältnisse, Stück und inkompatible Einheiten ab; CI #42606542412 war vollständig grün.
 - Keine Supabase-, SQL-, Auth-, Nutzer-/Angebotsdaten-, Preis- oder Deploymentänderung.
+
+
+## Fortschritt 09.11.2026 – inkompatible Rezeptmengen im Einkaufsfluss
+
+- PR #289 wurde nach grüner CI in Merge-Commit `d4762d21d0417feca9b96691653616814b85b02c` integriert. Der End-to-End-Audit reproduzierte, dass `500 g Öl` aus dem Mittagessen und `1 l Öl` aus dem Abendessen zuvor still in einer Einkaufsposition zusammengelegt wurden.
+- Inkompatible explizite Einheitenfamilien bleiben nun getrennt; kompatible `g/kg)- und `ml/l)-Mengen aggregieren weiterhin. Die Regressionstests und CI #42608250639 waren vollständig grün; der Deploy wurde übersprungen.
+- Keine Supabase-, SQL-, Auth-, Nutzer-/Angebotsdaten-, Preis- oder Deploymentänderung.
