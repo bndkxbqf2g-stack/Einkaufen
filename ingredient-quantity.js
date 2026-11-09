@@ -3,7 +3,7 @@
 
   const UNIT_DEFINITIONS = Object.freeze({
     mass: Object.freeze({ baseUnit: 'g', aliases: /^(?:g|gramm?|kg|kilogramm?)$/i, factors: Object.freeze({ g: 1, gram: 1, gramm: 1, kg: 1000, kilogramm: 1000, kilogram: 1000 }) }),
-    volume: Object.freeze({ baseUnit: 'ml', aliases: /^(?:ml|milliliter|millilitre|l|liter|litre)$/i, factors: Object.freeze({ ml: 1, milliliter: 1, millilitre: 1, l: 1000, liter: 1000, litre: 1000 }) }),
+    volume: Object.freeze({ baseUnit: 'ml', aliases: /^(?:ml|milliliter|millilitre|l|liter|litre|cl|zentiliter|dl|deziliter)$/i, factors: Object.freeze({ ml: 1, milliliter: 1, millilitre: 1, l: 1000, liter: 1000, litre: 1000, cl: 10, zentiliter: 10, dl: 100, deziliter: 100 }) }),
     count: Object.freeze({ baseUnit: 'piece', aliases: /^(?:stück|stueck|stk\.?|st\.?|pcs?\.?|piece|pieces)$/i, factors: Object.freeze({ stück: 1, stueck: 1, stk: 1, st: 1, pc: 1, pcs: 1, piece: 1, pieces: 1 }) }),
   });
 

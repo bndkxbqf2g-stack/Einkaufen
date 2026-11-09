@@ -1076,3 +1076,8 @@ Dieser Audit änderte keine Angebote, Nutzer-/Haushaltsdaten, Supabase-/Schema-D
 
 - Der zentrale Mengenparser behandelt `2 x 500 g`, `2 × 1.000 ml` und gruppierte Stückpackungen jetzt als Gesamtpackungsmenge. Zuvor konnte die Packungsgröße auf die erste Zahl verkürzt werden und dadurch den Packungsbedarf verfälschen.
 - Root-/`dist`-Mengenmodul und Regressionstests bleiben synchron. Keine Angebotsdaten, Nutzerdaten, Supabase-, Verbrauchs- oder Deploymentänderung.
+
+
+## Fortschritt 09.11.2026 – Volumenparser synchronisiert
+
+Der Audit fand eine echte Drift: `parseKnownPackageSize` kann `cl`/`dl` bereits auf `ml` normalisieren, während der zentrale Angebotsparser diese Einheiten beim Matching ablehnte. Der gemeinsame Parser unterstützt beide Schreibweisen nun ebenfalls einschließlich gruppierter Packungen; CI soll die Root-/`dist`-Parität und die deterministische Normalisierung absichern. Keine Angebots-, Nutzer-, Supabase-, SQL-, Verbrauchs- oder Deploymentänderung.
