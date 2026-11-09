@@ -102,6 +102,7 @@ function createSyncHarness({ remoteState = null, confirm = true, initialStorage 
     rpcCalls,
     storage,
     appliedPayloads,
+    get status() { return elements.get('supabaseStatus')?.textContent || ''; },
     get confirmationCount() { return confirmationCount; },
     setSessionError(error) { sessionError = error; },
     async initialize() {
@@ -436,6 +437,41 @@ test('confirmed cloud load applies the payload and remembers its revision', asyn
   assert.equal(harness.appliedPayloads[0].settings.people, 4);
   assert.equal(harness.storage.get('angebotskueche.supabase.localHousehold'), 'house-1');
   assert.equal(harness.storage.get('angebotskueche.supabase.revision.house-1'), '4');
+});
+
+test('lässt lokale Daten bei fehlender oder ungültiger Remote-Revision unverändert', async () => {
+  const invalidRevisions = [undefined, null, -1, 1.5, '01', '1.0', '9007199254740992'];
+  for (const revision of invalidRevisions) {
+    const harness = createSyncHarness({
+      remoteState: { payload: { version: 1, settings: { people: 5 } }, revision, updated_at: '2026-11-06T12:00:00Z' },
+      initialStorage: {
+        'angebotskueche.settings': '{"people":2}',
+        'angebotskueche.supabase.localHousehold': 'house-1',
+        'angebotskueche.supabase.revision.house-1': '2',
+      },
+    });
+    await harness.initialize();
+    const before = [...harness.storage.entries()];
+
+    await assert.rejects(harness.api.load(), /gültigen Revisionsstand/);
+    assert.equal(harness.appliedPayloads.length, 0);
+    assert.equal(harness.confirmationCount, 0);
+    assert.equal(harness.status, 'Der Cloud-Stand enthält keinen gültigen Revisionsstand.');
+    assert.deepEqual([...harness.storage.entries()], before);
+  }
+});
+
+test('normalisiert gültige Remote-Revisionen kanonisch und erhält den Load-Vertrag', async () => {
+  for (const revision of [0, '0', 4, '4', Number.MAX_SAFE_INTEGER, String(Number.MAX_SAFE_INTEGER)]) {
+    const harness = createSyncHarness({
+      remoteState: { payload: { version: 1, settings: { people: 5 } }, revision, updated_at: '2026-11-06T12:00:00Z' },
+    });
+    await harness.initialize();
+
+    assert.equal(await harness.api.load(), true);
+    assert.equal(harness.storage.get('angebotskueche.supabase.revision.house-1'), String(revision));
+    assert.equal(harness.appliedPayloads.length, 1);
+  }
 });
 
 
