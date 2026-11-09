@@ -761,3 +761,8 @@ Der Mengenparser normalisiert `cl`/`Zentiliter` und `dl`/`Deziliter` jetzt wie d
 ## Fortschritt 09.11.2026 – atomarer Cloud-Load im Fehlerfall
 
 Der bestehende Sync-Pfad schreibt Haushaltsbindung und Revision erst nach erfolgreichem Anwenden eines zuvor bestätigten und validierten Cloud-Stands. Ein zusätzlicher Regressionstest schützt jetzt ausdrücklich den Fehlerfall: Scheitert das lokale Anwenden, bleiben lokale Daten, Haushaltsbindung und Revisionsmarker unverändert. Keine Runtime-, Supabase-, SQL-, Daten-, Deployment- oder Kostenänderung.
+
+
+## Fortschritt 09.11.2026 – Preisparser-Regressionsschutz
+
+Der Kosten-/Angebotspfad ist durch zusätzliche Regressionen gegen deutsche Tausender- und Dezimalbeträge, mehrdeutige Schreibweisen, negative Werte und explizite Grundpreise abgesichert. Root- und veröffentlichtes `dist`-Dokument müssen dabei denselben konservativen Parservertrag erfüllen. Es wurden keine Preise oder Angebotsdaten geändert und keine Supabase-, Daten-, Deployment- oder Kostenressource verwendet.
