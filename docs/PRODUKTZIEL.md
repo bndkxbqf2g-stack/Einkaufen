@@ -694,3 +694,10 @@ Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, 
 - Der End-to-End-Audit fand eine falsche Zusammenführung gleicher Zutaten mit inkompatiblen expliziten Einheiten: `500 g Öl` plus `1 l Öl` wurde bisher zu einer ungültigen gemeinsamen Mengenbasis.
 - PR #289 trennt inkompatible Einheitenfamilien in eigene Einkaufslisteneinträge und erhält zugleich die Aggregation kompatibler `g/kg`- sowie `ml/l`-Mengen. Merge-Commit: `d4762d21d0417feca9b96691653616814b85b02c`.
 - Regressionstests und CI #42608250639 waren vollständig grün. Keine Produkt-, Supabase-, Daten-, Preis-, Angebots- oder Deploymentverträge geändert.
+
+
+## Fortschritt 09.11.2026 – Angebotszuordnung nach Mengenfamilie
+
+- Der Audit fand eine falsche Angebotszuordnung: `500 g Hackfleisch` durfte ein gleichnamiges `1 l`-Angebot beziehungsweise eine unbekannte `1 Packung`-Größe verwenden.
+- PR #291 akzeptiert bei expliziten Rezeptmengen nur noch kompatible mass/volume/count-Familien und lässt unbekannte Packungsgrößen konservativ offen; textuelle Zutaten ohne Einheit behalten das Namensmatching. Merge-Commit: `996c1c6a8929104bab99c5622766b0832222e55d`.
+- Regressionstests und CI #42609169843 waren vollständig grün. Keine Produkt-, Supabase-, Daten-, Preis-, Angebots- oder Deploymentverträge geändert.
