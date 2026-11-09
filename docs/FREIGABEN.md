@@ -961,3 +961,13 @@ Die folgenden Punkte sind belegte Verifikations- oder Freigabegrenzen. Dieser Ab
 4. **jsDelivr-Supply-Chain-Härtung:** Die aktuelle CDN-Einbindung verwendet kein SRI. Self-Hosting oder eine geprüfte Integritätsbindung bleibt optionales Supply-Chain-Hardening und wird ohne gesonderte Abwägung nicht automatisch eingeführt.
 
 Bis diese Punkte separat verifiziert beziehungsweise freigegeben sind, werden weder der D1-Identitätsweg, der SQL-Vertrag, die Remote-Auth/RLS-Annahmen noch die CDN-Härtung eigenmächtig erweitert.
+
+## Aktueller Prüfstand – main@2cad1a0db9d3fe628ba382732ede9cf811103f6a – 09.11.2026
+
+Dieser Abschnitt ist der maßgebliche aktuelle Koordinationsstand. Frühere Abschnitte mit historischen Chat-/Worktree-Aktivitäten bleiben als Verlauf erhalten und sind nicht als laufende Aufgaben zu verstehen.
+
+- Die geprüften Änderungen aus den letzten Audit-/PR-Strängen sind im aktuellen Dokumentationsstand berücksichtigt: defensive Remote-Revisionsgrenze, sichere Kosten-/Centaggregation, CI-Artefakt-Parität, Sicherheits-/Release-Gates, Legacy-Backup-Erhaltung und der gemeinsame Mittagessen-/Abendessen-Regressionstest.
+- Die aktuellen Grenzen bleiben unverändert: keine automatische Offline-Queue, keine produktive IST-/Belegerfassung, kein Vorratsverbrauch, keine automatische Mehrstopp-/Routingempfehlung, keine SQL-/Supabase-Migration für `manualDinnerPlan` und keine produktive D1-Nutzung ohne unabhängige Gateway-/Header-Verifikation.
+- Der nächste fachliche Schritt ist keine weitere autonome Daten- oder Cloudänderung. Vor produktiver Erweiterung sind die jeweils gebündelten Freigaben und externen Verifikationen aus diesem Dokument maßgeblich.
+
+Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfiguration, Secrets oder Deployments.
