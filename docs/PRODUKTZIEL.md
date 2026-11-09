@@ -629,4 +629,10 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Der GitHub-Pages-Validate-Job baut `dist/server/index.js` aus `worker/index.js` und prüft jetzt anschließend mit `git diff --exit-code`, dass das generierte Worker-Artefakt im Commit aktuell ist.
 - Dadurch kann ein veraltetes versioniertes Worker-Artefakt nicht mehr trotz grünem Build-/Validatorlauf unbemerkt bleiben. Pages-Deploy, Secrets, Umgebungen, Supabase, Nutzdaten und Laufzeitlogik bleiben unverändert.
 
+## Audit 09.11.2026 – Legacy-Backup-Import
+
+- Der lokale Import validiert die v1-Backup-Hülle, schreibt die enthaltenen Felder transaktional und rollt bei einem fehlgeschlagenen `localStorage`-Schreibvorgang bereits geänderte Schlüssel bestmöglich zurück.
+- Ein zusätzlicher Regressionstest sichert jetzt ausdrücklich ab, dass ein älteres Backup bekannte Einstellungen aktualisieren darf, unbekannte persönliche Einstellungsschlüssel erhalten bleiben und ausgelassene optionale Backup-Felder nicht als Löschung behandelt werden.
+- Es wurden keine Runtime-, Speicher-, Backup-, Sync-, Supabase-, Nutzdaten- oder Deploymentverträge geändert. Die fachliche Erweiterung des Backup-Schemas bleibt weiterhin separat freigabepflichtig.
+
 Der Stand ist rein dokumentarisch; Runtime, UI, LocalStorage, Backup, Supabase, Sync, Auth, Schema, Nutzerdaten und Deployment bleiben unverändert.

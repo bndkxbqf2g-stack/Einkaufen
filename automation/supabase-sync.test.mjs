@@ -554,6 +554,34 @@ test('lässt lokale Daten bei ungültiger save_household_state-Revision unverän
   }
 });
 
+test('bewahrt persönliche Einstellungen und ausgelassene Felder bei einem Legacy-Backup-Import', () => {
+  const declaration = html.match(/function applyUserDataPayload\(payload, message, options = \{\}\) \{[\s\S]*?\n    \}/);
+  assert.ok(declaration, 'transactional backup import function is present');
+  const storage = new Map([
+    ['angebotskueche.settings', '{"people":2,"days":5,"customPreference":"behalten"}'],
+    ['angebotskueche.favorites', '[{"name":"Lieblingsgericht"}]'],
+  ]);
+  const sandbox = {
+    settings: { people: 2, days: 5, customPreference: 'behalten' },
+    backupArrayKeys: ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems', 'recipeHistory'],
+    backupObjectKeys: ['shoppingChecks', 'liveOfferStatus', 'manualPlan', 'manualDinnerPlan', 'recipeRatings', 'suggestionPreferences'],
+    validateUserDataPayload() {},
+    writeUserDataPayload(values) { values.forEach((value, key) => storage.set(key, value)); },
+    showToast() {},
+    setTimeout() {},
+    location: { reload() {} },
+    storage,
+    JSON,
+    Map,
+  };
+  const apply = vm.runInNewContext('(' + declaration[0] + ')', sandbox);
+  apply({ version: 1, settings: { people: 4 }, pantry: ['Brot'] }, 'imported', { mergeSettings: true });
+  assert.equal(storage.get('angebotskueche.settings'), '{"people":4,"days":5,"customPreference":"behalten"}');
+  assert.equal(storage.get('angebotskueche.pantry'), '["Brot"]');
+  assert.equal(storage.get('angebotskueche.favorites'), '[{"name":"Lieblingsgericht"}]');
+  assert.equal(storage.has('angebotskueche.recipeRatings'), false);
+});
+
 function extractFrontendFunction(source, name) {
   const start = source.indexOf(`function ${name}() {`);
   assert.notEqual(start, -1, `${name} is present`);
