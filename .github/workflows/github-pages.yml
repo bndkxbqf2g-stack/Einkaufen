@@ -62,6 +62,9 @@ jobs:
       - name: Run automated tests
         run: node --test automation/*.test.mjs
 
+      - name: Verify generated worker artifact is committed
+        run: git diff --exit-code -- dist/server/index.js
+
       - name: Validate worker endpoints
         run: node scripts/validate-worker.mjs
 
