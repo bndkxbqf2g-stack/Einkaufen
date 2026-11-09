@@ -112,5 +112,19 @@ test('ordnet unbekannte Marktdistanzen deterministisch hinter bekannten Werten',
   assert.deepEqual(loadSorter(appSource, marketDetails, ['Bring', 'Tie', 'Aldi', 'Lidl']), expected);
   assert.deepEqual(loadSorter(publishedAppSource, marketDetails, ['Bring', 'Tie', 'Aldi', 'Lidl']), expected);
 });
+
+test('kennzeichnet Anzeigeentfernungen ohne Routendaten eindeutig', () => {
+  function loadDistanceLabel(source, value) {
+    const helper = source.match(/function parseMarketDistanceKm\(value\) \{[\s\S]*?\n    \}/);
+    const label = source.match(/function marketDistanceLabel\(value\) \{[\s\S]*?\n    \}/);
+    assert.ok(helper && label, 'market distance labels must remain directly testable');
+    const factory = runInNewContext('(function() { ' + helper[0] + label[0] + ' return marketDistanceLabel; })');
+    return factory()(value);
+  }
+
+  assert.equal(loadDistanceLabel(appSource, '4,8 km'), '4,8 km · statische Anzeigeentfernung');
+  assert.equal(loadDistanceLabel(appSource, 'Cloud-Browser'), 'Cloud-Browser · keine Routendaten');
+  assert.equal(loadDistanceLabel(publishedAppSource, 'Cloud-Browser'), 'Cloud-Browser · keine Routendaten');
+});
 console.log('Market stop recommendation checks passed');
 
