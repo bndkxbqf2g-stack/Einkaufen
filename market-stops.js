@@ -34,6 +34,11 @@
     return names;
   }
 
+  function subtractSafeCents(left, right) {
+    const result = left - right;
+    return Number.isSafeInteger(result) ? result : null;
+  }
+
   function unknown(reason, input = {}) {
     return {
       recommended: false,
@@ -74,8 +79,13 @@
       };
     }
 
-    const grossSavingsCents = baseBasketCents - alternativeBasketCents;
-    const netSavingsCents = grossSavingsCents - travelCostCents;
+    const grossSavingsCents = subtractSafeCents(baseBasketCents, alternativeBasketCents);
+    const netSavingsCents = grossSavingsCents === null
+      ? null
+      : subtractSafeCents(grossSavingsCents, travelCostCents);
+    if (grossSavingsCents === null || netSavingsCents === null) {
+      return unknown('unsafe-cent-aggregate', input);
+    }
     const recommended = netSavingsCents > thresholdCents;
     return {
       recommended,

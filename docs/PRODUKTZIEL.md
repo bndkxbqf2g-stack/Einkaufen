@@ -500,6 +500,11 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Bestehende Marktauswahl, Einkaufsliste, Settings, Backup, Worker und Supabase bleiben unverändert. Das Modell ist noch nicht in UI oder automatische Routenplanung integriert; die bestätigte Fahrtkostenbasis und eine produktive Schwelle bleiben fachlich offen.
 - Fokustests (5/5), Vollsuite (245/245) und Worker-Validator liefen grün. Root-/`dist`-Rechenkern und veröffentlichte App bleiben synchron.
 
+## Fortschritt 09.11.2026 – sichere Mehrstopp-Centaggregation
+
+- Der bestehende Mehrstopp-Rechenkern verwirft nun auch Cent-Aggregate, die trotz sicherer Einzelwerte außerhalb der JavaScript-Sicherheitsgrenze liegen. In diesem Fall bleiben Brutto- und Nettoersparnis `null` und der Status lautet `unknown` mit dem Grund `unsafe-cent-aggregate`.
+- Ein Regressionstest prüft diesen Unterlauf-Fall mit synthetischen Werten und bestätigt, dass der Eingabevertrag nicht mutiert wird. Schwellenwerte, Marktlimit, Fahrtkostenbasis, Routing und externe Datenquellen bleiben unverändert.
+
 ## Fortschritt 08.11.2026 – transparenter Abwechslungs-Rechenkern
 
 - Das neue reine Modul `variety.js` wertet ausdrücklich gelieferte Planabschnitte chronologisch aus: Mittagessen und vorhandene optionale Abendessen werden pro Tag zusammengeführt; Frühstücks-, Snack- und Getränkesegmente werden nicht berücksichtigt.
