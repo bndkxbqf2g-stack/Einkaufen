@@ -437,6 +437,11 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Fehlgeschlagene Supabase-Initialisierung und fehlgeschlagene Session-Abfragen werden als Offline-/unbekannter Sessionstatus behandelt. Auf GitHub Pages wird dabei kein irreführender Login-Dialog geöffnet; lokale Einstellungen, Vorräte, Wochenplanung, Einkaufschecks und manuelle Artikel bleiben unangetastet.
 - Bestätigtes Cloud-Laden, Revisionsschutz und Fehlerpfade wurden erneut geprüft. Fokustests (28/28), Vollsuite (227/227), Worker-Validator und Diff-Check waren grün. Es wurde kein reproduzierbarer Laufzeitfehler gefunden; keine Produkt-, Supabase-, Schema-, Nutzdaten- oder Deploymentänderung.
 
+## Fortschritt 09.11.2026 – deterministische Sync-Fehlerklassifikation
+
+- Der lokale Regressionstest deckt nun auch die vorhandene Fehlerklassifikation für Revisionskonflikte (`40001`), fehlende Haushaltsrechte (`42501`), generische Fehlermeldungen und die 240-Zeichen-Grenze ab.
+- Der Audit fand keinen reproduzierbaren Laufzeitfehler. Es wurden ausschließlich Tests und diese Dokumentation ergänzt; Supabase-Aufrufe, Auth-/Sync-Code, Storage, UI, Daten, Schema, Migrationen und Deployments blieben unverändert.
+
 ## Audit 08.11.2026 – Wochenplan bis bekannte Angebotssumme
 
 - Der durchgängige lokale Pfad wurde mit Mittagessen, optionalem Abendessen an einem späteren Planungstag, unterschiedlichen Tagespersonenzahlen und Vorratsabgleich geprüft. `getShoppingItems()` liest die aktuellen Planabschnitte gemeinsam ein; die Einkaufspositionen führen Zutaten, Tagesportionen, Mengenbasis, Packungszahl und den jeweils ersten passenden Angebotsanker zusammen.
