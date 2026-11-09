@@ -1096,3 +1096,8 @@ Der Preisparser-Audit bestätigte die bestehende Regel: Nur ein eindeutiger posi
 ## Fortschritt 09.11.2026 – Transparenz bei Teilbeständen
 
 Der bestehende lokale Vorratsabgleich wird im Einkaufsartikel sichtbar: Bei teilweiser Deckung werden gedeckter Anteil und verbleibender Bedarf angezeigt. Vollständig gedeckte, unbekannte oder inkompatible Positionen behalten ihre bisherigen konservativen Regeln. Es wurden keine Vorrats-, Nutzer-, Supabase-, SQL-, Backup-, Sync- oder Deploymentverträge geändert.
+
+
+## Dokumentationsabgleich 09.11.2026 – Status präzisiert
+
+Die früheren Ausgangslisten werden durch den aktuellen Fortschritt ergänzt: Lokale Budgettransparenz, Mengen-/Packungsberechnung und lesender Vorratsabgleich sind umgesetzt. Die gebündelte Freigabe für Kaufabschluss, tatsächliche IST-Ausgaben und Verbrauchsbuchung bleibt unverändert erforderlich; diese Dokumentationskorrektur erteilt keine Produkt-, Daten- oder Cloudfreigabe.
