@@ -985,7 +985,6 @@
       if (fetchedAt.getTime() > now.getTime()) return 'Angebotsdatensatz hat einen Abrufzeitpunkt in der Zukunft';
       const snapshotEnd = offerEndDate(payload.validUntil);
       if (!snapshotEnd || snapshotEnd < now) return 'Angebotsdatensatz ist abgelaufen oder ohne gültiges Ende';
-      const fetchedAt = new Date(payload.fetchedAt);
       const dateOrdinal = date => date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
       const fetchedAtOrdinal = fetchedAt.getUTCFullYear() * 10000 + (fetchedAt.getUTCMonth() + 1) * 100 + fetchedAt.getUTCDate();
       if (dateOrdinal(snapshotEnd) < fetchedAtOrdinal) return 'Angebotsdatensatz endet vor dem Abrufzeitpunkt';
