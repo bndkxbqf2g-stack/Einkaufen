@@ -722,3 +722,15 @@ Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, 
 - PR #297 ist in Merge-Commit `7ad6add32c94c7b3dd3f5e8bbf243e0bf95e02f2` enthalten. Bekannte Angebots-Teilbeträge berücksichtigen nun ausschließlich aktuelle, HTTPS-quellenbelegte, gültige und hoch-konfidente Live-Angebote.
 - Manuelle, abgelaufene, unsichere und Cache-Fallback-Angebote bleiben `unknown`; dadurch stimmen Kostenbasis und Nichtverifizierungsanzeige überein. CI #42612829175 lief mit 321 Tests und vollständiger Artefakt-/Endpoint-Prüfung grün.
 - Es wurden keine Preise, Angebotsdaten, Nutzerdaten, Supabase-/Datenbankverträge oder Deployments verändert.
+
+## Read-only-Audit 09.11.2026 – Marktvergleich, Entfernungen und Routenpfad
+
+Der aktuelle Stand auf `main@0e376158e1c10dde1842268e01db1df1b35708cf` wurde gegen den Zielpfad geprüft:
+
+- `index.html` führt je Markt statische Anzeigeentfernungen in `marketDetails`. Diese Werte werden für die Reihenfolge der ausgewählten Märkte und die Darstellung verwendet; sie sind keine berechnete Strecke und kein aktueller Fahrkostenwert.
+- `renderMarkets` und `getActiveOffers` begrenzen die ausgewählten Märkte lediglich auf das konfigurierte Stopplimit. Eine echte Wegoptimierung, ein Warenkorbvergleich über mehrere Stopps oder eine Fahrtkostenberechnung sind nicht in die Laufzeit integriert.
+- Die UI weist diesen Umfang ausdrücklich aus: „Routenoptimierung und Fahrtkosten bleiben offen.“ Für Märkte ohne numerische Distanz, etwa den Cloud-Browser-Markt, darf die Anzeige nicht als Routing-Evidenz interpretiert werden.
+- Die deterministische Angebotsauswahl bleibt auf aktuelle, ausgewählte Märkte und die vorhandenen Angebots-/Mengenregeln begrenzt. Fehlende oder nicht belastbare Angebotsdaten werden nicht durch eine berechnete Ersparnis oder Fahrtkosten ersetzt.
+
+Eine produktive Mehrstopp- oder Routenfunktion bleibt bis zur fachlichen Entscheidung über Verkehrsmittel, Strecke, Parken, Fahrtkostenquelle, reguläre Vergleichspreise, Marktzuordnung, Schwellenwert und UI-/Sync-Verhalten ausgeschlossen. Externe Karten-, Geocoding- oder Routingdienste sowie neue Cloudverarbeitung werden dafür nicht automatisch eingeführt.
+
