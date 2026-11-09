@@ -743,3 +743,7 @@ Der nächste Runtime-Schritt bleibt der gebündelt freizugebende lokale Dialog �
 ## UX-Klarstellung 09.11.2026 – statische Marktdistanzen
 
 Die Marktansicht kennzeichnet statische Anzeigeentfernungen ausdrücklich. Nichtnumerische Einträge wie `Cloud-Browser` werden als „keine Routendaten“ dargestellt; daraus werden weder Route noch Fahrtkosten abgeleitet. Der offene Umfang der echten Routenoptimierung bleibt unverändert.
+
+## Sicherheitsgrenze 09.11.2026 – Kaufbuchung bis Freigabe
+
+CI prüft jetzt ausdrücklich, dass App-Runtime und Sync-Adapter keinen `purchaseRecords`-Schreibpfad enthalten. Damit bleibt das Abhaken der Einkaufsliste von tatsächlichen Kassen-/Verbrauchsdaten getrennt, bis der Kaufabschluss-Vertrag freigegeben ist.

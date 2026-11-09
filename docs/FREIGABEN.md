@@ -1066,3 +1066,8 @@ Dieser Audit änderte keine Angebote, Nutzer-/Haushaltsdaten, Supabase-/Schema-D
 - Marktlisten kennzeichnen numerische Entfernungen jetzt ausdrücklich als „statische Anzeigeentfernung“.
 - Nichtnumerische Werte wie `Cloud-Browser` werden als „keine Routendaten“ angezeigt und nicht als Entfernung, Nullwert oder Fahrtkostenbasis dargestellt.
 - Regressionstests prüfen Root-/Dist-Parität und beide Anzeigevarianten. Keine Routen-, Karten-, Angebots-, Nutzer-, Supabase- oder Deploymentänderung.
+
+## CI-Sicherheitsgrenze 09.11.2026 – Kaufbuchung bis Freigabe
+
+- Ein zusätzlicher Regressionstest prüft, dass weder die App-Runtime noch der Sync-Adapter vor der gebündelten Produktfreigabe einen `purchaseRecords`-Schreibpfad enthält.
+- Die Prüfung verändert keine Runtime und führt keine Datenfelder ein; sie schützt nur die bestehende Grenze zwischen Listenstatus und tatsächlicher Kauf-/Verbrauchsbuchung.

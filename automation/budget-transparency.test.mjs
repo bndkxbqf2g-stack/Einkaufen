@@ -3,11 +3,12 @@ import { readFile } from 'node:fs/promises';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 
-const [modelSource, publishedModelSource, source, published] = await Promise.all([
+const [modelSource, publishedModelSource, source, published, syncSource] = await Promise.all([
   readFile(new URL('../budget-transparency.js', import.meta.url), 'utf8'),
   readFile(new URL('../dist/budget-transparency.js', import.meta.url), 'utf8'),
   readFile(new URL('../index.html', import.meta.url), 'utf8'),
   readFile(new URL('../dist/index.html', import.meta.url), 'utf8'),
+  readFile(new URL('../supabase-sync.js', import.meta.url), 'utf8'),
 ]);
 const browserGlobal = {};
 runInNewContext(modelSource, browserGlobal);
@@ -141,6 +142,13 @@ test('hält Budgetmodell und veröffentlichte App synchron', () => {
 test('führt keine purchaseRecords- oder Cloud-Schreiblogik für die Anzeige ein', () => {
   assert.ok(rendererStart >= 0 && rendererEnd > rendererStart, 'Budgetrenderer muss vorhanden sein');
   assert.doesNotMatch(renderer, /purchaseRecords|supabase|cloud/i);
+});
+
+test('hält purchaseRecords-Schreibpfade bis zur Freigabe außerhalb der Runtime', () => {
+  assert.doesNotMatch(source, /purchaseRecords\s*:/i);
+  assert.doesNotMatch(source, /localStorage\.setItem\([^)]*purchaseRecords/i);
+  assert.doesNotMatch(syncSource, /purchaseRecords\s*:/i);
+  assert.doesNotMatch(syncSource, /localStorage\.setItem\([^)]*purchaseRecords/i);
 });
 
 console.log('Budget transparency checks passed');
