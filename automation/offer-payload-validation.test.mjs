@@ -89,7 +89,7 @@ test('rejects snapshots and offers that expired before their recorded fetch time
 
   const offerExpiredBeforeFetch = {
     ...valid,
-    fetchedAt: '2026-11-07T10:00:00.000Z',
+    fetchedAt: '2026-11-13T10:00:00.000Z',
     validUntil: '15.11.2026',
     offers: [{ name: 'Kartoffeln', price: '1,99 €', validUntil: '12.11.2026' }],
   };
