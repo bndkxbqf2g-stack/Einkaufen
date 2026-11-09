@@ -237,6 +237,9 @@
     .shopping-item-side { min-width: 92px; text-align: right; }
     .shopping-item-price { display: block; color: var(--ink); font-size: 12px; font-weight: 850; }
     .shopping-item-pack { display: block; margin-top: 3px; color: var(--ink-soft); font-size: 10px; }
+    .shopping-item-evidence, .shopping-item-saving-note { display: block; margin-top: 3px; color: var(--ink-soft); font-size: 9px; line-height: 1.35; }
+    .shopping-item-evidence { color: var(--green-2); }
+    .shopping-item-saving-note { color: #916f13; }
     .shopping-item-missing { display: inline-flex; padding: 5px 7px; border-radius: 6px; color: #916f13; background: #fff0bc; font-size: 10px; font-weight: 800; }
     .shopping-item-remove { margin-top: 6px; padding: 4px 6px; border: 0; color: #a05540; background: transparent; font-size: 9px; font-weight: 800; }
     .favorite-card { display: flex; flex-direction: column; justify-content: space-between; min-height: 170px; padding: 15px; border: 1px solid var(--line); border-radius: 15px; background: #fffefa; }
@@ -1461,6 +1464,24 @@
       return `<div class="shopping-group-title"><span>${escapeHtml(marketName)}</span><span class="shopping-group-progress">${escapeHtml(itemNote)}</span><span class="shopping-group-title-actions">${groupAction}</span></div>`;
     }
 
+    function decorateShoppingItemEvidence(items) {
+      const inputs = new Map([...document.querySelectorAll('[data-shopping-check]')].map(input => [input.dataset.shoppingCheck, input]));
+      items.filter(item => item.offer).forEach(item => {
+        const row = inputs.get(item.id)?.closest('.shopping-item');
+        const side = row?.querySelector('.shopping-item-side');
+        if (!side) return;
+        const pack = side.querySelector('.shopping-item-pack');
+        if (pack) pack.textContent = item.packCount > 1 ? `${item.packCount} Packungen · ${item.offer.packSize || 'Packungsgröße'}` : `${item.offer.packSize || '1 Packung'}`;
+        const evidence = document.createElement('span');
+        evidence.className = 'shopping-item-evidence';
+        evidence.textContent = shoppingOfferEvidenceLabel(item.offer);
+        const saving = document.createElement('span');
+        saving.className = 'shopping-item-saving-note';
+        saving.textContent = shoppingOfferSavingLabel(item.offer);
+        side.append(evidence, saving);
+      });
+    }
+
     function renderShoppingList() {
       const plannedDinners = typeof getPlannedDinnerMeals === 'function' ? getPlannedDinnerMeals() : [];
       const pantryCoverage = window.AngebotskuecheCostModel.summarizePantryCoverage(
@@ -1505,6 +1526,7 @@
         if (second[0] === 'Ergänzen') return -1;
         return (marketOrder.indexOf(first[0]) === -1 ? 99 : marketOrder.indexOf(first[0])) - (marketOrder.indexOf(second[0]) === -1 ? 99 : marketOrder.indexOf(second[0]));
       });
+      queueMicrotask(() => decorateShoppingItemEvidence(items));
        $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group">${renderShoppingGroupHeader(group, groupItems)}<div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const useLabel = item.manual && item.packCount > 1 ? `${item.packCount} Packungen · zusätzlich ergänzt` : item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; const packLabel = item.offer ? (item.packCount > 1 ? `${item.packCount} Packungen · ${item.offer.packSize || 'Packungsgröße'}` : `${item.offer.packSize || '1 Packung'} · ${item.offer.saving || 'Angebot'}`) : ''; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.packCount > 1 ? `${item.packCount} × ${item.offer.price}` : item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(packLabel)}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
     }
 
@@ -1928,6 +1950,32 @@
       if (summary.knownOfferCount) details.push(`Bekannte Angebotssumme ${formatEuro(summary.knownOfferTotal)}`);
       if (summary.unknownPriceCount) details.push(`${summary.unknownPriceCount} Preis${summary.unknownPriceCount === 1 ? '' : 'e'} unbekannt`);
       return details.join(' · ');
+    }
+
+    function offerEvidenceStatus(offer, status = liveOfferStatus[offer?.store]) {
+      const end = offerEndDate(String(offer?.validUntil || '').trim());
+      const manual = isManualOffer(offer) || isDemoOffer(offer);
+      const sourceKnown = !manual && isAutomaticLiveOffer(offer) && Boolean(status?.sourceUrl) && !status?.error;
+      const validityKnown = Boolean(end && status?.validUntil);
+      return { end, manual, sourceKnown, validityKnown, cacheFallback: Boolean(status?.error) };
+    }
+
+    function shoppingOfferEvidenceLabel(offer, status = liveOfferStatus[offer?.store]) {
+      const evidence = offerEvidenceStatus(offer, status);
+      if (evidence.manual) return 'Quelle nicht verifiziert · manueller Import';
+      if (!evidence.end) return 'Quelle/Gültigkeit nicht belegt';
+      if (evidence.end < new Date()) return `Nicht verifiziert · abgelaufen am ${offer.validUntil}`;
+      if (evidence.cacheFallback) return `Nicht verifiziert · letzte Prüfung fehlgeschlagen · gültig bis ${offer.validUntil}`;
+      if (!evidence.sourceKnown) return `Quelle nicht belegt · gültig bis ${offer.validUntil}`;
+      if (!evidence.validityKnown) return `Quelle bekannt · Gültigkeit nicht belegt · ${offer.validUntil}`;
+      return `Quelle bekannt · gültig bis ${offer.validUntil}`;
+    }
+
+    function shoppingOfferSavingLabel(offer, status = liveOfferStatus[offer?.store]) {
+      const evidence = offerEvidenceStatus(offer, status);
+      const saving = String(offer?.saving || '').trim();
+      if (!saving || saving === '–' || evidence.manual || evidence.cacheFallback || !evidence.sourceKnown || !evidence.validityKnown || !evidence.end || evidence.end < new Date()) return 'Vergleichspreis nicht belegt';
+      return `Quellenhinweis des Angebots: ${saving} · nicht berechnet`;
     }
 
     function formatEuro(value) {

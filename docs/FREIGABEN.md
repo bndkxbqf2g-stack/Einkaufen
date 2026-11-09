@@ -904,3 +904,7 @@ Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvolls
 
 - Marktgruppen zeigen nun `erledigt/gesamt` und können gesammelt abgehakt oder wieder geöffnet werden. Die bestehende lokale Checklistenpersistenz bleibt der einzige Zustand.
 - Regression, Vollsuite, Worker-Build und Validator liefen grün. Es gibt keine neue fachliche Freigabe; Marktvergleich, Fahrtkosten, Belegerfassung und Vorratsmengen bleiben unverändert freigabepflichtig.
+## Fortschritt 09.11.2026 – Evidenzstatus am Einkaufsartikel
+
+- Quelle und Gültigkeit werden am Einkaufsartikel konservativ ausgewiesen. `saving` bleibt ein Quellenhinweis; reguläre Vergleichspreise und echte Ersparnisse werden nicht berechnet.
+- Regressionen für bekannte/unbekannte Quelle, fehlenden/vorhandenen Hinweis, manuellen Import, abgelaufene Angebote und Cache-Fallback sind grün. Keine neue Freigabe erforderlich; Vergleichspreise, IST-/Belegerfassung und Quellen-/Routenlogik bleiben Freigabepunkte.
