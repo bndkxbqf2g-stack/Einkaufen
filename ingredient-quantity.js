@@ -7,10 +7,19 @@
     count: Object.freeze({ baseUnit: 'piece', aliases: /^(?:stück|stueck|stk\.?|st\.?|pcs?\.?|piece|pieces)$/i, factors: Object.freeze({ stück: 1, stueck: 1, stk: 1, st: 1, pc: 1, pcs: 1, piece: 1, pieces: 1 }) }),
   });
 
+  const QUANTITY_NUMBER_PATTERN = '(?:\\d{1,3}(?:\\.\\d{3})+(?:,\\d+)?|\\d+(?:[.,]\\d+)?)';
+
   function parsePositiveNumber(value) {
     const text = String(value ?? '').trim().replace(/\s+/g, '');
-    if (!/^\d+(?:[.,]\d+)?$/.test(text)) return null;
-    const number = Number(text.replace(',', '.'));
+    const normalized = /^\d{1,3}(?:\.\d{3})+(?:,\d+)?$/.test(text)
+      ? text.replace(/\./g, '').replace(',', '.')
+      : /^\d+(?:,\d+)?$/.test(text)
+        ? text.replace(',', '.')
+        : /^\d+\.\d+$/.test(text)
+          ? text
+          : null;
+    if (normalized === null) return null;
+    const number = Number(normalized);
     return Number.isFinite(number) && number > 0 ? number : null;
   }
 
@@ -39,7 +48,7 @@
   function parseRecipeIngredient(raw) {
     const fallback = emptyIngredient(raw);
     if (!fallback.name) return fallback;
-    const match = fallback.name.match(/^(\d+(?:[.,]\d+)?)\s*(?:(?:x|×)\s*(\d+(?:[.,]\d+)?)\s*)?([a-zäöüß.]+)\s+(.+)$/i);
+    const match = fallback.name.match(new RegExp(`^(${QUANTITY_NUMBER_PATTERN})\\s*(?:(?:x|×)\\s*(${QUANTITY_NUMBER_PATTERN})\\s*)?([a-zäöüß.]+)\\s+(.+)$`, 'i'));
     if (!match) return fallback;
     const multiplier = match[2] ? parsePositiveNumber(match[1]) : 1;
     const parsed = parsedAmount(match[2] || match[1], match[3], multiplier);
@@ -50,12 +59,12 @@
 
   function parseOfferPackSize(value) {
     const text = String(value || '').trim();
-    const countPack = text.match(/^(\d+(?:[.,]\d+)?)\s*[- ]?er\s*(?:pack(?:ung)?|beutel|dose|schale)?$/i);
+    const countPack = text.match(new RegExp(`^(${QUANTITY_NUMBER_PATTERN})\\s*[- ]?er\\s*(?:pack(?:ung)?|beutel|dose|schale)?$`, 'i'));
     if (countPack) {
       const amount = parsePositiveNumber(countPack[1]);
       return amount ? { family: 'count', unit: 'piece', amount } : null;
     }
-    const match = text.match(/^(\d+(?:[.,]\d+)?)\s*([a-zäöüß.]+)\b/i);
+    const match = text.match(new RegExp(`^(${QUANTITY_NUMBER_PATTERN})\\s*([a-zäöüß.]+)\\b`, 'i'));
     if (!match) return null;
     return parsedAmount(match[1], match[2]);
   }

@@ -82,6 +82,10 @@ test('parst nur eindeutige Mengen und normiert unterstützte Angebots-Packungen'
   assert.equal(quantityModel.parseRecipeIngredient('1,5 l Milch').amount, 1500);
   assert.equal(quantityModel.parseRecipeIngredient('2 Stück Eier').amount, 2);
   assert.equal(quantityModel.parseRecipeIngredient('2 x 200 g Fisch').amount, 400);
+  assert.equal(quantityModel.parseRecipeIngredient('1.000 g Mehl').amount, 1000);
+  assert.equal(quantityModel.parseRecipeIngredient('1.234,56 g Mehl').amount, 1234.56);
+  assert.equal(quantityModel.parseOfferPackSize('1.000 g').amount, 1000);
+  assert.equal(quantityModel.parseOfferPackSize('1.234,56 g').amount, 1234.56);
   assert.equal(quantityModel.parseRecipeIngredient('1 Bund Petersilie').explicit, false);
   assert.equal(quantityModel.parseRecipeIngredient('2 EL Öl').explicit, false);
   assert.equal(quantityModel.parseRecipeIngredient('Hackfleisch').explicit, false);
