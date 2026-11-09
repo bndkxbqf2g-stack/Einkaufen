@@ -104,6 +104,23 @@ test('berechnet Packungen für 2, 3 und 4 Personen deterministisch', () => {
   );
 });
 
+test('rundet Packungen an exakten und knappen Grenzwerten ohne Unterdeckung', () => {
+  const basisFor = (amount, unit) => {
+    const ingredient = quantityModel.parseRecipeIngredient(`${amount} ${unit} Testzutat`);
+    return quantityModel.addRecipeQuantity(quantityModel.createQuantityBasis(), ingredient, 1);
+  };
+  const packCount = (amount, unit, packSize) => quantityModel.calculateExactPackCount({
+    quantityBasis: basisFor(amount, unit),
+    offer: { packSize },
+  });
+
+  assert.equal(packCount(1000, 'g', '500 g'), 2, 'exakte Massengrenze');
+  assert.equal(packCount(1000.0000001, 'g', '500 g'), 3, 'echter minimaler Überbedarf darf nicht unterschlagen werden');
+  assert.equal(packCount(0.035, 'g', '0.005 g'), 7, 'exaktes Dezimalverhältnis bleibt trotz Binärdarstellung bei 7');
+  assert.equal(packCount(10, 'Stück', '3 Stück'), 4, 'Stückmengen werden separat und deterministisch gerundet');
+  assert.equal(packCount(1000, 'g', '1 l'), null, 'inkompatible Einheiten werden nicht zusammengeführt');
+});
+
 test('summiert mehrere Gerichte und speist die bestehende Kostenermittlung', async () => {
   const offers = [
     { name: 'Hackfleisch', packSize: '500 g', price: '2,00 €' },
