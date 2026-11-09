@@ -105,5 +105,5 @@ test('rejects source timestamps in the future', () => {
     offers: [{ name: 'Kartoffeln', price: '1,99 €', validUntil: '15.11.2026' }],
   };
 
-  assert.match(validateOfferPayload(future, 'Lidl', now), /Zukunft/);
+  assert.match(validateOfferPayload(future, 'Lidl', now), /Abrufzeitpunkt in der Zukunft/);
 });
