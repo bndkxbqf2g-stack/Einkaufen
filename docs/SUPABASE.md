@@ -108,3 +108,14 @@ Tabellen; das ist erwartbar, bis die App die Haushaltsabfragen ausführt.
 - Offen bleiben Einladungen, Offline-Queue/Konflikt-UX über mehrere Geräte und
   der End-to-End-Test mit einem vom Nutzer angelegten Konto. Es wurden keine
   App-Daten migriert.
+
+## Release-Gates aus dem Sicherheits-Audit – 09.11.2026
+
+Diese Dokumentation hält offene Verifikationsgrenzen fest. Es wurden keine SQL-, Runtime-, Supabase-, Secret-, Daten- oder Deploymentänderungen vorgenommen.
+
+- **Separater D1-Worker:** `worker/index.js` vertraut beim D1-Sync auf `oai-authenticated-user-id`. Das Repository beweist weder die kryptografische Authentizität dieses Headers noch die Durchsetzung durch das vorgelagerte Hosting-Gateway. Vor produktiver D1-Nutzung ist dieser externe Auth-/Hosting-Pfad unabhängig zu verifizieren; andernfalls bleibt der Pfad deaktiviert.
+- **`manualDinnerPlan`:** Client und Worker verlangen ein Objekt, die SQL-RPC-Keyliste deckt das Feld jedoch nicht ab. Eine Behebung erfordert eine ausdrücklich freigegebene SQL-Migration, einen Paritätstest über Client, Worker und SQL sowie eine erneute Vertragsprüfung. Bis dahin wird keine Seite gelockert und kein Feld eigenmächtig entfernt.
+- **Remote Auth/RLS/E2E:** Site-/Redirect-Allowlist, E-Mail-Bestätigung, JWT-/Refresh-Verhalten, Rate-Limits und die reale RLS-Wirkung sind außerhalb des Repositorys nicht unabhängig verifiziert. Ein produktiver Auth-/Haushaltssync-Nachweis benötigt einen separaten Live-E2E-Test mit Testkonto und Projektprüfung.
+- **jsDelivr:** Die optionale CDN-Einbindung ist nicht mit SRI abgesichert. Self-Hosting oder eine geprüfte Integritätsbindung bleibt ein optionales Supply-Chain-Hardening und ist nicht Teil dieses Dokumentations-PRs.
+
+Diese Gates sind keine Freigabe und keine technische Behebung. Zugangsdaten, Tokens und private Projektwerte werden nicht in den Chat übernommen.
