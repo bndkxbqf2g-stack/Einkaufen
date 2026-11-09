@@ -548,6 +548,7 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Die geteilte offene Einkaufsliste übernimmt nun denselben Quellen-, Gültigkeits- und Vergleichspreisstatus wie die lokale Artikelansicht.
 - `saving` bleibt ein quellenbereitgestellter Hinweis; fehlende, manuelle, abgelaufene oder nicht bestätigte Werte werden auch im geteilten Text nicht als Ersparnis dargestellt.
 - Es wurden keine neuen Speicher-, Sync- oder Angebotsdaten eingeführt. Root, `dist` und Server-Artefakt bleiben synchron.
+
 ## Fortschritt 09.11.2026 – zugängliche Einkaufslisten-Fortschrittsanzeigen
 
 - PR #254 ergänzt zugängliche Namen für die bereits vorhandenen dynamischen Marktgruppen der Einkaufsliste.
