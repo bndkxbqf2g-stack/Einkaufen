@@ -62,7 +62,8 @@ export function validateOfferSnapshot(snapshot, { now = new Date() } = {}) {
     throw new Error('Angebotssnapshot muss ein Objekt sein.');
   }
 
-  const currentDate = currentDateOrdinal(now);
+  const currentMoment = now instanceof Date ? new Date(now.getTime()) : new Date(now);
+  const currentDate = currentDateOrdinal(currentMoment);
   if (currentDate === null) {
     throw new Error('Angebotssnapshot: "now" muss ein gültiger Zeitpunkt sein.');
   }
@@ -83,6 +84,10 @@ export function validateOfferSnapshot(snapshot, { now = new Date() } = {}) {
   const fetchedAtDate = fetchedAtDateOrdinal(snapshot.fetchedAt);
   if (fetchedAtDate === null) {
     throw new Error('Angebotssnapshot: "fetchedAt" muss ein gültiger ISO-8601-UTC-Zeitpunkt sein.');
+  }
+  const fetchedAt = new Date(snapshot.fetchedAt);
+  if (fetchedAt.getTime() > currentMoment.getTime()) {
+    throw new Error('Angebotssnapshot: "fetchedAt" liegt in der Zukunft.');
   }
   const snapshotEndDate = dateOrdinal(snapshot.validUntil);
   if (snapshotEndDate < fetchedAtDate) {
