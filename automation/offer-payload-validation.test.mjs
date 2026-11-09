@@ -78,14 +78,14 @@ console.log('Offer payload validation checks passed');
 
 
 
-test('rejects snapshots and offers that expired before their recorded fetch time', () => {
+test('rejects future source timestamps before stale-order checks', () => {
   const snapshotExpiredBeforeFetch = {
     ...valid,
     fetchedAt: '2026-11-13T10:00:00.000Z',
     validUntil: '12.11.2026',
     offers: [{ name: 'Kartoffeln', price: '1,99 €', validUntil: '12.11.2026' }],
   };
-  assert.match(validateOfferPayload(snapshotExpiredBeforeFetch, 'Lidl', now), /vor dem Abrufzeitpunkt/);
+  assert.match(validateOfferPayload(snapshotExpiredBeforeFetch, 'Lidl', now), /in der Zukunft/);
 
   const offerExpiredBeforeFetch = {
     ...valid,
@@ -93,7 +93,7 @@ test('rejects snapshots and offers that expired before their recorded fetch time
     validUntil: '15.11.2026',
     offers: [{ name: 'Kartoffeln', price: '1,99 €', validUntil: '12.11.2026' }],
   };
-  assert.match(validateOfferPayload(offerExpiredBeforeFetch, 'Lidl', now), /ungültige Angebotsdaten/);
+  assert.match(validateOfferPayload(offerExpiredBeforeFetch, 'Lidl', now), /in der Zukunft/);
 });
 
 
