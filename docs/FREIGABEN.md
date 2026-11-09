@@ -950,3 +950,14 @@ Vor einer Runtime-, LocalStorage-, Backup- oder Sync-Erweiterung ist als Konkret
 - danach separat ein bestätigtes Verbrauchsmodell, das nur positive, kompatible Mengen in g/kg, ml/l oder Stück verrechnet und unbekannte oder inkompatible Mengen unverändert lässt.
 
 Dieser Audit- und Dokumentationsstand ändert keine Runtime, UI, Speicherstruktur, Supabase-/Schema-/Auth-Verträge, Nutzerdaten oder Deployments.
+
+## Release-Gates aus dem Supabase-/CI-Sicherheitsaudit – 09.11.2026
+
+Die folgenden Punkte sind belegte Verifikations- oder Freigabegrenzen. Dieser Abschnitt dokumentiert sie nur; er ändert keine Runtime, SQL-Migration, Supabase-Konfiguration, Secrets, Daten oder Deployments.
+
+1. **Separater D1-Worker:** Der D1-Pfad vertraut auf den Header `oai-authenticated-user-id`. Eine kryptografische Authentizitätsprüfung dieses Headers beziehungsweise die verbindliche Durchsetzung durch ein Hosting-Gateway ist außerhalb des Repositorys nicht beweisbar. Vor produktiver D1-Nutzung muss der vorgelagerte Auth-/Hosting-Pfad unabhängig verifiziert werden; andernfalls bleibt der D1-Pfad deaktiviert.
+2. **`manualDinnerPlan` und SQL-Vertrag:** Client und Worker validieren `manualDinnerPlan` als Objekt, während die SQL-RPC-Keyliste dieses Feld derzeit nicht abdeckt. Eine Angleichung darf erst nach einer ausdrücklich freigegebenen SQL-Migration, einem Client-/Worker-/SQL-Paritätstest und erneuter Vertragsprüfung erfolgen.
+3. **Remote Auth und Live-RLS:** Auth-Site-/Redirect-Allowlist, E-Mail-Bestätigung, JWT-/Refresh-Verhalten, Rate-Limits sowie die tatsächliche RLS-/E2E-Wirkung im laufenden Supabase-Projekt sind aus dem Repository nicht unabhängig verifiziert. Vor einer produktiven Auth-/Haushaltssync-Freigabe ist ein separater Live-Test mit Testkonto und sicheren Projektprüfungen erforderlich; Zugangsdaten oder Tokens gehören nicht in den Chat.
+4. **jsDelivr-Supply-Chain-Härtung:** Die aktuelle CDN-Einbindung verwendet kein SRI. Self-Hosting oder eine geprüfte Integritätsbindung bleibt optionales Supply-Chain-Hardening und wird ohne gesonderte Abwägung nicht automatisch eingeführt.
+
+Bis diese Punkte separat verifiziert beziehungsweise freigegeben sind, werden weder der D1-Identitätsweg, der SQL-Vertrag, die Remote-Auth/RLS-Annahmen noch die CDN-Härtung eigenmächtig erweitert.
