@@ -442,6 +442,12 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 - Der lokale Regressionstest deckt nun auch die vorhandene Fehlerklassifikation für Revisionskonflikte (`40001`), fehlende Haushaltsrechte (`42501`), generische Fehlermeldungen und die 240-Zeichen-Grenze ab.
 - Der Audit fand keinen reproduzierbaren Laufzeitfehler. Es wurden ausschließlich Tests und diese Dokumentation ergänzt; Supabase-Aufrufe, Auth-/Sync-Code, Storage, UI, Daten, Schema, Migrationen und Deployments blieben unverändert.
 
+## Fortschritt 09.11.2026 – defensive Remote-Revisionsgrenze
+
+- `readHouseholdState()` normalisiert Remote-Revisionen jetzt gemeinsam mit dem lokalen Revisionsleser und dem bestätigten Save-Ergebnis als kanonische, nichtnegative sichere Ganzzahl. Dezimalwerte, negative Werte, führende Nullen, fehlende/null-Werte und Werte außerhalb der JavaScript-Sicherheitsgrenze werden abgewiesen.
+- `load()` übernimmt bei einer ungültigen Remote-Revision weder Payload noch Haushaltsbindung oder Revisionsmarker; der bestehende Fehler-/Offline-Pfad bleibt zuständig. Gültige numerische und String-Revisionen werden unverändert als kanonische Strings für den bestehenden CAS-Vertrag verwendet.
+- Root und `dist` bleiben synchron. Es wurden keine Supabase-Aufrufe, SQL-/Schema-/RLS-/Auth-Konfigurationen, Migrationen, neuen Speicherstrukturen oder Produktionsdaten geändert.
+
 ## Audit 08.11.2026 – Wochenplan bis bekannte Angebotssumme
 
 - Der durchgängige lokale Pfad wurde mit Mittagessen, optionalem Abendessen an einem späteren Planungstag, unterschiedlichen Tagespersonenzahlen und Vorratsabgleich geprüft. `getShoppingItems()` liest die aktuellen Planabschnitte gemeinsam ein; die Einkaufspositionen führen Zutaten, Tagesportionen, Mengenbasis, Packungszahl und den jeweils ersten passenden Angebotsanker zusammen.

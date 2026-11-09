@@ -229,12 +229,23 @@
     return household;
   }
 
+  function normalizeRevision(value) {
+    if (typeof value === 'number') {
+      if (!Number.isSafeInteger(value) || value < 0) return null;
+      value = String(value);
+    }
+    if (typeof value !== 'string' || !/^(0|[1-9]\d*)$/.test(value)) return null;
+    return Number.isSafeInteger(Number(value)) ? value : null;
+  }
+
   async function readHouseholdState(activeClient, householdId) {
     const { data, error } = await activeClient.rpc('get_household_state', { p_household_id: householdId });
     if (error) throw error;
     const row = Array.isArray(data) ? data[0] : data;
     if (!row) return null;
-    return { payload: row.payload, revision: String(row.revision), updatedAt: row.updated_at };
+    const revision = normalizeRevision(row.revision);
+    if (revision === null) throw new Error('Der Cloud-Stand enthält keinen gültigen Revisionsstand.');
+    return { payload: row.payload, revision, updatedAt: row.updated_at };
   }
 
   function revisionKey(householdId) {
@@ -242,8 +253,7 @@
   }
 
   function savedRevision(householdId) {
-    const value = safeGet(revisionKey(householdId));
-    return value !== null && /^\d+$/.test(value) ? value : null;
+    return normalizeRevision(safeGet(revisionKey(householdId)));
   }
 
   async function load() {
@@ -310,9 +320,10 @@
     });
     if (error) throw error;
     const saved = Array.isArray(data) ? data[0] : data;
-    if (!saved?.revision) throw new Error('Supabase hat keinen bestätigten Revisionsstand zurückgegeben.');
+    const savedRevisionValue = normalizeRevision(saved?.revision);
+    if (savedRevisionValue === null) throw new Error('Supabase hat keinen bestätigten Revisionsstand zurückgegeben.');
 
-    safeSet(revisionKey(householdId), String(saved.revision));
+    safeSet(revisionKey(householdId), savedRevisionValue);
     safeSet(LOCAL_DATA_HOUSEHOLD_KEY, householdId);
     const stamp = saved.updated_at ? new Date(saved.updated_at).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : 'jetzt';
     setStatus(`Haushalt „${household.name}“ gespeichert · ${stamp}.`);
