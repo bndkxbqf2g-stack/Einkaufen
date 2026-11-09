@@ -2681,6 +2681,15 @@
 
     function showToast(message) { const toast = $('#toast'); toast.textContent = message; toast.classList.add('show'); clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => toast.classList.remove('show'), 3000); }
 
+    function dismissOpenModalOnEscape(event) {
+      if (event.key !== 'Escape') return;
+      const modal = document.querySelector('.modal-backdrop.open');
+      if (!modal) return;
+      event.preventDefault();
+      modal.querySelector('.close')?.click();
+    }
+    document.addEventListener('keydown', dismissOpenModalOnEscape);
+
     function initializeSupabaseSync() {
       return window.angebotskuecheSupabaseSync?.initialize({
         buildPayload: buildUserDataPayload,
