@@ -151,6 +151,14 @@ test('hält purchaseRecords-Schreibpfade bis zur Freigabe außerhalb der Runtime
   assert.doesNotMatch(syncSource, /localStorage\.setItem\([^)]*purchaseRecords/i);
 });
 
+
+
+test('hält Einkaufslistenhaken vom Vorrats- und Kaufverbrauch getrennt', () => {
+  const checkboxHandler = source.split(/\r?\n/).find(line => line.includes("$('#shoppingList').addEventListener('change'"));
+  assert.ok(checkboxHandler, 'shopping checkbox handler must remain present');
+  assert.match(checkboxHandler, /shoppingChecks/);
+  assert.doesNotMatch(checkboxHandler, /pantry|purchaseRecords/i);
+});
 console.log('Budget transparency checks passed');
 
 
