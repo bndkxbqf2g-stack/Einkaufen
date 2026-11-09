@@ -932,3 +932,21 @@ Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvolls
 - Beide PRs enthalten ausschließlich Accessibility-/Regressionstest- und synchronisierte Artefaktänderungen. Keine neue Fachlogik, keine Daten-, Sync-, Supabase-, Auth- oder Cloudänderung und keine Preis-/Angebotsänderung.
 - Dafür ist keine neue fachliche Freigabe erforderlich. Die bisher gebündelten Freigabepunkte bleiben unverändert, insbesondere Vorrats-/Mengenverbrauch, echte IST-/Belegerfassung, Vergleichspreise/Ersparnis, Fahrtkosten/Mehrstopp-Routing, Offline-Konfliktstrategie und weitergehende Supabase-/Auth-Verträge.
 
+## Audit 09.11.2026 – tatsächlicher Einkauf und Vorratsverbrauch
+
+Der read-only Audit gegen `main@f13c3ea9c93fef5844ec63e4b96980365ddad9f2` bestätigt den aktuellen sicheren Umfang:
+
+- `shoppingChecks` sind ausschließlich Listenfortschritt beziehungsweise Markt-/Artikel-Haken. Sie sind keine Kauf-, Kassen- oder Belegbuchung; `purchaseRecords` existieren derzeit nur als deterministischer Automations-/Testkern, nicht in UI, LocalStorage, Backup, Haushaltssync oder Supabase.
+- Die Planung liest Vorräte ausschließlich. Die mengenbasierte Coverage verändert weder Vorrat noch `pantryQuantities`; vollständig, teilweise, unbekannt und inkompatibel werden nur für die abgeleitete Einkaufsliste ausgewertet. Frühstück bleibt außerhalb; der bestätigte Umfang ist Mittagessen plus optionales Abendessen.
+- Direkte Vorratsbearbeitung (Hinzufügen, Menge speichern, Entfernen) ist eine unmittelbare lokale Nutzeraktion ohne zusätzlichen Confirm-Dialog. Ein lokaler Backup-Import wendet den validierten Stand nach Dateiauswahl direkt an; Cloud-Laden verlangt bereits eine Bestätigung. Diese bestehenden Bestätigungsrisiken werden hier nur dokumentiert und nicht verändert.
+- Es gibt aktuell keine automatische Verbrauchsbuchung, keine Beleg-/OCR-Erfassung und keine automatische Übernahme von Angebots- oder Planwerten als tatsächliche Ausgabe. Unklare oder inkompatible Mengen in g/kg, ml/l und Stück werden nicht automatisch verrechnet.
+
+### Gebündelte spätere Freigabe
+
+Vor einer Runtime-, LocalStorage-, Backup- oder Sync-Erweiterung ist als Konkretisierung von Freigabepunkt 9 zu entscheiden beziehungsweise freizugeben:
+
+- ein lokaler, expliziter Dialog „Einkauf abschließen“ mit manueller IST-Summe, Kaufdatum und optionalem Markt;
+- zunächst ausschließlich lokale Speicherung, ohne Pantry-Verbrauch, Cloud-/Backup-Erweiterung, OCR oder automatische Preisübernahme;
+- danach separat ein bestätigtes Verbrauchsmodell, das nur positive, kompatible Mengen in g/kg, ml/l oder Stück verrechnet und unbekannte oder inkompatible Mengen unverändert lässt.
+
+Dieser Audit- und Dokumentationsstand ändert keine Runtime, UI, Speicherstruktur, Supabase-/Schema-/Auth-Verträge, Nutzerdaten oder Deployments.
