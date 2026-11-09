@@ -1086,3 +1086,8 @@ Der Audit fand eine echte Drift: `parseKnownPackageSize` kann `cl`/`dl` bereits 
 ## Fortschritt 09.11.2026 – Regression für atomaren Cloud-Load
 
 Der read-only Sync-Härtungsblock ergänzt einen Test für den bislang nur indirekt abgesicherten Fehlerpfad beim Anwenden eines bestätigten Cloud-Stands. Erst nach erfolgreichem `applyPayload()` dürfen Haushaltsbindung und Revision geschrieben werden; bei einem lokalen Fehler bleibt der lokale Zustand unverändert. Es wurden keine Runtime-, Supabase-, SQL-, Daten- oder Deploymentverträge geändert.
+
+
+## Fortschritt 09.11.2026 – bekannte Packungspreise bleiben eindeutig
+
+Der Preisparser-Audit bestätigte die bestehende Regel: Nur ein eindeutiger positiver Euro-Packungspreis darf in bekannte Angebotsbeträge eingehen; Grundpreise, negative oder mehrdeutige Tokens bleiben unbekannt. Die Regressionen sichern diesen Vertrag für Root und `dist`; keine Runtime- oder Datenänderung.
