@@ -1420,7 +1420,7 @@
     }
 
     function getShoppingCostSummary(items = getShoppingItems()) {
-      return window.AngebotskuecheCostModel.summarizeShoppingCosts(items, parseKnownMoney);
+      return window.AngebotskuecheCostModel.summarizeShoppingCosts(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer));
     }
 
     function renderBudgetTransparency(costSummary, prefix = 'budget') {
@@ -1962,7 +1962,7 @@
     }
 
     function calculateOfferAmount(items) {
-      return window.AngebotskuecheCostModel.calculateOfferAmount(items, parseKnownMoney);
+      return window.AngebotskuecheCostModel.calculateOfferAmount(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer));
     }
 
     function shoppingShareAmountLabel(item) {
@@ -1998,6 +1998,13 @@
       return { end, manual, sourceKnown, validityKnown, cacheFallback: Boolean(status?.error) };
     }
 
+    function isShoppingOfferCostUsable(offer, status = liveOfferStatus[offer?.store]) {
+      const evidence = offerEvidenceStatus(offer, status);
+      const confidence = String(offer?.confidence || '').trim().toLowerCase();
+      const confidenceKnown = confidence === 'hoch' || confidence === 'high';
+      return Boolean(evidence.end && evidence.end >= new Date() && evidence.sourceKnown && evidence.validityKnown && !evidence.cacheFallback && !evidence.manual && confidenceKnown);
+    }
+
     function shoppingOfferEvidenceLabel(offer, status = liveOfferStatus[offer?.store]) {
       const evidence = offerEvidenceStatus(offer, status);
       if (evidence.manual) return 'Quelle nicht verifiziert · manueller Import';
@@ -2026,10 +2033,8 @@
     function estimateMealCost(recipe) {
       const match = getRecipeMatchDetails(recipe);
       if (match.matchedOffers.length < 2) return '';
-      const offerPrices = match.matchedOffers.map(offer => parseKnownMoney(offer.price));
-      if (offerPrices.some(price => price === null)) return '';
-      const offerTotal = offerPrices.reduce((sum, price) => sum + price, 0);
-      return formatEuro(offerTotal);
+      if (match.estimatedCost === 'Preis unbekannt') return '';
+      return match.estimatedCost;
     }
 
     function favoriteAsCandidate(item, index) {
@@ -2487,10 +2492,8 @@
 
     function estimateMatchCost(matchedOffers) {
       if (!matchedOffers.length) return 'Preis unbekannt';
-      const prices = matchedOffers.map(offer => parseKnownMoney(offer.price));
-      if (prices.some(price => price === null)) return 'Preis unbekannt';
-      const total = prices.reduce((sum, price) => sum + price, 0);
-      return formatEuro(total);
+      const summary = calculateOfferAmount(matchedOffers.map(offer => ({ packCount: 1, offer })));
+      return summary.unknownPriceCount ? 'Preis unbekannt' : formatEuro(summary.knownOfferTotal);
     }
 
     function recipeHasRecentOverlap(recipe) {

@@ -11,7 +11,7 @@ const estimate = source.slice(estimateStart, estimateEnd);
 test('does not fall back to a static recipe cost without verified offers', () => {
   assert.ok(estimateStart >= 0 && estimateEnd > estimateStart, 'estimateMealCost must be present');
   assert.ok(estimate.includes("if (match.matchedOffers.length < 2) return '';"));
-  assert.ok(estimate.includes("if (offerPrices.some(price => price === null)) return '';"));
+  assert.ok(estimate.includes("if (match.estimatedCost === 'Preis unbekannt') return '';"));
   assert.equal(estimate.includes('fallback'), false);
   assert.equal(estimate.includes('Math.max'), false);
 });
