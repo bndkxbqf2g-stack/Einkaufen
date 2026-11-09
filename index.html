@@ -908,10 +908,26 @@
       return Object.keys(marketDetails).find(name => name.toLowerCase() === normalized || marketDisplayName(name).toLowerCase() === normalized) || '';
     }
 
+    function parseMarketDistanceKm(value) {
+      const normalized = String(value ?? '').trim().replace(/\s+/g, ' ');
+      const match = normalized.match(/^(\d+(?:[.,]\d+)?)\s*km$/i);
+      if (!match) return null;
+      const distance = Number(match[1].replace(',', '.'));
+      return Number.isFinite(distance) && distance >= 0 ? distance : null;
+    }
+
     function sortedSelectedMarkets() {
       const configured = Array.isArray(settings.selectedMarkets) ? settings.selectedMarkets.filter(name => marketDetails[name]) : [];
       const selected = configured.length ? configured : ['Aldi', 'Kaufland', 'Lidl', 'EDEKA'];
-      return selected.sort((first, second) => parseFloat(marketDetails[first].distance.replace(',', '.')) - parseFloat(marketDetails[second].distance.replace(',', '.')));
+      return selected
+        .map((name, index) => ({ name, index, distance: parseMarketDistanceKm(marketDetails[name]?.distance) }))
+        .sort((first, second) => {
+          if (first.distance === null && second.distance !== null) return 1;
+          if (first.distance !== null && second.distance === null) return -1;
+          if (first.distance !== null && second.distance !== null && first.distance !== second.distance) return first.distance - second.distance;
+          return first.index - second.index;
+        })
+        .map(item => item.name);
     }
 
     const $ = (selector) => document.querySelector(selector);
