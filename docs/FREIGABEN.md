@@ -1023,3 +1023,10 @@ Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfigura
 - PR #291 wurde nach grüner CI in Merge-Commit `996c1c6a8929104bab99c5622766b0832222e55d` integriert. Der Audit reproduzierte, dass ein explizites `500 g Hackfleisch` bisher ein gleichnamiges `1 l`-Angebot sowie eine unbekannte `1 Packung`-Größe matchen durfte.
 - Explizite Rezeptmengen matchen nun nur Angebote derselben Mengenfamilie; unbekannte oder fehlende Packungsgrößen werden konservativ ausgeschlossen. Textuelle Zutaten ohne explizite Einheit behalten das Namensmatching. Regressionstests und CI #42609169843 waren vollständig grün; der Deploy wurde übersprungen.
 - Keine Supabase-, SQL-, Auth-, Nutzer-/Angebotsdaten-, Preis- oder Deploymentänderung.
+
+
+## Audit 09.11.2026 – Einkaufsstatus und Vorratsbestand
+
+- Der End-to-End-Audit gegen `main@ce5786f5ac36f9499c44038112b0bfd500b6ef37` fand keinen unzulässigen Bestandsabzug. Abhaken, „Alles abhaken“, Zurücksetzen und Aktualisieren ändern ausschließlich `shoppingChecks`; `applyPantryCoverageToShoppingItems` und der Mengenabgleich mutieren keine Vorratsdaten.
+- Teilbestände bleiben erhalten und werden nur als Deckung bzw. Restbedarf ausgewiesen. Unbekannte, ungültige oder inkompatible Mengen bleiben konservativ offen und werden nicht still reduziert. Die bestehenden Coverage- und Supabase-Sync-Tests bestätigen Vorrats-/Lokaldatenerhalt sowie Bestätigung vor Cloud-Übernahme.
+- Eine explizite Kaufbestätigung mit Verbrauchsbuchung existiert derzeit nicht. Der Vorratsverbrauch bleibt damit bewusst offen und darf nicht aus einem Listen-Haken, Planen, Laden oder Offline-Sync abgeleitet werden. Kein Code-PR, keine Supabase-, Daten-, Preis-, Angebots- oder Deploymentänderung.
