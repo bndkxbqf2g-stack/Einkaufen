@@ -1771,7 +1771,9 @@
       const lines = [...groups.entries()].map(([group, items]) => `${marketDisplayName(group)}\n${items.map(item => {
         const packCount = item.packCount || 1;
         const amountLabel = item.offer ? shoppingShareAmountLabel(item) : 'ergänzen';
-        return `- ${item.name}${item.count > 1 ? ` · für ${item.count} Gerichte` : ''}${item.offer ? ` · ${packCount} × ${item.offer.packSize || '1 Packung'} · ${amountLabel}` : ` · ${amountLabel}`}`;
+        const evidenceLabel = item.offer ? shoppingOfferEvidenceLabel(item.offer) : '';
+        const savingLabel = item.offer ? shoppingOfferSavingLabel(item.offer) : '';
+        return `- ${item.name}${item.count > 1 ? ` · für ${item.count} Gerichte` : ''}${item.offer ? ` · ${packCount} × ${item.offer.packSize || '1 Packung'} · ${amountLabel} · ${evidenceLabel} · ${savingLabel}` : ` · ${amountLabel}`}`;
       }).join('\n')}`).join('\n\n');
       const text = `Angebotsküche · offene Einkaufsliste\n\n${lines}\n\n${shoppingShareSummary(pending)}\nFehlende Artikel und Vorräte sind nicht enthalten.`;
       if (navigator.share) {
