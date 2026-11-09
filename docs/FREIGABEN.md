@@ -962,7 +962,7 @@ Die folgenden Punkte sind belegte Verifikations- oder Freigabegrenzen. Dieser Ab
 
 Bis diese Punkte separat verifiziert beziehungsweise freigegeben sind, werden weder der D1-Identitätsweg, der SQL-Vertrag, die Remote-Auth/RLS-Annahmen noch die CDN-Härtung eigenmächtig erweitert.
 
-## Aktueller Prüfstand – main@f97eab2cae9a35f8824f77c3b8c0ef7be44731d1 – 09.11.2026
+## Aktueller Prüfstand – main@74f3bf70362904a3bd212a8552ba6c26dcdc23ef – 09.11.2026
 
 Dieser Abschnitt ist der maßgebliche aktuelle Koordinationsstand. Frühere Abschnitte mit historischen Chat-/Worktree-Aktivitäten bleiben als Verlauf erhalten und sind nicht als laufende Aufgaben zu verstehen.
 
