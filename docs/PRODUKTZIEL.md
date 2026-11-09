@@ -687,3 +687,10 @@ Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, 
 - Der Anschlussaudit der deterministischen Packungsberechnung fand eine stille Unterdeckung durch die feste `1e-9`-Toleranz: `1000.0000001 g` Bedarf mit 500-g-Packungen wurde auf 2 statt 3 Packungen abgerundet.
 - PR #287 ersetzt die starre Toleranz durch ein skaliertes `Number.EPSILON`-Fenster. Exakte Dezimalverhältnisse bleiben stabil, echte positive Überbedarfe werden strikt aufgerundet; Stück-/Masseneinheiten werden nicht zusammengeführt.
 - Merge-Commit: `fde374a05bc4b6a653c221c3aeabd976251d9f26`; CI #42606542412 vollständig grün. Keine Produkt-, Supabase-, Daten-, Preis-, Angebots- oder Deploymentverträge geändert.
+
+
+## Fortschritt 09.11.2026 – sichere Zutatenaggregation im Einkaufsfluss
+
+- Der End-to-End-Audit fand eine falsche Zusammenführung gleicher Zutaten mit inkompatiblen expliziten Einheiten: `500 g Öl` plus `1 l Öl` wurde bisher zu einer ungültigen gemeinsamen Mengenbasis.
+- PR #289 trennt inkompatible Einheitenfamilien in eigene Einkaufslisteneinträge und erhält zugleich die Aggregation kompatibler `g/kg)- sowie `ml/l)-Mengen. Merge-Commit: `d4762d21d0417feca9b96691653616814b85b02c`.
+- Regressionstests und CI #42608250639 waren vollständig grün. Keine Produkt-, Supabase-, Daten-, Preis-, Angebots- oder Deploymentverträge geändert.
