@@ -38,3 +38,10 @@ test('associates visible import fields with explicit labels', () => {
     assert.match(source, new RegExp(`<label[^>]*for="${id}"[^>]*>`), `${id} needs an explicit label`);
   }
 });
+test('gives each shopping market group an accessible name', () => {
+  assert.match(
+    source,
+    /<section class="shopping-group" aria-label="\$\{escapeHtml\(marketDisplayName\(group\)\)\}">/,
+    'shopping market groups need an accessible name',
+  );
+});
