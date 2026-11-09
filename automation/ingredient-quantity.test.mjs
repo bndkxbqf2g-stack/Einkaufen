@@ -27,6 +27,7 @@ const normalizeIngredient = extractFunction(distHtml, 'normalizeIngredient');
 const shoppingIngredientKey = extractFunction(distHtml, 'shoppingIngredientKey');
 const shoppingIngredientIdentity = extractFunction(distHtml, 'shoppingIngredientIdentity');
 const shoppingPackCount = extractFunction(distHtml, 'shoppingPackCount');
+const parseKnownPackageSize = extractFunction(distHtml, 'parseKnownPackageSize');
 const getShoppingItems = extractFunction(distHtml, 'getShoppingItems');
 const ingredientKeys = new Function(
   `${normalizeIngredient}
@@ -35,6 +36,7 @@ ${shoppingIngredientIdentity}
 return { shoppingIngredientKey, shoppingIngredientIdentity };`,
 )();
 const packCount = new Function('window', `${shoppingPackCount}; return shoppingPackCount;`)(quantityWindow);
+const packageSize = new Function(`${parseKnownPackageSize}; return parseKnownPackageSize;`)();
 
 function buildItems(meals, peopleByDay, offers = [], dinners = []) {
   const globalPeople = peopleByDay[0] || 2;
@@ -95,6 +97,11 @@ test('parst nur eindeutige Mengen und normiert unterstützte Angebots-Packungen'
   assert.equal(quantityModel.parseOfferPackSize('1 Packung'), null);
 });
 
+test('interpretiert deutsche Gruppierung in Vergleichs-Packungsgrößen korrekt', () => {
+  assert.deepEqual(packageSize('1.000 g'), { amount: 1000, unit: 'g' });
+  assert.deepEqual(packageSize('1.234,56 g'), { amount: 1234.56, unit: 'g' });
+  assert.deepEqual(packageSize('2,5 kg'), { amount: 2500, unit: 'g' });
+});
 test('berechnet Packungen für 2, 3 und 4 Personen deterministisch', () => {
   const meal = [{ title: 'Hackgericht', ingredients: ['500 g Hackfleisch'] }];
   const offer = [{ name: 'Hackfleisch', packSize: '500 g', price: '2,00 €' }];
