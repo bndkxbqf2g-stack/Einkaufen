@@ -611,3 +611,8 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 
 
 
+## Fortschritt 09.11.2026 – sichere Einkaufs-Centaggregation
+
+- Der bestehende lokale Kostenkern prüft nun auch den Centbetrag je bekanntem Angebot, die Packungsmultiplikation und die laufende Summe auf sichere JavaScript-Ganzzahlen.
+- Ein nicht sicher darstellbarer Einzel- oder Gesamtbetrag wird konservativ als unbekannter Preis geführt; es wird kein ungenauer Angebotswert ausgegeben. Die übrigen bekannten Positionen bleiben separat nachvollziehbar.
+- Die Änderung ist rein deterministisch und lokal. Root und `dist` bleiben synchron; Einkaufsliste, Speicherung, Backup, Supabase, Sync, Angebote, Routing und Produktionsdaten bleiben unverändert.
