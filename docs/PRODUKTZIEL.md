@@ -581,4 +581,11 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Fehlende, abgelaufene, manuelle, unsichere, zukünftige oder nicht vergleichbare Daten bleiben `unknown`; reguläre Preise oder Ersparnisse werden nicht geschätzt. Bei gleicher oder höherer Angebotssumme wird keine Ersparnis ausgewiesen.
 - Der Baustein ist nicht in UI, Parser, Angebotsauswahl, Einkauf, Marktstopp, Supabase oder Synchronisierung integriert und verändert keine Produktionsdaten.
 
+## Fortschritt 09.11.2026 – deterministische Vergleichskandidaten
+
+- `automation/comparison-price-candidates.mjs` fasst ausdrücklich gelieferte Kandidaten mit Produkt-, Packungs- und Markt-Key je Produkt-/Packungsgruppe zusammen und verwendet dafür ausschließlich den Status `verified` aus der vorhandenen Vergleichspreis-Evidenz.
+- Ein Kandidat ist nur bei positiver belegter Ersparnis zulässig. Der niedrigste belegte Angebotspreis gewinnt; bei Preisgleichheit entscheiden `marketKey` und danach `candidateKey` stabil lexikografisch.
+- Die Summe der ausgewählten Centbeträge bleibt bei fehlenden, unklaren oder überlaufenden Kandidaten `null` mit Status `insufficient_data`. Es werden keine Preise abgerufen, ergänzt oder geschätzt; UI, Parser, Angebotsabruf, Einkauf, Marktstopps, Supabase und Synchronisierung bleiben unverändert.
+
+
 
