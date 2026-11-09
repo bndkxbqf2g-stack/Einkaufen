@@ -197,7 +197,12 @@ ${textMatches}
 ${matcher}
 return offerMatchesIngredient;`,
   )(quantityWindow);
-  assert.equal(matches('500 g Hackfleisch', { name: 'Rinderhackfleisch' }), true);
+  assert.equal(matches('500 g Hackfleisch', { name: 'Rinderhackfleisch', packSize: '500 g' }), true);
+  assert.equal(matches('500 g Hackfleisch', { name: 'Hackfleisch', packSize: '1 kg' }), true);
+  assert.equal(matches('500 g Hackfleisch', { name: 'Hackfleisch', packSize: '1 l' }), false);
+  assert.equal(matches('500 ml Hackfleisch', { name: 'Hackfleisch', packSize: '1 l' }), true);
+  assert.equal(matches('500 g Hackfleisch', { name: 'Hackfleisch', packSize: '1 Packung' }), false);
+  assert.equal(matches('Hackfleisch', { name: 'Hackfleisch', packSize: '1 Packung' }), true);
 });
 
 console.log('Ingredient quantity and packaging checks passed');

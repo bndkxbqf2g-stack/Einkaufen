@@ -2417,7 +2417,10 @@
       const normalizedOffer = normalizeIngredient(offer.name);
       const quantityModel = typeof window !== 'undefined' ? window.AngebotskuecheIngredientQuantityModel : null;
       const parsedIngredient = quantityModel?.parseRecipeIngredient(ingredient);
-      return ingredientTextMatches(parsedIngredient?.explicit ? parsedIngredient.name : ingredient, normalizedOffer);
+      const nameMatches = ingredientTextMatches(parsedIngredient?.explicit ? parsedIngredient.name : ingredient, normalizedOffer);
+      if (!nameMatches || !parsedIngredient?.explicit) return nameMatches;
+      const parsedPack = quantityModel?.parseOfferPackSize?.(offer?.packSize);
+      return Boolean(parsedPack && parsedPack.family === parsedIngredient.family);
     }
 
     function matchingOfferCandidates(ingredient, activeOffers = getActiveOffers()) {
