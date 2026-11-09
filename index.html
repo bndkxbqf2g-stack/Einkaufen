@@ -981,9 +981,9 @@
       if (canonicalMarketName(payload.market) !== canonicalMarketName(expectedMarket)) return 'Angebotsdatensatz gehört zu einem anderen Markt';
       if (!sourceUrlForDisplay(payload.sourceUrl)) return 'Angebotsdatensatz ohne sichere HTTPS-Quelle';
       if (!/^\d{4}-\d{2}-\d{2}T([01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?Z$/.test(String(payload.fetchedAt || '').trim()) || !normalizeSourceTimestamp(payload.fetchedAt)) return 'Angebotsdatensatz ohne gültigen UTC-Abrufzeitpunkt';
-      const fetchedAt = new Date(payload.fetchedAt);
       const snapshotEnd = offerEndDate(payload.validUntil);
       if (!snapshotEnd || snapshotEnd < now) return 'Angebotsdatensatz ist abgelaufen oder ohne gültiges Ende';
+      const fetchedAt = new Date(payload.fetchedAt);
       const dateOrdinal = date => date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
       const fetchedAtOrdinal = fetchedAt.getUTCFullYear() * 10000 + (fetchedAt.getUTCMonth() + 1) * 100 + fetchedAt.getUTCDate();
       if (dateOrdinal(snapshotEnd) < fetchedAtOrdinal) return 'Angebotsdatensatz endet vor dem Abrufzeitpunkt';
