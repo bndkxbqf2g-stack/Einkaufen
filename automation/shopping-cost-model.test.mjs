@@ -11,10 +11,13 @@ const costModel = browserGlobal.AngebotskuecheCostModel;
 const parseMoneyMatch = html.match(/function parseKnownMoney\(value\) \{[\s\S]*?\n    \}/);
 const formatEuroMatch = html.match(/function formatEuro\(value\) \{[\s\S]*?\n    \}/);
 const marketSummaryMatch = html.match(/function formatShoppingGroupOfferSummary\(group, items\) \{[\s\S]*?\n    \}/);
+const packageSizeMatch = html.match(/function parseKnownPackageSize\(value\) \{[\s\S]*?\n    \}/);
 assert.ok(parseMoneyMatch, 'parseKnownMoney muss im App-Bundle vorhanden sein');
 assert.ok(formatEuroMatch, 'formatEuro muss im App-Bundle vorhanden sein');
 assert.ok(marketSummaryMatch, 'formatShoppingGroupOfferSummary muss im App-Bundle vorhanden sein');
+assert.ok(packageSizeMatch, 'parseKnownPackageSize muss im App-Bundle vorhanden sein');
 const parseKnownMoney = new Function(`${parseMoneyMatch[0]}; return parseKnownMoney;`)();
+const parseKnownPackageSize = new Function(`${packageSizeMatch[0]}; return parseKnownPackageSize;`)();
 const calculateOfferAmount = items => costModel.calculateOfferAmount(items, parseKnownMoney);
 const formatShoppingGroupOfferSummary = new Function('calculateOfferAmount', `${formatEuroMatch[0]}\n${marketSummaryMatch[0]}; return formatShoppingGroupOfferSummary;`)(calculateOfferAmount);
 
@@ -105,6 +108,12 @@ test('does not format absent or non-finite amounts as a zero price', () => {
   assert.equal(formatEuro(undefined), '–');
   assert.equal(formatEuro(Number.NaN), '–');
   assert.equal(formatEuro(0), '0,00 €');
+});
+
+test('normalizes German grouped and mixed-decimal package sizes before comparison', () => {
+  assert.deepEqual(parseKnownPackageSize('1.000 g'), { amount: 1000, unit: 'g' });
+  assert.deepEqual(parseKnownPackageSize('1.234,56 g'), { amount: 1234.56, unit: 'g' });
+  assert.deepEqual(parseKnownPackageSize('2 x 1.000 ml'), { amount: 2000, unit: 'ml' });
 });
 
 test('keeps unknown offer prices out of the displayed subtotal and shared list', () => {
