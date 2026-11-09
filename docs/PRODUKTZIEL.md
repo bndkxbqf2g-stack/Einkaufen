@@ -635,4 +635,10 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Ein zusätzlicher Regressionstest sichert jetzt ausdrücklich ab, dass ein älteres Backup bekannte Einstellungen aktualisieren darf, unbekannte persönliche Einstellungsschlüssel erhalten bleiben und ausgelassene optionale Backup-Felder nicht als Löschung behandelt werden.
 - Es wurden keine Runtime-, Speicher-, Backup-, Sync-, Supabase-, Nutzdaten- oder Deploymentverträge geändert. Die fachliche Erweiterung des Backup-Schemas bleibt weiterhin separat freigabepflichtig.
 
+## Audit 09.11.2026 – gemeinsamer Mahlzeitenfluss
+
+- Der bestätigte Wochenumfang bleibt Mittagessen plus optionales Abendessen. `getCurrentPlanSections()` führt beide Bereiche getrennt, und `getShoppingItems()` aggregiert ihre Zutaten gemeinsam vor Mengen-, Packungs- und Kostenberechnung.
+- Der bestehende Slot-Vertrag lässt Frühstück, Snack und Getränk nicht automatisch in Mittag- oder Abendessen einfließen. Ein zusätzlicher Regressionstest deckt jetzt die gemeinsame Mittag-/Abendessen-Aggregation im bestehenden Mengen-/Kostenpfad ab.
+- Es wurden keine UI-, Daten-, Backup-, Sync-, Supabase- oder Fachverträge erweitert.
+
 Der Stand ist rein dokumentarisch; Runtime, UI, LocalStorage, Backup, Supabase, Sync, Auth, Schema, Nutzerdaten und Deployment bleiben unverändert.
