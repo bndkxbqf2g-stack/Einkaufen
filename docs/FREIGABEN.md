@@ -1,6 +1,6 @@
 # Gebündelte Freigaben und externe Voraussetzungen
 
-Stand: 07.11.2026
+Stand: 09.11.2026
 
 Kleine, rückwärtsverträgliche Programmier- und Testschritte laufen weiter. Die
 folgenden Punkte werden gesammelt und erst umgesetzt, wenn sie ausdrücklich
