@@ -692,5 +692,5 @@ Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, 
 ## Fortschritt 09.11.2026 – sichere Zutatenaggregation im Einkaufsfluss
 
 - Der End-to-End-Audit fand eine falsche Zusammenführung gleicher Zutaten mit inkompatiblen expliziten Einheiten: `500 g Öl` plus `1 l Öl` wurde bisher zu einer ungültigen gemeinsamen Mengenbasis.
-- PR #289 trennt inkompatible Einheitenfamilien in eigene Einkaufslisteneinträge und erhält zugleich die Aggregation kompatibler `g/kg)- sowie `ml/l)-Mengen. Merge-Commit: `d4762d21d0417feca9b96691653616814b85b02c`.
+- PR #289 trennt inkompatible Einheitenfamilien in eigene Einkaufslisteneinträge und erhält zugleich die Aggregation kompatibler `g/kg`- sowie `ml/l`-Mengen. Merge-Commit: `d4762d21d0417feca9b96691653616814b85b02c`.
 - Regressionstests und CI #42608250639 waren vollständig grün. Keine Produkt-, Supabase-, Daten-, Preis-, Angebots- oder Deploymentverträge geändert.
