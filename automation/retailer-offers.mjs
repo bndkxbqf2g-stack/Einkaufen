@@ -52,11 +52,28 @@ function offerDateRange(text) {
   return { end: formatDate(Number(match[4]), Number(match[5]), endYear) };
 }
 
+function euroAmountPattern() {
+  return '(?:\\d{1,3}(?:\\.\\d{3})+(?:,\\d{2})?|\\d+(?:[.,]\\d{2}))';
+}
+
+function formatEuroAmount(value) {
+  const normalized = String(value || '').replace(/\s+/g, '');
+  if (normalized.includes(',')) return normalized + ' €';
+  if (/^\d{1,3}(?:\.\d{3})+$/.test(normalized)) return normalized + ' €';
+  return normalized.replace('.', ',') + ' €';
+}
+
 function offerPrice(text) {
-  const outside = String(text || '').replace(/\([^)]*\)/g, ' ');
-  const discounted = outside.match(/(?:nur\s+|-\s*\d{1,3}\s*%)\s*(\d+[.,]\d{2})/i);
-  const match = discounted || outside.match(/\b(\d+[.,]\d{2})\b/);
-  return match ? `${match[1].replace('.', ',')} €` : '';
+  const amount = euroAmountPattern();
+  const unitPricePattern = new RegExp('\\b\\d+(?:[.,]\\d+)?\\s*(?:kg|g|l|ml)\\s*=\\s*' + amount + '\\s*€?\\b', 'gi');
+  const negativePricePattern = new RegExp('[-−–—]\\s*' + amount + '\\s*€?\\b', 'g');
+  const outside = String(text || '')
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(unitPricePattern, ' ')
+    .replace(negativePricePattern, ' ');
+  const discounted = outside.match(new RegExp('(?:nur\\s+|-\\s*\\d{1,3}\\s*%)\\s*(' + amount + ')\\s*€?\\b', 'i'));
+  const match = discounted || outside.match(new RegExp('(?<![\\d.,])(' + amount + ')(?![\\d.,])\\s*€?\\b', 'i'));
+  return match ? formatEuroAmount(match[1]) : '';
 }
 
 function offerSaving(text) {
