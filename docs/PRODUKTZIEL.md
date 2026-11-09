@@ -548,3 +548,9 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Die geteilte offene Einkaufsliste übernimmt nun denselben Quellen-, Gültigkeits- und Vergleichspreisstatus wie die lokale Artikelansicht.
 - `saving` bleibt ein quellenbereitgestellter Hinweis; fehlende, manuelle, abgelaufene oder nicht bestätigte Werte werden auch im geteilten Text nicht als Ersparnis dargestellt.
 - Es wurden keine neuen Speicher-, Sync- oder Angebotsdaten eingeführt. Root, `dist` und Server-Artefakt bleiben synchron.
+## Fortschritt 09.11.2026 – zugängliche Einkaufslisten-Fortschrittsanzeigen
+
+- PR #254 ergänzt zugängliche Namen für die bereits vorhandenen dynamischen Marktgruppen der Einkaufsliste.
+- PR #255 kennzeichnet den bestehenden Gesamtfortschritt und den bestehenden Marktgruppenfortschritt zusätzlich als höfliche, atomare Statusbereiche (role="status", aria-live="polite", aria-atomic="true"). Es wurde keine neue Fortschrittslogik eingeführt.
+- Beide Änderungen verbessern ausschließlich die Bedienbarkeit mit Screenreadern. Es wurden keine Daten-, Sync-, Supabase-, Auth-, Cloud-, Preis- oder Angebotsverträge und keine Nutzerdaten verändert; Root, dist und das Server-Artefakt bleiben synchron.
+- Die nächsten fachlichen Freigabepunkte bleiben unverändert: insbesondere Mengen-/Vorratsverbrauch, echte IST-/Belegerfassung, Vergleichspreise und Ersparnis, Fahrtkosten/Mehrstopp-Routing, Offline-Konfliktstrategie sowie Supabase-/Auth-Erweiterungen.
