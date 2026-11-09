@@ -735,6 +735,8 @@ Der aktuelle Stand auf `main@0e376158e1c10dde1842268e01db1df1b35708cf` wurde geg
 Eine produktive Mehrstopp- oder Routenfunktion bleibt bis zur fachlichen Entscheidung über Verkehrsmittel, Strecke, Parken, Fahrtkostenquelle, reguläre Vergleichspreise, Marktzuordnung, Schwellenwert und UI-/Sync-Verhalten ausgeschlossen. Externe Karten-, Geocoding- oder Routingdienste sowie neue Cloudverarbeitung werden dafür nicht automatisch eingeführt.
 
 
-## Laufende Robustheitsverbesserung 09.11.2026 – Marktsortierung
+## Fortschritt 09.11.2026 – deterministische Marktsortierung
 
-Die aktive Marktauswahl behandelt unbekannte oder nichtnumerische Distanzanzeigen konservativ: Solche Werte werden weder als null noch als wirtschaftlicher Vorteil verwendet und deterministisch hinter bekannten numerischen Entfernungen einsortiert. Bei gleichen oder unbekannten Werten bleibt die konfigurierte Reihenfolge erhalten. Dies ändert nichts am ausdrücklich offenen Umfang von Routenoptimierung und Fahrtkostenberechnung.
+PR #301 (`611dcadb49963e5587d91e415cea072763706b4b`) behandelt unbekannte oder nichtnumerische Marktdistanzen konservativ und deterministisch. Bekannte numerische Werte werden aufsteigend sortiert; bei gleichen oder unbekannten Werten bleibt die konfigurierte Reihenfolge erhalten. CI #42615733985 lief mit 325/325 Tests, generiertem Worker-Artefaktvergleich und Endpoint-Validierung vollständig grün.
+
+Der nächste Runtime-Schritt bleibt der gebündelt freizugebende lokale Dialog „Einkauf abschließen“ mit manueller IST-Summe, Datum und optionalem Markt – zunächst ohne Pantry-Verbrauch, Cloud-/Backup-/OCR-Erweiterung oder automatische Preisübernahme.
