@@ -1044,3 +1044,13 @@ Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfigura
 - PR #297 wurde in Merge-Commit `7ad6add32c94c7b3dd3f5e8bbf243e0bf95e02f2` integriert. Manuelle, abgelaufene, unsichere und Cache-Fallback-Angebote konnten zuvor trotz Nichtverifizierung in bekannte Angebots-Teilbeträge eingehen.
 - Der deterministische Kostenpfad zählt nun nur aktuelle, HTTPS-quellenbelegte, gültige und hoch-konfidente Live-Angebote als bekannt; alle anderen Angebote bleiben `unknown` und werden separat sichtbar gehalten. CI #42612829175 bestätigte 321 Tests sowie Worker- und Endpoint-Prüfungen.
 - Keine Preis- oder Angebotsdaten, Nutzdaten, Supabase-/Datenbankverträge oder Deployments wurden geändert.
+
+## Read-only-Audit 09.11.2026 – Marktvergleich und Routenpfad
+
+- **Ist-Befund:** Die App nutzt pro Markt statische Anzeigeentfernungen aus `marketDetails`, sortiert damit die ausgewählten Märkte und begrenzt die aktive Auswahl über `marketsSelect`. Das ist eine Darstellungs-/Auswahlhilfe, keine Routenberechnung.
+- **Nicht vorhanden:** Keine echte Mehrstopp-Routenoptimierung, keine Fahrtkostenberechnung, kein regulärer Warenkorbvergleich über Märkte und keine automatische zusätzliche-Stopp-Empfehlung in der UI. Der vorhandene `market-stops.js`-Kern bleibt ein isolierter, deterministischer Rechenkern und wird nicht mit Strecken- oder Kartendaten versorgt.
+- **Konservativer Datenumgang:** Fehlende, nichtnumerische oder nicht belegte Entfernungs-/Kostenwerte dürfen nicht als null oder als Ersparnis behandelt werden. Angebotsauswahl und Kostenmodell bleiben auf validierte, aktuelle Daten beschränkt; unbekannte Werte bleiben offen.
+- **Freigabe erforderlich:** Vor einer produktiven Erweiterung sind Verkehrsmittel, Strecke, Parken, Fahrtkostenquelle, reguläre Vergleichspreise, Marktzuordnung, Nettoersparnisschwelle sowie UI-, Offline- und Sync-Verhalten festzulegen. Karten-, Geocoding-, Routing- oder sonstige externe Cloud-Dienste werden ohne gesonderte Freigabe nicht eingeführt.
+
+Dieser Audit änderte keine Angebote, Nutzer-/Haushaltsdaten, Supabase-/Schema-Daten, Deployments oder kostenpflichtigen Ressourcen.
+
