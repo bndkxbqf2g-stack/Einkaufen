@@ -1055,10 +1055,9 @@ Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfigura
 Dieser Audit änderte keine Angebote, Nutzer-/Haushaltsdaten, Supabase-/Schema-Daten, Deployments oder kostenpflichtigen Ressourcen.
 
 
-## Kleine Robustheitsverbesserung 09.11.2026 – Marktsortierung
+## Fortschritt 09.11.2026 – deterministische Marktsortierung
 
-- Die Marktauswahl sortiert bekannte numerische Anzeigeentfernungen weiterhin aufsteigend.
-- Fehlende oder nichtnumerische Entfernungen werden nicht als `0`, `null` oder Ersparnis interpretiert, sondern deterministisch hinter bekannten Werten belassen; bei Gleichstand bleibt die konfigurierte Reihenfolge erhalten.
-- Der Umfang bleibt eine Auswahl-/Darstellungshilfe. Eine echte Routen- oder Fahrtkostenberechnung wurde nicht eingeführt.
-- Regressionstests prüfen Root-/Dist-Gleichheit sowie das Verhalten mit `Cloud-Browser` und gleichen Distanzen.
-- Keine Angebote, Nutzerdaten, Supabase-/Schema-Daten, Deployments oder kostenpflichtigen Ressourcen wurden verändert.
+- PR #301 ist in Merge-Commit `611dcadb49963e5587d91e415cea072763706b4b` enthalten. Bekannte numerische Anzeigeentfernungen werden aufsteigend sortiert; unbekannte oder nichtnumerische Werte bleiben konservativ am Ende, Gleichstände bewahren die konfigurierte Reihenfolge.
+- CI #42615733985 bestätigte 325/325 Tests sowie den generierten Worker-Artefaktvergleich und die Endpoint-Validierung. Der Deploy-Schritt blieb übersprungen.
+- Keine Angebote, Nutzer-/Haushaltsdaten, Supabase-/Schema-Daten, Deployments oder kostenpflichtigen Ressourcen wurden verändert.
+- Der nächste Runtime-Schritt bleibt der gebündelt freizugebende lokale Dialog „Einkauf abschließen“ mit manueller IST-Summe, Datum und optionalem Markt; zunächst ohne Pantry-Verbrauch, Cloud-/Backup-/OCR-Erweiterung oder automatische Preisübernahme.
