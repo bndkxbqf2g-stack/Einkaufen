@@ -75,8 +75,8 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 - Die Einkaufsliste führt Angebotsartikel und fehlende Artikel zusammen, berechnet aber nicht den vollständigen Kassenbetrag des gesamten Einkaufs.
 - Die Planansicht verwendet keine statischen Rezeptkosten mehr als Preisersatz. Sie zeigt nur bekannte Angebots-Packungssummen, markiert unvollständige Preisbasen als unbekannt und lässt den vollständigen Kassenbetrag ausdrücklich offen; fehlende Artikel, Vorräte und Fahrtkosten sind nicht enthalten.
 - Angebotsparser übernehmen eine Packungsgröße, wenn sie im Produkttitel oder vor dem Angebotspreis ausdrücklich steht; ein Grundpreis-Nenner nach dem Preis wird nicht als Packungsgröße verwendet. Ohne eindeutige Quellangabe bleibt die neutrale Angabe „1 Packung“ bestehen, daher ist der tatsächliche Mengenbedarf weiterhin nur angenähert.
-- Monatsbudget, bestätigte Ausgaben, verbleibendes Budget, Resttage und Fahrtkosten sind nicht als durchgängiges Rechenmodell verbunden.
-- Vorräte werden als Artikelliste ohne belastbare Mengen geführt. Packungsbedarf wird aus Zutatenvorkommen und Personenzahl angenähert; eine konsistente Vorratsreservierung ist nicht belegt.
+- Das lokale Budgetmodell trennt Ziel, bekannten Angebots-Teilbetrag, offene Positionen, bestätigte IST-Ausgaben und optionale Fahrtkosten. Ein vollständiger Kassen-/Historienfluss sowie die produktive Erfassung dieser Werte sind bis zur Freigabe des Kaufabschluss-Vertrags weiterhin nicht verbunden.
+- Vorräte können lokal mit Mengen und Einheiten (g/kg, ml/l, Stück) geführt werden. Der lesende Abgleich aggregiert Mittagessen plus optionales Abendessen, zieht Teilbestände nur für den Restbedarf heran und lässt unbekannte oder inkompatible Mengen offen. Eine tatsächliche Verbrauchsbuchung oder Vorratsreservierung ist weiterhin nicht implementiert.
 - Persönliche Bewertungen werden lokal gespeichert. Externe Bewertungen werden nur übernommen, wenn eine importierte Rezeptseite sie strukturiert liefert; eine Qualitätsbewertung aller Vorschläge ist nicht garantiert.
 - Rezeptimport ist für strukturierte Rezeptseiten und begrenzte Backend-Hosts vorgesehen. Die automatische Online-Suche nach neuen, gut bewerteten Rezepten ist nicht vorhanden.
 - KaufDA meldet bei Lidl `targetOfferCount=1000`, `loadedOfferCardCount=1004` und 211 erkannte Lebensmittelangebote. `targetReached` belegt nur das Nachladen der Karten und nicht, dass alle Angebote vollständig oder korrekt klassifiziert wurden. Die App zeigt dieses Ladeziel inzwischen ausdrücklich als Ladeziel und markiert den Gesamtumfang weiterhin als unbelegt.
@@ -84,12 +84,12 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 
 ### Noch nicht vorhanden
 
-- Gemeinsames Monatsbudgetmodell mit 400-€-Ziel, optional begründetem 440-€-Szenario, tatsächlichen Ausgaben und verbleibendem Budget.
+- Durchgängiger Kauf-/Kassenfluss mit bestätigten Ausgaben, Historie und tatsächlichem verbleibendem Budget; das lokale Budgetmodell mit 400-€-Ziel und optionalem 440-€-Szenario ist als sicherer Zwischenkern vorhanden, die produktive Erfassung bleibt freigabepflichtig.
 - Vergleich von Angebots- und regulären Preisen inklusive Gesamtwarenkorb.
 - Einstellbare Schwelle, ab der ein weiterer Markt trotz Fahrtkosten lohnt.
 - Benannte Personenauswahl pro Tag einschließlich Kindertagen und Auswahl der benötigten Mahlzeittypen. Als additive Grundlage ist eine Tagespersonenzahl von 2, 3 oder 4 Personen umgesetzt; die Identitätsauswahl einzelner Haushaltsteilnehmer bleibt offen.
 - Eigene Planungsslots für Frühstück, Snacks und Getränke sind nicht Bestandteil des bestätigten Produktumfangs.
-- Mengenfähige, schnelle Vorratserfassung mit gezielten Rückfragen bei entscheidenden Beständen.
+- Rückfragen- und Reservierungslogik für unsichere Bestände; die lokale Mengenbasis und der lesende Vorratsabgleich sind vorhanden, eine automatische Verbrauchsbuchung bleibt ausgeschlossen.
 - Allergien, Ausschlüsse und weitere individuelle Einschränkungen.
 - Vollständige automatische Rezeptsuche über mehrere Plattformen mit verifizierter Bewertung, Quellen- und Qualitätsprüfung.
 - Automatischer Belegabgleich für tatsächliche Kassenbeträge.
@@ -771,3 +771,8 @@ Der Kosten-/Angebotspfad ist durch zusätzliche Regressionen gegen deutsche Taus
 ## Fortschritt 09.11.2026 – Teilbestände in der Einkaufsliste sichtbar
 
 Die mengenbasierte Vorratsdeckung war bereits rein lesend umgesetzt: vollständige Bedarfe verschwinden, Teilbestände reduzieren den Restbedarf, unbekannte oder inkompatible Mengen bleiben offen. Die Einkaufslistenposition zeigt bei Teildeckung jetzt zusätzlich „Vorrat deckt … · Restbedarf …“. Damit bleibt die Berechnung nachvollziehbar, ohne Vorratsdaten zu mutieren oder neue Speicher-/Sync-Felder einzuführen. Root- und `dist`-UI bleiben synchron.
+
+
+## Dokumentationsabgleich 09.11.2026 – lokale Budget- und Vorratsbasis
+
+Frühere Bestandsbullets in diesem Dokument beschrieben den Ausgangszustand vor den inzwischen gemergten lokalen Modellen. Maßgeblich ist jetzt: Budgettransparenz, Mengen-/Packungsberechnung und der lesende Vorratsabgleich sind vorhanden und getestet. Weiterhin offen bleiben tatsächliche Kaufbestätigung, IST-/Beleg-Historie, Verbrauchsbuchung, reguläre Vergleichspreise, Fahrtkosten/Routing sowie neue Cloud-/Sync-Verträge.
