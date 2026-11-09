@@ -184,3 +184,18 @@ test('all committed retailer snapshots satisfy the historical publication contra
     assert.doesNotThrow(() => validateOfferSnapshot(snapshot, { now: snapshot.fetchedAt }), file);
   }
 });
+
+
+test('rejects future fetch timestamps even when validity is future', () => {
+  const futureSnapshot = {
+    ...validSnapshot,
+    fetchedAt: '2026-11-13T10:00:00.000Z',
+    validUntil: '15.11.2026',
+    offers: [{ name: 'Kartoffeln', price: '1,99 €', validUntil: '15.11.2026' }],
+  };
+
+  assert.throws(
+    () => validateOfferSnapshot(futureSnapshot, { now: new Date('2026-11-08T12:00:00.000Z') }),
+    /"fetchedAt" liegt in der Zukunft/
+  );
+});
