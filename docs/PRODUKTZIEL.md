@@ -668,3 +668,8 @@ Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, 
 - Gegen `main@b62fd7ac8a142cdadbc703bed3d1c400f4b659c3` wurden Paket-/Lockfiles, 120 JavaScript-/HTML-/JSON-/Workflow-Dateien und alle fünf GitHub-Workflows statisch geprüft.
 - Die Produktiv-Runtime hat keine unerwartete neue Paketabhängigkeit. CI installiert `playwright` und einmal `pdf-parse` ohne feste Version/Lockfile; alle verwendeten Actions sind offizielle `actions/*`-Actions, aber nur über mutable Major-Tags gepinnt. Dies bleibt ein dokumentierter Hardeningpunkt.
 - Keine kostenpflichtigen Dienste, Upgrades oder Produktivänderungen wurden eingeführt. Ein reproduzierbarer kleiner Sicherheitsdefekt wurde nicht festgestellt.
+
+## Fortschritt 09.11.2026 – Freshness-Grenze für Angebotsdaten
+
+- PR #283 wurde in Merge-Commit `9d3ad2b7af038f7ec0b41d56b3da1173dd1c5e9d` integriert. Zukunftsdatierte Quellenabrufe werden von Snapshot- und Frontend-Validator verworfen; gültige Zukunftsangebote ohne Zukunftsabruf bleiben davon getrennt.
+- Die synthetischen Regressionstests und CI #42604666498 waren vollständig grün; keine Live-Angebote, Supabase-, Daten- oder Deploymentänderung.
