@@ -989,3 +989,9 @@ Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfigura
 - Gegen `main@b62fd7ac8a142cdadbc703bed3d1c400f4b659c3` wurden die Paket-/Lockfile-Lage und alle fünf GitHub-Workflows statisch geprüft. Es gibt kein Paket- oder Lockfile; die veröffentlichte Runtime enthält keine unerwartete neue Paketabhängigkeit.
 - Die Automationsläufe installieren `playwright` und einmal `pdf-parse` mit `npm install --no-save` ohne feste Version/Lockfile. Die offiziellen Actions werden nur über mutable Major-Tags wie `@v4`/`@v5` referenziert. Das sind reproduzierbare Supply-Chain-/Reproduzierbarkeits-Hardeningpunkte, aber kein im Audit reproduzierter Schadensfall.
 - Es wurden keine neuen kostenpflichtigen Dienste gefunden. Es erfolgte kein Upgrade, keine externe Änderung und kein Code-PR; die Befunde bleiben für eine spätere gebündelte Hardening-Entscheidung dokumentiert.
+
+## Fortschritt 09.11.2026 – zukünftige Angebotszeitpunkte
+
+- PR #283 wurde nach grüner CI in Merge-Commit `9d3ad2b7af038f7ec0b41d56b3da1173dd1c5e9d` integriert. Ein `fetchedAt`-Zeitpunkt in der Zukunft wird nun sowohl durch den Snapshot- als auch den Frontend-Validator verworfen.
+- Die synthetischen Datumsgrenztests und CI #42604666498 waren grün; Worker-Build, Artefakt- und Endpoint-Prüfungen liefen erfolgreich, der Deploy wurde übersprungen.
+- Keine Supabase-, Daten-, Auth- oder Deploymentänderung.
