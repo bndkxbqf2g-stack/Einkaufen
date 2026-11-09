@@ -650,3 +650,9 @@ Der Stand ist rein dokumentarisch; Runtime, UI, LocalStorage, Backup, Supabase, 
 - Historische Koordinationsnotizen zu früheren Chat-/Worktree-Aktivitäten sind nicht als aktuelle laufende Arbeiten zu lesen. Der bestätigte nächste Schritt bleibt die gebündelte Freigabe fachlicher Produkt-/Cloud-Erweiterungen; es werden daraus keine neuen Runtime-Annahmen abgeleitet.
 
 Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, Backup-/Sync-Struktur, Supabase-/SQL-/Auth-Verträge oder Deployments.
+
+## Fortschritt 09.11.2026 – zuverlässige Preis-/Packungsnormalisierung
+
+- PR #278 wurde in Merge-Commit `bcaa0a3f26afd3082af0080a9011684dba413f40` integriert. Negative und mehrdeutige Preis-Tokens werden verworfen, deutsche Tausender- und Dezimalbeträge bleiben erhalten, und Grundpreise werden nicht als Angebotspreise übernommen.
+- CI #42599370232 lief mit 309 Tests sowie grünen Worker-, Artefakt- und Endpoint-Prüfungen erfolgreich durch; der Deploy-Schritt wurde übersprungen.
+- Bestehende Angebots-, Nutzer-, Supabase- und Speicherdaten bleiben unverändert.
