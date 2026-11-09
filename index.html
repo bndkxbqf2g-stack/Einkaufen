@@ -987,7 +987,6 @@
       const dateOrdinal = date => date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
       const fetchedAtOrdinal = fetchedAt.getUTCFullYear() * 10000 + (fetchedAt.getUTCMonth() + 1) * 100 + fetchedAt.getUTCDate();
       if (dateOrdinal(snapshotEnd) < fetchedAtOrdinal) return 'Angebotsdatensatz endet vor dem Abrufzeitpunkt';
-      if (fetchedAt.getTime() > now.getTime()) return 'Angebotsdatensatz hat einen Abrufzeitpunkt in der Zukunft';
       if (!Array.isArray(payload.offers) || !payload.offers.length) return 'Leerer Angebotsdatensatz';
       if (payload.recognizedCount !== undefined && payload.recognizedCount !== payload.offers.length) return 'Angebotsanzahl ist widersprüchlich';
       const pricePattern = /^(?:ab\s+)?\d{1,3}(?:\.\d{3})*(?:,\d{2})?\s*€$/i;
@@ -996,6 +995,7 @@
         const offerEnd = offerEndDate(offer.validUntil);
         return !String(offer.name || '').trim() || !pricePattern.test(String(offer.price || '').trim()) || !offerEnd || offerEnd < now || dateOrdinal(offerEnd) < fetchedAtOrdinal || offerEnd > snapshotEnd || /\bverfügbar\s+(?:ab|seit)\b/i.test(offer.name);
       });
+      if (fetchedAt.getTime() > now.getTime()) return 'Angebotsdatensatz hat einen Abrufzeitpunkt in der Zukunft';
       return invalidOffer ? 'Angebotsdatensatz enthält ungültige Angebotsdaten' : '';
     }
 
