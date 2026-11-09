@@ -204,7 +204,7 @@ test('precaches the app shell during install and removes old caches on activate'
   harness.cacheNames.add('unrelated-app-cache');
 
   await harness.dispatch('install');
-  assert.deepEqual(harness.addAllCalls, [['./index.html', './manifest.json', './ingredient-normalization.js', './shopping-costs.js', './budget-transparency.js', './meal-planning.js', './day-planning.js', './ingredient-quantity.js', './pantry-quantity.js', './supabase-sync.js']]);
+  assert.deepEqual(harness.addAllCalls, [['./index.html', './manifest.json', './ingredient-normalization.js', './shopping-costs.js', './budget-transparency.js', './meal-planning.js', './day-planning.js', './ingredient-quantity.js', './pantry-quantity.js', './pantry-shopping-coverage.js', './supabase-sync.js']]);
   assert.equal(harness.skipWaitingCalls(), 1);
   assert.ok(harness.entries.has(`${origin}/index.html`));
   assert.ok(harness.entries.has(`${origin}/manifest.json`));
@@ -215,6 +215,7 @@ test('precaches the app shell during install and removes old caches on activate'
   assert.ok(harness.entries.has(`${origin}/day-planning.js`));
   assert.ok(harness.entries.has(`${origin}/ingredient-quantity.js`));
   assert.ok(harness.entries.has(`${origin}/pantry-quantity.js`));
+  assert.ok(harness.entries.has(`${origin}/pantry-shopping-coverage.js`));
   assert.ok(harness.entries.has(`${origin}/supabase-sync.js`));
 
   await harness.dispatch('activate');
@@ -347,3 +348,4 @@ test('Pages root sync keeps published PWA icons aligned with dist', async () => 
   assert.ok(workflow.includes('cp -R dist/icons/. icons/'));
   assert.ok(workflow.includes('git add index.html manifest.json icons sw.js supabase-sync.js'));
 });
+
