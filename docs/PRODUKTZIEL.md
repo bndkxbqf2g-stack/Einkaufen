@@ -609,6 +609,8 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Ein Kandidat ist nur bei positiver belegter Ersparnis zulässig. Der niedrigste belegte Angebotspreis gewinnt; bei Preisgleichheit entscheiden `marketKey` und danach `candidateKey` stabil lexikografisch.
 - Die Summe der ausgewählten Centbeträge bleibt bei fehlenden, unklaren oder überlaufenden Kandidaten `null` mit Status `insufficient_data`. Es werden keine Preise abgerufen, ergänzt oder geschätzt; UI, Parser, Angebotsabruf, Einkauf, Marktstopps, Supabase und Synchronisierung bleiben unverändert.
 
+
+
 ## Fortschritt 09.11.2026 – sichere Einkaufs-Centaggregation
 
 - Der bestehende lokale Kostenkern prüft nun auch den Centbetrag je bekanntem Angebot, die Packungsmultiplikation und die laufende Summe auf sichere JavaScript-Ganzzahlen.
