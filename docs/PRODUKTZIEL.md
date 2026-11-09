@@ -756,3 +756,8 @@ Der gemeinsame Mengenparser normalisiert gruppierte Packungsangaben wie `2 x 500
 ## Fortschritt 09.11.2026 – Volumeneinheiten im Angebotsmatching
 
 Der Mengenparser normalisiert `cl`/`Zentiliter` und `dl`/`Deziliter` jetzt wie der bestehende Angebotsvergleich deterministisch auf `ml`. Dadurch bleiben kompatible Volumenangebote im Matching und in der Packungsberechnung sichtbar, ohne einen neuen fachlichen Einheitentyp einzuführen. Root- und `dist`-Parser sind synchron; Regressionstests decken Einzel- und Gruppenschreibweisen ab. Keine Angebots-, Nutzer-, Supabase-, Verbrauchs- oder Deploymentänderung.
+
+
+## Fortschritt 09.11.2026 – atomarer Cloud-Load im Fehlerfall
+
+Der bestehende Sync-Pfad schreibt Haushaltsbindung und Revision erst nach erfolgreichem Anwenden eines zuvor bestätigten und validierten Cloud-Stands. Ein zusätzlicher Regressionstest schützt jetzt ausdrücklich den Fehlerfall: Scheitert das lokale Anwenden, bleiben lokale Daten, Haushaltsbindung und Revisionsmarker unverändert. Keine Runtime-, Supabase-, SQL-, Daten-, Deployment- oder Kostenänderung.
