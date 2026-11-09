@@ -64,3 +64,13 @@ test('dismisses open modal with Escape', () => {
   assert.match(source, /modal\.querySelector\('\.close'\)\?\.click\(\)/);
   assert.match(source, /document\.addEventListener\('keydown', dismissOpenModalOnEscape\)/);
 });
+test('returns modal focus to connected opener after close', () => {
+  assert.match(source, /const modalOpeners = new WeakMap\(\)/);
+  assert.match(source, /function isFocusableModalOpener\(element\)/);
+  assert.match(source, /element\.isConnected/);
+  assert.match(source, /element\.tabIndex < 0/);
+  assert.match(source, /modalOpeners\.set\(modal, isFocusableModalOpener\(opener\)/);
+  assert.match(source, /modalOpeners\.delete\(modal\)/);
+  assert.match(source, /if \(isFocusableModalOpener\(opener\)\) opener\.focus\(\)/);
+  assert.match(source, /modalFocusObserver\.observe\(modal, \{ attributes: true, attributeFilter: \['class'\] \}\)/);
+});
