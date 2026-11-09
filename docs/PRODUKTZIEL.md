@@ -673,3 +673,10 @@ Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, 
 
 - PR #283 wurde in Merge-Commit `9d3ad2b7af038f7ec0b41d56b3da1173dd1c5e9d` integriert. Zukunftsdatierte Quellenabrufe werden von Snapshot- und Frontend-Validator verworfen; gültige Zukunftsangebote ohne Zukunftsabruf bleiben davon getrennt.
 - Die synthetischen Regressionstests und CI #42604666498 waren vollständig grün; keine Live-Angebote, Supabase-, Daten- oder Deploymentänderung.
+
+
+## Fortschritt 09.11.2026 – Deterministische Mengen- und Packungsberechnung
+
+- Der Mengen-/Packungs-Audit fand einen konkreten Fehler bei deutscher Gruppenschreibweise: `1.000 g` wurde als `1 g` gelesen und konnte bei 500-g-Packungen eine zu niedrige Packungsanzahl erzeugen.
+- PR #285 korrigiert Rezeptmengen und Angebots-Packungsgrößen für deutsche Tausender- und gemischte Dezimalangaben; Root- und `dist/`-Parser bleiben synchron. Merge-Commit: `81a1a3034d79f21f36758745bf56725591e48688`.
+- CI #42605779628 war vollständig grün. Der Fix ändert keine Produkt-, Supabase-, Daten-, Preis-, Angebots- oder Deploymentverträge.

@@ -995,3 +995,10 @@ Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfigura
 - PR #283 wurde nach grüner CI in Merge-Commit `9d3ad2b7af038f7ec0b41d56b3da1173dd1c5e9d` integriert. Ein `fetchedAt`-Zeitpunkt in der Zukunft wird nun sowohl durch den Snapshot- als auch den Frontend-Validator verworfen.
 - Die synthetischen Datumsgrenztests und CI #42604666498 waren grün; Worker-Build, Artefakt- und Endpoint-Prüfungen liefen erfolgreich, der Deploy wurde übersprungen.
 - Keine Supabase-, Daten-, Auth- oder Deploymentänderung.
+
+
+## Fortschritt 09.11.2026 – Mengenparser für deutsche Gruppierung
+
+- PR #285 wurde nach grüner CI in Merge-Commit `81a1a3034d79f21f36758745bf56725591e48688` integriert. Der Audit reproduzierte, dass `1.000 g Mehl` im Mengenparser als `1 g` interpretiert wurde; Rezeptmengen und Angebots-Packungsgrößen verarbeiten deutsche Tausender- sowie gemischte Dezimalangaben nun korrekt.
+- Regressionstests, Worker-Build, generiertes Artefakt-Gate und Endpoint-Validierung waren in CI #42605779628 erfolgreich; der Deploy wurde übersprungen.
+- Keine Supabase-, SQL-, Auth-, Nutzer-/Angebotsdaten-, Preis- oder Deploymentänderung.
