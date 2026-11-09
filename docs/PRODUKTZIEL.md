@@ -535,6 +535,12 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - Die Einkaufsliste zeigt nun zusätzlich dasselbe lokale Monatsziel von 400,00 €, denselben bekannten Angebots-Teilbetrag und denselben Status „IST noch nicht erfasst“ wie die Planansicht.
 - Die Anzeige wird aus dem bestehenden `shoppingCostSummary` und dem bestehenden Budgetmodell gespeist. Unbekannte Preise, fehlende Artikel, Vorräte und Fahrtkosten bleiben außerhalb; es werden keine Kassenbeträge, Käufe oder Restbudgets erfunden.
 - Root/`dist` und das generierte Worker-Artefakt bleiben synchron. Es wurden keine neuen LocalStorage-, Backup-, Worker-, Supabase-, SQL-, Auth- oder Cloud-Felder eingeführt; die Einkaufsliste bleibt rückwärtskompatibel.
+
+## Fortschritt 09.11.2026 – sichere Budget-Aggregate
+
+- Das bestehende Budgetmodell prüft nun auch die Summe aus bestätigten IST-Ausgaben und separat geführten Fahrtkosten auf sichere Centdarstellung.
+- Wenn zwei einzeln gültige Centwerte gemeinsam die JavaScript-Sicherheitsgrenze überschreiten, bleibt der kombinierte Wert `null`; es wird keine ungenaue Summe ausgegeben. Einzelwerte und ihre getrennten Status bleiben unverändert.
+- Die Änderung ist rein deterministisch und lesend. Es wurden keine produktiven IST-Daten, Speicher-/Backup-/Sync-/Supabase-Verträge oder UI-Pfade erweitert.
 ## Fortschritt 08.11.2026 – Packungsbewusste Worker-Angebotsdeduplizierung
 
 - Die serverseitige Angebotsnormalisierung dedupliziert nun mit demselben deterministischen Schlüssel wie der bestehende Automationskern: Produktname, Preis, Packungsgröße, Angebotsende und optionaler Markt bleiben berücksichtigt.
@@ -574,4 +580,5 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - `automation/comparison-price-evidence.mjs` prüft zwei ausdrücklich gelieferte, packungsgleiche Preise nur dann deterministisch, wenn beide Preise, ein expliziter Prüfzeitpunkt und zwei ausdrücklich unterschiedliche, verifizierte HTTPS-Quellen mit gültiger Laufzeit vorliegen. Quellenidentitäten werden nach bereinigter URL und normalisiertem Namen verglichen.
 - Fehlende, abgelaufene, manuelle, unsichere, zukünftige oder nicht vergleichbare Daten bleiben `unknown`; reguläre Preise oder Ersparnisse werden nicht geschätzt. Bei gleicher oder höherer Angebotssumme wird keine Ersparnis ausgewiesen.
 - Der Baustein ist nicht in UI, Parser, Angebotsauswahl, Einkauf, Marktstopp, Supabase oder Synchronisierung integriert und verändert keine Produktionsdaten.
+
 
