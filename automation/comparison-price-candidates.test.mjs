@@ -71,7 +71,7 @@ test('akzeptiert nur verified mit positiver Ersparnis und bleibt bei unvollstän
   assert.equal(summary.status, SUMMARY_STATES.INSUFFICIENT_DATA);
   assert.equal(summary.totalPriceCents, null);
   assert.equal(summary.reason, 'incomplete-candidate-key');
-  assert.equal(summary.groups[0].status, 'unknown');
+  assert.equal(summary.groups[0].status, SUMMARY_STATES.INSUFFICIENT_DATA);
   assert.equal(summary.groups[0].reason, 'incomplete-candidate-evidence');
   assert.equal(summary.groups[0].candidates[0].reason, 'comparison-not-verified');
   assert.equal(summary.groups[0].selected, null);

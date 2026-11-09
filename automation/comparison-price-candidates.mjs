@@ -113,7 +113,7 @@ function summarizeGroup(candidates) {
     if (candidateKeys.has(key)) {
       return {
         ...base,
-        status: 'unknown',
+        status: SUMMARY_STATES.INSUFFICIENT_DATA,
         reason: 'duplicate-candidate-key',
         selected: null,
       };
@@ -124,7 +124,7 @@ function summarizeGroup(candidates) {
   if (unknownCount > 0) {
     return {
       ...base,
-      status: 'unknown',
+      status: SUMMARY_STATES.INSUFFICIENT_DATA,
       reason: 'incomplete-candidate-evidence',
       selected: null,
     };
