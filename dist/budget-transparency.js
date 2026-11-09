@@ -12,6 +12,12 @@
     return Number.isSafeInteger(value) && value >= 0 ? value : 0;
   }
 
+  function addSafeCents(left, right) {
+    if (left === null || right === null) return null;
+    const total = left + right;
+    return Number.isSafeInteger(total) ? total : null;
+  }
+
   function normalizeMonthlyTargetCents(value, allowAlternativeTarget) {
     const requested = normalizeCents(value);
     if (requested === MONTHLY_TARGET_CENTS) return requested;
@@ -43,9 +49,7 @@
       remainingBudgetCents: actualSpendCents === null ? null : monthlyTargetCents - actualSpendCents,
       travelCostCents,
       travelCostStatus: travelCostCents === null ? 'not-recorded' : 'separate',
-      confirmedOutlayWithTravelCents: actualSpendCents === null || travelCostCents === null
-        ? null
-        : actualSpendCents + travelCostCents,
+      confirmedOutlayWithTravelCents: addSafeCents(actualSpendCents, travelCostCents),
     });
   }
 
@@ -56,4 +60,5 @@
     summarizeBudgetTransparency,
   });
 }(typeof window !== 'undefined' ? window : globalThis));
+
 

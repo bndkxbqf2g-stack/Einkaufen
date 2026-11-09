@@ -94,6 +94,17 @@ test('berechnet bestätigte Ausgaben, Planrest und Fahrtkosten getrennt in Cent'
   assert.equal(summary.knownOfferTotalCents, 1_234);
 });
 
+test('lässt eine unsichere IST-/Fahrtkosten-Gesamtsumme offen', () => {
+  const summary = model.summarizeBudgetTransparency({
+    actualSpendCents: Number.MAX_SAFE_INTEGER,
+    travelCostCents: 1,
+  });
+
+  assert.equal(summary.actualSpendCents, Number.MAX_SAFE_INTEGER);
+  assert.equal(summary.travelCostCents, 1);
+  assert.equal(summary.confirmedOutlayWithTravelCents, null);
+});
+
 test('hält 440 Euro ohne ausdrückliche Alternative bei 400 Euro und verwirft ungültige Werte', () => {
   const standard = model.summarizeBudgetTransparency({
     monthlyTargetCents: 44_000,
@@ -133,4 +144,5 @@ test('führt keine purchaseRecords- oder Cloud-Schreiblogik für die Anzeige ein
 });
 
 console.log('Budget transparency checks passed');
+
 
