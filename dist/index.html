@@ -2690,6 +2690,39 @@
     }
     document.addEventListener('keydown', dismissOpenModalOnEscape);
 
+    const modalOpeners = new WeakMap();
+    let lastNonModalFocus = null;
+    function isFocusableModalOpener(element) {
+      if (!element || !element.isConnected || element.disabled || element.hidden || element.getAttribute('aria-hidden') === 'true' || element.tabIndex < 0 || typeof element.focus !== 'function') return false;
+      return typeof element.getClientRects !== 'function' || element.getClientRects().length > 0;
+    }
+    document.addEventListener('focusin', event => {
+      const target = event.target;
+      if (isFocusableModalOpener(target) && !target.closest?.('.modal-backdrop')) lastNonModalFocus = target;
+    }, true);
+    if (typeof MutationObserver === 'function') {
+      const modalFocusObserver = new MutationObserver(records => {
+        records.forEach(record => {
+          const modal = record.target;
+          if (!modal?.classList?.contains('modal-backdrop')) return;
+          if (modal.classList.contains('open')) {
+            if (modalOpeners.has(modal)) return;
+            const activeElement = document.activeElement;
+            const opener = isFocusableModalOpener(activeElement) && !modal.contains(activeElement)
+              ? activeElement
+              : lastNonModalFocus;
+            modalOpeners.set(modal, isFocusableModalOpener(opener) && !modal.contains(opener) ? opener : null);
+            return;
+          }
+          if (!modalOpeners.has(modal)) return;
+          const opener = modalOpeners.get(modal);
+          modalOpeners.delete(modal);
+          if (isFocusableModalOpener(opener)) opener.focus();
+        });
+      });
+      document.querySelectorAll('.modal-backdrop').forEach(modal => modalFocusObserver.observe(modal, { attributes: true, attributeFilter: ['class'] }));
+    }
+
     function initializeSupabaseSync() {
       return window.angebotskuecheSupabaseSync?.initialize({
         buildPayload: buildUserDataPayload,
