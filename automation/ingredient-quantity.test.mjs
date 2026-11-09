@@ -36,10 +36,11 @@ return { shoppingIngredientKey, shoppingIngredientIdentity };`,
 )();
 const packCount = new Function('window', `${shoppingPackCount}; return shoppingPackCount;`)(quantityWindow);
 
-function buildItems(meals, peopleByDay, offers = []) {
+function buildItems(meals, peopleByDay, offers = [], dinners = []) {
   const globalPeople = peopleByDay[0] || 2;
   const getItems = new Function(
     'getActiveOffers',
+    'getCurrentPlanSections',
     'getCurrentPlanMeals',
     'getMealIngredients',
     'isPantryIngredient',
@@ -56,6 +57,7 @@ function buildItems(meals, peopleByDay, offers = []) {
 return getShoppingItems;`,
   )(
     () => offers,
+    () => ({ lunches: meals, dinners }),
     () => meals,
     meal => meal.ingredients || [],
     () => false,
@@ -123,6 +125,19 @@ test('summiert mehrere Gerichte und speist die bestehende Kostenermittlung', asy
   assert.equal(total.totalCents, 1129);
 });
 
+test('aggregiert Mittagessen und optionales Abendessen gemeinsam vor der Packungs- und Kostenberechnung', () => {
+  const offers = [{ name: 'Hackfleisch', packSize: '500 g', price: '2,00 €' }];
+  const items = buildItems(
+    [{ title: 'Mittagessen', ingredients: ['500 g Hackfleisch'] }],
+    [2],
+    offers,
+    [{ title: 'Abendessen', ingredients: ['500 g Hackfleisch'] }],
+  );
+  assert.equal(items.length, 1);
+  assert.equal(items[0].count, 2);
+  assert.equal(items[0].packCount, 2);
+  assert.deepEqual(items[0].meals, ['Mittagessen', 'Abendessen']);
+});
 test('unbekannte Einheiten, Textzutaten und inkompatible Packungen nutzen den Legacy-Fallback', () => {
   const unknown = buildItems(
     [{ title: 'Kräutergericht', ingredients: ['1 Bund Petersilie'] }],
