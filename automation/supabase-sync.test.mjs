@@ -33,7 +33,7 @@ function workerPayloadValidator() {
   return workerContext.validSyncPayload;
 }
 
-function createSyncHarness({ remoteState = null, confirm = true, initialStorage = {}, rpcErrors = {}, payload = { version: 1, settings: { people: 2 }, pantry: [] } } = {}) {
+function createSyncHarness({ remoteState = null, confirm = true, initialStorage = {}, rpcErrors = {}, saveResponse = undefined, payload = { version: 1, settings: { people: 2 }, pantry: [] } } = {}) {
   const storage = new Map(Object.entries(initialStorage));
   const elements = new Map();
   const rpcCalls = [];
@@ -78,6 +78,7 @@ function createSyncHarness({ remoteState = null, confirm = true, initialStorage 
       }
       if (name === 'save_household_state') {
         if (rpcErrors.save) return { data: null, error: rpcErrors.save };
+        if (saveResponse !== undefined) return { data: saveResponse, error: null };
         const revision = state ? Number(state.revision) + 1 : 1;
         state = { payload: args.p_payload, revision: String(revision), updated_at: '2026-11-06T12:00:00Z' };
         return { data: [{ revision: String(revision), updated_at: state.updated_at }], error: null };
@@ -525,6 +526,32 @@ test('does not mark a local household saved when the save RPC fails', async () =
   assert.equal(harness.storage.has('angebotskueche.supabase.localHousehold'), false);
   assert.equal(harness.storage.has('angebotskueche.supabase.revision.house-1'), false);
   assert.deepEqual([...harness.storage.entries()], before);
+});
+
+test('lässt lokale Daten bei ungültiger save_household_state-Revision unverändert', async () => {
+  const invalidResponses = [
+    [{ revision: undefined, updated_at: '2026-11-06T12:00:00Z' }],
+    [{ revision: null, updated_at: '2026-11-06T12:00:00Z' }],
+    [{ revision: -1, updated_at: '2026-11-06T12:00:00Z' }],
+    [{ revision: 1.5, updated_at: '2026-11-06T12:00:00Z' }],
+    [{ revision: '01', updated_at: '2026-11-06T12:00:00Z' }],
+    [{ revision: '9007199254740992', updated_at: '2026-11-06T12:00:00Z' }],
+  ];
+
+  for (const saveResponse of invalidResponses) {
+    const harness = createSyncHarness({
+      saveResponse,
+      initialStorage: { 'angebotskueche.settings': '{"people":2}' },
+    });
+    await harness.initialize();
+    const before = [...harness.storage.entries()];
+
+    await assert.rejects(harness.api.save(), /bestätigten Revisionsstand/);
+    assert.equal(harness.status, 'Supabase hat keinen bestätigten Revisionsstand zurückgegeben.');
+    assert.deepEqual([...harness.storage.entries()], before);
+    assert.equal(harness.storage.has('angebotskueche.supabase.localHousehold'), false);
+    assert.equal(harness.storage.has('angebotskueche.supabase.revision.house-1'), false);
+  }
 });
 
 function extractFrontendFunction(source, name) {
