@@ -6,6 +6,18 @@
     return Number.isFinite(raw) && raw > 0 ? Math.ceil(raw) : 1;
   }
 
+  function safeOfferAmountCents(unitPrice, packCount) {
+    const unitCents = Math.round(unitPrice * 100);
+    if (!Number.isSafeInteger(unitCents) || unitCents < 0) return null;
+    const itemCents = unitCents * packCount;
+    return Number.isSafeInteger(itemCents) ? itemCents : null;
+  }
+
+  function addSafeCents(left, right) {
+    const total = left + right;
+    return Number.isSafeInteger(total) ? total : null;
+  }
+
   function createOfferAmountSummary(totalCents, knownItems, unknownItems, knownPackCount, unknownPackCount) {
     const hasKnownOffer = knownItems.length > 0;
     return {
@@ -43,9 +55,16 @@
         unknownPackCount += packCount;
         continue;
       }
+      const itemTotalCents = safeOfferAmountCents(unitPrice, packCount);
+      const nextTotalCents = itemTotalCents === null ? null : addSafeCents(totalCents, itemTotalCents);
+      if (nextTotalCents === null) {
+        unknownItems.push(item);
+        unknownPackCount += packCount;
+        continue;
+      }
       knownItems.push(item);
       knownPackCount += packCount;
-      totalCents += Math.round(unitPrice * 100) * packCount;
+      totalCents = nextTotalCents;
     }
 
     return createOfferAmountSummary(totalCents, knownItems, unknownItems, knownPackCount, unknownPackCount);
