@@ -1030,3 +1030,10 @@ Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfigura
 - Der End-to-End-Audit gegen `main@ce5786f5ac36f9499c44038112b0bfd500b6ef37` fand keinen unzulässigen Bestandsabzug. Abhaken, „Alles abhaken“, Zurücksetzen und Aktualisieren ändern ausschließlich `shoppingChecks`; `applyPantryCoverageToShoppingItems` und der Mengenabgleich mutieren keine Vorratsdaten.
 - Teilbestände bleiben erhalten und werden nur als Deckung bzw. Restbedarf ausgewiesen. Unbekannte, ungültige oder inkompatible Mengen bleiben konservativ offen und werden nicht still reduziert. Die bestehenden Coverage- und Supabase-Sync-Tests bestätigen Vorrats-/Lokaldatenerhalt sowie Bestätigung vor Cloud-Übernahme.
 - Eine explizite Kaufbestätigung mit Verbrauchsbuchung existiert derzeit nicht. Der Vorratsverbrauch bleibt damit bewusst offen und darf nicht aus einem Listen-Haken, Planen, Laden oder Offline-Sync abgeleitet werden. Kein Code-PR, keine Supabase-, Daten-, Preis-, Angebots- oder Deploymentänderung.
+
+
+## Audit 09.11.2026 – Packungsgrößen im Angebotsvergleich
+
+- PR #295 wurde in Merge-Commit `b984d7122546b2d4f51715b1fef8fd15f77e13aa` integriert. Der Angebotsvergleich interpretierte deutsche Gruppenschreibweisen wie `1.000 g` zuvor als `1 g`; dadurch konnten unterschiedlich große Packungen im Tie-Break gleichgesetzt werden.
+- `parseKnownPackageSize` normalisiert nun deutsche Tausender- und gemischte Dezimal-Packungsgrößen deterministisch. Regressionen für `1.000 g`, `1.234,56 g` und `2 x 1.000 ml` sichern den Pfad; CI #42611276092 war vollständig grün (321 Tests, Worker-Artefakt und Endpoint-Validierung).
+- Keine Preis- oder Angebotsdaten, Nutzerdaten, Supabase-/Datenbankverträge oder Deployments wurden fachlich geändert.
