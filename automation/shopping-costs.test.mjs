@@ -88,6 +88,26 @@ test('exposes one canonical, traceable contract for known, unknown, missing, and
   assert.equal(noKnownPrice.knownOfferTotalCents, null);
 });
 
+test('behandelt unsichere Centbeträge konservativ als unbekannt', () => {
+  const nearLimitEuro = Number.MAX_SAFE_INTEGER / 100;
+  const summary = model.calculateOfferAmount([
+    { id: 'first', packCount: 1, offer: { price: 'near-limit' } },
+    { id: 'overflow', packCount: 1, offer: { price: 'near-limit' } },
+  ], () => nearLimitEuro);
+
+  assert.equal(summary.totalCents, Number.MAX_SAFE_INTEGER);
+  assert.equal(summary.knownOfferCount, 1);
+  assert.deepEqual(Array.from(summary.unknownItems, item => item.id), ['overflow']);
+
+  const unsafeSingle = model.calculateOfferAmount([
+    { id: 'unsafe-single', packCount: 1, offer: { price: 'too-large' } },
+  ], () => 100_000_000_000_000);
+
+  assert.equal(unsafeSingle.totalCents, 0);
+  assert.equal(unsafeSingle.knownOfferCount, 0);
+  assert.deepEqual(Array.from(unsafeSingle.unknownItems, item => item.id), ['unsafe-single']);
+});
+
 test('treats invalid or nonpositive pack counts as one pack', () => {
   const summary = model.calculateOfferAmount([
     { id: 'invalid', packCount: 0, offer: { price: '1,10 €' } },
