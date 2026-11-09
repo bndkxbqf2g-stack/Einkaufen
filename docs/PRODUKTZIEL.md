@@ -708,3 +708,10 @@ Dieser Abgleich ist rein dokumentarisch und ändert keine Runtime, Nutzerdaten, 
 - Die aktuelle Einkaufslistenlogik trennt Listenstatus und Vorrat: Checkboxen und Listenaktionen speichern nur `shoppingChecks`; der Vorratsabgleich berechnet Deckung und Restbedarf ohne Bestandsmutation.
 - Teilbestände bleiben erhalten, unbekannte Mengen werden konservativ offen gelassen, und inkompatible Einheiten werden nicht als Verbrauch zusammengeführt. Die Sync-Übernahme verlangt eine ausdrückliche Bestätigung; ein bloßes Laden oder Offline-Sync reduziert den Bestand nicht automatisch.
 - Eine echte Kaufbestätigung/Verbrauchsbuchung ist noch nicht implementiert. Sie bleibt ein eigener, später freizugebender Produkt-/Datenvertrag und darf nicht aus „abgehakt“ abgeleitet werden. Auditbasis: `main@ce5786f5ac36f9499c44038112b0bfd500b6ef37`; keine Runtime-, Supabase-, Daten- oder Deploymentänderung.
+
+
+## Fortschritt 09.11.2026 – korrekte Packungsgrößen im Angebotsvergleich
+
+- PR #295 ist in Merge-Commit `b984d7122546b2d4f51715b1fef8fd15f77e13aa` enthalten. Die Packungsgrößen-Normalisierung behandelt deutsche Tausender- und gemischte Dezimalangaben jetzt korrekt; `1.000 g` bleibt 1000 g statt 1 g.
+- Der Fix betrifft nur die deterministische Tie-Break-Basis des Angebotsvergleichs. Regressionstests und CI #42611276092 bestätigten 321/321 Tests sowie Worker-/Endpoint-Prüfungen.
+- Es wurden keine Preise, Angebotsdaten, Nutzerdaten, Supabase-/Datenbankverträge oder Deployments verändert.
