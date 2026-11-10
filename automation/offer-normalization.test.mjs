@@ -30,15 +30,15 @@ test('keeps source alternatives explicit instead of choosing one package size', 
 });
 
 test('does not treat a unit-price expression as an explicit package size', () => {
-  assert.equal(offerPackSize('Bier 24 x (1 l = 1,00 €) 9,99 €'), '1 Packung');
+  assert.equal(offerPackSize('Bier 24 x (1 l = 1,00 €) 9,99 €'), '');
 });
 
 test('does not mistake a unit-price denominator for the package size', () => {
-  assert.equal(offerPackSize('Olivenöl', 'Olivenöl 3,99 € / 100 ml'), '1 Packung');
+  assert.equal(offerPackSize('Olivenöl', 'Olivenöl 3,99 € / 100 ml'), '');
 });
 
-test('retains the neutral fallback when no size is explicit', () => {
-  assert.equal(offerPackSize('Tomaten', 'Tomaten 1,49 €'), '1 Packung');
+test('leaves the package size unknown when no size is explicit', () => {
+  assert.equal(offerPackSize('Tomaten', 'Tomaten 1,49 €'), '');
 });
 
 

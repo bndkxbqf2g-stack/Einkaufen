@@ -51,7 +51,7 @@ function packSizeBeforePrice(value) {
 }
 
 export function offerPackSize(title, details = '') {
-  return packSizeBeforePrice(title) || packSizeBeforePrice(details) || '1 Packung';
+  return packSizeBeforePrice(title) || packSizeBeforePrice(details) || '';
 }
 
 export function offerDeduplicationKey(offer, fallbackStore = '') {

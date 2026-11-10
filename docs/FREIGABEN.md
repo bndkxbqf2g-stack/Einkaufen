@@ -1295,3 +1295,9 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Fehlende Vegetarisch-Angaben aus generischen Rezeptimporten werden nicht mehr implizit als `false` gespeichert.
 - Der Endpoint-Test prüft unbekannte und ausdrücklich vegetarische Quellenangaben; Root-/`dist`-Parität bleibt geschützt.
 - Kein Freigabepunkt ausgelöst: keine Nutzer-, Angebots-, Vorrats-, Kassen-, Supabase-, Datenbank- oder Produktionsänderung.
+
+
+## Qualitätsaudit 10.11.2026: Packungsgrößen
+
+- Kein Freigabepunkt ausgelöst: Die Änderung macht unbekannte Packungsgrößen sichtbar, ohne Nutzer-, Angebots-, Supabase- oder Produktionsdaten zu verändern.
+- Weiterhin offen bleiben Kaufabschluss, Cloud-Datenübernahme, Konfliktzusammenführung, Haushaltsrollen, KI-/Kostenanbieter und zusätzliche Marktstopps.

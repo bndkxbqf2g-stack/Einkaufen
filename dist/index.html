@@ -799,7 +799,7 @@
 
     function normalizeStoredCustomOffer(offer) {
       const value = offer && typeof offer === 'object' ? offer : {};
-      return { source: value.source || 'manueller Import', confidence: value.confidence || 'niedrig', packSize: value.packSize || '1 Packung', ...value, validUntil: String(value.validUntil || '').trim() };
+      return { source: value.source || 'manueller Import', confidence: value.confidence || 'niedrig', packSize: String(value.packSize || '').trim(), ...value, validUntil: String(value.validUntil || '').trim() };
     }
     let offers = [...seedOffers.map(normalizeSeedOffer), ...(Array.isArray(storedCustomOffers) ? storedCustomOffers.map(normalizeStoredCustomOffer) : [])];
     let favorites = stored('angebotskueche.favorites', seededFavorites);
@@ -959,9 +959,9 @@
 
     function parseManualOfferRow(row) {
       const parts = splitOfferRow(row);
-      const [name, store, price, saving = '–', category = 'Hauptzutat', packSizeOrDate = '1 Packung', dateOrSource = '', source = 'manueller Import'] = parts;
+      const [name, store, price, saving = '–', category = 'Hauptzutat', packSizeOrDate = '', dateOrSource = '', source = 'manueller Import'] = parts;
       const legacyDate = /^\d{1,2}\.\d{1,2}\.\d{4}$/.test(packSizeOrDate);
-      const packSize = legacyDate ? '1 Packung' : packSizeOrDate;
+      const packSize = legacyDate ? '' : packSizeOrDate;
       const validUntil = legacyDate ? packSizeOrDate : dateOrSource;
       const resolvedSource = legacyDate ? (dateOrSource || 'manueller Import') : (source || 'manueller Import');
       const market = canonicalMarketName(store);
@@ -1091,7 +1091,7 @@
     }
 
     function offerImportKey(offer) {
-      return [normalizeIngredient(offer.name), canonicalMarketName(offer.store), offer.price, offer.packSize || '1 Packung', offer.validUntil]
+      return [normalizeIngredient(offer.name), canonicalMarketName(offer.store), offer.price, offer.packSize || '', offer.validUntil]
         .map(value => String(value || '').trim().replace(/\s+/g, ' ').toLowerCase())
         .join('|');
     }
@@ -1551,7 +1551,7 @@
         const side = row?.querySelector('.shopping-item-side');
         if (!side) return;
         const pack = side.querySelector('.shopping-item-pack');
-        if (pack) pack.textContent = item.packCount > 1 ? `${item.packCount} Packungen · ${item.offer.packSize || 'Packungsgröße'}` : `${item.offer.packSize || '1 Packung'}`;
+        if (pack) pack.textContent = item.packCount > 1 ? `${item.packCount} Packungen · ${offerPackSizeLabel(item.offer.packSize)}` : `${offerPackSizeLabel(item.offer.packSize)}`;
         const evidence = document.createElement('span');
         evidence.className = 'shopping-item-evidence';
         evidence.textContent = shoppingOfferEvidenceLabel(item.offer);
@@ -1635,7 +1635,7 @@
         return (marketOrder.indexOf(first[0]) === -1 ? 99 : marketOrder.indexOf(first[0])) - (marketOrder.indexOf(second[0]) === -1 ? 99 : marketOrder.indexOf(second[0]));
       });
       queueMicrotask(() => decorateShoppingItemEvidence(items));
-       $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group" aria-label="${escapeHtml(marketDisplayName(group))}">${renderShoppingGroupHeader(group, groupItems)}<div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const baseUseLabel = item.manual && item.packCount > 1 ? `${item.packCount} Packungen · zusätzlich ergänzt` : item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; const quantityLabel = shoppingQuantityLabel(item); const pantryLabel = shoppingPantryCoverageLabel(item); const useLabel = [baseUseLabel, quantityLabel, pantryLabel].filter(Boolean).join(' · '); const packLabel = item.offer ? (item.packCount > 1 ? `${item.packCount} Packungen · ${item.offer.packSize || 'Packungsgröße'}` : `${item.offer.packSize || '1 Packung'} · ${item.offer.saving || 'Angebot'}`) : ''; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.packCount > 1 ? `${item.packCount} × ${item.offer.price}` : item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(packLabel)}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
+       $('#shoppingList').innerHTML = `<div class="shopping-groups">${orderedGroups.map(([group, groupItems]) => `<section class="shopping-group" aria-label="${escapeHtml(marketDisplayName(group))}">${renderShoppingGroupHeader(group, groupItems)}<div class="shopping-items">${groupItems.sort((first, second) => Number(Boolean(shoppingChecks[first.id])) - Number(Boolean(shoppingChecks[second.id])) || first.name.localeCompare(second.name, 'de')).map(item => { const checked = Boolean(shoppingChecks[item.id]); const baseUseLabel = item.manual && item.packCount > 1 ? `${item.packCount} Packungen · zusätzlich ergänzt` : item.count > 1 ? `für ${item.count} Gerichte · gemeinsam einkaufen` : `für ${item.meals[0] || 'den Plan'}`; const quantityLabel = shoppingQuantityLabel(item); const pantryLabel = shoppingPantryCoverageLabel(item); const useLabel = [baseUseLabel, quantityLabel, pantryLabel].filter(Boolean).join(' · '); const packLabel = item.offer ? (item.packCount > 1 ? `${item.packCount} Packungen · ${offerPackSizeLabel(item.offer.packSize)}` : `${offerPackSizeLabel(item.offer.packSize)} · ${item.offer.saving || 'Angebot'}`) : ''; return `<div class="shopping-item ${checked ? 'done' : ''}"><input type="checkbox" data-shopping-check="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} aria-label="${escapeHtml(item.name)} abgehakt"><span><span class="shopping-item-name">${escapeHtml(item.name)}</span><span class="shopping-item-meta">${escapeHtml(useLabel)}</span></span><span class="shopping-item-side">${item.offer ? `<span class="shopping-item-price">${escapeHtml(item.packCount > 1 ? `${item.packCount} × ${item.offer.price}` : item.offer.price)}</span><span class="shopping-item-pack">${escapeHtml(packLabel)}</span>` : '<span class="shopping-item-missing">ergänzen</span>'}${item.manual ? `<button class="shopping-item-remove" data-remove-shopping="${escapeHtml(item.manualId)}">Entfernen</button>` : ''}</span></div>`; }).join('')}</div></section>`).join('')}</div>`;
     }
 
     function openShoppingItemModal() {
@@ -1882,7 +1882,7 @@
         const evidenceLabel = item.offer ? shoppingOfferEvidenceLabel(item.offer) : '';
         const savingLabel = item.offer ? shoppingOfferSavingLabel(item.offer) : '';
         const regularPriceLabel = item.offer ? shoppingOfferRegularPriceLabel(item.offer) : '';
-        return `- ${item.name}${item.count > 1 ? ` · für ${item.count} Gerichte` : ''}${item.offer ? ` · ${packCount} × ${item.offer.packSize || '1 Packung'} · ${amountLabel} · ${evidenceLabel} · ${regularPriceLabel || savingLabel}` : ` · ${amountLabel}`}`;
+        return `- ${item.name}${item.count > 1 ? ` · für ${item.count} Gerichte` : ''}${item.offer ? ` · ${packCount} × ${offerPackSizeLabel(item.offer.packSize)} · ${amountLabel} · ${evidenceLabel} · ${regularPriceLabel || savingLabel}` : ` · ${amountLabel}`}`;
       }).join('\n')}`).join('\n\n');
       const text = `Angebotsküche · offene Einkaufsliste\n\n${lines}\n\n${shoppingShareSummary(pending)}\nFehlende Artikel und Vorräte sind nicht enthalten.`;
       if (navigator.share) {
@@ -2049,6 +2049,11 @@
         : /^(?:dl|deziliter)$/i.test(rawUnit) ? 100
         : 1;
       return { amount: Math.round(multiplier * quantity * factor * 1_000_000) / 1_000_000, unit };
+    }
+
+    function offerPackSizeLabel(value) {
+      const text = String(value || '').trim().replace(/\s+/g, ' ');
+      return text && !/^1\s+pack(?:ung|ungen)?$/iu.test(text) ? text : 'Packungsgröße unbekannt';
     }
 
     function compareOfferCandidates(first, second) {
@@ -2376,7 +2381,7 @@
       offersRendered = true;
       const current = offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer));
       const filtered = filter === 'all' ? current : current.filter(offer => offer.store === filter);
-      $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => { const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : ''; const regularPriceLabel = shoppingOfferRegularPriceLabel(offer); return `<div class="catalog-card"><div class="catalog-card-top">${renderOfferVisual(offer)}<span class="discount">${escapeHtml(offer.saving)}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category)}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note)} · ${escapeHtml(offer.packSize || '1 Packung')}</span><span>${escapeHtml(offer.relevance)}% Match</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source)} · ${escapeHtml(offer.confidence)} sicher${regularPriceLabel ? ` · ${escapeHtml(regularPriceLabel)}` : ''}</div>${removeAction}</div>`; }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
+      $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => { const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : ''; const regularPriceLabel = shoppingOfferRegularPriceLabel(offer); return `<div class="catalog-card"><div class="catalog-card-top">${renderOfferVisual(offer)}<span class="discount">${escapeHtml(offer.saving)}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category)}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note)} · ${escapeHtml(offerPackSizeLabel(offer.packSize))}</span><span>${escapeHtml(offer.relevance)}% Match</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source)} · ${escapeHtml(offer.confidence)} sicher${regularPriceLabel ? ` · ${escapeHtml(regularPriceLabel)}` : ''}</div>${removeAction}</div>`; }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
       renderOfferMaintenance();
     }
 
