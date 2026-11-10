@@ -791,3 +791,8 @@ Der Mengenpfad bewahrt den ursprünglichen Tagesindex auch bei Tagen ohne Abende
 
 - Der Angebots-Refresh ignoriert ungültige lokale `nextCheckAt`-Werte und fällt auf das belegte `validUntil`- bzw. `fetchedAt`-Intervall zurück.
 - Dabei werden keine Angebotsdaten erfunden oder verändert; die Änderung betrifft nur die Refresh-Entscheidung.
+
+## Technische Absicherung 10.11.2026 – Cache-Zeitstempel
+
+- Auch ungültige lokale `fetchedAt`-Werte werden als refresh-fällig behandelt; valide Angebotsdaten bleiben unverändert.
+- Keine Angebotsdaten, Vorratsdaten, Supabase-Daten oder Deployments werden dadurch verändert.

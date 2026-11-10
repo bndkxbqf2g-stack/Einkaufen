@@ -38,6 +38,16 @@ test('ignoriert ungültiges nextCheckAt und verwendet validUntil als Fallback', 
   assert.equal(due, true);
 });
 
+test('behandelt einen ungültigen fetchedAt-Zeitstempel als refresh-fällig', () => {
+  const due = buildRefreshDue({
+    Aldi: {
+      fetchedAt: 'nicht-ein-datum',
+    },
+  });
+
+  assert.equal(due, true);
+});
+
 test('verwendet ein gültiges zukünftiges nextCheckAt weiterhin als Priorität', () => {
   const due = buildRefreshDue({
     Aldi: {

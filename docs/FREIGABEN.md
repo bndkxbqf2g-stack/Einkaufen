@@ -1116,3 +1116,8 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 
 - Ungültige lokale Refresh-Zeitstempel werden sicher verworfen; der bestehende Ablauf für belegte Angebotsgültigkeit und Cache-Fallback bleibt maßgeblich.
 - Keine Supabase-, Datenbank-, Produktions- oder kostenpflichtige Änderung erforderlich.
+
+## Gebündelte Notiz 10.11.2026 – Cache-Zeitstempel
+
+- Die Refresh-Entscheidung verwirft jetzt sowohl ungültige `nextCheckAt`- als auch `fetchedAt`-Werte sicher.
+- Keine neue Freigabe erforderlich; keine Supabase-, Datenbank-, Produktions- oder Kostenänderung.
