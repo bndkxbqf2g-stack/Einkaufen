@@ -1106,3 +1106,8 @@ Die früheren Ausgangslisten werden durch den aktuellen Fortschritt ergänzt: Lo
 ## Fortschritt 09.11.2026 – Mengen auch ohne Angebotsanker sichtbar
 
 Der Einkaufslisten-UI zeigt eine explizite, bereits berechnete Rezeptmenge auch dann, wenn kein verifiziertes Angebot vorhanden ist. Damit bleibt der Einkaufsbedarf handlungsfähig, ohne Preise, Packungsgrößen oder Mengen zu erfinden; bei Teildeckung bleibt die Restbedarfsanzeige maßgeblich. Keine neue Freigabe erforderlich.
+
+
+## Audit 10.11.2026 – Personen je Planungstag abgesichert
+
+Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regression abgesichert: Leere frühere Abendessenplätze verschieben die Personenzahl eines späteren Abendessens nicht. Der Testblock benötigt keine neue Freigabe.
