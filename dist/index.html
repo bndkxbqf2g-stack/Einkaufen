@@ -2067,7 +2067,7 @@
 
     function formatShoppingGroupOfferSummary(group, items) {
       if (group === 'Ergänzen') return '';
-      const summary = calculateOfferAmount(items);
+      const summary = calculateOfferAmount(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer));
       const comparison = typeof calculateOfferComparison === 'function' ? calculateOfferComparison(items) : { knownComparisonCount: 0, unknownComparisonCount: 0 };
       const details = [];
       if (summary.knownOfferCount) details.push(`Bekannte Angebotssumme ${formatEuro(summary.knownOfferTotal)}`);
