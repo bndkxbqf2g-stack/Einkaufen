@@ -1288,3 +1288,10 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Der Seed-Abgleich ergänzt fehlende persönliche Rezeptdauer und Schwierigkeit nicht mehr automatisch.
 - Eine Regression schützt den unbekannten Zustand und die Root-/`dist`-Parität.
 - Kein Freigabepunkt ausgelöst: keine Nutzer-, Angebots-, Vorrats-, Kassen-, Supabase-, Datenbank- oder Produktionsänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – Vegetarisch-Metadaten
+
+- Fehlende Vegetarisch-Angaben aus generischen Rezeptimporten werden nicht mehr implizit als `false` gespeichert.
+- Der Endpoint-Test prüft unbekannte und ausdrücklich vegetarische Quellenangaben; Root-/`dist`-Parität bleibt geschützt.
+- Kein Freigabepunkt ausgelöst: keine Nutzer-, Angebots-, Vorrats-, Kassen-, Supabase-, Datenbank- oder Produktionsänderung.
