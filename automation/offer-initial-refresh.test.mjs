@@ -49,31 +49,12 @@ test('keeps the static seed offers as the non-GitHub fallback path', async () =>
   assert.equal(harness.context.automaticOfferRefreshStarted, false);
 });
 
-test('waits for the initial refresh before the initial plan render callback', async () => {
-  const events = [];
-  const context = {
-    isGithubPagesHost: true,
-    refreshOfficialOffers() {
-      events.push('refresh');
-      return Promise.resolve(true);
-    },
-    renderPlan: () => events.push('plan'),
-    renderSuggestions: () => events.push('suggestions'),
-    renderHighlights: () => events.push('highlights'),
-    renderMarkets: () => events.push('markets'),
-    renderFavorites: () => events.push('favorites'),
-    renderPantry: () => events.push('pantry'),
-    renderSourceStatus: () => events.push('source-status'),
-    setTimeout,
-  };
-  const startupMatch = source.match(/    let automaticOfferRefreshStarted = false;\r?\n    startInitialOfferRefresh\(\)\.finally\(\(\) => \{[\s\S]*?\r?\n    \}\);/);
-  assert.ok(startupMatch, 'initial rendering must be gated by the refresh promise');
-  vm.runInNewContext(
-    `${helperMatch[0]}\n${startupMatch[0]}`,
-    context,
-    { filename: 'offer-initial-startup.js' },
-  );
-
-  await new Promise(resolve => setTimeout(resolve, 0));
-  assert.deepEqual(events, ['refresh', 'plan', 'suggestions', 'highlights', 'markets', 'favorites', 'pantry', 'source-status']);
-});
+test('renders the local app before the optional initial refresh', () => {
+  const startupIndex = source.indexOf('    let automaticOfferRefreshStarted = false;');
+  const initialRenderIndex = source.indexOf('    renderApp();', startupIndex);
+  const refreshIndex = source.indexOf('    startInitialOfferRefresh().then(renderApp, renderApp);', initialRenderIndex);
+  assert.ok(startupIndex >= 0, 'startup block must be present');
+  assert.ok(initialRenderIndex > startupIndex, 'the local app must render during startup');
+  assert.ok(refreshIndex > initialRenderIndex, 'the optional offer refresh must start afterwards');
+  assert.doesNotMatch(source, /startInitialOfferRefresh\(\)\.finally\(/, 'offer refresh must not gate the first render');
+});;

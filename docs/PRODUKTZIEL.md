@@ -1135,3 +1135,10 @@ bleiben ebenfalls getrennte Freigabepunkte.
 
 - Der vorbereitende lokale Kaufdatensatz-Validator akzeptiert Marktwerte nur als Zeichenkette oder leer; Objekte, Arrays und Zahlen werden nicht mehr implizit als Text gespeichert.
 - Der Kaufkern bleibt weiterhin nicht an UI, Backup, Cloud, Supabase oder tatsächliche Einkaufsdaten angeschlossen.
+
+## MVP-Reparatur 10.11.2026 – Startdarstellung ohne Angebotsblockade
+
+- Der lokale/offlinefähige App-Kern rendert sofort aus vorhandenen Demo-/Cache-Daten.
+- Der optionale Abruf aktueller Angebote läuft danach und aktualisiert die Ansichten bei Erfolg oder Fehler.
+- Ein langsamer oder nicht erreichbarer Angebots-Endpoint blockiert damit nicht mehr Start, Navigation und lokale Planung.
+- Root, dist, Worker-Artefakt und Regressionstest werden gemeinsam geprüft.
