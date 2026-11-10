@@ -31,7 +31,7 @@ test('skips a malformed Recipe candidate and imports a later valid candidate', a
     name: 'Test-Curry',
     ingredients: ['Paprika', 'Öl'],
     instructions: '',
-    vegetarian: false,
+    vegetarian: null,
   });
 });
 
@@ -50,7 +50,25 @@ test('parses complete source durations and leaves unknown audience metadata open
     ingredients: ['Paprika'],
     instructions: '',
     time: 90,
-    vegetarian: false,
+    vegetarian: null,
+  });
+});
+
+test('preserves an explicitly vegetarian keyword while leaving missing metadata unknown', async () => {
+  mockRecipePage({
+    '@type': 'Recipe',
+    name: 'Grünes Curry',
+    recipeIngredient: ['Paprika'],
+    keywords: ['vegetarian'],
+  });
+
+  const response = await worker.fetch(recipeRequest);
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), {
+    name: 'Grünes Curry',
+    ingredients: ['Paprika'],
+    instructions: '',
+    vegetarian: true,
   });
 });
 

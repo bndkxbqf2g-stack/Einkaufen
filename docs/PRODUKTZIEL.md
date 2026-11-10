@@ -930,3 +930,10 @@ werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
 - Bei der Wiederherstellung namensgleicher Seed-Favoriten werden fehlende Dauer- und Aufwandsangaben nicht mehr aus Seed-Daten ergänzt.
 - Vorhandene persönliche Werte bleiben erhalten; fehlende Werte werden als offen behandelt.
 - Die Änderung ist lokal und rückwärtsverträglich und berührt keine Angebots-, Plan-, Vorrats-, Kassen- oder Synchronisationsdaten.
+
+
+## Sicherheitskorrektur 10.11.2026 – unbekannte Vegetarisch-Angabe
+
+- Generische Rezeptimporte übernehmen einen vegetarischen Status nur bei ausdrücklich erkannten Schlüsselwörtern; fehlende Angaben bleiben unbekannt.
+- App, Worker und Endpoint-Regression verwenden denselben konservativen Vertrag.
+- Kuratierte Rezeptdaten und vorhandene persönliche Angaben bleiben unverändert.
