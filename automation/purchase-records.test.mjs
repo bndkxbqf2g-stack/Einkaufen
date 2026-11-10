@@ -59,6 +59,7 @@ test('rejects duplicate IDs and invalid record lists before summarizing', () => 
   assert.throws(() => validatePurchaseRecords([record, { ...record }]), /doppelt/);
   assert.throws(() => summarizePurchaseRecords(record, '2026-11'), /Liste/);
   assert.throws(() => summarizePurchaseRecords([], '2026-13'), /month/);
+  assert.throws(() => summarizePurchaseRecords([], '0000-01'), /month/);
 });
 
 test('summarizes only the requested month and keeps plan values separate', () => {
