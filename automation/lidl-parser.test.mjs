@@ -31,3 +31,10 @@ for (const name of ['Orangen', 'Mandeln', 'Haferdrink', 'Garnelen', 'Schoko-Bons
   assert.equal(parsed.length, 1, `Lebensmittelbegriff wird erkannt: ${name}`);
   assert.equal(parsed[0].name, name);
 }
+
+
+const comparison = parseLidlOfferText(`Lidl Wochenangebote
+Äpfel
+statt 2,49 €
+1,99 €`);
+assert.equal(comparison[0].regularPrice, '2,49 €');
