@@ -1334,3 +1334,9 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Kein neuer Freigabepunkt: Der lokale Vorbereitungsvalidator akzeptiert keine Kalenderangabe mit Jahr 0000.
 - Keine Nutzer-, Kauf-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – Abendessen-Kostenparität
+
+- Kein neuer Freigabepunkt: Die Änderung gleicht nur die bestehende Anzeigeprüfung für Mittagessen und optionales Abendessen an.
+- Keine Nutzer-, Kauf-, Vorrats-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
