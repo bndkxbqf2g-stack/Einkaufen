@@ -37,7 +37,7 @@ test('shares the known subtotal and open cash boundary explicitly', () => {
       { packCount: 3, offer: { price: '1,20 €' } },
       { packCount: 1, offer: { price: 'Preis unbekannt' } },
     ]),
-    'Bekannter Angebotsbetrag 3,60 € · 1 Preis unbekannt · Kassenbetrag offen',
+    'Bekannter Angebotsbetrag 3,60 € · 1 Preis unbekannt · 2 Vergleichepreise unbekannt · Kassenbetrag offen',
   );
   assert.match(html, /shoppingShareSummary\(pending\)/);
   assert.match(html, /Fehlende Artikel und Vorräte sind nicht enthalten/);
@@ -50,7 +50,7 @@ test('keeps manual and unanchored items explicit in a shared list summary', () =
       { packCount: 1, offer: null, manual: true },
       { packCount: 1, offer: null },
     ]),
-    'Bekannter Angebotsbetrag 2,49 € · 1 manueller Artikel ohne Angebotsanker · 1 weiterer Artikel ohne Angebotsanker · Kassenbetrag offen',
+    'Bekannter Angebotsbetrag 2,49 € · 1 Vergleichspreis unbekannt · 1 manueller Artikel ohne Angebotsanker · 1 weiterer Artikel ohne Angebotsanker · Kassenbetrag offen',
   );
 });
 
@@ -77,6 +77,6 @@ test('teilt verifizierte Vergleichssumme getrennt vom Angebotsbetrag', () => {
       { packCount: 2, offer: { price: '1,20 €', regularPrice: '1,50 €' } },
       { packCount: 1, offer: { price: '0,89 €', regularPrice: '–' } },
     ]),
-    'Bekannter Angebotsbetrag 2,40 € · Regulärer Vergleichsanteil 3,00 € · rechnerische Differenz 0,60 € · 1 Vergleichspreis unbekannt · Kassenbetrag offen',
+    'Bekannter Angebotsbetrag 3,29 € · Regulärer Vergleichsanteil 3,00 € · rechnerische Differenz 0,60 € · 1 Vergleichspreis unbekannt · Kassenbetrag offen',
   );
 });
