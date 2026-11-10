@@ -47,7 +47,7 @@ test('verbindet synthetischen Plan, Teilvorrat, Packungsbedarf und Vergleichskos
   assert.equal(result.items[0].quantityBasis.amount, 750);
   assert.equal(result.items[0].pantryCoveredAmount, 250);
   assert.equal(result.items[0].pantryRemainingDemand, 750);
-  assert.deepEqual(result.items[0].meals, ['Mittagessen', 'Abendessen']);
+  assert.deepEqual(Array.from(result.items[0].meals), ['Mittagessen', 'Abendessen']);
   assert.equal(quantity.calculateExactPackCount(result.items[0]), 2);
   assert.deepEqual(pantry, { hackfleisch: { name: 'Hackfleisch', amount: 250, unit: 'g' } });
 
