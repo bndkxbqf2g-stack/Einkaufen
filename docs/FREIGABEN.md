@@ -1214,3 +1214,10 @@ EDEKA und Netto ab. CI bestätigte 356/356 Tests, Worker-Build und
 Endpunktprüfung; der Deploy-Job blieb übersprungen. Es wurden keine
 Angebotsdateien, Nutzerdaten, Supabase-Daten oder Produktionsressourcen
 verändert.
+
+## Fortschritt 10.11.2026 – Preisverlauf bewahrt Vergleichspreise
+
+Der KaufDA-Preisverlauf speichert ausdrücklich belegte reguläre
+Vergleichspreise nun optional mit der historischen Beobachtung. Die Änderung
+ist rückwärtskompatibel für ältere Einträge ohne dieses Feld und bleibt ohne
+Supabase-, Nutzer-, Angebotsdaten- oder Produktionsänderung.

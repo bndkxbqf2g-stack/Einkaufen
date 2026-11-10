@@ -849,3 +849,11 @@ Der zentrale Kostenkern führt nun neben dem verifizierten Angebotsanteil einen 
 ## Audit 10.11.2026 – Marktstopp ohne Ausgangsbasis
 
 Der Marktstopp-Kern empfiehlt keinen zusätzlichen Markt, wenn keine bestehenden Märkte ausgewählt sind. Dadurch bleibt die Berechnung bei fehlender Ausgangsbasis unbekannt; Fahrtkosten, Ersparnisse und Schwellenwerte werden nicht künstlich ergänzt.
+
+## Fortschritt 10.11.2026 – Vergleichspreise im KaufDA-Verlauf erhalten
+
+Der KaufDA-Preisverlauf übernimmt ausdrücklich belegte reguläre
+Vergleichspreise jetzt optional in historische Beobachtungen. Ältere
+Beobachtungen ohne dieses Feld bleiben kompatibel; die Identität eines
+Angebots ändert sich dadurch nicht. Es werden keine neuen Preise abgeleitet
+und keine Angebotsdateien oder Nutzerdaten verändert.

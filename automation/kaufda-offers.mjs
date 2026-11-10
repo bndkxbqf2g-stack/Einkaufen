@@ -5,6 +5,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { chromium } from 'playwright';
 import { extractExplicitRegularPrice, offerDeduplicationKey, offerPackSize } from './offer-normalization.mjs';
+import { createOfferHistoryObservation, offerHistoryKey } from './offer-history.mjs';
 import { writeOfferSnapshot } from './offer-snapshot.mjs';
 
 const execFileAsync = promisify(execFile);
@@ -314,26 +315,11 @@ async function updatePriceHistory(results) {
     previous = JSON.parse(await readFile(historyFile, 'utf8'));
   } catch { /* erster Lauf oder Datei noch nicht vorhanden */ }
   const observations = (Array.isArray(previous.observations) ? previous.observations : []).filter(item => likelyFood(item.name));
-  const byKey = new Map(observations.map(item => [
-    `${item.market}|${String(item.name || '').toLowerCase()}|${item.price}|${item.validUntil}`,
-    item
-  ]));
+  const byKey = new Map(observations.map(item => [offerHistoryKey(item), item]));
   for (const result of results) {
     for (const offer of result.offers || []) {
-      const observation = {
-        market: result.market,
-        store: result.store,
-        location: result.location,
-        name: offer.name,
-        price: offer.price,
-        priceValue: Number(String(offer.price || '').replace(',', '.').replace(/[^0-9.]/g, '')) || null,
-        packSize: offer.packSize || '1 Packung',
-        validUntil: offer.validUntil,
-        imageUrl: offer.imageUrl || '',
-        sourceUrl: result.sourceUrl,
-        observedAt: result.fetchedAt
-      };
-      const key = `${observation.market}|${offerDeduplicationKey(observation)}`;
+      const observation = createOfferHistoryObservation(result, offer);
+      const key = offerHistoryKey(observation);
       byKey.set(key, observation);
     }
   }
