@@ -1118,3 +1118,10 @@ bleiben ebenfalls getrennte Freigabepunkte.
 
 - Ein Regressionstest prüft, dass HTML-artige persönliche Rezepttitel im Tageszuordnungsdialog escaped bleiben.
 - Die bestehende Laufzeitlogik war bereits geschützt; es wurden keine Nutzer-, Plan-, Vorrats-, Kauf-, Supabase- oder Produktionsdaten geändert.
+
+
+## Sicherheitskorrektur 10.11.2026 – sichere Rezept- und Bildquellen
+
+- Persönliche und importierte Rezeptquellen werden vor dem Einsetzen in Links auf HTTPS ohne Zugangsdaten begrenzt; unsichere Werte bleiben ohne Link.
+- Angebotsbilder verwenden dieselbe HTTPS-Grenze. Vorhandene Daten werden nicht umgeschrieben; nur die Darstellung unsicherer URLs wird unterdrückt.
+- Root, dist und Regressionstest bleiben synchron. Keine Nutzer-, Plan-, Vorrats-, Kauf-, Supabase- oder Produktionsdaten wurden geändert.
