@@ -807,3 +807,8 @@ Der Mengenpfad bewahrt den ursprünglichen Tagesindex auch bei Tagen ohne Abende
 - PR #316 ist in main enthalten: Die Einkaufsliste weist den verifizierten Angebotsanteil über alle Positionen aus; Preisunbekannte und nicht verankerte Positionen bleiben getrennt.
 - CI bestätigte Tests, Worker-Artefakt und Endpunktprüfung; der Deploy-Schritt blieb übersprungen.
 - Der nächste Laufzeitblock bleibt der ausdrücklich freizugebende Kaufabschluss mit manueller IST-Erfassung. Bis dahin bleiben Plan-/Angebotswerte, bestätigte Ausgaben und Vorratsverbrauch getrennt.
+
+## Marktvergleich 10.11.2026 – Gruppensummen evidenzbasiert
+
+- Marktgruppen in der Einkaufsliste verwenden jetzt denselben bekannten Preisparser und dieselbe Angebots-Evidenzprüfung wie die globale Kostensumme.
+- Unsichere, manuelle oder abgelaufene Preise bleiben als unbekannt sichtbar; keine Ersparnis oder Kassenprognose wird daraus abgeleitet.
