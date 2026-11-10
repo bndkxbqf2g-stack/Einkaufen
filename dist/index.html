@@ -1494,6 +1494,8 @@
         : 'Verifizierter Angebotsanteil unbekannt';
       const details = [coverage, `${summary.knownOfferCount} von ${summary.offerItemCount} Angebotspositionen mit Preis`];
       if (summary.unknownPriceCount) details.push(`${summary.unknownPriceCount} Preis${summary.unknownPriceCount === 1 ? '' : 'e'} unbekannt`);
+      if (summary.knownComparisonCount) details.push(`Bekannter regulärer Vergleichsanteil ${formatEuro(summary.knownRegularTotal)} · rechnerische Differenz ${formatEuro(summary.knownSavings)}`);
+      if (summary.unknownComparisonCount) details.push(`${summary.unknownComparisonCount} Vergleich${summary.unknownComparisonCount === 1 ? 's' : 'e'}preis unbekannt`);
       if (summary.manualMissingCount) details.push(`${summary.manualMissingCount} manuelle${summary.manualMissingCount === 1 ? 'r' : ''} Artikel ohne Angebotsanker`);
       if (summary.unanchoredMissingCount) details.push(`${summary.unanchoredMissingCount} ${summary.unanchoredMissingCount === 1 ? 'weiterer' : 'weitere'} Artikel ohne Angebotsanker`);
       return details.join(' · ');
@@ -2043,6 +2045,10 @@
       return window.AngebotskuecheCostModel.calculateOfferAmount(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer));
     }
 
+    function calculateOfferComparison(items) {
+      return window.AngebotskuecheCostModel.calculateOfferComparison(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer));
+    }
+
     function shoppingShareAmountLabel(item) {
       const amount = calculateOfferAmount([item]);
       return amount.knownOfferCount ? formatEuro(amount.knownOfferTotal) : 'Preis unbekannt';
@@ -2062,9 +2068,12 @@
     function formatShoppingGroupOfferSummary(group, items) {
       if (group === 'Ergänzen') return '';
       const summary = calculateOfferAmount(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer));
+      const comparison = typeof calculateOfferComparison === 'function' ? calculateOfferComparison(items) : { knownComparisonCount: 0, unknownComparisonCount: 0 };
       const details = [];
       if (summary.knownOfferCount) details.push(`Bekannte Angebotssumme ${formatEuro(summary.knownOfferTotal)}`);
+      if (comparison.knownComparisonCount) details.push(`Regulärer Vergleichsanteil ${formatEuro(comparison.knownRegularTotal)} · Differenz ${formatEuro(comparison.knownSavings)}`);
       if (summary.unknownPriceCount) details.push(`${summary.unknownPriceCount} Preis${summary.unknownPriceCount === 1 ? '' : 'e'} unbekannt`);
+      if (comparison.unknownComparisonCount) details.push(`${comparison.unknownComparisonCount} Vergleich${comparison.unknownComparisonCount === 1 ? 's' : 'e'}preis unbekannt`);
       return details.join(' · ');
     }
 

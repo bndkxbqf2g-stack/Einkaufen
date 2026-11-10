@@ -841,3 +841,7 @@ Der Mengenpfad bewahrt den ursprünglichen Tagesindex auch bei Tagen ohne Abende
 ## Fortschritt 10.11.2026 – Quellenbasis für reguläre Vergleichspreise
 
 Die Angebotsquellen unterstützen nun einen konservativen optionalen `regularPrice`-Wert: Parser übernehmen ihn ausschließlich aus ausdrücklich sichtbaren Formulierungen wie „statt“, „vorher“, „Normalpreis“ oder „UVP“ samt Eurobetrag. Prozentangaben werden nicht rückgerechnet. Die Snapshot-Validierung verlangt einen gültigen, höheren Vergleichspreis; ein „statt“-Betrag wird nicht als aktueller Angebotspreis akzeptiert. Die UI zeigt den regulären Quellenpreis nur bei verifizierter aktueller Angebots-Evidenz. Bestehende Snapshots ohne dieses optionale Feld bleiben unverändert gültig. Damit ist die technische Datenbasis für einen späteren Angebots-/Regelpreisvergleich erweitert, ohne reguläre Preise zu erfinden oder Kassenbeträge vorwegzunehmen.
+
+## Fortschritt 10.11.2026 – regulärer Vergleich im Kostenkern
+
+Der zentrale Kostenkern führt nun neben dem verifizierten Angebotsanteil einen separaten regulären Vergleichsanteil und eine rechnerische Differenz. Beide werden nur aus expliziten, höheren `regularPrice`-Werten und derselben Packungsanzahl berechnet. Fehlende, ungültige oder nicht verifizierte Vergleichswerte bleiben offen. Die UI weist die Werte als „regulärer Vergleichsanteil“ und „rechnerische Differenz“ aus; sie werden nicht in das bestätigte Monatsbudget oder einen Kassenbetrag eingerechnet.
