@@ -54,7 +54,7 @@ export function parseLidlOfferText(input, options = {}) {
   const seen = new Set();
   for (let index = 0; index < lines.length; index += 1) {
     const priceMatch = lines[index].match(PRICE_PATTERN);
-    if (!priceMatch) continue;
+    if (!priceMatch || /(?:statt|vorher|regulär|normalpreis|uvp)\\s*$/i.test(lines[index].slice(0, priceMatch.index))) continue;
     const contextLines = lines.slice(Math.max(0, index - 3), index + 1);
     const window = contextLines.join(' ');
     const name = cleanName(contextLines.filter(line => !HEADER_PATTERN.test(line) && !DETAIL_PATTERN.test(line) && !DATE_PATTERN.test(line) && !PRICE_PATTERN.test(line)).join(' '));
