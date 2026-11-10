@@ -1,7 +1,7 @@
 # MVP-Status – Angebotsküche
 
 Stand: 10.11.2026  
-Basis: PR-Branch `codex/mvp-playwright-e2e-20261110` @ `74d55ec1306fb532476bee28d06012a0762628d0`
+Basis: PR-Branch `codex/mvp-playwright-e2e-20261110` @ `113dbd27a1a1473c9ed6d2ab03628c8de7c324b9`
 
 ## Reparaturpaket 1: Startdarstellung
 
