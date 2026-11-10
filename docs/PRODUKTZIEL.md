@@ -980,3 +980,10 @@ werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
 
 - Der vorbereitete Kaufdatensatz-Validator weist Monatswerte mit Jahr 0000 jetzt genauso zurück wie ungültige Kaufdaten.
 - Die Korrektur betrifft nur den deterministischen Validator; es gibt weiterhin keinen produktiven Kauf-, Speicher-, Backup-, Sync- oder Supabase-Pfad.
+
+
+## Sicherheitskorrektur 10.11.2026 – Abendessen-Kosten-Evidenz
+
+- Die optionale Abendessenkarte akzeptiert einen Kostenbetrag jetzt nur noch mit costSource "offer-subtotal"; alte statische Rezeptkosten werden wie im Mittagessenpfad als unbekannt behandelt.
+- Plan- und Abendessenanzeige verwenden damit denselben Schutz gegen historische Vorlagekosten.
+- Keine Nutzer-, Angebots-, Vorrats-, Kauf-, Supabase-, Datenbank-, Produktions- oder kostenpflichtige Änderung.
