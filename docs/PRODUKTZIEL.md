@@ -1130,3 +1130,8 @@ bleiben ebenfalls getrennte Freigabepunkte.
 
 - Auch der Link in der Favoritenkarte verwendet die zentrale Prüfung auf sichere HTTPS-Quellen ohne Zugangsdaten.
 - Unsichere oder ungültige URLs werden nicht als klickbarer Link ausgegeben; bestehende Favoriten- und Rezeptdaten werden nicht umgeschrieben.
+
+## Sicherheitskorrektur 10.11.2026 – Marktwert im Kaufkern typgesichert
+
+- Der vorbereitende lokale Kaufdatensatz-Validator akzeptiert Marktwerte nur als Zeichenkette oder leer; Objekte, Arrays und Zahlen werden nicht mehr implizit als Text gespeichert.
+- Der Kaufkern bleibt weiterhin nicht an UI, Backup, Cloud, Supabase oder tatsächliche Einkaufsdaten angeschlossen.

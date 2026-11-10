@@ -52,6 +52,12 @@ test('rejects malformed, inconsistent, or non-manual purchase records', () => {
     () => validatePurchaseRecord({ id: 'x', purchaseDate: '2026-11-07', month: '2026-11', totalCents: 100, source: 'receipt' }),
     /source/,
   );
+  for (const market of [{ name: 'Aldi' }, ['Aldi'], 123]) {
+    assert.throws(
+      () => validatePurchaseRecord({ id: 'x', purchaseDate: '2026-11-07', month: '2026-11', totalCents: 100, market, source: 'manual' }),
+      /market/,
+    );
+  }
 });
 
 test('rejects duplicate IDs and invalid record lists before summarizing', () => {

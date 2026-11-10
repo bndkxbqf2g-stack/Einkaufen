@@ -1454,3 +1454,8 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Der Favoriten-Link nutzt nun dieselbe zentrale HTTPS-/Zugangsdatenprüfung wie Rezeptdetail, Wochenplan und Angebotsbilder.
 - Keine zusätzliche Freigabe erforderlich: keine Supabase-, Auth-, Nutzerdaten-, Angebotsdaten-, Migrations-, Deployment- oder Kostenänderung.
+
+## Sicherheitskorrektur 10.11.2026 – Marktwert im Kaufkern
+
+- Marktwerte im vorbereitenden Kaufdatensatz-Validator müssen Zeichenketten sein; keine implizite Umwandlung fremder Datentypen.
+- Kein neuer Freigabepunkt: keine UI-, Nutzer-, Kauf-, Backup-, Cloud-, Supabase-, Produktions- oder Kostenänderung.
