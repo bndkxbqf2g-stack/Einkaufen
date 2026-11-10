@@ -1046,3 +1046,17 @@ bevor ein Packungspreis gewählt wird. Ein nachfolgender expliziter
 Angebotspreis bleibt verwendbar; ein alleiniger Grundpreis bleibt unbekannt.
 Regressionen sichern beide Parserfamilien ab. Keine Nutzer-, Angebots-,
 Supabase-, Datenbank- oder Produktionsdaten wurden geändert.
+
+
+## Testhärtung 10.11.2026 – Grundpreis-Schreibweisen vollständig regressionsgesichert
+
+Die allgemeinen Händlerparser und der Lidl-Parser werden nun mit einer gemeinsamen
+Regressionstabelle für /, pro, je und per geprüft. Ein nachfolgender
+expliziter Angebotspreis bleibt erhalten; ein alleinstehender Ausdruck wie
+0,79 € pro 100 g verliert seinen vorhandenen Betrag nicht. Der Block ändert
+keine Angebots-, Nutzer-, Vorrats-, Kauf-, Supabase- oder Produktionsdaten.
+
+Nächster sinnvoller unabhängiger Schritt bleibt ein read-only Audit der
+Warenkorb-/Marktvergleichsanzeige. Der verbindliche Kaufabschluss mit IST-Betrag,
+Verbrauchsbuchung sowie produktiver Fahrtkosten-/Mehrstoppentscheidung bleibt
+bis zur gebündelten Freigabe ausgeschlossen.
