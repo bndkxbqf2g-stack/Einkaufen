@@ -878,7 +878,8 @@
       const validUntil = offerEndDate(status.validUntil);
       if (validUntil) return validUntil <= new Date();
       const fetchedAt = status.fetchedAt ? new Date(status.fetchedAt) : null;
-      return !fetchedAt || (Date.now() - fetchedAt.getTime()) >= offerRefreshFallbackMs;
+      const fetchedAtMs = fetchedAt?.getTime();
+      return !Number.isFinite(fetchedAtMs) || (Date.now() - fetchedAtMs) >= offerRefreshFallbackMs;
     }
     function normalizeSelectedMarkets(value) {
       const configured = Array.isArray(value) ? value.filter(name => marketDetails[name]) : [];
