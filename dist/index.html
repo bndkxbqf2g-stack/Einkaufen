@@ -1199,7 +1199,7 @@
       const date = getPlanDateInfo(index);
       if (!dinner) return `<article class="day-card" style="background:#f4f8f1;border-style:dashed"><div class="day-date"><span class="day-name">${index === 0 ? 'Heute' : escapeHtml(date.day)}</span><small>${escapeHtml(date.short)}</small></div><div class="meal-row"><div class="meal-emoji">🍞</div><div class="meal-info"><div class="meal-type">Abendessen · optional</div><div class="meal-title">Kein Abendessen geplant</div><div class="meal-meta"><span>Brotzeit oder flexibles Rezept auswählen</span></div></div></div><div class="day-score"><span class="tag muted">leer</span><button class="small-button" data-choose-dinner="${index}">Abendessen wählen</button></div></article>`;
       const tags = Array.isArray(dinner.tags) ? dinner.tags : [];
-      const cost = parseKnownMoney(dinner.cost);
+      const cost = dinner.costSource === 'offer-subtotal' ? parseKnownMoney(dinner.cost) : null;
       const costLabel = cost === null ? 'Preis unbekannt' : `ca. ${formatEuro(cost * (people / 2))}`;
       const rating = recipeRatings[mealRatingKey(dinner)]?.rating;
       const source = recipeSourceUrl(dinner);
