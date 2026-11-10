@@ -902,3 +902,10 @@ Der Kostenkern liefert für Vergleichspositionen ohne gültigen, höheren
 regulären Quellenpreis nun auch in den Centfeldern `null` statt `0`. Dadurch
 kann ein leerer Vergleich nicht als bestätigte Nullsumme missverstanden
 werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
+
+
+## Sicherheitskorrektur 10.11.2026 – generischer Rezeptimport
+
+- Generische Schema.org-Rezeptimporte setzen fehlende Zielgruppenangaben nicht mehr pauschal auf familiengeeignet.
+- Bestehende Favoriten mit gleichem Namen wie ein eingebautes Rezept behalten einen unbekannten Familienstatus, wenn sie selbst keine belastbare Angabe enthalten.
+- Die Regression prüft den generischen Importpfad und die Root-/`dist`-Parität; kuratierte, ausdrücklich gepflegte Seed-Rezepte bleiben unverändert.
