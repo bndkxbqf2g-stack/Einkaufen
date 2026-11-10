@@ -1408,3 +1408,10 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Die Marktansicht und die Marktauswahl zählen jetzt dieselben aktuellen, gültigen Nicht-Demo-Angebote.
 - Kein neuer Freigabepunkt: Es wurden keine Preise, Nutzer-, Kauf-, Vorrats-, Supabase-, Routing- oder Produktionsdaten geändert.
 - Fahrtkosten, Routenoptimierung und automatische Mehrstoppentscheidungen bleiben weiterhin freigabepflichtig.
+
+
+## Fortschritt 10.11.2026 – Vergleichssumme beim Teilen
+
+- Die geteilte Einkaufsliste zeigt den belegten regulären Vergleichsanteil und die rechnerische Differenz getrennt vom Angebotsbetrag.
+- Unbekannte Vergleichspreise bleiben sichtbar; der Kassenbetrag bleibt ausdrücklich offen.
+- Kein neuer Freigabepunkt: rein lesende Darstellung, keine Nutzer-, Kauf-, Vorrats-, Supabase-, Routing- oder Produktionsänderung.
