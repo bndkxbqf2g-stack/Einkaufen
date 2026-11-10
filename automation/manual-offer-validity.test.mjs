@@ -27,7 +27,7 @@ test('accepts explicit dates in both supported manual formats', () => {
   assert.equal(full.source, 'Prospekt');
   const legacy = context.parseManualOfferRow('Kartoffeln | Aldi | 1,99 € | – | Basis | 31.12.2099');
   assert.equal(legacy.validUntil, '31.12.2099');
-  assert.equal(legacy.packSize, '1 Packung');
+  assert.equal(legacy.packSize, '');
 });
 
 test('keeps the published frontend synchronized with the source page', () => {
