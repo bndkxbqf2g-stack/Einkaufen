@@ -1559,7 +1559,7 @@
         saving.className = 'shopping-item-saving-note';
         saving.textContent = shoppingOfferSavingLabel(item.offer);
         side.append(evidence, saving);
-        const regularPriceLabel = shoppingOfferRegularPriceLabel(item.offer);
+        const regularPriceLabel = shoppingOfferRegularPriceLabel(item.offer, undefined, item);
         if (regularPriceLabel) {
           const regular = document.createElement('span');
           regular.className = 'shopping-item-saving-note';
@@ -1881,7 +1881,7 @@
         const amountLabel = item.offer ? shoppingShareAmountLabel(item) : 'ergänzen';
         const evidenceLabel = item.offer ? shoppingOfferEvidenceLabel(item.offer) : '';
         const savingLabel = item.offer ? shoppingOfferSavingLabel(item.offer) : '';
-        const regularPriceLabel = item.offer ? shoppingOfferRegularPriceLabel(item.offer) : '';
+        const regularPriceLabel = item.offer ? shoppingOfferRegularPriceLabel(item.offer, undefined, item) : '';
         return `- ${item.name}${item.count > 1 ? ` · für ${item.count} Gerichte` : ''}${item.offer ? ` · ${packCount} × ${offerPackSizeLabel(item.offer.packSize)} · ${amountLabel} · ${evidenceLabel} · ${regularPriceLabel || savingLabel}` : ` · ${amountLabel}`}`;
       }).join('\n')}`).join('\n\n');
       const text = `Angebotsküche · offene Einkaufsliste\n\n${lines}\n\n${shoppingShareSummary(pending)}\nFehlende Artikel und Vorräte sind nicht enthalten.`;
@@ -2160,11 +2160,11 @@
       if (!saving || saving === '–' || evidence.manual || evidence.cacheFallback || !evidence.sourceKnown || !evidence.validityKnown || !evidence.end || !evidence.sourceEnd || evidence.end < new Date() || evidence.sourceEnd < new Date()) return 'Vergleichspreis nicht belegt';
       return `Quellenhinweis des Angebots: ${saving} · nicht berechnet`;
     }
-    function shoppingOfferRegularPriceLabel(offer, status = liveOfferStatus[offer?.store]) {
+    function shoppingOfferRegularPriceLabel(offer, status = liveOfferStatus[offer?.store], item = null) {
       if (!String(offer?.regularPrice || '').trim()) return '';
       const current = parseKnownMoney(offer?.price);
       const regular = parseKnownMoney(offer?.regularPrice);
-      if (current === null || regular === null || regular <= current || !isShoppingOfferCostUsable(offer, status)) return 'Vergleichspreis nicht belegt';
+      if (current === null || regular === null || regular <= current || !isShoppingOfferCostUsable(offer, status, item)) return 'Vergleichspreis nicht belegt';
       return `Regulärer Quellenpreis: ${formatEuro(regular)}`;
     }
 
