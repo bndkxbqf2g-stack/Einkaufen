@@ -1131,3 +1131,8 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 
 - PR #316 ist gemergt; der verifizierte Angebotsanteil ist rein lesend und benötigt keine zusätzliche Freigabe.
 - Der Kaufabschluss-Gate aus Punkt 9 bleibt unverändert offen. Keine automatische IST-Erfassung, Vorratsbuchung, Supabase-Änderung oder Produktionsfreigabe.
+
+## Gebündelte Notiz 10.11.2026 – Marktgruppen
+
+- Die Marktgruppensummen sind rein lesend und deterministisch; keine neue Freigabe erforderlich.
+- Keine Angebotsdaten, Nutzerdaten, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
