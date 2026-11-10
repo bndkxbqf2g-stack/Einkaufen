@@ -55,6 +55,12 @@ test('durchgängiger MVP-Ablauf bleibt lokal bedienbar und speichert Änderungen
 
   await page.locator('button[data-page="shopping"]').click();
   await expect(page.locator('#page-shopping')).toHaveClass(/active/);
+  const shoppingDebug = await page.evaluate(() => ({
+    planTitles: typeof getCurrentPlanMeals === 'function' ? getCurrentPlanMeals().map(meal => ({ title: meal.title, ingredients: getMealIngredients(meal) })) : null,
+    pantry: JSON.parse(localStorage.getItem('angebotskueche.pantry') || '[]'),
+    items: typeof getShoppingItems === 'function' ? getShoppingItems().map(item => item.name) : null
+  }));
+  console.log('shopping-debug', JSON.stringify(shoppingDebug));
   await expect(page.locator('#shoppingList')).not.toBeEmpty();
   await page.locator('#openShoppingItem').click();
   await page.locator('#shoppingItemInput').fill('E2E-Zutat');
