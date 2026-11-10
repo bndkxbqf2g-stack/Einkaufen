@@ -9,12 +9,14 @@ const dist = await readFile(new URL('../dist/index.html', import.meta.url), 'utf
 const normalizeMatch = source.match(/function normalizeMealDuration\(value\) \{[\s\S]*?\r?\n    \}/);
 const labelMatch = source.match(/function mealDurationLabel\(meal\) \{[\s\S]*?\r?\n    \}/);
 const difficultyMatch = source.match(/function mealDifficultyLabel\(meal\) \{[\s\S]*?\r?\n    \}/);
+const audienceMatch = source.match(/function mealAudienceLabel\(recipe\) \{[\s\S]*?\r?\n    \}/);
 assert.ok(normalizeMatch, 'normalizeMealDuration must be present in index.html');
 assert.ok(labelMatch, 'mealDurationLabel must be present in index.html');
 assert.ok(difficultyMatch, 'mealDifficultyLabel must be present in index.html');
+assert.ok(audienceMatch, 'mealAudienceLabel must be present in index.html');
 
 const durationModel = vm.runInNewContext(
-  `${normalizeMatch[0]}\n${labelMatch[0]}\n${difficultyMatch[0]}\n({ normalizeMealDuration, mealDurationLabel, mealDifficultyLabel })`,
+  `${normalizeMatch[0]}\n${labelMatch[0]}\n${difficultyMatch[0]}\n${audienceMatch[0]}\n({ normalizeMealDuration, mealDurationLabel, mealDifficultyLabel, mealAudienceLabel })`,
   {},
 );
 
@@ -29,6 +31,9 @@ test('zeigt nur sichere Rezeptdauern und kennzeichnet unbekannte Dauer', () => {
   assert.equal(durationModel.mealDifficultyLabel({ difficulty: 'leicht' }), 'leicht');
   assert.equal(durationModel.mealDifficultyLabel({ difficulty: '' }), 'Aufwand offen');
   assert.equal(durationModel.mealDifficultyLabel({ difficulty: 'x'.repeat(41) }), 'Aufwand offen');
+  assert.equal(durationModel.mealAudienceLabel({ familyFriendly: true }), 'familiengeeignet');
+  assert.equal(durationModel.mealAudienceLabel({ familyFriendly: false }), 'für Erwachsene');
+  assert.equal(durationModel.mealAudienceLabel({}), 'Zielgruppe offen');
 });
 
 test('führt Rezeptdauer in Mittag- und Abendessen-Karten', () => {
@@ -54,6 +59,13 @@ test('behauptet keine Standarddauer oder Standardschwierigkeit für unbekannte R
   assert.doesNotMatch(source, /recipeData\?\.time \|\| 45/);
   assert.doesNotMatch(source, /item\.time \|\| 45/);
   assert.doesNotMatch(source, /recipe\.time \|\| 30/);
+});
+
+test('behauptet keinen Familienstatus bei unbekannten Rezeptdaten', () => {
+  assert.match(source, /mealAudienceLabel\(recipe\)/);
+  assert.doesNotMatch(source, /recipe\.familyFriendly \? ['"]familiengeeignet['"] : ['"]für Erwachsene['"]/);
+  assert.doesNotMatch(source, /familyFriendly: recipeData\?\.familyFriendly !== false/);
+  assert.doesNotMatch(source, /familyFriendly: Boolean\(item\.familyFriendly\)/);
 });
 
 test('hält den veröffentlichten Plan-Bundle synchron', () => {
