@@ -796,3 +796,8 @@ Der Mengenpfad bewahrt den ursprünglichen Tagesindex auch bei Tagen ohne Abende
 
 - Auch ungültige lokale `fetchedAt`-Werte werden als refresh-fällig behandelt; valide Angebotsdaten bleiben unverändert.
 - Keine Angebotsdaten, Vorratsdaten, Supabase-Daten oder Deployments werden dadurch verändert.
+
+## Kostenmodell 10.11.2026 – verifizierter Angebotsanteil
+
+- Die Einkaufsliste weist zusätzlich den Anteil aller Einkaufspositionen aus, für die ein aktueller, verifizierter Angebotspreis vorliegt.
+- Preisunbekannte und nicht verankerte Positionen bleiben separat; die Kennzahl ist keine Kassenprognose und verändert keine Nutzerdaten.
