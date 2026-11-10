@@ -987,3 +987,10 @@ werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
 - Die optionale Abendessenkarte akzeptiert einen Kostenbetrag jetzt nur noch mit costSource "offer-subtotal"; alte statische Rezeptkosten werden wie im Mittagessenpfad als unbekannt behandelt.
 - Plan- und Abendessenanzeige verwenden damit denselben Schutz gegen historische Vorlagekosten.
 - Keine Nutzer-, Angebots-, Vorrats-, Kauf-, Supabase-, Datenbank-, Produktions- oder kostenpflichtige Änderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – zentraler Plan-Kostenrenderer
+
+- Mittagessen- und Abendessenkarten verwenden jetzt denselben Kostenformatierer: nur costSource "offer-subtotal", sichere Centdarstellung und gültige Personenzahl erzeugen einen sichtbaren Angebotsanteil.
+- Historische/statische Kosten und übergroße Beträge bleiben als „Preis unbekannt“ sichtbar; eine Renderer-Ausnahme durch direkte toFixed-Skalierung ist ausgeschlossen.
+- Keine Nutzer-, Angebots-, Vorrats-, Kauf-, Supabase-, Datenbank-, Produktions- oder kostenpflichtige Änderung.
