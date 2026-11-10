@@ -33,7 +33,7 @@ test('exposes the purpose selection and displays the fallback consistently', () 
   }
   assert.match(html, /Mahlzeitenzweck \(optional, Standard: Flexibel\)/);
   assert.match(html, /Mahlzeitenzweck: \$\{escapeHtml\(purposeLabel\)\}/);
-  assert.match(html, /\$\{recipeMealPurpose\(recipe\)\} · \$\{recipe\.time/);
+  assert.match(html, /\$\{recipeMealPurpose\(recipe\)\} · \$\{mealDurationLabel\(recipe\)\}/);
 });
 
 console.log('Recipe purpose checks passed');
