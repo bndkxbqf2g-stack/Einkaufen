@@ -866,3 +866,10 @@ ein Teilvorrat reduziert nur den Restbedarf, Packungen werden deterministisch
 gerundet und Angebots-/reguläre Vergleichssummen bleiben getrennt. Der Test
 mutiert keine Vorratsdaten und verwendet weder Kassen-, Cloud- noch
 Supabase-Daten.
+
+## Fortschritt 10.11.2026 – unbekannte Vergleichssummen bleiben unbekannt
+
+Der Kostenkern liefert für Vergleichspositionen ohne gültigen, höheren
+regulären Quellenpreis nun auch in den Centfeldern `null` statt `0`. Dadurch
+kann ein leerer Vergleich nicht als bestätigte Nullsumme missverstanden
+werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
