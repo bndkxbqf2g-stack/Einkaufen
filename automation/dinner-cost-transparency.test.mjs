@@ -9,8 +9,8 @@ const dinnerEnd = source.indexOf('function renderPlan', dinnerStart);
 const dinnerRenderer = source.slice(dinnerStart, dinnerEnd);
 
 test('does not turn an unknown dinner price into zero euros', () => {
-  assert.match(dinnerRenderer, /const cost = dinner\.costSource === 'offer-subtotal' \? parseKnownMoney\(dinner\.cost\) : null;/);
-  assert.match(dinnerRenderer, /const costLabel = cost === null \? 'Preis unbekannt'/);
+  assert.match(dinnerRenderer, /const costLabel = mealOfferSubtotalLabel\(dinner, people, 'ca\. '\);/);
+  assert.match(dinnerRenderer, /mealOfferSubtotalLabel/);
   assert.equal(dinnerRenderer.includes('(cost * (people / 2)).toFixed'), false);
 });
 
