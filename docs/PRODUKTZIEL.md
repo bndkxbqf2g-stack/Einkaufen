@@ -732,7 +732,7 @@ Der aktuelle Stand auf `main@0e376158e1c10dde1842268e01db1df1b35708cf` wurde geg
 - Die UI weist diesen Umfang ausdrücklich aus: „Routenoptimierung und Fahrtkosten bleiben offen.“ Für Märkte ohne numerische Distanz, etwa den Cloud-Browser-Markt, darf die Anzeige nicht als Routing-Evidenz interpretiert werden.
 - Die deterministische Angebotsauswahl bleibt auf aktuelle, ausgewählte Märkte und die vorhandenen Angebots-/Mengenregeln begrenzt. Fehlende oder nicht belastbare Angebotsdaten werden nicht durch eine berechnete Ersparnis oder Fahrtkosten ersetzt.
 
-Eine produktive Mehrstopp- oder Routenfunktion bleibt bis zur fachlichen Entscheidung über Verkehrsmittel, Strecke, Parken, Fahrtkostenquelle, reguläre Vergleichspreise, Marktzuordnung, Schwellenwert und UI-/Sync-Verhalten ausgeschlossen. Externe Karten-, Geocoding- oder Routingdienste sowie neue Cloudverarbeitung werden dafür nicht automatisch eingeführt.
+Eine produktive Mehrstopp- oder Routenfunktion bleibt bis zur fachlichen Entscheidung über Verkehrsmittel, Strecke, Parken, Fahrtkostenquelle, Marktzuordnung, Schwellenwert und UI-/Sync-Verhalten ausgeschlossen. Externe Karten-, Geocoding- oder Routingdienste sowie neue Cloudverarbeitung werden dafür nicht automatisch eingeführt.
 
 
 ## Fortschritt 09.11.2026 – deterministische Marktsortierung
@@ -775,7 +775,7 @@ Die mengenbasierte Vorratsdeckung war bereits rein lesend umgesetzt: vollständi
 
 ## Dokumentationsabgleich 09.11.2026 – lokale Budget- und Vorratsbasis
 
-Frühere Bestandsbullets in diesem Dokument beschrieben den Ausgangszustand vor den inzwischen gemergten lokalen Modellen. Maßgeblich ist jetzt: Budgettransparenz, Mengen-/Packungsberechnung und der lesende Vorratsabgleich sind vorhanden und getestet. Weiterhin offen bleiben tatsächliche Kaufbestätigung, IST-/Beleg-Historie, Verbrauchsbuchung, reguläre Vergleichspreise, Fahrtkosten/Routing sowie neue Cloud-/Sync-Verträge.
+Frühere Bestandsbullets in diesem Dokument beschrieben den Ausgangszustand vor den inzwischen gemergten lokalen Modellen. Maßgeblich ist jetzt: Budgettransparenz, Mengen-/Packungsberechnung, der lesende Vorratsabgleich und der getrennte reguläre Vergleich sind vorhanden und getestet. Weiterhin offen bleiben tatsächliche Kaufbestätigung, IST-/Beleg-Historie, Verbrauchsbuchung, Fahrtkosten/Routing sowie neue Cloud-/Sync-Verträge.
 
 
 ## Fortschritt 09.11.2026 – expliziten Bedarf in fehlenden Einkaufspositionen anzeigen
