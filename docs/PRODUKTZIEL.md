@@ -967,3 +967,10 @@ werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
 - Der reguläre Quellenpreis wird in Einkaufszeilen und geteilten Einkaufslisten nur noch angezeigt, wenn neben Preis-/Quellen-Evidenz auch der Mengen-/Packungskontext des Artikels kompatibel ist.
 - Allgemeine Angebotskarten ohne konkrete Rezeptposition bleiben rückwärtskompatibel und zeigen nur den quellenbelegten Vergleichshinweis.
 - Keine Nutzer-, Angebots-, Vorrats-, Supabase-, Datenbank-, Produktions- oder kostenpflichtige Änderung.
+
+
+## Dokumentationsabgleich 10.11.2026 – Vorratsdeckung
+
+- Die lokale, rein lesende Vorratsdeckung ist auf main bereits in den Einkaufslistenpfad integriert: Mittagessen und optionales Abendessen werden je Zutatenidentität zusammengeführt, kompatible explizite Mengen werden abgedeckt und der Restbedarf wird angezeigt.
+- Ältere vorbereitende Passagen, die die Einbindung in getShoppingItems() noch als offen beschreiben, sind damit historisch überholt.
+- Weiterhin nicht umgesetzt und separat freigabepflichtig bleiben Verbrauchsbuchung, Reservierung, automatische Nullbestands-/Rundungsentscheidungen mit Nutzerdatenwirkung, Backup-/Cloud-/Supabase-Erweiterungen und echte IST-/Kassenbuchungen.
