@@ -923,3 +923,10 @@ werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
 - Der serverseitige Rezeptimport verwendet denselben vollständigen Zeitparser wie die App und leitet keinen Familienstatus aus fehlenden Schema.org-Angaben ab.
 - App, Worker und veröffentlichtes Bundle bleiben damit beim unbekannten Zielgruppenstatus und bei ISO-Dauern konsistent.
 - Die Änderung betrifft nur validierte Rezeptmetadaten; keine Angebots-, Plan-, Vorrats-, Kassen-, Supabase- oder Synchronisationsdaten werden verändert.
+
+
+## Sicherheitskorrektur 10.11.2026 – persönliche Favoritenmetadaten
+
+- Bei der Wiederherstellung namensgleicher Seed-Favoriten werden fehlende Dauer- und Aufwandsangaben nicht mehr aus Seed-Daten ergänzt.
+- Vorhandene persönliche Werte bleiben erhalten; fehlende Werte werden als offen behandelt.
+- Die Änderung ist lokal und rückwärtsverträglich und berührt keine Angebots-, Plan-, Vorrats-, Kassen- oder Synchronisationsdaten.
