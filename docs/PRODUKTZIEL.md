@@ -1006,3 +1006,13 @@ unrealistisch große Preiswerte als unbekannt behandelt, statt sie anzuzeigen
 oder in Zwischensummen zu übernehmen. Root-/dist-Parität und Regressionstests
 sichern den Schritt ab. Es wurden keine Nutzer-, Angebots-, Supabase-,
 Datenbank- oder Produktionsdaten geändert.
+
+
+## Fortschritt 10.11.2026 – manuelle Angebots-Preis-Evidenz
+
+Der manuelle Angebotsimport verwendet jetzt denselben bekannten Euro- und
+Packungspreisparser wie die übrige Angebotskostenlogik. Grundpreise wie
+2,49 €/kg oder 2,49 € / 1 kg werden dadurch nicht mehr als Packungspreise
+übernommen. Explizite Euro-Packungspreise bleiben zulässig; Root-/dist-Parität,
+Worker-Artefakt und Regressionen sichern den Schritt ab. Keine Nutzer-,
+Angebots-, Supabase-, Datenbank- oder Produktionsdaten wurden geändert.
