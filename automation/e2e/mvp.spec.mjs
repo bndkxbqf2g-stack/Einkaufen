@@ -10,7 +10,7 @@ test('durchgängiger MVP-Ablauf bleibt lokal bedienbar und speichert Änderungen
 
   await page.goto('/');
   await expect(page.locator('#page-plan')).toHaveClass(/active/);
-  await expect(page.locator('#dayList .day-card')).toHaveCount(5);
+  await expect(page.locator('#dayList .day-card')).toHaveCount(10);
 
   await page.locator('#peopleSelect').selectOption('3');
   await expect(page.locator('#dayList .day-people-filter select').first()).toHaveValue('3');
