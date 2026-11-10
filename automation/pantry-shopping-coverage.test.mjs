@@ -174,6 +174,19 @@ test('belässt manuelle und mengenlose Legacy-Positionen unverändert', () => {
   assert.deepEqual(plain(result.items), plain(items));
 });
 
+test('markiert eine übergroße aggregierte Nachfrage als unbekannt', () => {
+  const result = model.summarizeShoppingPantryCoverage([
+    { name: 'Mehl', quantityBasis: basis(600000000, 'g') },
+    { name: 'Mehl', quantityBasis: basis(600000000, 'g') },
+  ], { mehl: { name: 'Mehl', amount: 1, unit: 'kg' } });
+
+  assert.equal(result.groups.length, 1);
+  assert.equal(result.groups[0].status, 'unknown');
+  assert.equal(result.groups[0].demand, null);
+  assert.equal(result.groups[0].coveredAmount, null);
+  assert.equal(result.groups[0].remainingDemand, null);
+});
+
 console.log('Pantry shopping coverage adapter checks passed');
 
 

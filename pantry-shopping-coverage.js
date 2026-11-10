@@ -1,6 +1,8 @@
 ;(function attachPantryShoppingCoverageModel(root) {
   'use strict';
 
+  const MAX_AGGREGATED_DEMAND = 1_000_000_000;
+
   function sharedModels() {
     return {
       ingredient: root.AngebotskuecheIngredientModel,
@@ -24,7 +26,9 @@
     const family = demands[0].family;
     if (demands.some(demand => demand.family !== family)) return { status: 'incompatible', demand: null, demands };
     const amount = demands.reduce((sum, demand) => sum + demand.amount, 0);
-    if (!Number.isFinite(amount) || amount <= 0) return { status: 'unknown', demand: null, demands };
+    if (!Number.isFinite(amount) || amount <= 0 || amount > MAX_AGGREGATED_DEMAND) {
+      return { status: 'unknown', demand: null, demands };
+    }
     return { status: 'known', demand: { family, unit: demands[0].unit, amount }, demands };
   }
 

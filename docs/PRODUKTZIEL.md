@@ -1105,3 +1105,10 @@ bleiben ebenfalls getrennte Freigabepunkte.
 - Das gemeinsame Mengenmodell verwirft nun normalisierte Rezept- und Angebots-Packmengen über 1.000.000.000 Basiseinheiten sowie unsichere daraus abgeleitete Packungszahlen.
 - Solche Eingaben fallen in den bestehenden unbekannten bzw. Legacy-Pfad; es werden keine übergroßen Mengen, Packungen oder Kostenwerte stillschweigend berechnet.
 - Root, dist und die Regressionstests bleiben synchron. Es wurden keine Nutzer-, Vorrats-, Angebots-, Kauf-, Supabase- oder Produktionsdaten geändert.
+
+
+## Sicherheitskorrektur 10.11.2026 – sichere Vorratsbedarfsaggregation
+
+- Die rein lesende Vorratsdeckung verwirft nun auch aggregierte Bedarfssummen über 1.000.000.000 Basiseinheiten als unbekannt, selbst wenn einzelne Positionen für sich gültig sind.
+- Dadurch werden keine übergroßen Restbedarfe, Teildeckungen oder Packungsfolgen stillschweigend berechnet; bestehende Legacy- und Nutzdaten bleiben unverändert.
+- Root, dist und der Regressionstest bleiben synchron. Es wurden keine Vorrats-, Kauf-, Supabase-, Datenbank-, Produktions- oder Kostenwerte geändert.
