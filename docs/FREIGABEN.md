@@ -1401,3 +1401,10 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Die Parser-Regressionen prüfen /, pro, je und per sowie alleinstehende Grundpreisangaben.
 - Kein neuer Freigabepunkt: Es wurden nur Tests und Dokumentation ergänzt.
 - Kaufabschluss/IST-Betrag, Verbrauchsbuchung, Mehrstopp-Fahrtkosten, Supabase-Datenänderungen und Produktionsänderungen bleiben unverändert freigabepflichtig.
+
+
+## Read-only-Audit 10.11.2026 – aktuelle Marktangebotsanzahl
+
+- Die Marktansicht und die Marktauswahl zählen jetzt dieselben aktuellen, gültigen Nicht-Demo-Angebote.
+- Kein neuer Freigabepunkt: Es wurden keine Preise, Nutzer-, Kauf-, Vorrats-, Supabase-, Routing- oder Produktionsdaten geändert.
+- Fahrtkosten, Routenoptimierung und automatische Mehrstoppentscheidungen bleiben weiterhin freigabepflichtig.
