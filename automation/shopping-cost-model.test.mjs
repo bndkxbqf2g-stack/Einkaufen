@@ -118,7 +118,7 @@ test('normalizes German grouped and mixed-decimal package sizes before compariso
 
 test('keeps unknown offer prices out of the displayed subtotal and shared list', () => {
   assert.match(html, /Bekannter Angebotsbetrag/);
-  assert.match(html, /return window\.AngebotskuecheCostModel\.summarizeShoppingCosts\(items, parseKnownMoney, item => isShoppingOfferCostUsable\(item\?\.offer\)\)/);
+  assert.match(html, /return window\.AngebotskuecheCostModel\.summarizeShoppingCosts\(items, parseKnownMoney, item => isShoppingOfferCostUsable\(item\?\.offer, liveOfferStatus\[item\?\.offer\?\.store\], item\)\)/);
   assert.match(html, /knownOfferItems/);
   assert.match(html, /function getShoppingCostSummary\(items = getShoppingItems\(\)\)/);
   assert.match(html, /const costSummary = getShoppingCostSummary\(items\)/);

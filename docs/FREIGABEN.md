@@ -1307,3 +1307,10 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Kein Freigabepunkt ausgelöst: Die Änderung entfernt unbelegte Prozentbehauptungen aus der Anzeige und lässt die interne Rangfolge unverändert.
 - Keine Supabase-, Nutzer-, Angebots-, Preis- oder Produktionsdaten wurden geändert.
+
+
+## Qualitätsaudit 10.11.2026 – Mengen-/Packungs-Evidenz
+
+- Kein neuer Freigabepunkt: Die Änderung betrifft ausschließlich eine lokale, deterministische Kostenvalidierung und hält unklare Beträge unbekannt.
+- Kaufabschluss, IST-Ausgaben, Verbrauchsbuchung, Supabase-Schema/Rollen/Sync-Konflikte, KI-/Kostenanbieter und zusätzliche Marktstopps bleiben weiterhin gesammelt freigabepflichtig.
+- Keine Nutzer-, Angebots-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.

@@ -1,9 +1,13 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 
 const source = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
 const published = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+const quantityContext = {};
+runInNewContext(await readFile(new URL('../ingredient-quantity.js', import.meta.url), 'utf8'), quantityContext);
+const quantityWindow = { AngebotskuecheIngredientQuantityModel: quantityContext.AngebotskuecheIngredientQuantityModel };
 
 function extractFunction(name) {
   const match = source.match(new RegExp(`function ${name}\\([^)]*\\) \\{[\\s\\S]*?\\n    \\}`));
@@ -17,6 +21,7 @@ const helpers = [
   'offerEndDate',
   'isDemoOffer',
   'offerEvidenceStatus',
+  'hasSafeOfferPackCount',
   'isShoppingOfferCostUsable',
 ].map(extractFunction).join('\n');
 const liveOfferStatus = {
@@ -27,9 +32,10 @@ const liveOfferStatus = {
 };
 const isShoppingOfferCostUsable = new Function(
   'liveOfferStatus',
+  'window',
   `${helpers}
 return isShoppingOfferCostUsable;`,
-)(liveOfferStatus);
+)(liveOfferStatus, quantityWindow);
 
 const verified = {
   store: 'Aldi',
@@ -57,8 +63,36 @@ test('accepts only current, source-backed, high-confidence live offers for known
 
 test('keeps root and published app synchronized and wires the evidence filter into costs', () => {
   assert.equal(published, source);
-  assert.match(source, /summarizeShoppingCosts\(items, parseKnownMoney, item => isShoppingOfferCostUsable\(item\?\.offer\)\)/);
-  assert.match(source, /calculateOfferAmount\(items, parseKnownMoney, item => isShoppingOfferCostUsable\(item\?\.offer\)\)/);
+  assert.match(source, /summarizeShoppingCosts\(items, parseKnownMoney, item => isShoppingOfferCostUsable\(item\?\.offer, liveOfferStatus\[item\?\.offer\?\.store\], item\)\)/);
+  assert.match(source, /calculateOfferAmount\(items, parseKnownMoney, item => isShoppingOfferCostUsable\(item\?\.offer, liveOfferStatus\[item\?\.offer\?\.store\], item\)\)/);
 });
 
 console.log('Shopping offer evidence cost checks passed');
+
+
+test('requires a compatible pack-size unit for explicitly quantified recipe costs', () => {
+  const explicitBasis = { valid: true, family: 'mass', unit: 'g', amount: 500 };
+  const unknownPackOffer = { ...verified, packSize: '1 Packung' };
+  const compatibleOffer = { ...verified, packSize: '500 g' };
+  assert.equal(isShoppingOfferCostUsable(
+    unknownPackOffer,
+    undefined,
+    { offer: unknownPackOffer, quantityBasis: explicitBasis },
+  ), false);
+  assert.equal(isShoppingOfferCostUsable(
+    compatibleOffer,
+    undefined,
+    { offer: compatibleOffer, quantityBasis: explicitBasis },
+  ), true);
+  assert.equal(isShoppingOfferCostUsable(verified), true);
+  assert.equal(isShoppingOfferCostUsable(
+    verified,
+    undefined,
+    { offer: verified, quantityBasis: { valid: false, family: null, unit: null, amount: 0 } },
+  ), true);
+  assert.equal(isShoppingOfferCostUsable(
+    compatibleOffer,
+    undefined,
+    { offer: compatibleOffer, quantityBasis: { valid: false, family: 'mass', unit: 'g', amount: 500 } },
+  ), false);
+});

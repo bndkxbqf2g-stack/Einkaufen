@@ -952,3 +952,11 @@ werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
 - Die interne Relevanzsortierung bleibt unverändert und deterministisch.
 - Eine Prozentangabe wird in der Oberfläche nur bei ausdrücklich als calculated markierter Relevanz gezeigt; importierte oder manuelle Angebote ohne solche Evidenz erscheinen als „Match offen“.
 - Preise, Packungsgrößen, Angebotsquellen und persönliche Daten werden durch diesen Anzeigeschutz nicht verändert.
+
+
+## Qualitätsaudit 10.11.2026 – explizite Mengen und Kosten-Evidenz
+
+- Bei expliziten Rezeptmengen wird eine Angebotskostensumme nur noch gebildet, wenn die Angebots-Packungsgröße eine passende Einheit (Masse, Volumen oder Stück) belegt.
+- Unbekannte oder inkompatible Packungsgrößen bleiben als unbekannte Kosten sichtbar; es wird keine angenäherte Packungszahl als bekannter Betrag ausgegeben.
+- Unquantifizierte Alt-Rezepte behalten ihr bisheriges rückwärtskompatibles Näherungsmodell.
+- Keine Nutzer-, Angebots-, Vorrats-, Supabase-, Datenbank-, Produktions- oder kostenpflichtige Änderung.
