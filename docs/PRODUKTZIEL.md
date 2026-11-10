@@ -916,3 +916,10 @@ werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
 - ISO- und deutsche Dauerangaben aus generischen Rezeptimporten werden vollständig und deterministisch gelesen; `PT1H30M` ergibt 90 Minuten statt 1 Minute.
 - Nicht belastbare, negative oder überlange Werte bleiben unbekannt.
 - Die Änderung betrifft nur die Darstellung importierter Rezeptmetadaten; keine Plan-, Angebots-, Vorrats-, Kassen- oder Synchronisationsdaten werden verändert.
+
+
+## Sicherheitskorrektur 10.11.2026 – Worker-Rezeptimport
+
+- Der serverseitige Rezeptimport verwendet denselben vollständigen Zeitparser wie die App und leitet keinen Familienstatus aus fehlenden Schema.org-Angaben ab.
+- App, Worker und veröffentlichtes Bundle bleiben damit beim unbekannten Zielgruppenstatus und bei ISO-Dauern konsistent.
+- Die Änderung betrifft nur validierte Rezeptmetadaten; keine Angebots-, Plan-, Vorrats-, Kassen-, Supabase- oder Synchronisationsdaten werden verändert.
