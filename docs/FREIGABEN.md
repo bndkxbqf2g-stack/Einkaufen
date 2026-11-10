@@ -1,6 +1,6 @@
 # Gebündelte Freigaben und externe Voraussetzungen
 
-Stand: 09.11.2026
+Stand: 10.11.2026
 
 Kleine, rückwärtsverträgliche Programmier- und Testschritte laufen weiter. Die
 folgenden Punkte werden gesammelt und erst umgesetzt, wenn sie ausdrücklich
@@ -1126,3 +1126,8 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 
 - Die Kennzahl ist rein lesend und deterministisch; tatsächliche Ausgaben, Kaufbestätigungen und Vorratsverbrauch bleiben unverändert gesperrt.
 - Keine neue Freigabe erforderlich; keine Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+## Statusabgleich 10.11.2026 – Kostenmodell
+
+- PR #316 ist gemergt; der verifizierte Angebotsanteil ist rein lesend und benötigt keine zusätzliche Freigabe.
+- Der Kaufabschluss-Gate aus Punkt 9 bleibt unverändert offen. Keine automatische IST-Erfassung, Vorratsbuchung, Supabase-Änderung oder Produktionsfreigabe.
