@@ -132,6 +132,12 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 - Vorhandene persönliche Rezeptdaten bleiben erhalten; unbekannte Werte werden nur als offen behandelt. Preise, Angebote, Vorräte, Supabase und Sync bleiben unverändert.
 - Eine Regression prüft die relevanten Fallbacks und die Root-/`dist`-Parität.
 
+## Sicherheitskorrektur 10.11.2026 – unbekannte Zielgruppe
+
+- Rezeptvorschläge unterscheiden jetzt ausdrücklich zwischen `familiengeeignet`, `für Erwachsene` und `Zielgruppe offen`.
+- Fehlende Angaben aus Importen werden nicht mehr als familiengeeignet gespeichert; bestehende Favoriten werden nicht gelöscht oder automatisch überschrieben.
+- Die Regression prüft die drei Zustände und die Root-/`dist`-Parität.
+
 ## Laufender Entwicklungsstand und nächster Schritt
 
 Der erste kleine Schritt der Datenbasis ist umgesetzt: Snapshot-Validierung, sichere HTTPS-Quelladressen, Plausibilitätsprüfung der Kalenderdaten, Ablehnung bereits abgelaufener Angebote, atomare Veröffentlichung und Regressionstests schützen den letzten gültigen Stand. Automatische Abrufe am 06.11.2026 zeigten, dass Händler-Metadaten als Produktangebote fehlklassifiziert und Gültigkeitsdaten pauschal geschätzt werden konnten. Solche Metadaten werden nun abgewiesen; KaufDA-, Lidl- und Händler-Snapshots benötigen ein in der Quelle belegtes Angebotsende. Die Marktdatenansicht nutzt den Quellzeitpunkt statt des Geräteabrufs und weist Gültigkeit sowie fehlende Zeitangaben aus. Die Marktübersicht trennt inzwischen Ladeziele von Prospekt-Gesamtvollständigkeit; ohne ausdrücklich belegte Quell-Sollzahl bleibt Letztere unbekannt. Das Kostenmodell weist bekannte Angebotspreise getrennt von unbekannten aus und verwirft explizite Grundpreise als Packungspreise. Die Planansicht übernimmt statische Rezeptkosten nicht mehr als Fallback; bekannte Angebots-Packungssummen und unbekannte Preisbasen werden getrennt angezeigt. Die Auswahl konkurrierender Angebotskandidaten behält die Relevanzsortierung bei und vergleicht nur bei gleicher Relevanz, gleicher ausdrücklich bekannter Packungsmenge und validem Packungspreis die günstigere Packung. Unklare Größen und Grundpreise bleiben ohne Preisrangfolge. Als Nächstes folgt die Vervollständigung des Kosten- und Kassenmodells; der Wochenumfang bleibt auf Mittagessen plus optionales Abendessen begrenzt. Weitere Rezeptquellen oder KI bauen erst auf validierten Angebotsdaten auf.
