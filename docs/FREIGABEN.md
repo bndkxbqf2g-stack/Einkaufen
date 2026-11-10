@@ -1191,3 +1191,9 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 - Angebotsbetrag, regulärer Vergleichsanteil und Kassenbetrag bleiben getrennt; unbekannte Vergleichspreise werden nicht als 0 € behandelt.
 - Einkaufsliste, Teilen und Marktgruppen zeigen die Vergleichssumme nur für verifizierte, passende Angebotspreise; die Differenz ist kein bestätigter Kassenrabatt.
 - Die aktuelle Umsetzung benötigt keine Nutzer-, Supabase-, Schema- oder Produktionsänderung. Eine vollständige reguläre Vergleichsbasis bleibt abhängig von den tatsächlich gelieferten Quellpreisen.
+
+## Audit 10.11.2026 – zusätzlicher Markt benötigt einen Ausgangsmarkt
+
+- Der deterministische Marktstopp-Kern gibt bei leerer Auswahl bestehender Märkte nun konservativ "unknown" zurück.
+- Ohne Ausgangsmarkt werden weder Ersparnis, Fahrtkostenbasis noch ein zusätzlicher Stopp angenommen.
+- Die Korrektur ändert keine Markt-, Nutzer-, Supabase- oder Produktionsdaten; die Nettoersparnisschwelle bleibt weiterhin ausdrücklich freigabepflichtig.
