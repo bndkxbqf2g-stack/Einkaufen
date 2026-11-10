@@ -2080,10 +2080,9 @@
     function shoppingOfferEvidenceLabel(offer, status = liveOfferStatus[offer?.store]) {
       const evidence = offerEvidenceStatus(offer, status);
       if (evidence.manual) return 'Quelle nicht verifiziert · manueller Import';
-      if (!evidence.sourceEnd) return 'Quelle/Gültigkeit nicht belegt';
-      if (evidence.sourceEnd < new Date()) return `Nicht verifiziert · Quellenstand abgelaufen am ${status.validUntil}`;
       if (!evidence.end) return 'Quelle/Gültigkeit nicht belegt';
       if (evidence.end < new Date()) return `Nicht verifiziert · abgelaufen am ${offer.validUntil}`;
+      if (evidence.sourceEnd && evidence.sourceEnd < new Date()) return `Nicht verifiziert · Quellenstand abgelaufen am ${status.validUntil}`;
       if (evidence.cacheFallback) return `Nicht verifiziert · letzte Prüfung fehlgeschlagen · gültig bis ${offer.validUntil}`;
       if (!evidence.sourceKnown) return `Quelle nicht belegt · gültig bis ${offer.validUntil}`;
       if (!evidence.validityKnown) return `Quelle bekannt · Gültigkeit nicht belegt · ${offer.validUntil}`;
