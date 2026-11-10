@@ -2565,7 +2565,7 @@
 
     function estimateMatchCost(matchedOffers) {
       if (!matchedOffers.length) return 'Preis unbekannt';
-      const summary = calculateOfferAmount(matchedOffers.map(offer => ({ packCount: 1, offer })));
+      const summary = calculateOfferAmount(matchedOffers.map(offer => ({ packCount: 1, offer })), parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer));
       return summary.unknownPriceCount ? 'Preis unbekannt' : formatEuro(summary.knownOfferTotal);
     }
 

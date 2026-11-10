@@ -1156,3 +1156,8 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 
 - Die Evidenzprüfung ist rein lesend und benötigt keine neue Freigabe.
 - Keine Angebots-, Nutzer-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+## Gebündelte Notiz 10.11.2026 – Plan-/Rezeptkosten
+
+- Die Änderung ist rein berechnend und benötigt keine neue Freigabe.
+- Keine Angebots-, Nutzer-, Kauf-, Vorrats-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
