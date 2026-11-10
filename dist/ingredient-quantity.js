@@ -8,6 +8,7 @@
   });
 
   const QUANTITY_NUMBER_PATTERN = '(?:\\d{1,3}(?:\\.\\d{3})+(?:,\\d+)?|\\d+(?:[.,]\\d+)?)';
+  const MAX_NORMALIZED_AMOUNT = 1_000_000_000;
 
   function parsePositiveNumber(value) {
     const text = String(value ?? '').trim().replace(/\s+/g, '');
@@ -37,7 +38,10 @@
     const number = parsePositiveNumber(quantity);
     const definition = unitDefinition(unit);
     if (!number || !definition || !Number.isFinite(multiplier) || multiplier <= 0) return null;
-    return { family: definition.family, unit: definition.unit, amount: number * definition.factor * multiplier };
+    const amount = number * definition.factor * multiplier;
+    return Number.isFinite(amount) && amount > 0 && amount <= MAX_NORMALIZED_AMOUNT
+      ? { family: definition.family, unit: definition.unit, amount }
+      : null;
   }
 
   function emptyIngredient(raw) {
@@ -85,25 +89,35 @@
     const portions = Number(portionUnits);
     if (!parsed || !Number.isFinite(portions) || portions <= 0) return { ...current, valid: false };
     if (current.family && current.family !== parsed.family) return { ...current, valid: false };
+    const currentAmount = Number(current.amount);
+    if (!Number.isFinite(currentAmount) || currentAmount < 0 || currentAmount > MAX_NORMALIZED_AMOUNT) {
+      return { ...current, valid: false };
+    }
     const amount = Number(parsed.amount) * portions;
-    if (!Number.isFinite(amount) || amount <= 0) return { ...current, valid: false };
+    const total = currentAmount + amount;
+    if (!Number.isFinite(amount) || amount <= 0 || !Number.isFinite(total) || total > MAX_NORMALIZED_AMOUNT) {
+      return { ...current, valid: false };
+    }
     return {
       valid: current.valid !== false,
       family: current.family || parsed.family,
       unit: current.unit || parsed.unit,
-      amount: current.amount + amount,
+      amount: total,
     };
   }
 
   function calculateExactPackCount(item) {
     const basis = item?.quantityBasis;
     const pack = parseOfferPackSize(item?.offer?.packSize);
-    if (!basis?.valid || !pack || basis.family !== pack.family || !Number.isFinite(basis.amount) || basis.amount <= 0) return null;
+    if (!basis?.valid || !pack || basis.family !== pack.family
+      || !Number.isFinite(basis.amount) || basis.amount <= 0 || basis.amount > MAX_NORMALIZED_AMOUNT
+      || !Number.isFinite(pack.amount) || pack.amount <= 0 || pack.amount > MAX_NORMALIZED_AMOUNT) return null;
     const ratio = basis.amount / pack.amount;
     if (!Number.isFinite(ratio) || ratio <= 0) return null;
     // Only absorb IEEE-754 noise; a real positive overage must round up.
     const tolerance = Number.EPSILON * Math.max(1, Math.abs(ratio)) * 8;
-    return Math.max(1, Math.ceil(ratio - tolerance));
+    const packCount = Math.ceil(ratio - tolerance);
+    return Number.isSafeInteger(packCount) ? Math.max(1, packCount) : null;
   }
 
   root.AngebotskuecheIngredientQuantityModel = Object.freeze({

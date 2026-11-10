@@ -1425,3 +1425,9 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
   und Verbrauchs-/Reservierungsvertrag; dafür ist weiterhin eine gebündelte Freigabe nötig.
 - Fahrtkosten/Routing, Mehrstoppentscheidung, automatische Cloud-Konflikte und
   weitere Supabase-Datenverträge bleiben unverändert freigabepflichtig.
+
+
+## Sicherheitskorrektur 10.11.2026 – sichere Mengenobergrenze
+
+- Rezept- und Angebots-Packmengen oberhalb von 1.000.000.000 Basiseinheiten werden vor Packungs- und Kostenberechnung als unbekannt behandelt; bestehende Daten werden nicht umgeschrieben.
+- Kein neuer Freigabepunkt: Es wurden nur deterministische Validierung, Regressionstest und Dokumentation ergänzt. Keine Nutzer-, Vorrats-, Kauf-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
