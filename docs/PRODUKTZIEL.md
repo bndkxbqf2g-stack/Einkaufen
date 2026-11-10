@@ -960,3 +960,10 @@ werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
 - Unbekannte oder inkompatible Packungsgrößen bleiben als unbekannte Kosten sichtbar; es wird keine angenäherte Packungszahl als bekannter Betrag ausgegeben.
 - Unquantifizierte Alt-Rezepte behalten ihr bisheriges rückwärtskompatibles Näherungsmodell.
 - Keine Nutzer-, Angebots-, Vorrats-, Supabase-, Datenbank-, Produktions- oder kostenpflichtige Änderung.
+
+
+## Qualitätsaudit 10.11.2026 – regulärer Vergleich mit Mengen-Evidenz
+
+- Der reguläre Quellenpreis wird in Einkaufszeilen und geteilten Einkaufslisten nur noch angezeigt, wenn neben Preis-/Quellen-Evidenz auch der Mengen-/Packungskontext des Artikels kompatibel ist.
+- Allgemeine Angebotskarten ohne konkrete Rezeptposition bleiben rückwärtskompatibel und zeigen nur den quellenbelegten Vergleichshinweis.
+- Keine Nutzer-, Angebots-, Vorrats-, Supabase-, Datenbank-, Produktions- oder kostenpflichtige Änderung.
