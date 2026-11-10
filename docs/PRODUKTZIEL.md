@@ -1060,3 +1060,16 @@ Nächster sinnvoller unabhängiger Schritt bleibt ein read-only Audit der
 Warenkorb-/Marktvergleichsanzeige. Der verbindliche Kaufabschluss mit IST-Betrag,
 Verbrauchsbuchung sowie produktiver Fahrtkosten-/Mehrstoppentscheidung bleibt
 bis zur gebündelten Freigabe ausgeschlossen.
+
+
+## Read-only-Audit 10.11.2026 – aktuelle Angebotsanzahl in der Marktauswahl
+
+Die Marktansicht und die Marktauswahl verwenden nun denselben zentralen Zähler:
+aktuelle, gültige und nicht synthetische Angebote je Markt. Statische Werte aus
+marketDetails werden nicht mehr als aktuelle Treffer dargestellt. Root, dist und
+das veröffentlichte Worker-Artefakt bleiben synchron; Preis-, Einkaufs-,
+Vorrats-, Supabase- und Routendatenverträge ändern sich nicht.
+
+Die statischen Anzeigeentfernungen bleiben ausdrücklich als solche markiert.
+Eine Fahrtkostenberechnung, Routenoptimierung oder automatische
+Mehrstoppentscheidung ist weiterhin nicht integriert.
