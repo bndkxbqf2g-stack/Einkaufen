@@ -37,4 +37,6 @@ const comparison = parseLidlOfferText(`Lidl Wochenangebote
 Äpfel
 statt 2,49 €
 1,99 €`);
+assert.equal(comparison.length, 1);
+assert.equal(comparison[0].price, '1,99 €');
 assert.equal(comparison[0].regularPrice, '2,49 €');
