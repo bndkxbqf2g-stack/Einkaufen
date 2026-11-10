@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { offerPackSize } from './offer-normalization.mjs';
+import { extractExplicitRegularPrice, offerPackSize } from './offer-normalization.mjs';
 
 test('uses an explicit package size from the product title', () => {
   assert.equal(offerPackSize('Gouda gerieben 150 g'), '150 g');
@@ -39,4 +39,12 @@ test('does not mistake a unit-price denominator for the package size', () => {
 
 test('retains the neutral fallback when no size is explicit', () => {
   assert.equal(offerPackSize('Tomaten', 'Tomaten 1,49 €'), '1 Packung');
+});
+
+
+test('übernimmt reguläre Preise nur aus expliziten Quellenangaben', () => {
+  assert.equal(extractExplicitRegularPrice('Äpfel statt 2,49 € jetzt 1,99 €', '1,99 €'), '2,49 €');
+  assert.equal(extractExplicitRegularPrice('Joghurt 1 kg = 3,99 € statt 2,49 € · Angebot 1,99 €', '1,99 €'), '2,49 €');
+  assert.equal(extractExplicitRegularPrice('Äpfel -20% · 1,99 €', '1,99 €'), '');
+  assert.equal(extractExplicitRegularPrice('Äpfel statt 1,99 € jetzt 2,49 €', '2,49 €'), '');
 });

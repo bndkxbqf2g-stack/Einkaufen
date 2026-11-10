@@ -9,6 +9,14 @@ const nonOfferNamePattern = /\bverfügbar\s+(?:ab|seit)\b/i;
 const dateOnlyPattern = /^(?:(\d{1,2})\.(\d{1,2})\.(\d{4})|(\d{4})-(\d{2})-(\d{2}))$/;
 const fetchedAtPattern = /^(\d{4})-(\d{2})-(\d{2})T([01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?Z$/;
 
+function euroCents(value) {
+  const raw = String(value || '').replace(/^ab\s+/i, '').replace(/\s*€\s*$/i, '').trim();
+  if (!/^(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d{2})?$/.test(raw)) return null;
+  const [whole, decimal = '00'] = raw.split(',');
+  const cents = Number(whole.replace(/\./g, '')) * 100 + Number(decimal);
+  return Number.isSafeInteger(cents) ? cents : null;
+}
+
 function calendarDateParts(value) {
   const match = String(value || '').trim().match(dateOnlyPattern);
   if (!match) return null;
@@ -132,6 +140,14 @@ export function validateOfferSnapshot(snapshot, { now = new Date() } = {}) {
     }
     if (!currencyPricePattern.test(offer.price.trim())) {
       throw new Error(`Angebotssnapshot: Preis von Angebot ${index + 1} ist kein eindeutiger Eurobetrag.`);
+    }
+    if (offer.regularPrice !== undefined) {
+      const regularPrice = String(offer.regularPrice || '').trim();
+      const currentCents = euroCents(offer.price);
+      const regularCents = euroCents(regularPrice);
+      if (!/^(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d{2})?\s*€$/i.test(regularPrice) || regularCents === null || currentCents === null || regularCents <= currentCents) {
+        throw new Error(`Angebotssnapshot: regulärer Vergleichspreis von Angebot ${index + 1} ist ungültig oder nicht höher als der Angebotspreis.`);
+      }
     }
     const offerKey = [offer.name, offer.price, offer.packSize || '', offer.validUntil]
       .map(value => String(value).trim().replace(/\s+/g, ' ').toLowerCase())

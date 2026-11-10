@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { chromium } from 'playwright';
-import { offerDeduplicationKey, offerPackSize } from './offer-normalization.mjs';
+import { extractExplicitRegularPrice, offerDeduplicationKey, offerPackSize } from './offer-normalization.mjs';
 import { writeOfferSnapshot } from './offer-snapshot.mjs';
 
 const execFileAsync = promisify(execFile);
@@ -55,7 +55,9 @@ function parseOcr(text, validUntil, config) {
     }
     name = stripText(name);
     if (name.length < 3 || name.length > 100 || !likelyFood(name) || /^(angebot|aktion|uvp|je|ab|gültig)$/i.test(name)) continue;
-    offers.push({ name, store: config.store, price: `${match[1].replace('.', ',')} €`, saving: '–', icon: '🛒', category: 'Lebensmittel', packSize: offerPackSize(name), relevance: 76, note: 'KaufDA-Prospekt · OCR', validUntil });
+    const price = `${match[1].replace('.', ',')} €`;
+    const regularPrice = extractExplicitRegularPrice(window, price);
+    offers.push({ name, store: config.store, price, saving: '–', ...(regularPrice ? { regularPrice } : {}), icon: '🛒', category: 'Lebensmittel', packSize: offerPackSize(name), relevance: 76, note: 'KaufDA-Prospekt · OCR', validUntil });
   }
   return offers;
 }
@@ -237,7 +239,7 @@ async function scrapeMarket(page, config) {
     throw new Error(`${config.key}: konfigurierte Browser-Angebotsseite lieferte keine Angebotskarten`);
   }
   for (const item of structuredItems) {
-    if (item.name.length >= 3 && likelyFood(item.name) && priceFrom(item.price) !== '–') offers.push({ name: item.name, store: config.store, price: priceFrom(item.price), saving: '–', icon: '🛒', imageUrl: item.imageUrl || '', category: 'Lebensmittel', packSize: offerPackSize(item.name, item.text), relevance: 80, note: 'KaufDA-Angebot', validUntil: item.validUntil });
+    if (item.name.length >= 3 && likelyFood(item.name) && priceFrom(item.price) !== '–') { const price = priceFrom(item.price); const regularPrice = extractExplicitRegularPrice(item.text, price); offers.push({ name: item.name, store: config.store, price, saving: '–', ...(regularPrice ? { regularPrice } : {}), icon: '🛒', imageUrl: item.imageUrl || '', category: 'Lebensmittel', packSize: offerPackSize(item.name, item.text), relevance: 80, note: 'KaufDA-Angebot', validUntil: item.validUntil }); }
   }
 
   // Aldi liefert die aktuellen Angebotskarten direkt strukturiert. OCR ist dort

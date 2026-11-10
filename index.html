@@ -1556,6 +1556,13 @@
         saving.className = 'shopping-item-saving-note';
         saving.textContent = shoppingOfferSavingLabel(item.offer);
         side.append(evidence, saving);
+        const regularPriceLabel = shoppingOfferRegularPriceLabel(item.offer);
+        if (regularPriceLabel) {
+          const regular = document.createElement('span');
+          regular.className = 'shopping-item-saving-note';
+          regular.textContent = regularPriceLabel;
+          side.append(regular);
+        }
       });
     }
 
@@ -1871,7 +1878,8 @@
         const amountLabel = item.offer ? shoppingShareAmountLabel(item) : 'ergänzen';
         const evidenceLabel = item.offer ? shoppingOfferEvidenceLabel(item.offer) : '';
         const savingLabel = item.offer ? shoppingOfferSavingLabel(item.offer) : '';
-        return `- ${item.name}${item.count > 1 ? ` · für ${item.count} Gerichte` : ''}${item.offer ? ` · ${packCount} × ${item.offer.packSize || '1 Packung'} · ${amountLabel} · ${evidenceLabel} · ${savingLabel}` : ` · ${amountLabel}`}`;
+        const regularPriceLabel = item.offer ? shoppingOfferRegularPriceLabel(item.offer) : '';
+        return `- ${item.name}${item.count > 1 ? ` · für ${item.count} Gerichte` : ''}${item.offer ? ` · ${packCount} × ${item.offer.packSize || '1 Packung'} · ${amountLabel} · ${evidenceLabel} · ${regularPriceLabel || savingLabel}` : ` · ${amountLabel}`}`;
       }).join('\n')}`).join('\n\n');
       const text = `Angebotsküche · offene Einkaufsliste\n\n${lines}\n\n${shoppingShareSummary(pending)}\nFehlende Artikel und Vorräte sind nicht enthalten.`;
       if (navigator.share) {
@@ -2094,6 +2102,13 @@
       const saving = String(offer?.saving || '').trim();
       if (!saving || saving === '–' || evidence.manual || evidence.cacheFallback || !evidence.sourceKnown || !evidence.validityKnown || !evidence.end || !evidence.sourceEnd || evidence.end < new Date() || evidence.sourceEnd < new Date()) return 'Vergleichspreis nicht belegt';
       return `Quellenhinweis des Angebots: ${saving} · nicht berechnet`;
+    }
+    function shoppingOfferRegularPriceLabel(offer, status = liveOfferStatus[offer?.store]) {
+      if (!String(offer?.regularPrice || '').trim()) return '';
+      const current = parseKnownMoney(offer?.price);
+      const regular = parseKnownMoney(offer?.regularPrice);
+      if (current === null || regular === null || regular <= current || !isShoppingOfferCostUsable(offer, status)) return 'Vergleichspreis nicht belegt';
+      return `Regulärer Quellenpreis: ${formatEuro(regular)}`;
     }
 
     function formatEuro(value) {
@@ -2330,7 +2345,7 @@
       offersRendered = true;
       const current = offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer));
       const filtered = filter === 'all' ? current : current.filter(offer => offer.store === filter);
-      $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => { const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : ''; return `<div class="catalog-card"><div class="catalog-card-top">${renderOfferVisual(offer)}<span class="discount">${escapeHtml(offer.saving)}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category)}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note)} · ${escapeHtml(offer.packSize || '1 Packung')}</span><span>${escapeHtml(offer.relevance)}% Match</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source)} · ${escapeHtml(offer.confidence)} sicher</div>${removeAction}</div>`; }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
+      $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => { const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : ''; const regularPriceLabel = shoppingOfferRegularPriceLabel(offer); return `<div class="catalog-card"><div class="catalog-card-top">${renderOfferVisual(offer)}<span class="discount">${escapeHtml(offer.saving)}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category)}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note)} · ${escapeHtml(offer.packSize || '1 Packung')}</span><span>${escapeHtml(offer.relevance)}% Match</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source)} · ${escapeHtml(offer.confidence)} sicher${regularPriceLabel ? ` · ${escapeHtml(regularPriceLabel)}` : ''}</div>${removeAction}</div>`; }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
       renderOfferMaintenance();
     }
 

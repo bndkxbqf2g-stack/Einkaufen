@@ -75,3 +75,14 @@ test('ignores unit-price expressions before the actual offer price', () => {
   assert.equal(parsed.offers[0].price, '0,79 €');
 });
 
+
+
+test('übernimmt einen ausdrücklich genannten regulären Vergleichspreis', () => {
+  const parsed = parseAldiOffers(`
+    <p>Gültig vom 06.11.2026 bis 12.11.2026</p>
+    <a>Äpfel statt 2,49 € nur 1,99 €</a>
+  `);
+
+  assert.equal(parsed.offers[0].price, '1,99 €');
+  assert.equal(parsed.offers[0].regularPrice, '2,49 €');
+});

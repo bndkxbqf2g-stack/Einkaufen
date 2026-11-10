@@ -1,3 +1,4 @@
+import { extractExplicitRegularPrice } from './offer-normalization.mjs';
 const DATE_PATTERN = /(?:gültig\s+(?:von|ab)\s+)?(\d{1,2})\.(\d{1,2})\.(\d{4})?\s*(?:bis|–|-)\s*(\d{1,2})\.(\d{1,2})\.(\d{4})?/i;
 const PRICE_PATTERN = /(?:nur\s+|ab\s+)?(\d{1,3}[.,]\d{2})\s*(?:€|EUR|\*)?/i;
 const UNIT_PRICE_PATTERN = /\(?\s*\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml)\s*=\s*\d{1,3}[.,]\d{2}\s*€?\s*\)?/gi;
@@ -53,16 +54,17 @@ export function parseLidlOfferText(input, options = {}) {
   const seen = new Set();
   for (let index = 0; index < lines.length; index += 1) {
     const priceMatch = lines[index].match(PRICE_PATTERN);
-    if (!priceMatch) continue;
+    if (!priceMatch || /(?:statt|vorher|regulär|normalpreis|uvp)\s*$/i.test(lines[index].slice(0, priceMatch.index))) continue;
     const contextLines = lines.slice(Math.max(0, index - 3), index + 1);
     const window = contextLines.join(' ');
     const name = cleanName(contextLines.filter(line => !HEADER_PATTERN.test(line) && !DETAIL_PATTERN.test(line) && !DATE_PATTERN.test(line) && !PRICE_PATTERN.test(line)).join(' '));
     if (!likelyFood(name)) continue;
     const price = `${priceMatch[1].replace('.', ',')} €`;
+    const regularPrice = extractExplicitRegularPrice(window, price);
     const key = `${name.toLowerCase()}|${price}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    results.push({ name, price, saving: (window.match(/-\s*\d{1,3}\s*%/) || [])[0] || '–', icon: '🛒', category: 'Lebensmittel', packSize: packSize(window), relevance: 78, note: 'Lidl-Prospekt', validUntil });
+    results.push({ name, price, saving: (window.match(/-\s*\d{1,3}\s*%/) || [])[0] || '–', ...(regularPrice ? { regularPrice } : {}), icon: '🛒', category: 'Lebensmittel', packSize: packSize(window), relevance: 78, note: 'Lidl-Prospekt', validUntil });
   }
   return results.slice(0, 120);
 }

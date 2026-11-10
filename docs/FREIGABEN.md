@@ -1176,3 +1176,11 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 - Ohne aktuelle, quellenbelegte und nichtmanuelle Evidenz zeigt die App `Vergleichspreis nicht belegt`.
 - Bei belastbarer Herkunft wird der Wert ausschließlich als unveränderte Quellenangabe mit dem Hinweis `nicht berechnet` angezeigt.
 - Ein Regressionstest schützt diese Grenze. Keine Angebots-, Nutzer-, Supabase-, Produktions- oder Kostenänderung.
+
+## Fortschritt 10.11.2026 – explizite reguläre Vergleichspreise
+
+- Angebotsparser übernehmen einen regulären Vergleichspreis nur bei einer ausdrücklichen Quellenformulierung wie „statt“, „vorher“, „Normalpreis“ oder „UVP“ mit eigenem Eurobetrag.
+- Der aktuelle Angebotspreis muss ebenfalls explizit vorhanden sein; ein Vergleichspreis wird verworfen, wenn er nicht höher ist oder nur aus einer Prozentangabe abgeleitet werden müsste.
+- Snapshot-Validierung und Parser-Regressionen verhindern, dass der alte Vergleichspreis als aktueller Angebotspreis eingeht.
+- Die App zeigt den regulären Quellenpreis nur bei aktueller, nichtmanueller und belegter Angebots-Evidenz; Kassen- und reguläre Vergleichspreise bleiben getrennt.
+- Keine vorhandenen Angebots-, Nutzer-, Supabase- oder Produktionsdaten wurden verändert. Die tatsächliche Mehrmarktoptimierung und Fahrtkostenschwelle bleiben freigabepflichtig.

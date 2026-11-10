@@ -199,3 +199,25 @@ test('rejects future fetch timestamps even when validity is future', () => {
     /"fetchedAt" liegt in der Zukunft/
   );
 });
+
+
+test('validiert reguläre Vergleichspreise nur oberhalb des Angebotspreises', () => {
+  assert.doesNotThrow(() => validateOfferSnapshot({
+    ...validSnapshot,
+    offers: [{ name: 'Kartoffeln', price: '1,99 €', regularPrice: '2,49 €', validUntil: '12.11.2026' }],
+  }));
+  assert.throws(
+    () => validateOfferSnapshot({
+      ...validSnapshot,
+      offers: [{ name: 'Kartoffeln', price: '1,99 €', regularPrice: '1,99 €', validUntil: '12.11.2026' }],
+    }),
+    /regulärer Vergleichspreis/,
+  );
+  assert.throws(
+    () => validateOfferSnapshot({
+      ...validSnapshot,
+      offers: [{ name: 'Kartoffeln', price: '1,99 €', regularPrice: 'unbekannt', validUntil: '12.11.2026' }],
+    }),
+    /regulärer Vergleichspreis/,
+  );
+});
