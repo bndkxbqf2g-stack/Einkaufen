@@ -6,6 +6,14 @@ Kleine, rückwärtsverträgliche Programmier- und Testschritte laufen weiter. Di
 folgenden Punkte werden gesammelt und erst umgesetzt, wenn sie ausdrücklich
 freigegeben oder entschieden wurden.
 
+## Qualitätsstand 10.11.2026
+
+- Der aktuelle Hauptstand ist `main@d3bcf3c0e196a9a7f82ae4fb8993dc449bc70778`; PR #340 präzisierte den historischen Budget-Audit und ist gemergt.
+- Die zentralen Root-/`dist`-Dateien für App, Supabase-Sync, Kosten-/Budgetmodell, Service Worker, Abwechslung, Mengen und Vorratsdeckung sind bytegleich geprüft.
+- Die Prüfung war read-only: keine Nutzer-, Angebots-, Supabase-, Schema-, Daten- oder Produktionsänderung.
+- Unabhängige Tests und Dokumentationsprüfungen laufen weiter. Der nächste Laufzeitblock bleibt der gebündelt freizugebende Kaufabschluss gemäß Punkt 9.
+
+
 ## Später ausdrücklich freigeben
 
 1. **Kostenpflichtige Dienste oder Tarifwechsel** – z. B. bezahlte KI/API,
