@@ -1340,3 +1340,9 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Kein neuer Freigabepunkt: Die Änderung gleicht nur die bestehende Anzeigeprüfung für Mittagessen und optionales Abendessen an.
 - Keine Nutzer-, Kauf-, Vorrats-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – zentraler Plan-Kostenrenderer
+
+- Kein neuer Freigabepunkt: Die Änderung vereinheitlicht nur die lokale Anzeigeprüfung für Mittagessen und Abendessen.
+- Keine Nutzer-, Kauf-, Vorrats-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
