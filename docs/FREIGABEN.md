@@ -187,7 +187,7 @@ Die weitergehenden Entscheidungen oben bleiben für Verbrauchsreservierung, Gena
 ## Koordinierter Arbeitsstand – 07.11.2026, Konzeptprüfungen Markt und IST-Budget
 
 - Die Konzeptprüfung für eine spätere pure lokale Funktion `optimizeMarketSelection(input)` hält fest: Eingaben werden nur mit sicheren Centbeträgen, normalisierten Packungsgrößen und gültigen Angebotszeiträumen verarbeitet; fehlende, mehrdeutige oder abgelaufene Daten werden nicht zu 0 € oder einer Ersparnis gemacht. Einkaufsbetrag und Fahrtkosten bleiben getrennte Werte. Fehlen notwendige Daten, liefert die Funktion den Status `insufficient_data` mit nachvollziehbaren Gründen.
-- Eine Mehrstopp-Variante darf nur bei überschrittener Nettoersparnisschwelle und innerhalb von `maxStops` empfohlen werden. Gleichstände werden deterministisch entschieden, z. B. Nettoersparnis absteigend, Fahrtkosten aufsteigend, weniger Stopps zuerst und anschließend stabile kanonische Markt-Reihenfolge. Die Umsetzung bleibt bis zur Entscheidung über Schwelle, Fahrtkostenbasis, Ausgangspunkt/Datenschutz, `maxStops`, reguläre Vergleichspreise und Routingdienst zurückgestellt.
+- Eine Mehrstopp-Variante darf nur bei überschrittener Nettoersparnisschwelle und innerhalb von `maxStops` empfohlen werden. Gleichstände werden deterministisch entschieden, z. B. Nettoersparnis absteigend, Fahrtkosten aufsteigend, weniger Stopps zuerst und anschließend stabile kanonische Markt-Reihenfolge. Die Umsetzung bleibt bis zur Entscheidung über Schwelle, Fahrtkostenbasis, Ausgangspunkt/Datenschutz, `maxStops` und Routingdienst zurückgestellt.
 - Die Konzeptprüfung für die erste lokale IST-Budget-Etappe definiert `purchaseRecords` als `{ id, purchaseDate, month, totalCents, market, source: 'manual' }`. Das feste Monatsziel beträgt zunächst 40.000 Cent; Planwert, Angebots-Zwischensumme und IST-Ausgaben werden getrennt berechnet. `shoppingChecks` bleiben reine Checklisten und erzeugen keine Ausgaben.
 - Offen bleiben vor der Umsetzung: Gesamtbetrag je Einkauf oder Positionen mit echten Mengen/Preisen, Beleg/OCR, gerätegebundene oder Haushaltshistorie, Zeitraumdefinition sowie die Abgrenzung von Fahrtkosten und Haushaltswaren.
 - Beide Konzeptprüfungen waren read-only. Keine Produktdateien, keine Supabase-Änderung, keine OCR-/Belegverarbeitung und keine Datenänderung.
@@ -334,7 +334,7 @@ Die weitergehenden Entscheidungen oben bleiben für Verbrauchsreservierung, Gena
 
 - Die Kosten-/Einkaufslistenprüfung mit synthetischen Daten fand keinen reproduzierbaren Defekt. Mittagessen und aktivierte Abendessen werden in der Plankostensumme jeweils einmal berücksichtigt.
 - Packungsrundung, Personenmultiplikator, Vorratsfilter, bekannte positive Angebotspreise sowie getrennte unbekannte/mehrdeutige Preise verhalten sich deterministisch. Fehlende Artikel bleiben außerhalb der Angebotssumme und erhalten keinen erfundenen Preis.
-- Das Ergebnis ist weiterhin nur ein Angebots-Zwischenwert, kein vollständiger Kassenbetrag. Reguläre Vergleichspreise, belastbare Vorratsmengen, bestätigte IST-Ausgaben und Fahrtkosten fehlen bewusst.
+- Das Ergebnis ist weiterhin nur ein Angebots-Zwischenwert, kein vollständiger Kassenbetrag. Der reguläre Vergleich ist separat aus belegten Quellen umgesetzt; belastbare Vorratsmengen, bestätigte IST-Ausgaben und Fahrtkosten fehlen bewusst.
 - Kein PR, keine Produktänderung und keine Supabase-/Datenbankaktion aus diesem Audit. Die nächste Umsetzung des tatsächlichen Einkaufs-/Kassenflusses bleibt Freigabepunkt 9.
 ## Read-only-PWA-/Offline-/Restore-Audit – 07.11.2026
 
@@ -796,7 +796,7 @@ Offen und nicht Bestandteil dieses PRs bleiben eine produktive UI-Auswahl pro Ta
 
 ## Freigabepunkt 08.11.2026 – tatsächliche Mehrstopp-/Fahrtkostenbasis
 
-Der reine Marktstopp-Rechenkern ist umgesetzt: Er empfiehlt nur bei explizit belegter Nettoersparnis oberhalb einer gelieferten Schwelle und verändert keine Markt- oder Nutzerdaten. Eine produktive Integration benötigt weiterhin eine ausdrückliche Entscheidung über Fahrtkostenquelle (z. B. Verkehrsmittel, Strecke, Parken), reguläre Vergleichspreise, Marktzuordnung, Schwellenwert und UI-/Sync-Verhalten. Bis dahin werden keine Entfernungen, Fahrtkosten, Angebote oder zusätzlichen Stopps automatisch berechnet oder empfohlen.
+Der reine Marktstopp-Rechenkern ist umgesetzt: Er empfiehlt nur bei explizit belegter Nettoersparnis oberhalb einer gelieferten Schwelle und verändert keine Markt- oder Nutzerdaten. Eine produktive Integration benötigt weiterhin eine ausdrückliche Entscheidung über Fahrtkostenquelle (z. B. Verkehrsmittel, Strecke, Parken), Marktzuordnung, Schwellenwert und UI-/Sync-Verhalten. Bis dahin werden keine Entfernungen, Fahrtkosten, Angebote oder zusätzlichen Stopps automatisch berechnet oder empfohlen.
 
 ## Freigabepunkt 08.11.2026 – Abwechslungsanzeige im Wochenplan
 
@@ -842,7 +842,7 @@ Die sicheren Grundlagen für Kosten-/Budgettransparenz, lokale Vorratsmengen, Te
 
 ### 5. Mehrstopp-/Fahrtkostenbasis
 
-- **Entscheidung:** Verkehrsmittel, Strecke, Parken, Fahrtkostenquelle, Marktzuordnung, Nettoersparnisschwelle und Umgang mit regulären Vergleichspreisen.
+- **Entscheidung:** Verkehrsmittel, Strecke, Parken, Fahrtkostenquelle, Marktzuordnung und Nettoersparnisschwelle.
 - **Sicherer Standard:** Keine zusätzlichen Stopps empfehlen, solange Kosten und Schwelle nicht ausdrücklich geliefert und validiert sind.
 - **Betroffene Verträge:** Marktlimit, Warenkorbvergleich, Angebots-/Regulärpreise, Kostenmodell und spätere Routinglogik.
 - **Danach möglich:** geprüfte Mehrstopp-Empfehlung aus Basiswarenkorb minus Alternativwarenkorb minus Fahrtkosten.
@@ -918,8 +918,8 @@ Nach einer gebündelten Entscheidung ist die lokale Vorratsdeckung der sinnvolls
 - Regression, Vollsuite, Worker-Build und Validator liefen grün. Es gibt keine neue fachliche Freigabe; Marktvergleich, Fahrtkosten, Belegerfassung und Vorratsmengen bleiben unverändert freigabepflichtig.
 ## Fortschritt 09.11.2026 – Evidenzstatus am Einkaufsartikel
 
-- Quelle und Gültigkeit werden am Einkaufsartikel konservativ ausgewiesen. `saving` bleibt ein Quellenhinweis; reguläre Vergleichspreise und echte Ersparnisse werden nicht berechnet.
-- Regressionen für bekannte/unbekannte Quelle, fehlenden/vorhandenen Hinweis, manuellen Import, abgelaufene Angebote und Cache-Fallback sind grün. Keine neue Freigabe erforderlich; Vergleichspreise, IST-/Belegerfassung und Quellen-/Routenlogik bleiben Freigabepunkte.
+- Quelle und Gültigkeit werden am Einkaufsartikel konservativ ausgewiesen. `saving` bleibt ein Quellenhinweis; reguläre Vergleichssummen werden nur aus explizit belegten Quellen berechnet, bleiben vom Kassenbetrag getrennt und sind keine bestätigte Ersparnis.
+- Regressionen für bekannte/unbekannte Quelle, fehlenden/vorhandenen Hinweis, manuellen Import, abgelaufene Angebote und Cache-Fallback sind grün. Keine neue Freigabe erforderlich; IST-/Belegerfassung und Quellen-/Routenlogik bleiben Freigabepunkte.
 ## Fortschritt 09.11.2026 – Evidenzstatus beim Teilen der Einkaufsliste
 
 - Der bestehende Evidenzstatus wird beim Teilen wiederverwendet; es gibt keine neue Berechnung und keinen neuen Datenvertrag.
@@ -1050,7 +1050,7 @@ Der Prüfstand ändert keine Runtime, Nutzerdaten, Supabase-/SQL-/Auth-Konfigura
 - **Ist-Befund:** Die App nutzt pro Markt statische Anzeigeentfernungen aus `marketDetails`, sortiert damit die ausgewählten Märkte und begrenzt die aktive Auswahl über `marketsSelect`. Das ist eine Darstellungs-/Auswahlhilfe, keine Routenberechnung.
 - **Nicht vorhanden:** Keine echte Mehrstopp-Routenoptimierung, keine Fahrtkostenberechnung, kein regulärer Warenkorbvergleich über Märkte und keine automatische zusätzliche-Stopp-Empfehlung in der UI. Der vorhandene `market-stops.js`-Kern bleibt ein isolierter, deterministischer Rechenkern und wird nicht mit Strecken- oder Kartendaten versorgt.
 - **Konservativer Datenumgang:** Fehlende, nichtnumerische oder nicht belegte Entfernungs-/Kostenwerte dürfen nicht als null oder als Ersparnis behandelt werden. Angebotsauswahl und Kostenmodell bleiben auf validierte, aktuelle Daten beschränkt; unbekannte Werte bleiben offen.
-- **Freigabe erforderlich:** Vor einer produktiven Erweiterung sind Verkehrsmittel, Strecke, Parken, Fahrtkostenquelle, reguläre Vergleichspreise, Marktzuordnung, Nettoersparnisschwelle sowie UI-, Offline- und Sync-Verhalten festzulegen. Karten-, Geocoding-, Routing- oder sonstige externe Cloud-Dienste werden ohne gesonderte Freigabe nicht eingeführt.
+- **Freigabe erforderlich:** Vor einer produktiven Erweiterung sind Verkehrsmittel, Strecke, Parken, Fahrtkostenquelle, Marktzuordnung, Nettoersparnisschwelle sowie UI-, Offline- und Sync-Verhalten festzulegen. Karten-, Geocoding-, Routing- oder sonstige externe Cloud-Dienste werden ohne gesonderte Freigabe nicht eingeführt.
 
 Dieser Audit änderte keine Angebote, Nutzer-/Haushaltsdaten, Supabase-/Schema-Daten, Deployments oder kostenpflichtigen Ressourcen.
 
@@ -1245,3 +1245,9 @@ Die getrennte Vergleichssumme verwendet bei fehlenden oder ungültigen
 Vergleichspreisen jetzt `null` in allen Summenfeldern, einschließlich der
 Centfelder. Damit bleibt „unbekannt“ von `0 €` unterscheidbar. Keine Nutzer-,
 Angebots-, Supabase- oder Produktionsdatenänderung.
+
+## Dokumentationsabgleich 10.11.2026 – regulärer Vergleich nicht mehr als Gate
+
+Veraltete Auditformulierungen wurden entfernt oder präzisiert. Der reguläre
+Vergleich bleibt eine getrennte, quellenbelegte Berechnung; offen bleiben der
+vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
