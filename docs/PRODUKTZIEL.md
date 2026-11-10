@@ -937,3 +937,11 @@ werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
 - Generische Rezeptimporte übernehmen einen vegetarischen Status nur bei ausdrücklich erkannten Schlüsselwörtern; fehlende Angaben bleiben unbekannt.
 - App, Worker und Endpoint-Regression verwenden denselben konservativen Vertrag.
 - Kuratierte Rezeptdaten und vorhandene persönliche Angaben bleiben unverändert.
+
+
+## Qualitätsaudit: unbekannte Packungsgrößen (10.11.2026)
+
+- Angebotsparser ergänzen bei fehlender Quellenangabe keine konkrete Packungsgröße mehr; intern bleibt die Größe unbekannt.
+- Die Oberfläche kennzeichnet fehlende oder historische generische Werte mit „Packungsgröße unbekannt“.
+- Die Mengenlogik nutzt eine Angebots-Packungsgröße nur bei explizit kompatibler Einheit und Menge; unbekannte Größen werden nicht als Mengenbeleg behandelt.
+- Dieser Schritt ändert keine Preise, Angebotsquellen, Supabase-Daten oder Produktionskonfiguration.
