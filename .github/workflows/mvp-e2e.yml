@@ -1,0 +1,81 @@
+name: MVP browser E2E
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'dist/**'
+      - 'automation/**'
+      - '.github/workflows/**'
+      - 'meal-planning.js'
+      - 'day-planning.js'
+      - 'ingredient-quantity.js'
+      - 'pantry-quantity.js'
+      - 'pantry-shopping-coverage.js'
+      - 'shopping-costs.js'
+      - 'budget-transparency.js'
+      - 'ingredient-normalization.js'
+      - 'supabase-sync.js'
+      - 'index.html'
+  push:
+    branches: [main]
+    paths:
+      - 'dist/**'
+      - 'automation/**'
+      - '.github/workflows/**'
+      - 'meal-planning.js'
+      - 'day-planning.js'
+      - 'ingredient-quantity.js'
+      - 'pantry-quantity.js'
+      - 'pantry-shopping-coverage.js'
+      - 'shopping-costs.js'
+      - 'budget-transparency.js'
+      - 'ingredient-normalization.js'
+      - 'supabase-sync.js'
+      - 'index.html'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mvp-e2e-\${{ github.workflow }}-\${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser:
+    name: Playwright MVP flow
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pinned Playwright test runner
+        run: npm install --no-save --no-package-lock @playwright/test@1.51.1
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run MVP browser test
+        run: npx playwright test automation/e2e/mvp.spec.mjs --config=automation/e2e/playwright.config.mjs
+
+      - name: Upload browser report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mvp-playwright-report
+          path: automation/e2e/playwright-report
+          if-no-files-found: ignore
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mvp-playwright-results
+          path: test-results
+          if-no-files-found: ignore
