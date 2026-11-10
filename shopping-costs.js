@@ -110,8 +110,6 @@
     }
 
     return {
-      knownItems,
-      unknownItems,
       knownComparisonItems: knownItems,
       unknownComparisonItems: unknownItems,
       knownComparisonTotalCents: knownOfferTotalCents,
