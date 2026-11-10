@@ -1112,3 +1112,9 @@ bleiben ebenfalls getrennte Freigabepunkte.
 - Die rein lesende Vorratsdeckung verwirft nun auch aggregierte Bedarfssummen über 1.000.000.000 Basiseinheiten als unbekannt, selbst wenn einzelne Positionen für sich gültig sind.
 - Dadurch werden keine übergroßen Restbedarfe, Teildeckungen oder Packungsfolgen stillschweigend berechnet; bestehende Legacy- und Nutzdaten bleiben unverändert.
 - Root, dist und der Regressionstest bleiben synchron. Es wurden keine Vorrats-, Kauf-, Supabase-, Datenbank-, Produktions- oder Kostenwerte geändert.
+
+
+## Testhärtung 10.11.2026 – Rezepttitel im Zuordnungsdialog
+
+- Ein Regressionstest prüft, dass HTML-artige persönliche Rezepttitel im Tageszuordnungsdialog escaped bleiben.
+- Die bestehende Laufzeitlogik war bereits geschützt; es wurden keine Nutzer-, Plan-, Vorrats-, Kauf-, Supabase- oder Produktionsdaten geändert.

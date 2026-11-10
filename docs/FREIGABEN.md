@@ -1437,3 +1437,9 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Summierte Mengenbedarfe oberhalb von 1.000.000.000 Basiseinheiten bleiben im read-only Vorratsabgleich unbekannt; einzelne gültige Positionen werden nicht zu einer unsicheren Großsumme verrechnet.
 - Kein neuer Freigabepunkt: Es wurden nur Validierung, Regressionstest und Dokumentation ergänzt. Keine Vorratsbuchung, Verbrauchsreservierung, Kauf-/IST-Erfassung, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Testhärtung 10.11.2026 – Rezepttitel im Zuordnungsdialog
+
+- Ein Regressionstest sichert das bestehende Escaping persönlicher Rezepttitel im Zuordnungsdialog.
+- Kein neuer Freigabepunkt: keine Laufzeit-, Daten-, Supabase-, Produktions- oder Kostenänderung.
