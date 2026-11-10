@@ -589,7 +589,7 @@ Die Absicherung wurde mit synthetischen leeren, abgelaufenen, marktvertauschten,
 - PR #254 ergänzt zugängliche Namen für die bereits vorhandenen dynamischen Marktgruppen der Einkaufsliste.
 - PR #255 kennzeichnet den bestehenden Gesamtfortschritt und den bestehenden Marktgruppenfortschritt zusätzlich als höfliche, atomare Statusbereiche (role="status", aria-live="polite", aria-atomic="true"). Es wurde keine neue Fortschrittslogik eingeführt.
 - Beide Änderungen verbessern ausschließlich die Bedienbarkeit mit Screenreadern. Es wurden keine Daten-, Sync-, Supabase-, Auth-, Cloud-, Preis- oder Angebotsverträge und keine Nutzerdaten verändert; Root, dist und das Server-Artefakt bleiben synchron.
-- Die nächsten fachlichen Freigabepunkte bleiben unverändert: insbesondere Mengen-/Vorratsverbrauch, echte IST-/Belegerfassung, Vergleichspreise und Ersparnis, Fahrtkosten/Mehrstopp-Routing, Offline-Konfliktstrategie sowie Supabase-/Auth-Erweiterungen.
+- Die nächsten fachlichen Freigabepunkte bleiben unverändert: insbesondere Mengen-/Vorratsverbrauch, echte IST-/Belegerfassung, Fahrtkosten/Mehrstopp-Routing, Offline-Konfliktstrategie sowie Supabase-/Auth-Erweiterungen. Der reguläre Vergleich ist als getrennte, quellenbelegte Berechnung umgesetzt.
 
 ## Fortschritt 09.11.2026 – source-bezogener Vollständigkeitsnachweis
 
