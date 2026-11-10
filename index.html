@@ -1551,6 +1551,14 @@
       });
     }
 
+    function combinePantryCoverage(legacyCoverage, quantityCoverage) {
+      const coveredItems = [...new Set([
+        ...(Array.isArray(legacyCoverage?.coveredItems) ? legacyCoverage.coveredItems : []),
+        ...(Array.isArray(quantityCoverage?.coveredItems) ? quantityCoverage.coveredItems : []),
+        ...(Array.isArray(quantityCoverage?.partialItems) ? quantityCoverage.partialItems : []),
+      ].map(item => String(item || '').trim()).filter(Boolean))];
+      return { coveredItems, coveredCount: coveredItems.length };
+    }
     function renderShoppingList() {
       const plannedDinners = typeof getPlannedDinnerMeals === 'function' ? getPlannedDinnerMeals() : [];
       const legacyPantryCoverage = window.AngebotskuecheCostModel.summarizePantryCoverage(
@@ -1561,14 +1569,7 @@
         },
       );
       const items = getShoppingItems();
-      const pantryCoverage = {
-        coveredItems: [...new Set([
-          ...legacyPantryCoverage.coveredItems,
-          ...(shoppingPantryCoverage?.coveredItems || []),
-          ...(shoppingPantryCoverage?.partialItems || []),
-        ])],
-        coveredCount: legacyPantryCoverage.coveredCount + (shoppingPantryCoverage?.coveredCount || 0) + (shoppingPantryCoverage?.partialCount || 0),
-      };
+      const pantryCoverage = combinePantryCoverage(legacyPantryCoverage, shoppingPantryCoverage);
       const normalizedShoppingChecks = reconcileShoppingChecks(shoppingChecks, items);
       if (JSON.stringify(normalizedShoppingChecks) !== JSON.stringify(shoppingChecks)) {
         shoppingChecks = normalizedShoppingChecks;
