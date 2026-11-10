@@ -1431,3 +1431,9 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Rezept- und Angebots-Packmengen oberhalb von 1.000.000.000 Basiseinheiten werden vor Packungs- und Kostenberechnung als unbekannt behandelt; bestehende Daten werden nicht umgeschrieben.
 - Kein neuer Freigabepunkt: Es wurden nur deterministische Validierung, Regressionstest und Dokumentation ergänzt. Keine Nutzer-, Vorrats-, Kauf-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – sichere Vorratsbedarfsaggregation
+
+- Summierte Mengenbedarfe oberhalb von 1.000.000.000 Basiseinheiten bleiben im read-only Vorratsabgleich unbekannt; einzelne gültige Positionen werden nicht zu einer unsicheren Großsumme verrechnet.
+- Kein neuer Freigabepunkt: Es wurden nur Validierung, Regressionstest und Dokumentation ergänzt. Keine Vorratsbuchung, Verbrauchsreservierung, Kauf-/IST-Erfassung, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
