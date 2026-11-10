@@ -1481,7 +1481,10 @@
 
     function formatShoppingCostScope(summary) {
       if (!summary.itemCount) return 'Noch keine Einkaufspositionen';
-      const details = [`${summary.knownOfferCount} von ${summary.offerItemCount} Angebotspositionen mit Preis`];
+      const coverage = Number.isInteger(summary.knownOfferCoveragePercent)
+        ? `Verifizierter Angebotsanteil ${summary.knownOfferCoveragePercent} % (${summary.knownOfferCount}/${summary.itemCount})`
+        : 'Verifizierter Angebotsanteil unbekannt';
+      const details = [coverage, `${summary.knownOfferCount} von ${summary.offerItemCount} Angebotspositionen mit Preis`];
       if (summary.unknownPriceCount) details.push(`${summary.unknownPriceCount} Preis${summary.unknownPriceCount === 1 ? '' : 'e'} unbekannt`);
       if (summary.manualMissingCount) details.push(`${summary.manualMissingCount} manuelle${summary.manualMissingCount === 1 ? 'r' : ''} Artikel ohne Angebotsanker`);
       if (summary.unanchoredMissingCount) details.push(`${summary.unanchoredMissingCount} ${summary.unanchoredMissingCount === 1 ? 'weiterer' : 'weitere'} Artikel ohne Angebotsanker`);
