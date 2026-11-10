@@ -1259,3 +1259,11 @@ Angebots-, Supabase- oder Produktionsdatenänderung.
 Veraltete Auditformulierungen wurden entfernt oder präzisiert. Der reguläre
 Vergleich bleibt eine getrennte, quellenbelegte Berechnung; offen bleiben der
 vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
+
+
+## Sicherheitskorrektur 10.11.2026 – unbekannte Zielgruppe im generischen Import
+
+- Der generische Schema.org-Rezeptimport setzt fehlende Familienangaben nicht mehr automatisch auf `true`.
+- Favoriten mit gleichem Namen wie ein eingebautes Rezept erben bei fehlender eigener Angabe keinen Familienstatus mehr.
+- Regression, Root-/`dist`-Parität und Worker-Artefakt werden mitgeprüft.
+- Kein Freigabepunkt ausgelöst: keine Nutzer-, Angebots-, Vorrats-, Supabase-, Datenbank- oder Produktionsänderung.
