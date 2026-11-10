@@ -69,3 +69,14 @@ test('offers market-scoped progress actions without changing the checklist contr
   assert.match(html, /itemNote = `\$\{checkedCount\}\/\$\{groupItems\.length\} erledigt/);
 });
 console.log('Shopping share cost checks passed');
+
+
+test('teilt verifizierte Vergleichssumme getrennt vom Angebotsbetrag', () => {
+  assert.equal(
+    shoppingShareSummary([
+      { packCount: 2, offer: { price: '1,20 €', regularPrice: '1,50 €' } },
+      { packCount: 1, offer: { price: '0,89 €', regularPrice: '–' } },
+    ]),
+    'Bekannter Angebotsbetrag 2,40 € · Regulärer Vergleichsanteil 3,00 € · rechnerische Differenz 0,60 € · 1 Vergleichspreis unbekannt · Kassenbetrag offen',
+  );
+});
