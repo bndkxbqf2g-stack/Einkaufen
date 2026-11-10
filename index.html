@@ -889,7 +889,7 @@
     favorites = favorites.map(item => {
       const builtIn = seededFavorites.find(seed => normalizeIngredient(seed.name) === normalizeIngredient(item.name));
       if (!builtIn) return item;
-      return { ...builtIn, ...item, ingredients: Array.isArray(item.ingredients) && item.ingredients.length ? item.ingredients : builtIn.ingredients, time: item.time || builtIn.time, vegetarian: item.vegetarian ?? builtIn.vegetarian, familyFriendly: item.familyFriendly ?? builtIn.familyFriendly, category: item.category || builtIn.category, difficulty: item.difficulty || builtIn.difficulty, instructions: item.instructions || builtIn.instructions };
+      return { ...builtIn, ...item, ingredients: Array.isArray(item.ingredients) && item.ingredients.length ? item.ingredients : builtIn.ingredients, time: item.time || builtIn.time, vegetarian: item.vegetarian ?? builtIn.vegetarian, familyFriendly: typeof item.familyFriendly === 'boolean' ? item.familyFriendly : null, category: item.category || builtIn.category, difficulty: item.difficulty || builtIn.difficulty, instructions: item.instructions || builtIn.instructions };
     });
     const existingFavoriteNames = new Set(favorites.map(item => normalizeIngredient(item.name)));
     let addedFavoriteDefaults = false;
@@ -2413,7 +2413,7 @@
         const ingredients = Array.isArray(recipe.recipeIngredient) ? recipe.recipeIngredient.map(item => String(item).trim()).filter(Boolean) : [];
         if (!ingredients.length) return null;
         const aggregateRating = parseAggregateRating(recipe.aggregateRating);
-        return { name: recipe.name, ingredients, instructions: recipeInstructionsText(recipe.recipeInstructions), time: Number(String(recipe.totalTime || '').match(/\d+/)?.[0] || 0) || undefined, vegetarian: /vegetarian|vegan/i.test(JSON.stringify(recipe.keywords || '')), familyFriendly: true, category: recipe.recipeCategory || undefined, externalRating: aggregateRating?.value, externalRatingCount: aggregateRating?.count, ratingSource: aggregateRating ? 'Rezeptseite · Schema.org' : undefined };
+        return { name: recipe.name, ingredients, instructions: recipeInstructionsText(recipe.recipeInstructions), time: Number(String(recipe.totalTime || '').match(/\d+/)?.[0] || 0) || undefined, vegetarian: /vegetarian|vegan/i.test(JSON.stringify(recipe.keywords || '')), category: recipe.recipeCategory || undefined, externalRating: aggregateRating?.value, externalRatingCount: aggregateRating?.count, ratingSource: aggregateRating ? 'Rezeptseite · Schema.org' : undefined };
       } catch { return null; }
     }
 
