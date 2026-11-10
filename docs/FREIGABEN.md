@@ -1197,3 +1197,12 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 - Der deterministische Marktstopp-Kern gibt bei leerer Auswahl bestehender Märkte nun konservativ "unknown" zurück.
 - Ohne Ausgangsmarkt werden weder Ersparnis, Fahrtkostenbasis noch ein zusätzlicher Stopp angenommen.
 - Die Korrektur ändert keine Markt-, Nutzer-, Supabase- oder Produktionsdaten; die Nettoersparnisschwelle bleibt weiterhin ausdrücklich freigabepflichtig.
+
+## Fortschritt 10.11.2026 – Vergleichspreis-Vertrag je Händlerquelle
+
+Die Händlerparser verwenden denselben konservativen Vertrag für reguläre
+Vergleichspreise. Das Feld regularPrice wird nur übernommen, wenn die Quelle
+einen Vergleichspreis ausdrücklich mit statt, vorher, regulär, Normalpreis
+oder UVP und einem Eurobetrag nennt. Prozentangaben werden nicht
+zurückgerechnet. Regressionstests decken Aldi, Kaufland, EDEKA und Netto ab;
+Angebotsdateien, Nutzerdaten, Supabase und Produktivbetrieb bleiben unverändert.
