@@ -126,3 +126,16 @@ test('preserves explicit regular prices in every retailer parser without reverse
   );
   assert.equal(percentageOnly.offers[0].regularPrice, undefined);
 });
+
+
+test('covers all supported after-price unit-price spellings without losing the later offer price', () => {
+  for (const unitPrice of ['2,49 €/kg', '2,49 € pro kg', '2,49 € je kg', '2,49 € per 100 g']) {
+    const parsed = parseAldiOffers('<p>Gültig vom 06.11.2026 bis 12.11.2026</p><a>Naturjoghurt ' + unitPrice + ' 1,99 €</a>');
+    assert.equal(parsed.offers[0]?.price, '1,99 €', unitPrice);
+  }
+});
+
+test('keeps the amount when an after-price unit expression has no later pack price', () => {
+  const parsed = parseAldiOffers('<p>Gültig vom 06.11.2026 bis 12.11.2026</p><a>Naturjoghurt 0,79 € pro 100 g</a>');
+  assert.equal(parsed.offers[0]?.price, '0,79 €');
+});

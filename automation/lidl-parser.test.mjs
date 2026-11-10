@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import test from 'node:test';
 import { extractValidUntil, parseLidlOfferText } from './lidl-parser.mjs';
 
 const sample = `Aktionsprospekt Lidl\nGültig von 02.11.2026 bis 07.11.2026\nPfanni Speisekartoffeln\n2,5 kg\n-24%\n2,49 €\nMüller Joghurt mit der Ecke\n150 g\n0,33 €\nWC-Reiniger\n750 ml\n1,49 €`;
@@ -44,3 +45,11 @@ statt 2,49 €
 assert.equal(comparison.length, 1);
 assert.equal(comparison[0].price, '1,99 €');
 assert.equal(comparison[0].regularPrice, '2,49 €');
+
+
+test('covers all supported Lidl after-price unit-price spellings', () => {
+  for (const unitPrice of ['2,49 €/kg', '2,49 € pro kg', '2,49 € je kg', '2,49 € per 100 g']) {
+    const parsed = parseLidlOfferText('Naturjoghurt\n' + unitPrice + '\n1,99 €');
+    assert.equal(parsed[0]?.price, '1,99 €', unitPrice);
+  }
+});
