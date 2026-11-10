@@ -44,6 +44,7 @@ test('durchgängiger MVP-Ablauf bleibt lokal bedienbar und speichert Änderungen
   await page.locator('#pantryQuantity').fill('500');
   await page.locator('#pantryUnit').selectOption('g');
   await page.locator('#savePantryItem').click();
+  await page.locator('#cancelPantryModal').click();
   await expect(page.locator('#pantryModal')).not.toHaveClass(/open/);
   await expect(page.locator('#pantryList')).toContainText('E2E-Reis');
 
