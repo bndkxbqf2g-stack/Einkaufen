@@ -1274,3 +1274,10 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Der generische Rezeptimport verarbeitet `PT1H30M`, `1 Std. 30 Min.` und vergleichbare Angaben vollständig; die bisherige Verkürzung auf die erste Zahl ist entfernt.
 - Regression, Root-/`dist`-Parität und Worker-Bundle werden geprüft.
 - Kein Freigabepunkt ausgelöst: keine Nutzer-, Angebots-, Vorrats-, Kassen-, Supabase-, Datenbank- oder Produktionsänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – Worker-Parität beim Rezeptimport
+
+- Der serverseitige Rezeptimport hatte noch den alten Erstzahl-Dauerparser und setzte fehlende Familienangaben pauschal auf `true`; beides ist korrigiert.
+- Der Endpoint-Test prüft jetzt `PT1H30M = 90` Minuten und das Fehlen eines erfundenen Familienstatus.
+- Kein Freigabepunkt ausgelöst: keine Nutzer-, Angebots-, Vorrats-, Kassen-, Supabase-, Datenbank- oder Produktionsänderung.
