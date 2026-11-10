@@ -21,3 +21,36 @@ assert.equal(
 );
 
 console.log('KaufDA validity checks passed');
+
+const unitPriceMatch = source.match(/function stripUnitPriceExpressions\(value\) \{[\s\S]*?\n\}/);
+const parseOcrMatch = source.match(/function parseOcr\(text, validUntil, config\) \{[\s\S]*?\n\}/);
+assert.ok(unitPriceMatch, 'stripUnitPriceExpressions muss im KaufDA-Importer vorhanden sein');
+assert.ok(parseOcrMatch, 'parseOcr muss im KaufDA-Importer vorhanden sein');
+const stripUnitPriceExpressions = new Function(
+  `${unitPriceMatch[0]}; return stripUnitPriceExpressions;`,
+)();
+const parseOcr = new Function(
+  'stripText',
+  'likelyFood',
+  'extractExplicitRegularPrice',
+  'offerPackSize',
+  `${unitPriceMatch[0]}\n${parseOcrMatch[0]}\nreturn parseOcr;`,
+)(
+  value => String(value || '').replace(/\s+/g, ' ').trim(),
+  value => /joghurt/i.test(String(value || '')),
+  () => '',
+  () => '',
+);
+
+assert.doesNotMatch(
+  stripUnitPriceExpressions('Joghurt 1 kg = 2,49 € 1,99 €'),
+  /2,49/,
+);
+const parsed = parseOcr(
+  'Joghurt Natur\n1 kg = 2,49 €\n1,99 €',
+  '31.12.2099',
+  { store: 'Aldi' },
+);
+assert.ok(parsed.length > 0);
+assert.ok(parsed.every(offer => offer.price === '1,99 €'));
+
