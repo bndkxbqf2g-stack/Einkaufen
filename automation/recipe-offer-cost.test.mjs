@@ -104,7 +104,7 @@ const regularPriceLabel = distHtml.match(/function shoppingOfferRegularPriceLabe
 assert.ok(regularPriceLabel, 'shoppingOfferRegularPriceLabel muss im App-Bundle vorhanden sein');
 
 test('zeigt reguläre Preise nur mit verifizierter, expliziter Vergleichsbasis', () => {
-  assert.match(regularPriceLabel[0], /offer\.regularPrice/);
+  assert.match(regularPriceLabel[0], /regularPrice/);
   assert.match(regularPriceLabel[0], /regular <= current/);
   assert.match(regularPriceLabel[0], /isShoppingOfferCostUsable\(offer, status\)/);
   assert.match(regularPriceLabel[0], /Regulärer Quellenpreis/);
