@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import test from 'node:test';
 import { extractValidUntil, parseLidlOfferText } from './lidl-parser.mjs';
 
 const sample = `Aktionsprospekt Lidl\nGültig von 02.11.2026 bis 07.11.2026\nPfanni Speisekartoffeln\n2,5 kg\n-24%\n2,49 €\nMüller Joghurt mit der Ecke\n150 g\n0,33 €\nWC-Reiniger\n750 ml\n1,49 €`;
