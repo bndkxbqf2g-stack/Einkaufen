@@ -1073,3 +1073,13 @@ Vorrats-, Supabase- und Routendatenverträge ändern sich nicht.
 Die statischen Anzeigeentfernungen bleiben ausdrücklich als solche markiert.
 Eine Fahrtkostenberechnung, Routenoptimierung oder automatische
 Mehrstoppentscheidung ist weiterhin nicht integriert.
+
+
+## Fortschritt 10.11.2026 – Vergleichssumme beim Teilen
+
+Die geteilte Einkaufsliste weist nun neben dem bekannten Angebotsbetrag auch den
+ausdrücklich belegten regulären Vergleichsanteil und die rechnerische Differenz
+aus. Nicht belegte Vergleichspreise bleiben separat sichtbar; Angebotsbetrag,
+Vergleichsbetrag und Kassenbetrag werden nicht vermischt. Die Änderung ist
+rein lesend und verändert keine Nutzer-, Kauf-, Vorrats-, Supabase- oder
+Produktionsdaten.
