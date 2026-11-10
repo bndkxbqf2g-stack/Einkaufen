@@ -1221,3 +1221,12 @@ Der KaufDA-Preisverlauf speichert ausdrücklich belegte reguläre
 Vergleichspreise nun optional mit der historischen Beobachtung. Die Änderung
 ist rückwärtskompatibel für ältere Einträge ohne dieses Feld und bleibt ohne
 Supabase-, Nutzer-, Angebotsdaten- oder Produktionsänderung.
+
+## Fortschritt 10.11.2026 – konservative Marktangebotsauswahl
+
+PR #334 sichert die Laufzeitregel für konkurrierende Angebote ab:
+Relevanz bleibt vorrangig; ein Preisvergleich erfolgt nur bei gleicher,
+sicherer Packungsgröße und explizit parsebaren Preisen. Unklare Größen oder
+Preise erzeugen keine künstliche Rangfolge. Die zusätzliche
+Mehrstopp-/Fahrtkostenoptimierung bleibt ausdrücklich freigabepflichtig.
+Keine Angebots-, Nutzer-, Supabase- oder Produktionsdaten wurden verändert.
