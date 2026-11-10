@@ -17,7 +17,7 @@ export default defineConfig({
     trace: 'retain-on-failure'
   },
   webServer: {
-    command: 'node automation/e2e/static-server.mjs dist',
+    command: 'node static-server.mjs ../../dist',
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: false,
     timeout: 15_000
