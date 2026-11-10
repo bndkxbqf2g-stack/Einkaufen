@@ -49,7 +49,7 @@ test('keeps the static seed offers as the non-GitHub fallback path', async () =>
   assert.equal(harness.context.automaticOfferRefreshStarted, false);
 });
 
-test('waits for the initial refresh before the initial plan render callback', async () => {
+test('renders the local app before and again after the optional initial refresh', async () => {
   const events = [];
   const context = {
     isGithubPagesHost: true,
@@ -66,14 +66,16 @@ test('waits for the initial refresh before the initial plan render callback', as
     renderSourceStatus: () => events.push('source-status'),
     setTimeout,
   };
-  const startupMatch = source.match(/    let automaticOfferRefreshStarted = false;\r?\n    startInitialOfferRefresh\(\)\.finally\(\(\) => \{[\s\S]*?\r?\n    \}\);/);
-  assert.ok(startupMatch, 'initial rendering must be gated by the refresh promise');
+  const startupMatch = source.match(/    let automaticOfferRefreshStarted = false\r?\n    const renderApp = \(\) => \{[\s\S]*?\r?\n    startInitialOfferRefresh\(\)\.then\(renderApp, renderApp\);/);
+  assert.ok(startupMatch, 'initial rendering must run before the refresh promise');
   vm.runInNewContext(
     `${helperMatch[0]}\n${startupMatch[0]}`,
     context,
     { filename: 'offer-initial-startup.js' },
   );
 
+  const renderEvents = ['plan', 'suggestions', 'highlights', 'markets', 'favorites', 'pantry', 'source-status'];
+  assert.deepEqual(events, [...renderEvents, 'refresh']);
   await new Promise(resolve => setTimeout(resolve, 0));
-  assert.deepEqual(events, ['refresh', 'plan', 'suggestions', 'highlights', 'markets', 'favorites', 'pantry', 'source-status']);
-});
+  assert.deepEqual(events, [...renderEvents, 'refresh', ...renderEvents]);
+});;
