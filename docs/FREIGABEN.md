@@ -1357,3 +1357,12 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Regression, Root-/dist-Parität und Worker-Artefakt werden durch CI geprüft.
 - Kein neuer Freigabepunkt: keine Nutzer-, Angebots-, Kauf-, Vorrats-,
   Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – manuelle Grundpreise
+
+- Der manuelle Angebotsimport verwirft Grundpreisangaben, wenn kein belastbarer
+  Packungspreis vorliegt.
+- Explizite Euro-Packungspreise bleiben unverändert nutzbar.
+- Kein neuer Freigabepunkt: keine Nutzer-, Angebots-, Kauf-, Vorrats-,
+  Supabase-, Datenbank-, Produktions- oder Kostenänderung.

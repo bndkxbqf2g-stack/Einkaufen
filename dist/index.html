@@ -966,7 +966,7 @@
       const resolvedSource = legacyDate ? (dateOrSource || 'manueller Import') : (source || 'manueller Import');
       const market = canonicalMarketName(store);
       const end = offerEndDate(validUntil);
-      if (!name || !market || parseMoney(price) <= 0 || !end || end < new Date()) return null;
+      if (!name || !market || parseKnownMoney(price) === null || !end || end < new Date()) return null;
       return { name: name.trim(), store: market, price: price.trim(), saving: saving.trim(), icon: '🛒', category: category.trim(), packSize: packSize.trim(), relevance: 82, note: 'manuell importiert', validUntil: validUntil.trim(), source: resolvedSource.trim(), confidence: 'niedrig' };
     }
 
@@ -2006,11 +2006,6 @@
         if (reusedIngredients.length) { tags.push('Resteverwertung'); noteParts.push(`${reusedIngredients.join(' + ')} aus dem größeren Einkauf weiterverwenden`); }
         return { ...meal, reusedIngredients, plannedLeftovers, tags: [...new Set(tags)], note: noteParts.join(' · ') };
       });
-    }
-
-    function parseMoney(value) {
-      const match = String(value || '').match(/\d+(?:[,.]\d{1,2})?/);
-      return match ? Number(match[0].replace(',', '.')) : 0;
     }
 
     function parseKnownMoney(value) {
