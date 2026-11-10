@@ -10,10 +10,10 @@ const dateOnlyPattern = /^(?:(\d{1,2})\.(\d{1,2})\.(\d{4})|(\d{4})-(\d{2})-(\d{2
 const fetchedAtPattern = /^(\d{4})-(\d{2})-(\d{2})T([01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?Z$/;
 
 function euroCents(value) {
-  const raw = String(value || '').replace(/^ab\\s+/i, '').replace(/\\s*€\\s*$/i, '').trim();
-  if (!/^(?:\\d{1,3}(?:\\.\\d{3})+|\\d+)(?:,\\d{2})?$/.test(raw)) return null;
+  const raw = String(value || '').replace(/^ab\s+/i, '').replace(/\s*€\s*$/i, '').trim();
+  if (!/^(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d{2})?$/.test(raw)) return null;
   const [whole, decimal = '00'] = raw.split(',');
-  const cents = Number(whole.replace(/\\./g, '')) * 100 + Number(decimal);
+  const cents = Number(whole.replace(/\./g, '')) * 100 + Number(decimal);
   return Number.isSafeInteger(cents) ? cents : null;
 }
 
