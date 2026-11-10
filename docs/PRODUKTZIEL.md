@@ -68,7 +68,7 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 
 ### Teilweise umgesetzt oder fehleranfällig
 
-- Die Einkaufsliste weist zusätzlich je Markt die bekannte Angebotssumme der ausdrücklich bepreisten Positionen und die Anzahl unbekannter Preise aus. Explizite Grundpreise wie „2,49 €/kg“ werden nicht als Packungspreis gerechnet. Das bleibt ein Angebots-Zwischenwert auf Basis angenäherter Packungsbedarfe – kein vollständiger Kassenbetrag; fehlende Artikel, Vorräte und Fahrtkosten sind nicht enthalten.
+- Die Einkaufsliste weist zusätzlich je Markt die bekannte Angebotssumme der ausdrücklich bepreisten Positionen und die Anzahl unbekannter Preise aus. Explizite Grundpreise wie „2,49 €/kg“ werden nicht als Packungspreis gerechnet. Reguläre Vergleichspreise und die rechnerische Differenz werden separat aus ausdrücklich belegten Quellen berechnet. Das bleibt ein Angebots-Zwischenwert auf Basis angenäherter Packungsbedarfe – kein vollständiger Kassenbetrag; fehlende Artikel, Vorräte und Fahrtkosten sind nicht enthalten.
 
 - Der UI-Plan bildet den Mittagessen-Slot und optional je Tag ein Abendessen ab. Frühstücks-Slots sind ausgeschlossen; Snacks und Getränke sind weiterhin kein eigener Planungsslot.
 - Die Planung verwendet aktive, ausgewählte Märkte und das eingestellte Marktlimit; sie führt nicht nachweisbar alle bekannten Märkte in einer Gesamtoptimierung zusammen.
@@ -85,7 +85,7 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 ### Noch nicht vorhanden
 
 - Durchgängiger Kauf-/Kassenfluss mit bestätigten Ausgaben, Historie und tatsächlichem verbleibendem Budget; das lokale Budgetmodell mit 400-€-Ziel und optionalem 440-€-Szenario ist als sicherer Zwischenkern vorhanden, die produktive Erfassung bleibt freigabepflichtig.
-- Vergleich von Angebots- und regulären Preisen inklusive Gesamtwarenkorb.
+- Vollständiger Kassenbetrag des gesamten Warenkorbs einschließlich aller fehlenden und regulären Positionen.
 - Einstellbare Schwelle, ab der ein weiterer Markt trotz Fahrtkosten lohnt.
 - Benannte Personenauswahl pro Tag einschließlich Kindertagen und Auswahl der benötigten Mahlzeittypen. Als additive Grundlage ist eine Tagespersonenzahl von 2, 3 oder 4 Personen umgesetzt; die Identitätsauswahl einzelner Haushaltsteilnehmer bleibt offen.
 - Eigene Planungsslots für Frühstück, Snacks und Getränke sind nicht Bestandteil des bestätigten Produktumfangs.
@@ -106,7 +106,7 @@ Die App soll die Alltagsentscheidung „Was kaufen und kochen wir in der kommend
 ## Drei wichtigste belegte Verbesserungen
 
 1. **Datenvollständigkeit je Markt herstellen:** Leere/ungültige Snapshot-Veröffentlichungen und das Löschen nicht aktualisierter Marktangebote sind abgesichert. Der neue Report trennt Ladefortschritt und Gesamtvollständigkeit; belastbare Quell-Sollzahlen je Markt/Prospekt fehlen weiterhin.
-2. **Kostenmodell vereinheitlichen:** Unbekannte Angebotspreise werden nicht mehr als 0 € gerechnet. Kassenbetrag, Verbrauchskosten, Vorratsrest, reguläre Vergleichspreise und Fahrtkosten müssen noch getrennt berechnet und anschließend für das 400-€-Monatsziel zusammengeführt.
+2. **Kostenmodell vereinheitlichen:** Unbekannte Angebotspreise werden nicht mehr als 0 € gerechnet. Der reguläre Vergleichsanteil wird bereits separat und nicht als Monatsbudget geführt; offen bleiben der bestätigte Kassenbetrag, Verbrauchskosten, Vorratsrest und Fahrtkosten sowie deren spätere getrennte Zusammenführung für das 400-€-Monatsziel.
 3. **Plan- und Einkaufsfluss vervollständigen:** Die Planung für Mittagessen und optionales Abendessen muss Mengen, Vorräte, aktuelle Angebote und den tatsächlichen Einkauf konsistent verbinden, ohne die bestehende persönliche Auswahl zu verlieren.
 
 ## Laufender Entwicklungsstand und nächster Schritt
