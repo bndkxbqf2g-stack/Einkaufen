@@ -140,9 +140,9 @@ test('empfiehlt ohne ausgewählten Ausgangsmarkt keinen zusätzlichen Stopp', ()
 
 
 test('zeigt in der Marktauswahl aktuelle gültige Angebote statt statischer Trefferzahlen', () => {
-  const currentCountExpression = 'const currentOfferCount = name => offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer) && offer.store === name).length;';
-  assert.ok(appSource.includes(currentCountExpression));
-  assert.ok(appSource.includes('\${currentOfferCount(name)} gültige Angebote'));
+  assert.ok(appSource.includes('function currentMarketOfferCount(name) {'));
+  assert.ok(appSource.includes('return offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer) && offer.store === name).length;'));
+  assert.ok(appSource.includes('\${currentMarketOfferCount(name)} gültige Angebote'));
   assert.ok(!appSource.includes('\${details.count} Treffer'));
   assert.equal(publishedAppSource, appSource);
 });
