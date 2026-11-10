@@ -974,3 +974,9 @@ werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
 - Die lokale, rein lesende Vorratsdeckung ist auf main bereits in den Einkaufslistenpfad integriert: Mittagessen und optionales Abendessen werden je Zutatenidentität zusammengeführt, kompatible explizite Mengen werden abgedeckt und der Restbedarf wird angezeigt.
 - Ältere vorbereitende Passagen, die die Einbindung in getShoppingItems() noch als offen beschreiben, sind damit historisch überholt.
 - Weiterhin nicht umgesetzt und separat freigabepflichtig bleiben Verbrauchsbuchung, Reservierung, automatische Nullbestands-/Rundungsentscheidungen mit Nutzerdatenwirkung, Backup-/Cloud-/Supabase-Erweiterungen und echte IST-/Kassenbuchungen.
+
+
+## Sicherheitskorrektur 10.11.2026 – unmöglicher Kaufmonat
+
+- Der vorbereitete Kaufdatensatz-Validator weist Monatswerte mit Jahr 0000 jetzt genauso zurück wie ungültige Kaufdaten.
+- Die Korrektur betrifft nur den deterministischen Validator; es gibt weiterhin keinen produktiven Kauf-, Speicher-, Backup-, Sync- oder Supabase-Pfad.

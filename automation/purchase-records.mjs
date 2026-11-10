@@ -17,7 +17,8 @@ function isValidDateParts(parts) {
 }
 
 function validMonth(value) {
-  return typeof value === 'string' && MONTH_PATTERN.test(value);
+  if (typeof value !== 'string' || !MONTH_PATTERN.test(value)) return false;
+  return Number(value.slice(0, 4)) >= 1;
 }
 
 export function monthForPurchaseDate(value) {

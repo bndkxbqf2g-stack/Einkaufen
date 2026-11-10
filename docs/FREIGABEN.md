@@ -1328,3 +1328,9 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Die lokale Vorratsdeckung ist bereits in getShoppingItems() eingebunden und verändert weder Vorrat noch pantryQuantities; die frühere Formulierung „produktive Einkaufslistenintegration bleibt Freigabepunkt 1“ wird insoweit als historischer Vorbereitungsstand präzisiert.
 - Freigabepflichtig bleiben die tatsächliche Verbrauchsbuchung, Reservierung, neue Daten-/Backup-/Cloud-/Supabase-Verträge sowie automatische Entscheidungen mit Nutzerdatenwirkung.
 - Keine Code-, Nutzer-, Angebots-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – Kaufmonat validiert
+
+- Kein neuer Freigabepunkt: Der lokale Vorbereitungsvalidator akzeptiert keine Kalenderangabe mit Jahr 0000.
+- Keine Nutzer-, Kauf-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
