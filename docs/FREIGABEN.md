@@ -1384,3 +1384,13 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
   Grundpreise bleiben unbekannt.
 - Kein neuer Freigabepunkt: keine Nutzer-, Angebots-, Kauf-, Vorrats-,
   Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – Grundpreisbehandlung aller Angebotsparser
+
+- Händler- und Lidl-Parser entfernen Grundpreise sowohl vor als auch nach dem
+  Eurobetrag vor der Angebotspreiswahl.
+- Echte nachfolgende Angebotspreise bleiben erhalten; Grundpreise allein werden
+  nicht veröffentlicht.
+- Kein neuer Freigabepunkt: keine Nutzer-, Angebots-, Kauf-, Vorrats-,
+  Supabase-, Datenbank-, Produktions- oder Kostenänderung.

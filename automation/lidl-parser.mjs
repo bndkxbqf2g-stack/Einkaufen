@@ -1,7 +1,7 @@
 import { extractExplicitRegularPrice } from './offer-normalization.mjs';
 const DATE_PATTERN = /(?:gültig\s+(?:von|ab)\s+)?(\d{1,2})\.(\d{1,2})\.(\d{4})?\s*(?:bis|–|-)\s*(\d{1,2})\.(\d{1,2})\.(\d{4})?/i;
 const PRICE_PATTERN = /(?:nur\s+|ab\s+)?(\d{1,3}[.,]\d{2})\s*(?:€|EUR|\*)?/i;
-const UNIT_PRICE_PATTERN = /\(?\s*\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml)\s*=\s*\d{1,3}[.,]\d{2}\s*€?\s*\)?/gi;
+const UNIT_PRICE_PATTERN = /(?:\(?\s*\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml)\s*=\s*\d{1,3}[.,]\d{2}\s*€?\s*\)?|(?:\d{1,3}(?:\.\d{3})+|\d+)(?:[.,]\d{2})?\s*€\s*(?:\/|pro|je|per)\s*(?:\d+(?:[.,]\d+)?\s*)?(?:kg|g|l|ml)\b)/gi;
 const NON_FOOD_PATTERN = /\b(wc|toilet|spül|wasch|shampoo|kosmetik|werkzeug|garten|bekleidung|schuh|auto|akku|drucker|spielzeug|matratze|bettwäsche|tierfutter|smartphone|fernseher|werkbank|normalpreis|preis)\b/i;
 const FOOD_HINT_PATTERN = /(apfel|äpfel|banan|birn|beeren|obst|orang|zitr|gemüse|kartoff|tomat|paprika|gurke|salat|zwiebel|knoblauch|karott|möhre|brokk|blumenkohl|spinat|fleisch|hack|rind|schwein|hähn|chicken|pute|lamm|steak|filet|wurst|salami|schinken|speck|fisch|lachs|thun|zander|scholle|hering|garnele|joghurt|almighurt|milch|sahne|butter|käse|quark|eier?\b|brot|bröt|toast|mehl|reis|nudel|pasta|pizza|pommes|suppe|sauce|soße|fertiggericht|müsli|cerealien|cornflakes|schokolade|schoko|hanuta|nutella|kakao|keks|waffel|lebkuchen|donut|chips|snack|erdnuss|nuss|nüsse|mandel|konfitüre|marmelade|kaffee|espresso|bohne|tee|saft|wasser|limonade|cola|energy|drink|bier|wein|vanillin|zucker|caramel|fudge|fruchtgummi|cheeseburger|knödel)/i;
 const HEADER_PATTERN = /^(?:lidl|angebote|aktionsprospekt|prospekt|filiale|image|gültig|seite|zurück|weiter|alle angebote|wähle|wochenangebote)\b/i;
