@@ -71,6 +71,62 @@
     return createOfferAmountSummary(totalCents, knownItems, unknownItems, knownPackCount, unknownPackCount);
   }
 
+  function calculateOfferComparison(items, parseUnitPrice, isOfferUsable) {
+    const parsePrice = typeof parseUnitPrice === 'function' ? parseUnitPrice : () => null;
+    const canUseOffer = typeof isOfferUsable === 'function' ? isOfferUsable : () => true;
+    let knownOfferTotalCents = 0;
+    let knownRegularTotalCents = 0;
+    const knownItems = [];
+    const unknownItems = [];
+    let knownPackCount = 0;
+    let unknownPackCount = 0;
+
+    for (const item of Array.isArray(items) ? items : []) {
+      const offerPrice = parsePrice(item?.offer?.price);
+      const regularPrice = parsePrice(item?.offer?.regularPrice);
+      const packCount = normalizePackCount(item?.packCount);
+      const offerCents = offerPrice === null ? null : safeOfferAmountCents(offerPrice, packCount);
+      const regularCents = regularPrice === null ? null : safeOfferAmountCents(regularPrice, packCount);
+      const valid = canUseOffer(item)
+        && offerCents !== null
+        && regularCents !== null
+        && regularCents > offerCents;
+      if (!valid) {
+        unknownItems.push(item);
+        unknownPackCount += packCount;
+        continue;
+      }
+      const nextOfferTotal = addSafeCents(knownOfferTotalCents, offerCents);
+      const nextRegularTotal = addSafeCents(knownRegularTotalCents, regularCents);
+      if (nextOfferTotal === null || nextRegularTotal === null) {
+        unknownItems.push(item);
+        unknownPackCount += packCount;
+        continue;
+      }
+      knownItems.push(item);
+      knownPackCount += packCount;
+      knownOfferTotalCents = nextOfferTotal;
+      knownRegularTotalCents = nextRegularTotal;
+    }
+
+    return {
+      knownItems,
+      unknownItems,
+      knownComparisonItems: knownItems,
+      unknownComparisonItems: unknownItems,
+      knownComparisonTotalCents: knownOfferTotalCents,
+      knownRegularTotalCents: knownRegularTotalCents,
+      knownSavingsCents: knownRegularTotalCents - knownOfferTotalCents,
+      knownComparisonTotal: knownItems.length ? knownOfferTotalCents / 100 : null,
+      knownRegularTotal: knownItems.length ? knownRegularTotalCents / 100 : null,
+      knownSavings: knownItems.length ? (knownRegularTotalCents - knownOfferTotalCents) / 100 : null,
+      knownComparisonCount: knownItems.length,
+      unknownComparisonCount: unknownItems.length,
+      knownComparisonPackCount: knownPackCount,
+      unknownComparisonPackCount: unknownPackCount,
+    };
+  }
+
   function pantryIngredientIdentity(value) {
     const shared = root.AngebotskuecheIngredientModel;
     return shared && typeof shared.shoppingIngredientIdentity === 'function'
@@ -112,6 +168,7 @@
     const offerItems = list.filter(item => item && item.offer);
     const missingItems = list.filter(item => !item || !item.offer);
     const offerSummary = calculateOfferAmount(offerItems, parseUnitPrice, isOfferUsable);
+    const comparisonSummary = calculateOfferComparison(offerItems, parseUnitPrice, isOfferUsable);
     const manualItems = list.filter(item => item?.manual === true);
     const manualMissingItems = missingItems.filter(item => item?.manual === true);
     const unanchoredMissingItems = missingItems.filter(item => item?.manual !== true);
@@ -119,6 +176,7 @@
     const missingPackCount = missingItems.reduce((sum, item) => sum + normalizePackCount(item?.packCount), 0);
     return {
       ...offerSummary,
+      ...comparisonSummary,
       offerItems,
       missingItems,
       manualItems,
@@ -142,6 +200,7 @@
 
   root.AngebotskuecheCostModel = Object.freeze({
     calculateOfferAmount,
+    calculateOfferComparison,
     normalizePackCount,
     summarizePantryCoverage,
     summarizeShoppingCosts,
