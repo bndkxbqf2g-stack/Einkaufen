@@ -817,3 +817,8 @@ Der Mengenpfad bewahrt den ursprünglichen Tagesindex auch bei Tagen ohne Abende
 
 - Die sichtbare Vorratsdeckung dedupliziert Legacy- und mengenfähige Treffer derselben Zutat, damit die Anzeige keine doppelte Berücksichtigung meldet.
 - Der lesende Mengenabgleich, Vorratsbestand und Verbrauchspfad bleiben unverändert.
+
+## Vorratsanzeige 10.11.2026 – kanonische Zutatenidentität
+
+- Die Anzeigezählung nutzt für Legacy- und mengenfähige Treffer die vorhandene Zutatenidentität; reine Schreibvarianten wie Groß-/Kleinschreibung erzeugen keine zweite Vorratszutat.
+- Dies bleibt eine lokale, lesende Darstellungskorrektur ohne Änderung am Vorrat oder Verbrauch.
