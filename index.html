@@ -3346,9 +3346,12 @@
     configureGithubPages();
     $('#peopleSelect').value = String(settings.people || 2); $('#daysSelect').value = String(settings.days || 5); $('#marketsSelect').value = String(settings.markets || 2); $('#leftoverToggle').checked = settings.leftovers !== false; $('#eveningToggle').checked = settings.evening !== false;
     let automaticOfferRefreshStarted = false;
-    startInitialOfferRefresh().finally(() => {
+    const renderApp = () => {
       renderPlan(); renderSuggestions(); renderHighlights(); renderMarkets(); renderFavorites(); renderPantry(); renderSourceStatus();
-    });
+    };
+    // The offline/demo shell must be usable even when an offer source is slow or unavailable.
+    renderApp();
+    startInitialOfferRefresh().then(renderApp, renderApp);
     setTimeout(() => refreshPendingRecipeImports().catch(() => {}), 250);
     const APP_BUILD = '2026-11-08-budget-transparency-1';
     try {

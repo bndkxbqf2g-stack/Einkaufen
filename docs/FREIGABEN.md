@@ -1459,3 +1459,8 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Marktwerte im vorbereitenden Kaufdatensatz-Validator müssen Zeichenketten sein; keine implizite Umwandlung fremder Datentypen.
 - Kein neuer Freigabepunkt: keine UI-, Nutzer-, Kauf-, Backup-, Cloud-, Supabase-, Produktions- oder Kostenänderung.
+
+## MVP-Reparatur 10.11.2026 – nicht blockierende Startdarstellung
+
+- Der lokale App-Kern wird vor dem optionalen Angebotsabruf gerendert; ein fehlerhafter oder langsamer Angebotsabruf verhindert den Start nicht.
+- Kein neuer Freigabepunkt: keine Nutzer-, Kauf-, Vorrats-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
