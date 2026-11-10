@@ -1456,7 +1456,7 @@
     }
 
     function getShoppingCostSummary(items = getShoppingItems()) {
-      return window.AngebotskuecheCostModel.summarizeShoppingCosts(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer));
+      return window.AngebotskuecheCostModel.summarizeShoppingCosts(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer, liveOfferStatus[item?.offer?.store], item));
     }
 
     function renderBudgetTransparency(costSummary, prefix = 'budget') {
@@ -2076,11 +2076,11 @@
     }
 
     function calculateOfferAmount(items) {
-      return window.AngebotskuecheCostModel.calculateOfferAmount(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer));
+      return window.AngebotskuecheCostModel.calculateOfferAmount(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer, liveOfferStatus[item?.offer?.store], item));
     }
 
     function calculateOfferComparison(items) {
-      return window.AngebotskuecheCostModel.calculateOfferComparison(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer));
+      return window.AngebotskuecheCostModel.calculateOfferComparison(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer, liveOfferStatus[item?.offer?.store], item));
     }
 
     function shoppingShareAmountLabel(item) {
@@ -2101,7 +2101,7 @@
 
     function formatShoppingGroupOfferSummary(group, items) {
       if (group === 'Ergänzen') return '';
-      const summary = calculateOfferAmount(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer));
+      const summary = calculateOfferAmount(items);
       const comparison = typeof calculateOfferComparison === 'function' ? calculateOfferComparison(items) : { knownComparisonCount: 0, unknownComparisonCount: 0 };
       const details = [];
       if (summary.knownOfferCount) details.push(`Bekannte Angebotssumme ${formatEuro(summary.knownOfferTotal)}`);
@@ -2120,12 +2120,25 @@
       return { end, sourceEnd, manual, sourceKnown, validityKnown, cacheFallback: Boolean(status?.error) };
     }
 
-    function isShoppingOfferCostUsable(offer, status = liveOfferStatus[offer?.store]) {
+    function hasSafeOfferPackCount(item) {
+      if (!item || item.manual === true) return true;
+      const basis = item.quantityBasis;
+      if (!basis || typeof basis !== 'object') return true;
+      if (basis.valid === false && !basis.family) return true;
+      if (basis.valid === false) return false;
+      const amount = Number(basis.amount);
+      if (!basis.family || !Number.isFinite(amount) || amount <= 0) return true;
+      const quantityModel = typeof window !== 'undefined' ? window.AngebotskuecheIngredientQuantityModel : null;
+      const pack = quantityModel?.parseOfferPackSize?.(item.offer?.packSize);
+      return Boolean(pack && pack.family === basis.family && Number.isFinite(Number(pack.amount)) && Number(pack.amount) > 0);
+    }
+
+    function isShoppingOfferCostUsable(offer, status = liveOfferStatus[offer?.store], item = null) {
       const evidence = offerEvidenceStatus(offer, status);
       const confidence = String(offer?.confidence || '').trim().toLowerCase();
       const confidenceKnown = confidence === 'hoch' || confidence === 'high';
       const now = new Date();
-      return Boolean(evidence.end && evidence.end >= now && evidence.sourceEnd && evidence.sourceEnd >= now && evidence.sourceKnown && evidence.validityKnown && !evidence.cacheFallback && !evidence.manual && confidenceKnown);
+      return Boolean(evidence.end && evidence.end >= now && evidence.sourceEnd && evidence.sourceEnd >= now && evidence.sourceKnown && evidence.validityKnown && !evidence.cacheFallback && !evidence.manual && confidenceKnown && hasSafeOfferPackCount(item));
     }
 
     function shoppingOfferEvidenceLabel(offer, status = liveOfferStatus[offer?.store]) {
@@ -2641,7 +2654,7 @@
 
     function estimateMatchCost(matchedOffers) {
       if (!matchedOffers.length) return 'Preis unbekannt';
-      const summary = calculateOfferAmount(matchedOffers.map(offer => ({ packCount: 1, offer })), parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer));
+      const summary = calculateOfferAmount(matchedOffers.map(offer => ({ packCount: 1, offer })));
       return summary.unknownPriceCount ? 'Preis unbekannt' : formatEuro(summary.knownOfferTotal);
     }
 
