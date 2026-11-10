@@ -28,6 +28,10 @@ function likelyFood(value) {
   if (/(rollator|dartscheibe|infrarot|kabine|bagger|werkzeug|garten|pflanz|blumen|bekleidung|wäsche|schuh|auto|akku|drucker|elektronik|spielzeug|matratze|schrank|lampe|möbel|pavillon|grillkohle|haushalt|spülmittel|waschmittel|reiniger|putz|schwamm|papier|taschentuch|toiletten|müllbeutel|folie|backpapier|kosmetik|shampoo|dusche|seife|zahnpasta|deo|rasierer|windel|tierfutter|katzen|hunde|vogel|aquarium|whisky|vodka|zigarette|klemmbaustein|treibstoff|bier|wein|sekt|schnaps|likör|spirituosen|alkohol|pflegespülung|spülung|tablette|arznei|medizin|schmerz|sodbrennen|spray|apotheke|veltliner|prosecco|cava|champagner|led|lichter|teelichter|fichte|geschenk|deko|verpackung|schneeanzug|anzug|winter|stiefel|handschuh|badewanne|häcksler|haar|haarmaske|cremebad|repair|argan|körperpflege|gesichtscreme|handcreme|tagescreme|nachtcreme|parfum|kosmetik|zubehör|werkzeug|maschine|batterie|akku|möbel|kissen|matratze|bettwäsche|geschirr|tasse|becher|pfanne|topf|schneidebrett|reise|rundreise|kreissäge|säge|reiskocher|kocher|sodabereiter|sprudelbereiter)/i.test(normalized)) return false;
   return /(brot|bröt|backwaren|mehl|zucker|reis|nudel|pasta|kartoff|gemüse|obst|salat|tomat|gurke|paprika|zwiebel|knoblauch|karotte|möhre|äpfel|apfel|banane|beere|dattel|clementin|porree|kaki|orange|zitrone|milch|joghurt|käse|butter|sahne|quark|eier?\b|fleisch|fond|hack|schnitzel|wurst|schinken|salami|hähn|pute|rind|schwein|filet|steak|kotelett|fisch|lachs|thun|pizza|suppe|sauce|soße|konserve|bohne|erbse|linse|öl|essig|senf|ketchup|marmelade|nutella|schokolade|chips|snack|keks|kaffee|tee|saft|wasser|cola|limonade|bier|wein|alkoholfrei|müsli|cornflakes|honig|süßwaren|nahrung|lebensmittel|hülsenfrucht|mandel|burger|cerealien|genießer|almighurt|fruchtgummi|saltletts|schoko|drink|meerrettich|garnele|garnelen|eierspätzle|spätzle|kapern|gulasch|rösti|maronen|filoncino|dessert|gänse|keule|wildlachs|backzutat|knödel|fudge|erdnuss)/i.test(normalized);
 }
+function stripUnitPriceExpressions(value) {
+  return String(value || '').replace(/\(?\s*\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml)\s*=\s*(?:\d{1,3}(?:\.\d{3})+|\d+)(?:[.,]\d{2})?\s*€?\s*\)?/gi, ' ');
+}
+
 function priceFrom(value) { const match = String(value || '').match(/(?:ab\s*)?(\d{1,4}[,.]\d{2})\s*€/); return match ? `${match[1].replace('.', ',')} €` : '–'; }
 function validUntilFrom(value, now = new Date()) {
   const match = String(value || '').match(/(?:bis|gültig bis)\s+(\d{1,2})\.(\d{1,2})\.?(?:\s*(\d{4}))?/i);
@@ -45,7 +49,7 @@ function parseOcr(text, validUntil, config) {
   const offers = [];
   for (let index = 0; index < lines.length; index += 1) {
     const contextLines = lines.slice(Math.max(0, index - 3), Math.min(lines.length, index + 3));
-    const window = contextLines.join(' ');
+    const window = stripUnitPriceExpressions(contextLines.join(' '));
     const match = window.match(/(\d{1,4}[,.]\d{2})\s*€?/);
     if (!match) continue;
     let name = lines[index].replace(/\d{1,4}[,.]\d{2}\s*€?/g, '').replace(/-\s*\d{1,3}\s*%/g, '').trim();
@@ -71,7 +75,7 @@ async function cardOffers(page, validUntil, config) {
     let bestPriceCount = Number.POSITIVE_INFINITY;
     for (let index = 0; index < 10 && node.parentElement; index += 1) {
       node = node.parentElement;
-      const text = node.innerText || '';
+      const text = stripUnitPriceExpressions(node.innerText || '');
       const prices = text.match(/(?:ab\s*)?\d{1,4}[,.]\d{2}\s*€/g) || [];
       if (prices.length && prices.length < bestPriceCount && text.length <= 520) {
         bestNode = node;
@@ -83,7 +87,7 @@ async function cardOffers(page, validUntil, config) {
       }
     }
     const name = label.replace(/\s+zur Einkaufsliste hinzufügen\s*$/i, '').trim();
-    const text = bestNode.innerText || '';
+    const text = stripUnitPriceExpressions(bestNode.innerText || '');
     const prices = text.match(/(?:ab\s*)?\d{1,4}[,.]\d{2}\s*€/g) || [];
     const plausiblePrices = prices.filter(candidate => {
       const value = Number((candidate.match(/\d{1,4}[,.]\d{2}/) || ['0'])[0].replace(',', '.'));
