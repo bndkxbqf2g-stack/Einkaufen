@@ -832,3 +832,8 @@ Der Mengenpfad bewahrt den ursprünglichen Tagesindex auch bei Tagen ohne Abende
 
 - Ein Angebot zählt für bekannte Kosten und Vergleichshinweise nur, wenn auch der zugehörige Quell-Snapshot aktuell und gültig ist.
 - Ein späteres Angebotsende darf keinen bereits abgelaufenen Quellenstand überstimmen; unbekannte oder veraltete Evidenz bleibt sichtbar.
+
+## Plan-/Rezeptkosten 10.11.2026 – verifizierte Angebotsbasis
+
+- Rezeptvorschläge und Planbewertungen berechnen bekannte Kosten jetzt mit demselben Preisparser und derselben Angebots-Evidenz wie die Einkaufsliste.
+- Fehlende, unbekannte oder nicht verifizierte Preise halten die Rezeptkosten offen; es werden keine statischen oder erfundenen Preise eingesetzt.
