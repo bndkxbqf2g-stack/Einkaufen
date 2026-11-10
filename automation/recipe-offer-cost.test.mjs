@@ -78,3 +78,23 @@ test('verwendet keine statischen Planvorlagenkosten als Preisersatz', () => {
     'die Plananzeige darf nur verifizierte Angebotsanteile als Kosten ausgeben',
   );
 });
+const savingLabel = distHtml.match(/function shoppingOfferSavingLabel\([^)]*\) \{[\s\S]*?\n    \}/);
+assert.ok(savingLabel, 'shoppingOfferSavingLabel muss im App-Bundle vorhanden sein');
+
+test('zeigt Angebotsnachlässe nur als Quellenhinweis und berechnet sie nicht', () => {
+  assert.match(
+    savingLabel[0],
+    /evidence\.manual[\s\S]*evidence\.cacheFallback[\s\S]*!evidence\.sourceKnown[\s\S]*!evidence\.validityKnown/,
+    'manuelle, unbestätigte oder veraltete Nachlässe müssen neutral bleiben',
+  );
+  assert.match(
+    savingLabel[0],
+    /Vergleichspreis nicht belegt/,
+    'ohne belastbare Vergleichsbasis darf kein Nachlass behauptet werden',
+  );
+  assert.match(
+    savingLabel[0],
+    /Quellenhinweis des Angebots: \$\{saving\} · nicht berechnet/,
+    'ein belegter Nachlass darf nur als unveränderte Quellenangabe erscheinen',
+  );
+});
