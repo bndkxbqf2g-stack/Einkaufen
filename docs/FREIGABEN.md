@@ -1111,3 +1111,8 @@ Der Einkaufslisten-UI zeigt eine explizite, bereits berechnete Rezeptmenge auch 
 ## Audit 10.11.2026 – Personen je Planungstag abgesichert
 
 Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regression abgesichert: Leere frühere Abendessenplätze verschieben die Personenzahl eines späteren Abendessens nicht. Der Testblock benötigt keine neue Freigabe.
+
+## Neue gebündelte Notiz 10.11.2026
+
+- Ungültige lokale Refresh-Zeitstempel werden sicher verworfen; der bestehende Ablauf für belegte Angebotsgültigkeit und Cache-Fallback bleibt maßgeblich.
+- Keine Supabase-, Datenbank-, Produktions- oder kostenpflichtige Änderung erforderlich.
