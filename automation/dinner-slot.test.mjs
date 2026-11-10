@@ -14,12 +14,13 @@ const candidatesMatch = source.match(/function getPlanCandidatesForSlot\(slot = 
 const assignmentMatch = source.match(/function assignRecipeToDinner\(recipeId, dayIndex\) \{[\s\S]*?\n    \}/);
 const dinnersMatch = source.match(/function buildCurrentPlanDinners\(lunches\) \{[\s\S]*?\n    \}/);
 const dinnerCardMatch = source.match(/function renderDinnerCard\(dinner, index, people\) \{[\s\S]*?\n    \}/);
+const mealCostMatch = source.match(/function mealOfferSubtotalLabel\(meal, people, prefix = 'Bekannter Angebotsanteil · '\) \{[\s\S]*?\n    \}/);
 const lunchAssignmentMatch = source.match(/function assignRecipeToDay\(recipeId, dayIndex\) \{[\s\S]*?\n    \}/);
 const currentPlanMatch = source.match(/function buildCurrentPlanLunches\(\) \{[\s\S]*?\n    \}/);
 const sectionsMatch = source.match(/function getCurrentPlanSections\(\) \{[\s\S]*?\n    \}/);
 const plannedDinnersMatch = source.match(/function getPlannedDinnerMeals\(\) \{[\s\S]*?\n    \}/);
 
-for (const [label, match] of Object.entries({ normalizeMatch, purposeMatch, allowsMatch, candidatesMatch, assignmentMatch, dinnersMatch, dinnerCardMatch, lunchAssignmentMatch, currentPlanMatch, sectionsMatch, plannedDinnersMatch })) {
+for (const [label, match] of Object.entries({ normalizeMatch, purposeMatch, allowsMatch, candidatesMatch, assignmentMatch, dinnersMatch, dinnerCardMatch, mealCostMatch, lunchAssignmentMatch, currentPlanMatch, sectionsMatch, plannedDinnersMatch })) {
   assert.ok(match, `${label} must be present in index.html`);
 }
 
@@ -169,7 +170,7 @@ test('shows a recipe source link on dinner cards when available', () => {
     mealDifficultyLabel: () => 'leicht',
   };
   vm.runInNewContext(
-    `${dinnerCardMatch[0]}\nglobalThis.renderDinnerCard = renderDinnerCard;`,
+    `${mealCostMatch[0]}\n${dinnerCardMatch[0]}\nglobalThis.renderDinnerCard = renderDinnerCard;`,
     dinnerContext,
   );
 
