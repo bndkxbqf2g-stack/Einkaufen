@@ -1136,3 +1136,8 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 
 - Die Marktgruppensummen sind rein lesend und deterministisch; keine neue Freigabe erforderlich.
 - Keine Angebotsdaten, Nutzerdaten, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+## Gebündelte Notiz 10.11.2026 – Vorratsanzeige
+
+- Die Änderung betrifft nur die lokale Anzeigezählung und benötigt keine neue Freigabe.
+- Keine Vorratsmutation, Verbrauchsbuchung, Supabase-, Datenbank-, Produktions- oder Kostenänderung.

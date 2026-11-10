@@ -812,3 +812,8 @@ Der Mengenpfad bewahrt den ursprünglichen Tagesindex auch bei Tagen ohne Abende
 
 - Marktgruppen in der Einkaufsliste verwenden jetzt denselben bekannten Preisparser und dieselbe Angebots-Evidenzprüfung wie die globale Kostensumme.
 - Unsichere, manuelle oder abgelaufene Preise bleiben als unbekannt sichtbar; keine Ersparnis oder Kassenprognose wird daraus abgeleitet.
+
+## Vorratsanzeige 10.11.2026 – eindeutige Abdeckungszählung
+
+- Die sichtbare Vorratsdeckung dedupliziert Legacy- und mengenfähige Treffer derselben Zutat, damit die Anzeige keine doppelte Berücksichtigung meldet.
+- Der lesende Mengenabgleich, Vorratsbestand und Verbrauchspfad bleiben unverändert.
