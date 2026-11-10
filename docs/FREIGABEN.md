@@ -1374,3 +1374,13 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Der echte, explizite Angebotspreis bleibt als Preisquelle erhalten.
 - Kein neuer Freigabepunkt: keine Nutzer-, Angebots-, Kauf-, Vorrats-,
   Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – KaufDA-Preisparser
+
+- Grundpreisangaben mit Gleichheitszeichen oder Einheiten nach dem Eurobetrag
+  werden vor der KaufDA-Preiswahl entfernt.
+- Ein echter nachfolgender Angebotspreis bleibt verwendbar; alleinige
+  Grundpreise bleiben unbekannt.
+- Kein neuer Freigabepunkt: keine Nutzer-, Angebots-, Kauf-, Vorrats-,
+  Supabase-, Datenbank-, Produktions- oder Kostenänderung.
