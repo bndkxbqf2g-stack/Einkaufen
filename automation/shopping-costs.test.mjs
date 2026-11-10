@@ -181,3 +181,15 @@ test('übernimmt reguläre Vergleichssummen in die gemeinsame Einkaufskostenzusa
   assert.equal(summary.knownSavings, 0.49);
   assert.equal(summary.unknownComparisonCount, 0);
 });
+test('hält leere Vergleichssummen in Cent ebenfalls unbekannt statt null als 0 zu deuten', () => {
+  const summary = model.calculateOfferComparison([
+    { id: 'unknown', packCount: 1, offer: { price: '0,89 €', regularPrice: '–' } },
+  ], parseEuro);
+
+  assert.equal(summary.knownComparisonTotalCents, null);
+  assert.equal(summary.knownRegularTotalCents, null);
+  assert.equal(summary.knownSavingsCents, null);
+  assert.equal(summary.knownComparisonTotal, null);
+  assert.equal(summary.knownSavings, null);
+  assert.equal(summary.unknownComparisonCount, 1);
+});
