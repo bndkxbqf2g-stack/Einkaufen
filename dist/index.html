@@ -1261,7 +1261,7 @@
     }
 
     function decoratePlanSourceLinks(meals) {
-      $('#dayList .day-card').forEach(card => {
+      $$('#dayList .day-card').forEach(card => {
         const dayIndex = card.querySelector('[data-day-index]')?.dataset.dayIndex;
         if (dayIndex === undefined) return;
         const url = recipeSourceUrl(meals[Number(dayIndex)]);
@@ -2879,6 +2879,7 @@
     function showPage(page) {
       $$('.nav-button').forEach(button => button.classList.toggle('active', button.dataset.page === page));
       $$('.page').forEach(section => section.classList.toggle('active', section.id === `page-${page}`));
+      if (page === 'shopping') renderShoppingList();
       if (page === 'offers') {
         renderOffers($('#offerFilter').value);
         if (isGithubPagesHost && !automaticOfferRefreshStarted) {
