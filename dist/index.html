@@ -2378,6 +2378,10 @@
     function getPlannedDinnerMeals() {
       return $('#eveningToggle')?.checked === false ? [] : getCurrentPlanSections().dinners.filter(Boolean);
     }
+    function currentMarketOfferCount(name) {
+      return offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer) && offer.store === name).length;
+    }
+
     function renderMarkets() {
       const limit = Number($('#marketsSelect').value);
       const selected = sortedSelectedMarkets();
@@ -2386,12 +2390,12 @@
       $('#marketCount').textContent = used.length;
       $('#marketNote').textContent = marketLabel;
       $('#marketSubtitle').textContent = `Marktauswahl: ${marketLabel} · maximal ${used.length} ${used.length === 1 ? 'Stopp' : 'Stopps'}. Routenoptimierung und Fahrtkosten bleiben offen.`;
-      $('#marketList').innerHTML = used.map((name, index) => { const currentCount = offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer) && offer.store === name).length; return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(marketDetails[name].logo)}</div><div><div class="market-name">${index + 1}. ${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(marketDistanceLabel(marketDetails[name].distance))}</div></div></div><span class="market-count">${currentCount} gültige Angebote</span></div>`; }).join('');
+      $('#marketList').innerHTML = used.map((name, index) => { const currentCount = currentMarketOfferCount(name); return `<div class="market-row"><div class="market-left"><div class="market-logo">${escapeHtml(marketDetails[name].logo)}</div><div><div class="market-name">${index + 1}. ${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(marketDistanceLabel(marketDetails[name].distance))}</div></div></div><span class="market-count">${currentCount} gültige Angebote</span></div>`; }).join('');
     }
 
     function renderMarketChoices() {
       const selected = Array.isArray(settings.selectedMarkets) ? settings.selectedMarkets : [];
-      $('#marketChoices').innerHTML = Object.entries(marketDetails).map(([name, details]) => `<label class="market-row" style="cursor:pointer"><div class="market-left"><input type="checkbox" value="${name}" data-market-choice ${selected.includes(name) ? 'checked' : ''}><div class="market-logo">${details.logo}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(marketDistanceLabel(details.distance))}</div></div></div><span class="market-count">${details.count} Treffer</span></label>`).join('');
+      $('#marketChoices').innerHTML = Object.entries(marketDetails).map(([name, details]) => `<label class="market-row" style="cursor:pointer"><div class="market-left"><input type="checkbox" value="${name}" data-market-choice ${selected.includes(name) ? 'checked' : ''}><div class="market-logo">${details.logo}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(marketDistanceLabel(details.distance))}</div></div></div><span class="market-count">${currentMarketOfferCount(name)} gültige Angebote</span></label>`).join('');
     }
 
     function offerImageUrl(offer) {

@@ -137,3 +137,12 @@ test('empfiehlt ohne ausgewählten Ausgangsmarkt keinen zusätzlichen Stopp', ()
   assert.equal(result.reason, 'insufficient-or-invalid-data');
   assert.equal(result.recommended, false);
 });
+
+
+test('zeigt in der Marktauswahl aktuelle gültige Angebote statt statischer Trefferzahlen', () => {
+  assert.ok(appSource.includes('function currentMarketOfferCount(name) {'));
+  assert.ok(appSource.includes('return offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer) && offer.store === name).length;'));
+  assert.ok(appSource.includes('\${currentMarketOfferCount(name)} gültige Angebote'));
+  assert.ok(!appSource.includes('\${details.count} Treffer'));
+  assert.equal(publishedAppSource, appSource);
+});
