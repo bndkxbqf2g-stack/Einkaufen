@@ -909,3 +909,10 @@ werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
 - Generische Schema.org-Rezeptimporte setzen fehlende Zielgruppenangaben nicht mehr pauschal auf familiengeeignet.
 - Bestehende Favoriten mit gleichem Namen wie ein eingebautes Rezept behalten einen unbekannten Familienstatus, wenn sie selbst keine belastbare Angabe enthalten.
 - Die Regression prüft den generischen Importpfad und die Root-/`dist`-Parität; kuratierte, ausdrücklich gepflegte Seed-Rezepte bleiben unverändert.
+
+
+## Sicherheitskorrektur 10.11.2026 – Rezeptdauer aus Quellen
+
+- ISO- und deutsche Dauerangaben aus generischen Rezeptimporten werden vollständig und deterministisch gelesen; `PT1H30M` ergibt 90 Minuten statt 1 Minute.
+- Nicht belastbare, negative oder überlange Werte bleiben unbekannt.
+- Die Änderung betrifft nur die Darstellung importierter Rezeptmetadaten; keine Plan-, Angebots-, Vorrats-, Kassen- oder Synchronisationsdaten werden verändert.
