@@ -112,9 +112,9 @@
     return {
       knownComparisonItems: knownItems,
       unknownComparisonItems: unknownItems,
-      knownComparisonTotalCents: knownOfferTotalCents,
-      knownRegularTotalCents: knownRegularTotalCents,
-      knownSavingsCents: knownRegularTotalCents - knownOfferTotalCents,
+      knownComparisonTotalCents: knownItems.length ? knownOfferTotalCents : null,
+      knownRegularTotalCents: knownItems.length ? knownRegularTotalCents : null,
+      knownSavingsCents: knownItems.length ? knownRegularTotalCents - knownOfferTotalCents : null,
       knownComparisonTotal: knownItems.length ? knownOfferTotalCents / 100 : null,
       knownRegularTotal: knownItems.length ? knownRegularTotalCents / 100 : null,
       knownSavings: knownItems.length ? (knownRegularTotalCents - knownOfferTotalCents) / 100 : null,
