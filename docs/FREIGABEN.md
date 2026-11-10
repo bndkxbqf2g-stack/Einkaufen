@@ -1141,3 +1141,8 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 
 - Die Änderung betrifft nur die lokale Anzeigezählung und benötigt keine neue Freigabe.
 - Keine Vorratsmutation, Verbrauchsbuchung, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+## Gebündelte Notiz 10.11.2026 – Zutatenidentität
+
+- Die kanonische Deduplizierung benötigt keine neue Freigabe.
+- Keine Vorrats-, Verbrauchs-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
