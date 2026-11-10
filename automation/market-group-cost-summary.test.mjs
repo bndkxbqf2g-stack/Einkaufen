@@ -21,7 +21,7 @@ const formatEuro = value => `${Number(value).toFixed(2).replace('.', ',')} €`;
 const parseKnownMoney = value => value === '1,20 €' || value === '2,49 €'
   ? Number(value.replace(',', '.').replace(' €', ''))
   : null;
-const isShoppingOfferCostUsable = item => item?.id === 'verified';
+const isShoppingOfferCostUsable = offer => offer?.price === '1,20 €';
 const formatGroupSummary = new Function(
   'calculateOfferAmount',
   'formatEuro',
