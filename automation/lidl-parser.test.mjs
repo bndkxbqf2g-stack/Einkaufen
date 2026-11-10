@@ -44,3 +44,11 @@ statt 2,49 €
 assert.equal(comparison.length, 1);
 assert.equal(comparison[0].price, '1,99 €');
 assert.equal(comparison[0].regularPrice, '2,49 €');
+
+
+test('covers all supported Lidl after-price unit-price spellings', () => {
+  for (const unitPrice of ['2,49 €/kg', '2,49 € pro kg', '2,49 € je kg', '2,49 € per 100 g']) {
+    const parsed = parseLidlOfferText('Naturjoghurt\n' + unitPrice + '\n1,99 €');
+    assert.equal(parsed[0]?.price, '1,99 €', unitPrice);
+  }
+});
