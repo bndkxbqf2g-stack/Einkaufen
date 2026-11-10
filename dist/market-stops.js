@@ -68,6 +68,7 @@
     if ([baseBasketCents, alternativeBasketCents, travelCostCents, thresholdCents, marketLimit, selectedMarkets, additionalMarket].some(value => value === null)) {
       return unknown('insufficient-or-invalid-data', input);
     }
+    if (!selectedMarkets.length) return unknown('insufficient-or-invalid-data', input);
     const selectedKeys = new Set(selectedMarkets.map(market => market.toLocaleLowerCase('de-DE')));
     if (selectedKeys.has(additionalMarket.toLocaleLowerCase('de-DE'))) return unknown('invalid-market-assignment', input);
     if (selectedMarkets.length >= marketLimit) {

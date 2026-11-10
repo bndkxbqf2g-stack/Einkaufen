@@ -128,3 +128,12 @@ test('kennzeichnet Anzeigeentfernungen ohne Routendaten eindeutig', () => {
 });
 console.log('Market stop recommendation checks passed');
 
+
+
+test('empfiehlt ohne ausgewählten Ausgangsmarkt keinen zusätzlichen Stopp', () => {
+  const result = model.recommendAdditionalMarket({ ...validInput, selectedMarkets: [] });
+
+  assert.equal(result.status, 'unknown');
+  assert.equal(result.reason, 'insufficient-or-invalid-data');
+  assert.equal(result.recommended, false);
+});
