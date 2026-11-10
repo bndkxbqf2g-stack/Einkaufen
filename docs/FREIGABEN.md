@@ -1415,3 +1415,13 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Die geteilte Einkaufsliste zeigt den belegten regulären Vergleichsanteil und die rechnerische Differenz getrennt vom Angebotsbetrag.
 - Unbekannte Vergleichspreise bleiben sichtbar; der Kassenbetrag bleibt ausdrücklich offen.
 - Kein neuer Freigabepunkt: rein lesende Darstellung, keine Nutzer-, Kauf-, Vorrats-, Supabase-, Routing- oder Produktionsänderung.
+
+
+## Dokumentationsabgleich 10.11.2026 – read-only Marktvergleich abgeschlossen
+
+- Marktangebotsanzahl, konservative Angebotsauswahl, Vergleichssummen und
+  unbekannte Werte sind read-only geprüft und getestet.
+- Der nächste größere Schritt ist der verbindliche Kaufabschluss mit IST-/Belegbetrag
+  und Verbrauchs-/Reservierungsvertrag; dafür ist weiterhin eine gebündelte Freigabe nötig.
+- Fahrtkosten/Routing, Mehrstoppentscheidung, automatische Cloud-Konflikte und
+  weitere Supabase-Datenverträge bleiben unverändert freigabepflichtig.
