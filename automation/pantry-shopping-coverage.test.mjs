@@ -34,6 +34,11 @@ const quantityModel = loadQuantityModel();
 const plain = value => JSON.parse(JSON.stringify(value));
 const basis = (amount, unit, family = unit === 'g' || unit === 'kg' ? 'mass' : unit === 'ml' || unit === 'l' ? 'volume' : 'count') => ({ valid: true, amount, unit, family });
 
+const coverageMatch = distIndexSource.match(/function combinePantryCoverage\\([^)]*\\) \\{[\\s\\S]*?\\n    \\}/);
+assert.ok(coverageMatch, 'combinePantryCoverage muss im App-Bundle vorhanden sein');
+const combinePantryCoverage = new Function(`${coverageMatch[0]}; return combinePantryCoverage;`)();
+
+
 test('meldet vollständige und teilweise Vorratsdeckung ohne Vorratsmutation', () => {
   const pantry = { milch: { name: 'Milch', amount: 1, unit: 'l' } };
   const items = [{ name: 'Milch', quantityBasis: basis(500, 'ml') }, { name: 'Brot', quantityBasis: basis(2, 'piece') }];
@@ -43,6 +48,16 @@ test('meldet vollständige und teilweise Vorratsdeckung ohne Vorratsmutation', (
   assert.equal(result.groups[0].remainingDemand, 0);
   assert.equal(result.groups[1].status, 'unknown');
   assert.deepEqual(pantry, { milch: { name: 'Milch', amount: 1, unit: 'l' } });
+});
+
+test('zählt Legacy- und mengenfähige Vorratsdeckung je Zutat nur einmal', () => {
+  const result = combinePantryCoverage(
+    { coveredItems: ['Milch'] },
+    { coveredItems: ['Milch'], partialItems: ['Öl'] },
+  );
+
+  assert.deepEqual(result.coveredItems, ['Milch', 'Öl']);
+  assert.equal(result.coveredCount, 2);
 });
 
 test('aggregiert mehrere Bedarfseinträge derselben Identität vor der Abdeckung', () => {
