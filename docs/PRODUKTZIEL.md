@@ -801,3 +801,9 @@ Der Mengenpfad bewahrt den ursprünglichen Tagesindex auch bei Tagen ohne Abende
 
 - Die Einkaufsliste weist zusätzlich den Anteil aller Einkaufspositionen aus, für die ein aktueller, verifizierter Angebotspreis vorliegt.
 - Preisunbekannte und nicht verankerte Positionen bleiben separat; die Kennzahl ist keine Kassenprognose und verändert keine Nutzerdaten.
+
+## Fortschritt 10.11.2026 – Kostenmodell und nächster Freigabepunkt
+
+- PR #316 ist in main enthalten: Die Einkaufsliste weist den verifizierten Angebotsanteil über alle Positionen aus; Preisunbekannte und nicht verankerte Positionen bleiben getrennt.
+- CI bestätigte Tests, Worker-Artefakt und Endpunktprüfung; der Deploy-Schritt blieb übersprungen.
+- Der nächste Laufzeitblock bleibt der ausdrücklich freizugebende Kaufabschluss mit manueller IST-Erfassung. Bis dahin bleiben Plan-/Angebotswerte, bestätigte Ausgaben und Vorratsverbrauch getrennt.
