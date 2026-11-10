@@ -781,3 +781,8 @@ Frühere Bestandsbullets in diesem Dokument beschrieben den Ausgangszustand vor 
 ## Fortschritt 09.11.2026 – expliziten Bedarf in fehlenden Einkaufspositionen anzeigen
 
 Einkaufspositionen ohne verifizierten Angebotsanker zeigen bei einer belastbaren Rezeptmenge jetzt zusätzlich den Bedarf, etwa „Bedarf 500 g“. Teilbestände verwenden weiterhin die separate Anzeige „Vorrat deckt … · Restbedarf …“; mengenlose oder unsichere Legacy-Positionen bleiben ohne erfundene Menge. Keine Speicher-, Vorrats-, Supabase-, Angebots- oder Deploymentänderung.
+
+
+## Audit 10.11.2026 – Tagespersonenzahl im Abendessenpfad
+
+Der Mengenpfad bewahrt den ursprünglichen Tagesindex auch bei Tagen ohne Abendessen. Eine zusätzliche Regression prüft, dass ein späteres Abendessen die Personenzahl seines eigenen Tages nutzt und nicht die des ersten Abendessenslots. Keine Runtime-, Daten-, Vorrats-, Supabase- oder Deploymentänderung.
