@@ -1443,3 +1443,9 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Ein Regressionstest sichert das bestehende Escaping persönlicher Rezepttitel im Zuordnungsdialog.
 - Kein neuer Freigabepunkt: keine Laufzeit-, Daten-, Supabase-, Produktions- oder Kostenänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – sichere Rezept- und Bildquellen
+
+- Rezept- und Angebotsbild-URLs werden vor der Darstellung auf sichere HTTPS-Adressen ohne Zugangsdaten begrenzt.
+- Kein neuer Freigabepunkt: Unsichere Links werden nur nicht angezeigt; es gibt keine Nutzer-, Daten-, Supabase-, Produktions- oder Kostenänderung.

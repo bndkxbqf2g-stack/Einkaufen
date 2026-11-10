@@ -1255,9 +1255,9 @@
     }
 
     function recipeSourceUrl(recipe) {
-      if (recipe?.url) return recipe.url;
       const favorite = favorites.find(item => normalizeIngredient(item.name) === normalizeIngredient(recipe?.title) && item.url);
-      return favorite?.url || '';
+      const candidate = recipe?.url || favorite?.url || '';
+      return sourceUrlForDisplay(candidate);
     }
 
     function decoratePlanSourceLinks(meals) {
@@ -2402,7 +2402,8 @@
 
     function offerImageUrl(offer) {
       const url = String(offer?.imageUrl || offer?.image || '').trim();
-      return /^https?:\/\/[^\s"'<>]+$/i.test(url) && !/kaufda\.de\/images\/logo\.svg(?:\?|$)/i.test(url) ? url : '';
+      const safeUrl = sourceUrlForDisplay(url);
+      return safeUrl && !/kaufda\.de\/images\/logo\.svg(?:\?|$)/i.test(safeUrl) ? safeUrl : '';
     }
 
     function renderOfferVisual(offer) {
