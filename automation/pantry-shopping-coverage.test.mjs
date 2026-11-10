@@ -95,6 +95,14 @@ test('zeigt bei teilweiser Vorratsdeckung den gedeckten Anteil und den Restbedar
   assert.match(distIndexSource, /shoppingPantryCoverageLabel\(item\)/);
 });
 
+test('zeigt bei explizitem Bedarf auch ohne Angebotsanker die benötigte Menge an', () => {
+  assert.match(indexSource, /function shoppingQuantityLabel\(item\)/);
+  assert.match(indexSource, /Bedarf \$\{label\}/);
+  assert.match(indexSource, /shoppingQuantityLabel\(item\)/);
+  assert.match(distIndexSource, /function shoppingQuantityLabel\(item\)/);
+  assert.match(distIndexSource, /shoppingQuantityLabel\(item\)/);
+});
+
 test('bindet die mengenbasierte Coverage nur für explizite Bedarfe in beide App-Artefakte ein', () => {
   assert.equal(distIndexSource, indexSource);
   assert.match(indexSource, /pantry-shopping-coverage\.js/);

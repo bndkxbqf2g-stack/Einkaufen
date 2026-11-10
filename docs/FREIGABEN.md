@@ -1101,3 +1101,8 @@ Der bestehende lokale Vorratsabgleich wird im Einkaufsartikel sichtbar: Bei teil
 ## Dokumentationsabgleich 09.11.2026 – Status präzisiert
 
 Die früheren Ausgangslisten werden durch den aktuellen Fortschritt ergänzt: Lokale Budgettransparenz, Mengen-/Packungsberechnung und lesender Vorratsabgleich sind umgesetzt. Die gebündelte Freigabe für Kaufabschluss, tatsächliche IST-Ausgaben und Verbrauchsbuchung bleibt unverändert erforderlich; diese Dokumentationskorrektur erteilt keine Produkt-, Daten- oder Cloudfreigabe.
+
+
+## Fortschritt 09.11.2026 – Mengen auch ohne Angebotsanker sichtbar
+
+Der Einkaufslisten-UI zeigt eine explizite, bereits berechnete Rezeptmenge auch dann, wenn kein verifiziertes Angebot vorhanden ist. Damit bleibt der Einkaufsbedarf handlungsfähig, ohne Preise, Packungsgrößen oder Mengen zu erfinden; bei Teildeckung bleibt die Restbedarfsanzeige maßgeblich. Keine neue Freigabe erforderlich.

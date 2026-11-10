@@ -776,3 +776,8 @@ Die mengenbasierte Vorratsdeckung war bereits rein lesend umgesetzt: vollständi
 ## Dokumentationsabgleich 09.11.2026 – lokale Budget- und Vorratsbasis
 
 Frühere Bestandsbullets in diesem Dokument beschrieben den Ausgangszustand vor den inzwischen gemergten lokalen Modellen. Maßgeblich ist jetzt: Budgettransparenz, Mengen-/Packungsberechnung und der lesende Vorratsabgleich sind vorhanden und getestet. Weiterhin offen bleiben tatsächliche Kaufbestätigung, IST-/Beleg-Historie, Verbrauchsbuchung, reguläre Vergleichspreise, Fahrtkosten/Routing sowie neue Cloud-/Sync-Verträge.
+
+
+## Fortschritt 09.11.2026 – expliziten Bedarf in fehlenden Einkaufspositionen anzeigen
+
+Einkaufspositionen ohne verifizierten Angebotsanker zeigen bei einer belastbaren Rezeptmenge jetzt zusätzlich den Bedarf, etwa „Bedarf 500 g“. Teilbestände verwenden weiterhin die separate Anzeige „Vorrat deckt … · Restbedarf …“; mengenlose oder unsichere Legacy-Positionen bleiben ohne erfundene Menge. Keine Speicher-, Vorrats-, Supabase-, Angebots- oder Deploymentänderung.
