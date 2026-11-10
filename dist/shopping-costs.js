@@ -134,6 +134,9 @@
       offerEstimatedPackCount: offerSummary.estimatedPackCount,
       missingPackCount,
       classifiedItemCount: offerSummary.knownOfferCount + offerSummary.unknownPriceCount + missingItems.length,
+      knownOfferCoveragePercent: list.length
+        ? Math.round((offerSummary.knownOfferCount * 100) / list.length)
+        : null,
     };
   }
 

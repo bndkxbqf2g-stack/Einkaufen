@@ -1121,3 +1121,8 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 
 - Die Refresh-Entscheidung verwirft jetzt sowohl ungültige `nextCheckAt`- als auch `fetchedAt`-Werte sicher.
 - Keine neue Freigabe erforderlich; keine Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+## Gebündelte Notiz 10.11.2026 – verifizierter Angebotsanteil
+
+- Die Kennzahl ist rein lesend und deterministisch; tatsächliche Ausgaben, Kaufbestätigungen und Vorratsverbrauch bleiben unverändert gesperrt.
+- Keine neue Freigabe erforderlich; keine Supabase-, Datenbank-, Produktions- oder Kostenänderung.
