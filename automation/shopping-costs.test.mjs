@@ -132,6 +132,17 @@ test('excludes offers rejected by an explicit evidence callback from known total
   assert.equal(summary.unknownPriceCount, 2);
 });
 
+test('weist den verifizierten Angebotsanteil über alle Einkaufspositionen aus', () => {
+  const summary = model.summarizeShoppingCosts([
+    { id: 'known', packCount: 1, offer: { price: '1,20 €' } },
+    { id: 'unknown-price', packCount: 1, offer: { price: 'Preis unbekannt' } },
+    { id: 'missing', packCount: 1, offer: null },
+  ], parseEuro);
+
+  assert.equal(summary.knownOfferCoveragePercent, 33);
+  assert.equal(model.summarizeShoppingCosts([], parseEuro).knownOfferCoveragePercent, null);
+});
+
 test('treats invalid or nonpositive pack counts as one pack', () => {
   const summary = model.calculateOfferAmount([
     { id: 'invalid', packCount: 0, offer: { price: '1,10 €' } },
