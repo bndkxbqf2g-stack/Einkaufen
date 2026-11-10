@@ -786,3 +786,8 @@ Einkaufspositionen ohne verifizierten Angebotsanker zeigen bei einer belastbaren
 ## Audit 10.11.2026 – Tagespersonenzahl im Abendessenpfad
 
 Der Mengenpfad bewahrt den ursprünglichen Tagesindex auch bei Tagen ohne Abendessen. Eine zusätzliche Regression prüft, dass ein späteres Abendessen die Personenzahl seines eigenen Tages nutzt und nicht die des ersten Abendessenslots. Keine Runtime-, Daten-, Vorrats-, Supabase- oder Deploymentänderung.
+
+## Technische Absicherung 10.11.2026
+
+- Der Angebots-Refresh ignoriert ungültige lokale `nextCheckAt`-Werte und fällt auf das belegte `validUntil`- bzw. `fetchedAt`-Intervall zurück.
+- Dabei werden keine Angebotsdaten erfunden oder verändert; die Änderung betrifft nur die Refresh-Entscheidung.
