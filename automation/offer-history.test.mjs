@@ -29,3 +29,19 @@ test('keeps legacy observations compatible and refreshes the same offer identity
   assert.equal(legacy.regularPrice, undefined);
   assert.equal(offerHistoryKey(legacy), offerHistoryKey(current));
 });
+
+test('rekeys legacy observations by pack size without merging variants', () => {
+  const legacy = {
+    market: result.market,
+    store: result.store,
+    name: sourceOffer.name,
+    price: sourceOffer.price,
+    packSize: sourceOffer.packSize,
+    validUntil: sourceOffer.validUntil,
+  };
+  const current = createOfferHistoryObservation(result, sourceOffer);
+  const differentPack = createOfferHistoryObservation(result, { ...sourceOffer, packSize: '500 g' });
+
+  assert.equal(offerHistoryKey(legacy), offerHistoryKey(current));
+  assert.notEqual(offerHistoryKey(current), offerHistoryKey(differentPack));
+});
