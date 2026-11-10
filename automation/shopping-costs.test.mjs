@@ -152,3 +152,32 @@ test('treats invalid or nonpositive pack counts as one pack', () => {
   assert.equal(summary.totalCents, 220);
 });
 
+
+
+test('berechnet reguläre Vergleichssummen nur aus expliziten verifizierten Preisen', () => {
+  const summary = model.calculateOfferComparison([
+    { id: 'known', packCount: 2, offer: { price: '1,20 €', regularPrice: '1,50 €' } },
+    { id: 'unknown', packCount: 1, offer: { price: '0,89 €', regularPrice: '–' } },
+    { id: 'invalid-order', packCount: 1, offer: { price: '2,49 €', regularPrice: '1,99 €' } },
+  ], parseEuro, item => item.id === 'known' || item.id === 'unknown' || item.id === 'invalid-order');
+
+  assert.equal(summary.knownComparisonTotalCents, 240);
+  assert.equal(summary.knownRegularTotalCents, 300);
+  assert.equal(summary.knownSavingsCents, 60);
+  assert.equal(summary.knownComparisonCount, 1);
+  assert.equal(summary.unknownComparisonCount, 2);
+  assert.deepEqual(Array.from(summary.knownItems, item => item.id), ['known']);
+  assert.deepEqual(Array.from(summary.unknownItems, item => item.id), ['unknown', 'invalid-order']);
+});
+
+test('übernimmt reguläre Vergleichssummen in die gemeinsame Einkaufskostenzusammenfassung', () => {
+  const summary = model.summarizeShoppingCosts([
+    { id: 'known', packCount: 1, offer: { price: '2,00 €', regularPrice: '2,49 €' } },
+    { id: 'missing', packCount: 1, offer: null },
+  ], parseEuro, item => item.id === 'known');
+
+  assert.equal(summary.knownComparisonCount, 1);
+  assert.equal(summary.knownRegularTotal, 2.49);
+  assert.equal(summary.knownSavings, 0.49);
+  assert.equal(summary.unknownComparisonCount, 0);
+});
