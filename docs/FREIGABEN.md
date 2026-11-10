@@ -180,7 +180,7 @@ Die weitergehenden Entscheidungen oben bleiben für Verbrauchsreservierung, Gena
 ## Koordinierter Arbeitsstand – 07.11.2026, Read-only-Audits
 
 - Der Markt-/Routen-Audit fand keine Warenkorb-/Fahrtkostenoptimierung: Die App zeigt statische Entfernungen und sortiert ausgewählte Märkte danach. Ausgangspunkt/Datenschutz, Verkehrsmittel und Kostenbasis, Nettoersparnisschwelle, maximale Stopps sowie Routingquelle sind vor einer Umsetzung zu entscheiden.
-- Der Monatsbudget-/IST-Audit bestätigt, dass noch kein Budget-/Kaufmodell vorhanden ist. Die kleinste sichere spätere Etappe ist ein manueller Einkaufsgesamtbetrag in Cent mit Datum/Monat und optionalem Markt; `shoppingChecks` bleiben reine Checklisten. Vorher sind Gesamtbetrag je Einkauf oder Positionen mit echten Mengen/Preisen, Beleg/OCR, Geräte- oder Haushaltshistorie, Zeitraumdefinition und Fahrtkostenabgrenzung zu entscheiden.
+- Der Monatsbudget-/IST-Audit bestätigte damals, dass noch keine produktive Kauf-/IST-Erfassung verbunden war. Der lokale Budget- und `purchaseRecords`-Kern ist inzwischen als sichere Grundlage vorhanden, bleibt aber bis zu Freigabepunkt 9 aus UI, Speicherung und Sync heraus. `shoppingChecks` bleiben reine Checklisten. Vorher sind Gesamtbetrag je Einkauf oder Positionen mit echten Mengen/Preisen, Beleg/OCR, Geräte- oder Haushaltshistorie, Zeitraumdefinition und Fahrtkostenabgrenzung zu entscheiden.
 - Beide Audits waren read-only: keine Produkt- oder Supabase-Änderung, keine Datenänderung und keine Umsetzung eines neuen Freigabepunkts.
 
 
