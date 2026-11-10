@@ -837,3 +837,7 @@ Der Mengenpfad bewahrt den ursprünglichen Tagesindex auch bei Tagen ohne Abende
 
 - Rezeptvorschläge und Planbewertungen berechnen bekannte Kosten jetzt mit demselben Preisparser und derselben Angebots-Evidenz wie die Einkaufsliste.
 - Fehlende, unbekannte oder nicht verifizierte Preise halten die Rezeptkosten offen; es werden keine statischen oder erfundenen Preise eingesetzt.
+
+## Fortschritt 10.11.2026 – Quellenbasis für reguläre Vergleichspreise
+
+Die Angebotsquellen unterstützen nun einen konservativen optionalen `regularPrice`-Wert: Parser übernehmen ihn ausschließlich aus ausdrücklich sichtbaren Formulierungen wie „statt“, „vorher“, „Normalpreis“ oder „UVP“ samt Eurobetrag. Prozentangaben werden nicht rückgerechnet. Die Snapshot-Validierung verlangt einen gültigen, höheren Vergleichspreis; ein „statt“-Betrag wird nicht als aktueller Angebotspreis akzeptiert. Die UI zeigt den regulären Quellenpreis nur bei verifizierter aktueller Angebots-Evidenz. Bestehende Snapshots ohne dieses optionale Feld bleiben unverändert gültig. Damit ist die technische Datenbasis für einen späteren Angebots-/Regelpreisvergleich erweitert, ohne reguläre Preise zu erfinden oder Kassenbeträge vorwegzunehmen.
