@@ -1226,7 +1226,8 @@
         ? `Bekannter Angebotsbetrag ${formatEuro(knownOfferTotal)} · ${formatShoppingCostScope(shoppingCostSummary)} · Kassenbetrag offen`
         : `Keine verifizierte Preisbasis · ${formatShoppingCostScope(shoppingCostSummary)} · Kassenbetrag offen`;
       renderBudgetTransparency(shoppingCostSummary);
-      const variety = calculateVariety(visible);
+      const varietyMeals = visible.flatMap((meal, index) => [meal, dinnerSlots[index]].filter(Boolean));
+      const variety = calculateVariety(varietyMeals);
       $('#varietyScore').textContent = `${variety.score} %`;
       $('#varietyNote').textContent = `${variety.profiles} Profile · ${variety.vegetarian} vegetarisch`;
       const pinnedLabels = visible.filter(meal => Array.isArray(meal.tags) && meal.tags.includes('vorgemerkt')).map(meal => meal.title);
