@@ -53,3 +53,28 @@ test('lässt Rezeptkosten bei unbekannter oder nicht verifizierter Basis offen',
 
   assert.equal(result, 'Preis unbekannt');
 });
+
+const suggestionAsMeal = distHtml.match(/function suggestionAsMeal\([^)]*\) \{[\s\S]*?\n    \}/);
+assert.ok(suggestionAsMeal, 'suggestionAsMeal muss im App-Bundle vorhanden sein');
+const fallbackMeal = distHtml.match(/function sanitizeFallbackMeal\([^)]*\) \{[\s\S]*?\n    \}/);
+assert.ok(fallbackMeal, 'sanitizeFallbackMeal muss im App-Bundle vorhanden sein');
+const renderPlan = distHtml.match(/function renderPlan\([^)]*\) \{[\s\S]*?\n    \}/);
+assert.ok(renderPlan, 'renderPlan muss im App-Bundle vorhanden sein');
+
+test('verwendet keine statischen Planvorlagenkosten als Preisersatz', () => {
+  assert.match(
+    suggestionAsMeal[0],
+    /cost, costSource: cost \? 'offer-subtotal' : 'unknown'/,
+    'echte Vorschläge müssen den berechneten Angebotsanteil und seine Herkunft setzen',
+  );
+  assert.match(
+    fallbackMeal[0],
+    /cost: '', costSource: 'unknown'/,
+    'Fallback-Gerichte müssen statische Vorlagekosten neutralisieren',
+  );
+  assert.match(
+    renderPlan[0],
+    /meal\.costSource === 'offer-subtotal' && parseKnownMoney\(meal\.cost\) !== null/,
+    'die Plananzeige darf nur verifizierte Angebotsanteile als Kosten ausgeben',
+  );
+});
