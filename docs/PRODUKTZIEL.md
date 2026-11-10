@@ -857,3 +857,12 @@ Vergleichspreise jetzt optional in historische Beobachtungen. Ältere
 Beobachtungen ohne dieses Feld bleiben kompatibel; die Identität eines
 Angebots ändert sich dadurch nicht. Es werden keine neuen Preise abgeleitet
 und keine Angebotsdateien oder Nutzerdaten verändert.
+
+## Fortschritt 10.11.2026 – synthetischer End-to-End-Kern geprüft
+
+Ein neuer Integrationstest verbindet den freigegebenen lokalen Kern mit
+synthetischen Daten: Mittagessen plus optionales Abendessen werden aggregiert,
+ein Teilvorrat reduziert nur den Restbedarf, Packungen werden deterministisch
+gerundet und Angebots-/reguläre Vergleichssummen bleiben getrennt. Der Test
+mutiert keine Vorratsdaten und verwendet weder Kassen-, Cloud- noch
+Supabase-Daten.
