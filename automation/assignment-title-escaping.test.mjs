@@ -28,7 +28,7 @@ const element = () => ({
   innerHTML: '',
   classList: { add() {} },
 });
-for (const id of ['assignRecipeChoiceLabel', 'assignRecipeSelect', 'saveDayAssignment', 'assignDaySelect', 'assignStatus', 'assignModal']) {
+for (const id of ['assignRecipeChoiceLabel', 'assignRecipeSelect', 'saveDayAssignment', 'assignRecipeLabel', 'assignDaySelect', 'assignStatus', 'assignModal']) {
   elements.set('#' + id, element());
 }
 elements.set('#daysSelect', { value: '1' });
