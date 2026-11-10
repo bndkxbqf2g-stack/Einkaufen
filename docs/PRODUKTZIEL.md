@@ -1026,3 +1026,13 @@ dadurch nicht mehr als Packungspreis vor einem echten Angebotspreis
 übernommen. Die Änderung betrifft nur die deterministische Importvalidierung;
 Regression, Quellenpipeline und Dokumentation wurden ergänzt. Keine Nutzer-,
 Angebots-, Supabase-, Datenbank- oder Produktionsdaten wurden geändert.
+
+
+## Fortschritt 10.11.2026 – KaufDA-Preisparser abgesichert
+
+Der gemeinsame KaufDA-Preisparser entfernt nun sowohl Grundpreisangaben in der
+Form 1 kg = 2,49 € als auch Angaben wie 2,49 €/kg oder 2,49 € pro kg, bevor
+ein Angebotspreis ausgewählt wird. Wenn danach kein expliziter Preis bleibt,
+wird der Wert unbekannt gelassen. Regressionen sichern echte Angebotspreise und
+diese Grenzfälle ab. Keine Nutzer-, Angebots-, Supabase-, Datenbank- oder
+Produktionsdaten wurden geändert.
