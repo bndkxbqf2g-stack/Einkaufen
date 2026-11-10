@@ -53,7 +53,13 @@ export function validatePurchaseRecord(record) {
     throw new Error('Einkauf: "source" muss "manual" sein.');
   }
 
-  const market = record.market === undefined || record.market === null ? '' : String(record.market).trim();
+  let market = '';
+  if (record.market !== undefined && record.market !== null) {
+    if (typeof record.market !== 'string') {
+      throw new Error('Einkauf: "market" muss eine Zeichenkette sein.');
+    }
+    market = record.market.trim();
+  }
   if (market.length > 120) {
     throw new Error('Einkauf: "market" darf höchstens 120 Zeichen enthalten.');
   }
