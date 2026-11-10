@@ -5,16 +5,18 @@ import vm from 'node:vm';
 
 const source = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const published = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
+const moneyStart = source.indexOf('function parseKnownMoney');
+const moneyEnd = source.indexOf('function parseKnownPackageSize', moneyStart);
+const moneyHelper = source.slice(moneyStart, moneyEnd);
 const helperStart = source.indexOf('function parseManualOfferRow');
 const helperEnd = source.indexOf('const planWeekdays', helperStart);
 const helper = source.slice(helperStart, helperEnd);
 const context = {
   splitOfferRow: row => row.split('|').map(value => value.trim()),
   canonicalMarketName: value => String(value || '').trim(),
-  parseMoney: value => Number(String(value || '').replace(',', '.').replace(/[^0-9.]/g, '')) || 0,
   offerEndDate: value => value ? new Date('2099-12-31T00:00:00Z') : null,
 };
-vm.runInNewContext(`${helper}\nglobalThis.parseManualOfferRow = parseManualOfferRow;`, context);
+vm.runInNewContext(`${moneyHelper}\n${helper}\nglobalThis.parseManualOfferRow = parseManualOfferRow;`, context);
 
 test('rejects manual offers without a source-provided validity date', () => {
   const missingDate = context.parseManualOfferRow('Kartoffeln | Aldi | 1,99 € | – | Basis | 2,5 kg');
