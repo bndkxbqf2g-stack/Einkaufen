@@ -155,7 +155,7 @@ function parseRecipeJsonLd(html) {
       const name = String(recipe.name || '').trim();
       if (name && ingredients.length) {
         const aggregateRating = parseAggregateRating(recipe.aggregateRating);
-        return { name, ingredients, instructions: Array.isArray(recipe.recipeInstructions) ? recipe.recipeInstructions.map(item => typeof item === 'string' ? item : item?.text || '').filter(Boolean).join(' ') : String(recipe.recipeInstructions || ''), time: parseRecipeDurationMinutes(recipe.totalTime), vegetarian: /vegetarian|vegan/i.test(JSON.stringify(recipe.keywords || '')), category: recipe.recipeCategory || undefined, externalRating: aggregateRating?.value, externalRatingCount: aggregateRating?.count, ratingSource: aggregateRating ? 'Rezeptseite · Schema.org' : undefined };
+        return { name, ingredients, instructions: Array.isArray(recipe.recipeInstructions) ? recipe.recipeInstructions.map(item => typeof item === 'string' ? item : item?.text || '').filter(Boolean).join(' ') : String(recipe.recipeInstructions || ''), time: parseRecipeDurationMinutes(recipe.totalTime), vegetarian: /\b(?:vegetarian|vegan)\b/i.test(JSON.stringify(recipe.keywords || '')) ? true : null, category: recipe.recipeCategory || undefined, externalRating: aggregateRating?.value, externalRatingCount: aggregateRating?.count, ratingSource: aggregateRating ? 'Rezeptseite · Schema.org' : undefined };
       }
     } catch {}
   }
