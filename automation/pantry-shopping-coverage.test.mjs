@@ -53,7 +53,7 @@ test('meldet vollständige und teilweise Vorratsdeckung ohne Vorratsmutation', (
 test('zählt Legacy- und mengenfähige Vorratsdeckung je Zutat nur einmal', () => {
   const result = combinePantryCoverage(
     { coveredItems: ['Milch'] },
-    { coveredItems: ['Milch'], partialItems: ['Öl'] },
+    { coveredItems: ['milch'], partialItems: ['Öl'] },
   );
 
   assert.deepEqual(result.coveredItems, ['Milch', 'Öl']);
