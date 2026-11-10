@@ -2101,7 +2101,7 @@
 
     function formatShoppingGroupOfferSummary(group, items) {
       if (group === 'Ergänzen') return '';
-      const summary = calculateOfferAmount(items);
+      const summary = calculateOfferAmount(items, parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer, undefined, item));
       const comparison = typeof calculateOfferComparison === 'function' ? calculateOfferComparison(items) : { knownComparisonCount: 0, unknownComparisonCount: 0 };
       const details = [];
       if (summary.knownOfferCount) details.push(`Bekannte Angebotssumme ${formatEuro(summary.knownOfferTotal)}`);
@@ -2138,7 +2138,8 @@
       const confidence = String(offer?.confidence || '').trim().toLowerCase();
       const confidenceKnown = confidence === 'hoch' || confidence === 'high';
       const now = new Date();
-      return Boolean(evidence.end && evidence.end >= now && evidence.sourceEnd && evidence.sourceEnd >= now && evidence.sourceKnown && evidence.validityKnown && !evidence.cacheFallback && !evidence.manual && confidenceKnown && hasSafeOfferPackCount(item));
+      const quantityEvidence = typeof hasSafeOfferPackCount === 'function' ? hasSafeOfferPackCount(item) : true;
+      return Boolean(evidence.end && evidence.end >= now && evidence.sourceEnd && evidence.sourceEnd >= now && evidence.sourceKnown && evidence.validityKnown && !evidence.cacheFallback && !evidence.manual && confidenceKnown && quantityEvidence);
     }
 
     function shoppingOfferEvidenceLabel(offer, status = liveOfferStatus[offer?.store]) {
@@ -2654,7 +2655,7 @@
 
     function estimateMatchCost(matchedOffers) {
       if (!matchedOffers.length) return 'Preis unbekannt';
-      const summary = calculateOfferAmount(matchedOffers.map(offer => ({ packCount: 1, offer })));
+      const summary = calculateOfferAmount(matchedOffers.map(offer => ({ packCount: 1, offer })), parseKnownMoney, item => isShoppingOfferCostUsable(item?.offer, undefined, item));
       return summary.unknownPriceCount ? 'Preis unbekannt' : formatEuro(summary.knownOfferTotal);
     }
 
