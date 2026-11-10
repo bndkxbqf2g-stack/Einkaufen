@@ -31,6 +31,7 @@ const element = () => ({
 for (const id of ['assignRecipeChoiceLabel', 'assignRecipeSelect', 'saveDayAssignment', 'assignDaySelect', 'assignStatus', 'assignModal']) {
   elements.set('#' + id, element());
 }
+elements.set('#daysSelect', { value: '1' });
 
 const candidate = { id: 'chosen', title: 'Neues Rezept' };
 const oldRecipe = { id: 'old', title: '<img src="x" onerror="alert(1)">' };
