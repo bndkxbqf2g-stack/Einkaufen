@@ -2062,22 +2062,26 @@
 
     function offerEvidenceStatus(offer, status = liveOfferStatus[offer?.store]) {
       const end = offerEndDate(String(offer?.validUntil || '').trim());
+      const sourceEnd = offerEndDate(String(status?.validUntil || '').trim());
       const manual = isManualOffer(offer) || isDemoOffer(offer);
       const sourceKnown = !manual && isAutomaticLiveOffer(offer) && Boolean(status?.sourceUrl) && !status?.error;
-      const validityKnown = Boolean(end && status?.validUntil);
-      return { end, manual, sourceKnown, validityKnown, cacheFallback: Boolean(status?.error) };
+      const validityKnown = Boolean(sourceEnd);
+      return { end, sourceEnd, manual, sourceKnown, validityKnown, cacheFallback: Boolean(status?.error) };
     }
 
     function isShoppingOfferCostUsable(offer, status = liveOfferStatus[offer?.store]) {
       const evidence = offerEvidenceStatus(offer, status);
       const confidence = String(offer?.confidence || '').trim().toLowerCase();
       const confidenceKnown = confidence === 'hoch' || confidence === 'high';
-      return Boolean(evidence.end && evidence.end >= new Date() && evidence.sourceKnown && evidence.validityKnown && !evidence.cacheFallback && !evidence.manual && confidenceKnown);
+      const now = new Date();
+      return Boolean(evidence.end && evidence.end >= now && evidence.sourceEnd && evidence.sourceEnd >= now && evidence.sourceKnown && evidence.validityKnown && !evidence.cacheFallback && !evidence.manual && confidenceKnown);
     }
 
     function shoppingOfferEvidenceLabel(offer, status = liveOfferStatus[offer?.store]) {
       const evidence = offerEvidenceStatus(offer, status);
       if (evidence.manual) return 'Quelle nicht verifiziert · manueller Import';
+      if (!evidence.sourceEnd) return 'Quelle/Gültigkeit nicht belegt';
+      if (evidence.sourceEnd < new Date()) return `Nicht verifiziert · Quellenstand abgelaufen am ${status.validUntil}`;
       if (!evidence.end) return 'Quelle/Gültigkeit nicht belegt';
       if (evidence.end < new Date()) return `Nicht verifiziert · abgelaufen am ${offer.validUntil}`;
       if (evidence.cacheFallback) return `Nicht verifiziert · letzte Prüfung fehlgeschlagen · gültig bis ${offer.validUntil}`;
@@ -2089,7 +2093,7 @@
     function shoppingOfferSavingLabel(offer, status = liveOfferStatus[offer?.store]) {
       const evidence = offerEvidenceStatus(offer, status);
       const saving = String(offer?.saving || '').trim();
-      if (!saving || saving === '–' || evidence.manual || evidence.cacheFallback || !evidence.sourceKnown || !evidence.validityKnown || !evidence.end || evidence.end < new Date()) return 'Vergleichspreis nicht belegt';
+      if (!saving || saving === '–' || evidence.manual || evidence.cacheFallback || !evidence.sourceKnown || !evidence.validityKnown || !evidence.end || !evidence.sourceEnd || evidence.end < new Date() || evidence.sourceEnd < new Date()) return 'Vergleichspreis nicht belegt';
       return `Quellenhinweis des Angebots: ${saving} · nicht berechnet`;
     }
 
