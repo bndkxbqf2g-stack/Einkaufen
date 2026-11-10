@@ -945,3 +945,10 @@ werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
 - Die Oberfläche kennzeichnet fehlende oder historische generische Werte mit „Packungsgröße unbekannt“.
 - Die Mengenlogik nutzt eine Angebots-Packungsgröße nur bei explizit kompatibler Einheit und Menge; unbekannte Größen werden nicht als Mengenbeleg behandelt.
 - Dieser Schritt ändert keine Preise, Angebotsquellen, Supabase-Daten oder Produktionskonfiguration.
+
+
+## Qualitätsaudit: Angebots-Match-Evidenz (10.11.2026)
+
+- Die interne Relevanzsortierung bleibt unverändert und deterministisch.
+- Eine Prozentangabe wird in der Oberfläche nur bei ausdrücklich als calculated markierter Relevanz gezeigt; importierte oder manuelle Angebote ohne solche Evidenz erscheinen als „Match offen“.
+- Preise, Packungsgrößen, Angebotsquellen und persönliche Daten werden durch diesen Anzeigeschutz nicht verändert.
