@@ -1083,3 +1083,18 @@ aus. Nicht belegte Vergleichspreise bleiben separat sichtbar; Angebotsbetrag,
 Vergleichsbetrag und Kassenbetrag werden nicht vermischt. Die Änderung ist
 rein lesend und verändert keine Nutzer-, Kauf-, Vorrats-, Supabase- oder
 Produktionsdaten.
+
+
+## Dokumentationsabgleich 10.11.2026 – read-only Marktvergleich abgeschlossen
+
+Der zuvor als nächster unabhängiger Schritt bezeichnete read-only Audit der
+Warenkorb-/Marktvergleichsanzeige ist abgeschlossen: aktuelle Marktangebotsanzahl,
+zentrale Kandidatenrangfolge, getrennte Vergleichssummen und transparente
+Unbekannt-Zustände sind geprüft und regressionsgesichert. Es wurden keine
+Nutzer-, Kauf-, Vorrats-, Supabase- oder Produktionsdaten geändert.
+
+Der nächste fachliche Ausbau mit Datenwirkung ist der Kaufabschluss mit
+manuellem IST-/Belegbetrag und anschließendem Verbrauchs-/Reservierungsvertrag.
+Dieser bleibt bis zur gebündelten Freigabe ausgeschlossen; Fahrtkosten,
+Routenoptimierung, Mehrstoppentscheidung und automatische Cloud-/Konfliktlogik
+bleiben ebenfalls getrennte Freigabepunkte.
