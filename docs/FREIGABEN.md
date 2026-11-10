@@ -1184,3 +1184,10 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 - Snapshot-Validierung und Parser-Regressionen verhindern, dass der alte Vergleichspreis als aktueller Angebotspreis eingeht.
 - Die App zeigt den regulären Quellenpreis nur bei aktueller, nichtmanueller und belegter Angebots-Evidenz; Kassen- und reguläre Vergleichspreise bleiben getrennt.
 - Keine vorhandenen Angebots-, Nutzer-, Supabase- oder Produktionsdaten wurden verändert. Die tatsächliche Mehrmarktoptimierung und Fahrtkostenschwelle bleiben freigabepflichtig.
+
+## Fortschritt 10.11.2026 – getrennte reguläre Vergleichssummen
+
+- Der Kostenkern berechnet für ausdrücklich belegte Vergleichspreise zusätzlich den regulären Packungsanteil und die rechnerische Differenz in Cent.
+- Angebotsbetrag, regulärer Vergleichsanteil und Kassenbetrag bleiben getrennt; unbekannte Vergleichspreise werden nicht als 0 € behandelt.
+- Einkaufsliste, Teilen und Marktgruppen zeigen die Vergleichssumme nur für verifizierte, passende Angebotspreise; die Differenz ist kein bestätigter Kassenrabatt.
+- Die aktuelle Umsetzung benötigt keine Nutzer-, Supabase-, Schema- oder Produktionsänderung. Eine vollständige reguläre Vergleichsbasis bleibt abhängig von den tatsächlich gelieferten Quellpreisen.
