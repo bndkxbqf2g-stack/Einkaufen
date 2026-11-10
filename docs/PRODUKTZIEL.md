@@ -1016,3 +1016,13 @@ Packungspreisparser wie die übrige Angebotskostenlogik. Grundpreise wie
 übernommen. Explizite Euro-Packungspreise bleiben zulässig; Root-/dist-Parität,
 Worker-Artefakt und Regressionen sichern den Schritt ab. Keine Nutzer-,
 Angebots-, Supabase-, Datenbank- oder Produktionsdaten wurden geändert.
+
+
+## Fortschritt 10.11.2026 – KaufDA-Grundpreis-Evidenz
+
+Der KaufDA-OCR- und Kartenimport entfernt nun erkannte Grundpreis-Ausdrücke
+vor der Auswahl des Angebotspreises. Ein Ausdruck wie 1 kg = 2,49 € wird
+dadurch nicht mehr als Packungspreis vor einem echten Angebotspreis
+übernommen. Die Änderung betrifft nur die deterministische Importvalidierung;
+Regression, Quellenpipeline und Dokumentation wurden ergänzt. Keine Nutzer-,
+Angebots-, Supabase-, Datenbank- oder Produktionsdaten wurden geändert.

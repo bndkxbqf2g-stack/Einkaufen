@@ -1366,3 +1366,11 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Explizite Euro-Packungspreise bleiben unverändert nutzbar.
 - Kein neuer Freigabepunkt: keine Nutzer-, Angebots-, Kauf-, Vorrats-,
   Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – KaufDA-Grundpreise
+
+- Grundpreis-Ausdrücke werden vor der KaufDA-OCR-/Kartenpreiswahl entfernt.
+- Der echte, explizite Angebotspreis bleibt als Preisquelle erhalten.
+- Kein neuer Freigabepunkt: keine Nutzer-, Angebots-, Kauf-, Vorrats-,
+  Supabase-, Datenbank-, Produktions- oder Kostenänderung.
