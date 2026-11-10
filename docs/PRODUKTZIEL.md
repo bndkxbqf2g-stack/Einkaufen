@@ -845,3 +845,7 @@ Die Angebotsquellen unterstützen nun einen konservativen optionalen `regularPri
 ## Fortschritt 10.11.2026 – regulärer Vergleich im Kostenkern
 
 Der zentrale Kostenkern führt nun neben dem verifizierten Angebotsanteil einen separaten regulären Vergleichsanteil und eine rechnerische Differenz. Beide werden nur aus expliziten, höheren `regularPrice`-Werten und derselben Packungsanzahl berechnet. Fehlende, ungültige oder nicht verifizierte Vergleichswerte bleiben offen. Die UI weist die Werte als „regulärer Vergleichsanteil“ und „rechnerische Differenz“ aus; sie werden nicht in das bestätigte Monatsbudget oder einen Kassenbetrag eingerechnet.
+
+## Audit 10.11.2026 – Marktstopp ohne Ausgangsbasis
+
+Der Marktstopp-Kern empfiehlt keinen zusätzlichen Markt, wenn keine bestehenden Märkte ausgewählt sind. Dadurch bleibt die Berechnung bei fehlender Ausgangsbasis unbekannt; Fahrtkosten, Ersparnisse und Schwellenwerte werden nicht künstlich ergänzt.
