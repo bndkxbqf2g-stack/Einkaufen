@@ -46,6 +46,16 @@ test('führt Rezeptdauer in Mittag- und Abendessen-Karten', () => {
   assert.match(suggestionAsMeal[0], /difficulty: recipe\.difficulty \|\| null/);
 });
 
+test('behauptet keine Standarddauer oder Standardschwierigkeit für unbekannte Rezepte', () => {
+  assert.match(source, /mealDurationLabel\(recipe\)/);
+  assert.match(source, /mealDifficultyLabel\(recipe\)/);
+  assert.doesNotMatch(source, /recipe\.time \|\| ['–]'/);
+  assert.doesNotMatch(source, /recipe\.difficulty \|\| ['"]leicht['"]/);
+  assert.doesNotMatch(source, /recipeData\?\.time \|\| 45/);
+  assert.doesNotMatch(source, /item\.time \|\| 45/);
+  assert.doesNotMatch(source, /recipe\.time \|\| 30/);
+});
+
 test('hält den veröffentlichten Plan-Bundle synchron', () => {
   assert.equal(dist, source);
 });
