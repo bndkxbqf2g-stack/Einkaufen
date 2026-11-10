@@ -37,7 +37,7 @@ test('sums only explicit offer prices in integer cents and keeps unknown prices 
   assert.equal(summary.knownOfferPackCount, 2);
   assert.equal(summary.unknownPricePackCount, 1);
   assert.equal(summary.estimatedPackCount, 3);
-  assert.deepEqual(Array.from(summary.knownComparisonItems, item => item.id), ['known']);
+  assert.deepEqual(Array.from(summary.knownItems, item => item.id), ['known']);
   assert.deepEqual(Array.from(summary.unknownItems, item => item.id), ['unknown']);
 });
 
@@ -166,7 +166,7 @@ test('berechnet reguläre Vergleichssummen nur aus expliziten verifizierten Prei
   assert.equal(summary.knownSavingsCents, 60);
   assert.equal(summary.knownComparisonCount, 1);
   assert.equal(summary.unknownComparisonCount, 2);
-  assert.deepEqual(Array.from(summary.knownItems, item => item.id), ['known']);
+  assert.deepEqual(Array.from(summary.knownComparisonItems, item => item.id), ['known']);
   assert.deepEqual(Array.from(summary.unknownComparisonItems, item => item.id), ['unknown', 'invalid-order']);
 });
 
