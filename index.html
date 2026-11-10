@@ -2056,6 +2056,13 @@
       return text && !/^1\s+pack(?:ung|ungen)?$/iu.test(text) ? text : 'Packungsgröße unbekannt';
     }
 
+    function offerMatchLabel(offer) {
+      const relevance = Number(offer?.relevance);
+      const source = String(offer?.relevanceSource || '').trim().toLowerCase();
+      if (source !== 'calculated' || !Number.isFinite(relevance) || relevance < 0 || relevance > 100) return 'Match offen';
+      return String(Math.round(relevance)) + '% Match';
+    }
+
     function compareOfferCandidates(first, second) {
       const relevanceDifference = Number(second?.relevance || 0) - Number(first?.relevance || 0);
       if (relevanceDifference) return relevanceDifference;
@@ -2381,7 +2388,7 @@
       offersRendered = true;
       const current = offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer));
       const filtered = filter === 'all' ? current : current.filter(offer => offer.store === filter);
-      $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => { const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : ''; const regularPriceLabel = shoppingOfferRegularPriceLabel(offer); return `<div class="catalog-card"><div class="catalog-card-top">${renderOfferVisual(offer)}<span class="discount">${escapeHtml(offer.saving)}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category)}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note)} · ${escapeHtml(offerPackSizeLabel(offer.packSize))}</span><span>${escapeHtml(offer.relevance)}% Match</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source)} · ${escapeHtml(offer.confidence)} sicher${regularPriceLabel ? ` · ${escapeHtml(regularPriceLabel)}` : ''}</div>${removeAction}</div>`; }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
+      $('#offerCatalog').innerHTML = filtered.length ? filtered.map(offer => { const removeAction = isImportedOffer(offer) ? `<div class="suggestion-actions"><button class="small-button remove" data-remove-offer="${offers.indexOf(offer)}">Import entfernen</button></div>` : ''; const regularPriceLabel = shoppingOfferRegularPriceLabel(offer); return `<div class="catalog-card"><div class="catalog-card-top">${renderOfferVisual(offer)}<span class="discount">${escapeHtml(offer.saving)}</span></div><div class="catalog-name">${escapeHtml(offer.name)}</div><div class="catalog-meta"><span>${escapeHtml(marketDisplayName(offer.store))} · ${escapeHtml(offer.category)}</span><span class="catalog-price">${escapeHtml(offer.price)}</span></div><div class="catalog-meta"><span>${escapeHtml(offer.note)} · ${escapeHtml(offerPackSizeLabel(offer.packSize))}</span><span>${escapeHtml(offerMatchLabel(offer))}</span></div><div class="source-note">gültig bis ${escapeHtml(offer.validUntil)} · ${escapeHtml(offer.source)} · ${escapeHtml(offer.confidence)} sicher${regularPriceLabel ? ` · ${escapeHtml(regularPriceLabel)}` : ''}</div>${removeAction}</div>`; }).join('') : '<div class="empty-state">Für diesen Markt sind keine gültigen Angebote hinterlegt.</div>';
       renderOfferMaintenance();
     }
 
