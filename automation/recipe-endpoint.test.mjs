@@ -32,7 +32,25 @@ test('skips a malformed Recipe candidate and imports a later valid candidate', a
     ingredients: ['Paprika', 'Öl'],
     instructions: '',
     vegetarian: false,
-    familyFriendly: true,
+  });
+});
+
+test('parses complete source durations and leaves unknown audience metadata open', async () => {
+  mockRecipePage({
+    '@type': 'Recipe',
+    name: 'Zeit-Curry',
+    recipeIngredient: ['Paprika'],
+    totalTime: 'PT1H30M',
+  });
+
+  const response = await worker.fetch(recipeRequest);
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), {
+    name: 'Zeit-Curry',
+    ingredients: ['Paprika'],
+    instructions: '',
+    time: 90,
+    vegetarian: false,
   });
 });
 

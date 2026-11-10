@@ -120,6 +120,24 @@ function parseAggregateRating(value) {
   return { value: Math.round(normalized * 10) / 10, count: Number.isFinite(rawCount) ? Math.max(0, Math.round(rawCount)) : 0 };
 }
 
+function parseRecipeDurationMinutes(value) {
+  const text = String(value ?? '').trim().replace(',', '.');
+  if (!text) return undefined;
+  const iso = text.match(/^P(?:\d+D)?T(?:(\d+(?:\.\d+)?)H)?(?:(\d+(?:\.\d+)?)M)?$/i);
+  const hours = text.match(/(\d+(?:\.\d+)?)\s*(?:h|std\.?|stunden?)/i);
+  const minutes = text.match(/(\d+(?:\.\d+)?)\s*(?:m|min\.?|minuten?)/i);
+  const plain = text.match(/^\d{1,4}$/);
+  const total = iso && (iso[1] || iso[2])
+    ? Number(iso[1] || 0) * 60 + Number(iso[2] || 0)
+    : (hours || minutes)
+      ? Number(hours?.[1] || 0) * 60 + Number(minutes?.[1] || 0)
+      : plain
+        ? Number(plain[0])
+        : NaN;
+  const normalized = Math.round(total);
+  return Number.isFinite(total) && normalized >= 1 && normalized <= 1440 ? normalized : undefined;
+}
+
 function parseRecipeJsonLd(html) {
   const blocks = [];
   const pattern = /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
@@ -137,7 +155,7 @@ function parseRecipeJsonLd(html) {
       const name = String(recipe.name || '').trim();
       if (name && ingredients.length) {
         const aggregateRating = parseAggregateRating(recipe.aggregateRating);
-        return { name, ingredients, instructions: Array.isArray(recipe.recipeInstructions) ? recipe.recipeInstructions.map(item => typeof item === 'string' ? item : item?.text || '').filter(Boolean).join(' ') : String(recipe.recipeInstructions || ''), time: Number(String(recipe.totalTime || '').match(/\d+/)?.[0] || 0) || undefined, vegetarian: /vegetarian|vegan/i.test(JSON.stringify(recipe.keywords || '')), familyFriendly: true, category: recipe.recipeCategory || undefined, externalRating: aggregateRating?.value, externalRatingCount: aggregateRating?.count, ratingSource: aggregateRating ? 'Rezeptseite · Schema.org' : undefined };
+        return { name, ingredients, instructions: Array.isArray(recipe.recipeInstructions) ? recipe.recipeInstructions.map(item => typeof item === 'string' ? item : item?.text || '').filter(Boolean).join(' ') : String(recipe.recipeInstructions || ''), time: parseRecipeDurationMinutes(recipe.totalTime), vegetarian: /vegetarian|vegan/i.test(JSON.stringify(recipe.keywords || '')), category: recipe.recipeCategory || undefined, externalRating: aggregateRating?.value, externalRatingCount: aggregateRating?.count, ratingSource: aggregateRating ? 'Rezeptseite · Schema.org' : undefined };
       }
     } catch {}
   }
