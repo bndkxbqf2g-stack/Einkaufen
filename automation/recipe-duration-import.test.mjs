@@ -29,7 +29,7 @@ test('liest ISO- und deutsche Rezeptzeiten vollständig', () => {
 
 test('verwendet den vollständigen Dauerparser im generischen Rezeptimport', () => {
   assert.match(parserSource, /time: parseRecipeDurationMinutes\(recipe\.totalTime\)/);
-  assert.doesNotMatch(parserSource, /totalTime.*match\(\\/\\\\d\+\\\//);
+  assert.doesNotMatch(parserSource, /match\(\/\\d\+\//);
 });
 
 test('hält den veröffentlichten Plan-Bundle synchron', () => {
