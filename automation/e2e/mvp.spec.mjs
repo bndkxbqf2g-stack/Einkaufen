@@ -21,6 +21,8 @@ test('durchgängiger MVP-Ablauf bleibt lokal bedienbar und speichert Änderungen
 
   await page.locator('button[data-page="suggestions"]').click();
   await expect(page.locator('#page-suggestions')).toHaveClass(/active/);
+  // Fehlende/alte Angebote dürfen den Kernablauf nicht blockieren.
+  await page.locator('#suggestionOfferMin2').uncheck({ force: true });
   await expect(page.locator('button[data-assign-recipe]').first()).toBeVisible();
   await page.locator('button[data-assign-recipe]').first().click();
   await expect(page.locator('#assignModal')).toHaveClass(/open/);
