@@ -1151,3 +1151,8 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 
 - Die Änderung ist rein lesend und benötigt keine neue Freigabe.
 - Keine Angebots-, Nutzer-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+## Gebündelte Notiz 10.11.2026 – Quell-Snapshot
+
+- Die Evidenzprüfung ist rein lesend und benötigt keine neue Freigabe.
+- Keine Angebots-, Nutzer-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.

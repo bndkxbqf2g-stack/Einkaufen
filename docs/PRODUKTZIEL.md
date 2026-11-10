@@ -827,3 +827,8 @@ Der Mengenpfad bewahrt den ursprünglichen Tagesindex auch bei Tagen ohne Abende
 
 - Ungültige lokale Prüf-, Abruf- oder Gültigkeitszeitpunkte werden in der Marktstatusanzeige nicht mehr als `Invalid Date` dargestellt; der Datenstand bleibt unbekannt.
 - Die Refresh- und Angebotsdatenregeln bleiben unverändert konservativ.
+
+## Angebotsquellen 10.11.2026 – Quell-Snapshot bleibt maßgeblich
+
+- Ein Angebot zählt für bekannte Kosten und Vergleichshinweise nur, wenn auch der zugehörige Quell-Snapshot aktuell und gültig ist.
+- Ein späteres Angebotsende darf keinen bereits abgelaufenen Quellenstand überstimmen; unbekannte oder veraltete Evidenz bleibt sichtbar.
