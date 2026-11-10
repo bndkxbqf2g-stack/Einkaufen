@@ -1036,3 +1036,13 @@ ein Angebotspreis ausgewählt wird. Wenn danach kein expliziter Preis bleibt,
 wird der Wert unbekannt gelassen. Regressionen sichern echte Angebotspreise und
 diese Grenzfälle ab. Keine Nutzer-, Angebots-, Supabase-, Datenbank- oder
 Produktionsdaten wurden geändert.
+
+
+## Fortschritt 10.11.2026 – Grundpreisbehandlung aller Angebotsparser
+
+Die allgemeinen Händlerparser und der Lidl-Parser entfernen nun neben der
+Schreibweise 1 kg = 2,49 € auch Grundpreise wie 2,49 €/kg oder 2,49 € pro kg,
+bevor ein Packungspreis gewählt wird. Ein nachfolgender expliziter
+Angebotspreis bleibt verwendbar; ein alleiniger Grundpreis bleibt unbekannt.
+Regressionen sichern beide Parserfamilien ab. Keine Nutzer-, Angebots-,
+Supabase-, Datenbank- oder Produktionsdaten wurden geändert.
