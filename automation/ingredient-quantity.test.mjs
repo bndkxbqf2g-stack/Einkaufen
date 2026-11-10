@@ -233,4 +233,20 @@ test('parst gruppierte Angebots-Packungen als Gesamtmenge', () => {
   assert.deepEqual({ ...quantityModel.parseOfferPackSize('2 x 3 Stück') }, { family: 'count', unit: 'piece', amount: 6 });
   assert.equal(quantityModel.calculateExactPackCount({ quantityBasis: { valid: true, family: 'mass', unit: 'g', amount: 1000 }, offer: { packSize: '2 x 500 g' } }), 1);
 });
+test('verwirft übergroße Mengen vor Packungs- und Kostenberechnung', () => {
+  assert.equal(quantityModel.parseRecipeIngredient('1000000001 g Mehl').explicit, false);
+  assert.equal(quantityModel.parseOfferPackSize('1000000001 g'), null);
+
+  const basis = quantityModel.addRecipeQuantity(
+    quantityModel.createQuantityBasis(),
+    quantityModel.parseRecipeIngredient('1000000000 g Mehl'),
+    2,
+  );
+  assert.equal(basis.valid, false);
+  assert.equal(quantityModel.calculateExactPackCount({
+    quantityBasis: { valid: true, family: 'mass', unit: 'g', amount: 1000000001 },
+    offer: { packSize: '1 g' },
+  }), null);
+});
+
 console.log('Ingredient quantity and packaging checks passed');

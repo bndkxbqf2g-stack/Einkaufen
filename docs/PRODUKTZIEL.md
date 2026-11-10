@@ -1098,3 +1098,10 @@ manuellem IST-/Belegbetrag und anschließendem Verbrauchs-/Reservierungsvertrag.
 Dieser bleibt bis zur gebündelten Freigabe ausgeschlossen; Fahrtkosten,
 Routenoptimierung, Mehrstoppentscheidung und automatische Cloud-/Konfliktlogik
 bleiben ebenfalls getrennte Freigabepunkte.
+
+
+## Sicherheitskorrektur 10.11.2026 – sichere Mengenobergrenze
+
+- Das gemeinsame Mengenmodell verwirft nun normalisierte Rezept- und Angebots-Packmengen über 1.000.000.000 Basiseinheiten sowie unsichere daraus abgeleitete Packungszahlen.
+- Solche Eingaben fallen in den bestehenden unbekannten bzw. Legacy-Pfad; es werden keine übergroßen Mengen, Packungen oder Kostenwerte stillschweigend berechnet.
+- Root, dist und die Regressionstests bleiben synchron. Es wurden keine Nutzer-, Vorrats-, Angebots-, Kauf-, Supabase- oder Produktionsdaten geändert.
