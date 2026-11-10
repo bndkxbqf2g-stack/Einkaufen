@@ -19,7 +19,7 @@ assert.ok(packageSizeMatch, 'parseKnownPackageSize muss im App-Bundle vorhanden 
 const parseKnownMoney = new Function(`${parseMoneyMatch[0]}; return parseKnownMoney;`)();
 const parseKnownPackageSize = new Function(`${packageSizeMatch[0]}; return parseKnownPackageSize;`)();
 const calculateOfferAmount = items => costModel.calculateOfferAmount(items, parseKnownMoney);
-const formatShoppingGroupOfferSummary = new Function('calculateOfferAmount', `${formatEuroMatch[0]}\n${marketSummaryMatch[0]}; return formatShoppingGroupOfferSummary;`)(calculateOfferAmount);
+const formatShoppingGroupOfferSummary = new Function('calculateOfferAmount', 'parseKnownMoney', 'isShoppingOfferCostUsable', `${formatEuroMatch[0]}\n${marketSummaryMatch[0]}; return formatShoppingGroupOfferSummary;`)(calculateOfferAmount, parseKnownMoney, () => true);
 
 test('parses only explicit positive euro amounts', () => {
   assert.equal(parseKnownMoney('2,49 €'), 2.49);
