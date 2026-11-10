@@ -29,10 +29,15 @@ function likelyFood(value) {
   return /(brot|bröt|backwaren|mehl|zucker|reis|nudel|pasta|kartoff|gemüse|obst|salat|tomat|gurke|paprika|zwiebel|knoblauch|karotte|möhre|äpfel|apfel|banane|beere|dattel|clementin|porree|kaki|orange|zitrone|milch|joghurt|käse|butter|sahne|quark|eier?\b|fleisch|fond|hack|schnitzel|wurst|schinken|salami|hähn|pute|rind|schwein|filet|steak|kotelett|fisch|lachs|thun|pizza|suppe|sauce|soße|konserve|bohne|erbse|linse|öl|essig|senf|ketchup|marmelade|nutella|schokolade|chips|snack|keks|kaffee|tee|saft|wasser|cola|limonade|bier|wein|alkoholfrei|müsli|cornflakes|honig|süßwaren|nahrung|lebensmittel|hülsenfrucht|mandel|burger|cerealien|genießer|almighurt|fruchtgummi|saltletts|schoko|drink|meerrettich|garnele|garnelen|eierspätzle|spätzle|kapern|gulasch|rösti|maronen|filoncino|dessert|gänse|keule|wildlachs|backzutat|knödel|fudge|erdnuss)/i.test(normalized);
 }
 function stripUnitPriceExpressions(value) {
-  return String(value || '').replace(/\(?\s*\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml)\s*=\s*(?:\d{1,3}(?:\.\d{3})+|\d+)(?:[.,]\d{2})?\s*€?\s*\)?/gi, ' ');
+  return String(value || '')
+    .replace(/\(?\s*\d+(?:[.,]\d+)?\s*(?:kg|g|l|ml)\s*=\s*(?:\d{1,3}(?:\.\d{3})+|\d+)(?:[.,]\d{2})?\s*€?\s*\)?/gi, ' ')
+    .replace(/(?:\d{1,3}(?:\.\d{3})+|\d+)(?:[.,]\d{2})?\s*€\s*(?:\/|pro|je|per)\s*(?:\d+(?:[.,]\d+)?\s*)?(?:kg|g|l|ml)\b/gi, ' ');
 }
 
-function priceFrom(value) { const match = String(value || '').match(/(?:ab\s*)?(\d{1,4}[,.]\d{2})\s*€/); return match ? `${match[1].replace('.', ',')} €` : '–'; }
+function priceFrom(value) {
+  const match = stripUnitPriceExpressions(value).match(/(?:ab\s*)?(\d{1,4}[,.]\d{2})\s*€/);
+  return match ? `${match[1].replace('.', ',')} €` : '–';
+}
 function validUntilFrom(value, now = new Date()) {
   const match = String(value || '').match(/(?:bis|gültig bis)\s+(\d{1,2})\.(\d{1,2})\.?(?:\s*(\d{4}))?/i);
   if (!match) return null;
