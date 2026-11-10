@@ -1314,3 +1314,10 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Kein neuer Freigabepunkt: Die Änderung betrifft ausschließlich eine lokale, deterministische Kostenvalidierung und hält unklare Beträge unbekannt.
 - Kaufabschluss, IST-Ausgaben, Verbrauchsbuchung, Supabase-Schema/Rollen/Sync-Konflikte, KI-/Kostenanbieter und zusätzliche Marktstopps bleiben weiterhin gesammelt freigabepflichtig.
 - Keine Nutzer-, Angebots-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Qualitätsaudit 10.11.2026 – Vergleichspreis an Mengen-Evidenz gebunden
+
+- Kein neuer Freigabepunkt: Die Änderung ist eine lokale, deterministische Anzeigevalidierung im bestehenden Kostenpfad.
+- Bei expliziten Rezeptmengen wird ein regulärer Vergleichspreis nicht angezeigt, wenn das Angebots-Packmaß die benötigte Mengenfamilie nicht belegt.
+- Keine Nutzer-, Angebots-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
