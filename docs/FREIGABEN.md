@@ -1161,3 +1161,11 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 
 - Die Änderung ist rein berechnend und benötigt keine neue Freigabe.
 - Keine Angebots-, Nutzer-, Kauf-, Vorrats-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+## Prüfstand 10.11.2026 – historische Planvorlagenkosten
+
+- Die alten Demo-/Vorlagenobjekte enthalten weiterhin statische `cost`-Felder, damit bestehende Planvorlagen und Datenstruktur erhalten bleiben.
+- Für echte Vorschläge überschreibt `suggestionAsMeal()` diese Werte ausschließlich mit dem zentral berechneten Angebotsanteil und seiner Herkunft.
+- Fallback-Gerichte neutralisieren die Vorlage mit `cost: ''` und `costSource: 'unknown'`; die Plananzeige akzeptiert Kosten nur bei `offer-subtotal` und parsebarem Betrag.
+- Ein Regressionstest schützt diesen Vertrag. Es wurden keine Angebots-, Nutzer-/Haushalts-, Supabase-/Schema-Daten oder Produktionsressourcen verändert.
+- Nächster sicherer Schritt: weitere deterministische Warenkorb-/Marktvergleichslücken prüfen. Der verbindliche Kaufabschluss mit IST-Beträgen bleibt ein späterer Freigabepunkt.
