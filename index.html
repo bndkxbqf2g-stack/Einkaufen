@@ -1552,11 +1552,20 @@
     }
 
     function combinePantryCoverage(legacyCoverage, quantityCoverage) {
-      const coveredItems = [...new Set([
+      const labels = [
         ...(Array.isArray(legacyCoverage?.coveredItems) ? legacyCoverage.coveredItems : []),
         ...(Array.isArray(quantityCoverage?.coveredItems) ? quantityCoverage.coveredItems : []),
         ...(Array.isArray(quantityCoverage?.partialItems) ? quantityCoverage.partialItems : []),
-      ].map(item => String(item || '').trim()).filter(Boolean))];
+      ].map(item => String(item || '').trim()).filter(Boolean);
+      const seen = new Set();
+      const coveredItems = labels.filter(label => {
+        const canonical = typeof shoppingIngredientIdentity === 'function'
+          ? shoppingIngredientIdentity(label)
+          : label.toLocaleLowerCase('de-DE');
+        if (seen.has(canonical)) return false;
+        seen.add(canonical);
+        return true;
+      });
       return { coveredItems, coveredCount: coveredItems.length };
     }
     function renderShoppingList() {
