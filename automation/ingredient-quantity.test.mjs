@@ -162,6 +162,24 @@ test('aggregiert Mittagessen und optionales Abendessen gemeinsam vor der Packung
   assert.equal(items[0].packCount, 2);
   assert.deepEqual(items[0].meals, ['Mittagessen', 'Abendessen']);
 });
+test('erhält die Personenzahl des ursprünglichen Tages bei einem späteren Abendessen', () => {
+  const items = buildItems(
+    [
+      { title: 'Mittag Tag 1', ingredients: ['500 g Hackfleisch'] },
+      { title: 'Mittag Tag 2', ingredients: ['500 g Hackfleisch'] },
+    ],
+    [2, 4],
+    [{ name: 'Hackfleisch', packSize: '500 g', price: '2,00 €' }],
+    [
+      null,
+      { title: 'Abend Tag 2', ingredients: ['500 g Hackfleisch'] },
+    ],
+  );
+  assert.equal(items[0].quantityBasis.amount, 2500);
+  assert.equal(items[0].packCount, 5);
+  assert.deepEqual(items[0].meals, ['Mittag Tag 1', 'Mittag Tag 2', 'Abend Tag 2']);
+});
+
 test('unbekannte Einheiten, Textzutaten und inkompatible Packungen nutzen den Legacy-Fallback', () => {
   const unknown = buildItems(
     [{ title: 'Kräutergericht', ingredients: ['1 Bund Petersilie'] }],
