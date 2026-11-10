@@ -2879,6 +2879,7 @@
     function showPage(page) {
       $$('.nav-button').forEach(button => button.classList.toggle('active', button.dataset.page === page));
       $$('.page').forEach(section => section.classList.toggle('active', section.id === `page-${page}`));
+      if (page === 'shopping') renderShoppingList();
       if (page === 'offers') {
         renderOffers($('#offerFilter').value);
         if (isGithubPagesHost && !automaticOfferRefreshStarted) {
