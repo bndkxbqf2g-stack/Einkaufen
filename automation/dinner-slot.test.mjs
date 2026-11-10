@@ -234,7 +234,7 @@ test('bezieht optionale Abendessen chronologisch in den sichtbaren Abwechslungsw
   const calculateVariety = vm.runInNewContext(`${varietyMatch[0]}\ncalculateVariety`, {});
 
   const lunch = { profile: 'warm', main: 'Nudeln', vegetarian: true };
-  const dinner = { profile: 'cold', main: 'Brot', vegetarian: false };
+  const dinner = { profile: 'cold', main: 'Nudeln', vegetarian: false };
   assert.notEqual(calculateVariety([lunch]).score, calculateVariety([lunch, dinner]).score);
 
   const renderPlan = source.slice(source.indexOf('function renderPlan'), source.indexOf('function renderPlanSuggestions'));
