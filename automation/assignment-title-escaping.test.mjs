@@ -53,7 +53,7 @@ vm.runInNewContext(
 context.openAssignModal('chosen', 0);
 
 const rendered = elements.get('#assignDaySelect').innerHTML;
-assert.doesNotMatch(rendered, /<img|onerror=/i);
+assert.doesNotMatch(rendered, /<img\\b/i);
 assert.match(rendered, /&lt;img src=&quot;x&quot; onerror=&quot;alert\(1\)&quot;&gt;/);
 
 console.log('Assignment title escaping checks passed');
