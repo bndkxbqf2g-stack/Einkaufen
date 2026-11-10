@@ -34,7 +34,7 @@ const quantityModel = loadQuantityModel();
 const plain = value => JSON.parse(JSON.stringify(value));
 const basis = (amount, unit, family = unit === 'g' || unit === 'kg' ? 'mass' : unit === 'ml' || unit === 'l' ? 'volume' : 'count') => ({ valid: true, amount, unit, family });
 
-const coverageMatch = distIndexSource.match(/function combinePantryCoverage\\([^)]*\\) \\{[\\s\\S]*?\\n    \\}/);
+const coverageMatch = distIndexSource.match(/function combinePantryCoverage\([^)]*\) \{[\s\S]*?\n    \}/);
 assert.ok(coverageMatch, 'combinePantryCoverage muss im App-Bundle vorhanden sein');
 const combinePantryCoverage = new Function(`${coverageMatch[0]}; return combinePantryCoverage;`)();
 
