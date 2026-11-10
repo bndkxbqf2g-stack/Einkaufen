@@ -1125,3 +1125,8 @@ bleiben ebenfalls getrennte Freigabepunkte.
 - Persönliche und importierte Rezeptquellen werden vor dem Einsetzen in Links auf HTTPS ohne Zugangsdaten begrenzt; unsichere Werte bleiben ohne Link.
 - Angebotsbilder verwenden dieselbe HTTPS-Grenze. Vorhandene Daten werden nicht umgeschrieben; nur die Darstellung unsicherer URLs wird unterdrückt.
 - Root, dist und Regressionstest bleiben synchron. Keine Nutzer-, Plan-, Vorrats-, Kauf-, Supabase- oder Produktionsdaten wurden geändert.
+
+## Sicherheitskorrektur – sichere Favoritenquellen (10.11.2026)
+
+- Auch der Link in der Favoritenkarte verwendet die zentrale Prüfung auf sichere HTTPS-Quellen ohne Zugangsdaten.
+- Unsichere oder ungültige URLs werden nicht als klickbarer Link ausgegeben; bestehende Favoriten- und Rezeptdaten werden nicht umgeschrieben.

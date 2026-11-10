@@ -66,3 +66,9 @@ test('verwendet für Angebotsbilder ebenfalls nur sichere HTTPS-URLs', () => {
 });
 
 console.log('Source URL safety checks passed');
+
+test('verwendet im Favoritenpfad dieselbe sichere Rezeptquelle', () => {
+  assert.match(source, /const sourceUrl = recipeSourceUrl\(\{ title: item\.name, url: item\.url \}\);/);
+  assert.match(source, /\$\{sourceUrl \? `<a class="source-note"/);
+  assert.doesNotMatch(source, /\$\{item\.url \? `<a class="source-note" href="\$\{escapeHtml\(item\.url\)/);
+});

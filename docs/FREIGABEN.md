@@ -1449,3 +1449,8 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Rezept- und Angebotsbild-URLs werden vor der Darstellung auf sichere HTTPS-Adressen ohne Zugangsdaten begrenzt.
 - Kein neuer Freigabepunkt: Unsichere Links werden nur nicht angezeigt; es gibt keine Nutzer-, Daten-, Supabase-, Produktions- oder Kostenänderung.
+
+## Sicherheitskorrektur – Favoritenquellen (10.11.2026)
+
+- Der Favoriten-Link nutzt nun dieselbe zentrale HTTPS-/Zugangsdatenprüfung wie Rezeptdetail, Wochenplan und Angebotsbilder.
+- Keine zusätzliche Freigabe erforderlich: keine Supabase-, Auth-, Nutzerdaten-, Angebotsdaten-, Migrations-, Deployment- oder Kostenänderung.
