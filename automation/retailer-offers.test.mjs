@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { parseAldiOffers, parseKauflandOffers } from './retailer-offers.mjs';
+import { parseAldiOffers, parseEdekaOffers, parseKauflandOffers, parseNettoOffers } from './retailer-offers.mjs';
 
 test('filters availability metadata and parses only explicit offer dates', () => {
   const parsed = parseAldiOffers(`
