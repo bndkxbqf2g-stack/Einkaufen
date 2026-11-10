@@ -74,8 +74,8 @@ test('verwendet keine statischen Planvorlagenkosten als Preisersatz', () => {
   );
   assert.match(
     renderPlan[0],
-    /meal\.costSource === 'offer-subtotal' && parseKnownMoney\(meal\.cost\) !== null/,
-    'die Plananzeige darf nur verifizierte Angebotsanteile als Kosten ausgeben',
+    /const costLabel = mealOfferSubtotalLabel\(meal, dayPeople\);/,
+    'die Plananzeige muss den zentralen sicheren Kostenformatierer verwenden',
   );
 });
 const savingLabel = distHtml.match(/function shoppingOfferSavingLabel\([^)]*\) \{[\s\S]*?\n    \}/);
