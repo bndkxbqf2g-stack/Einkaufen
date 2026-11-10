@@ -145,7 +145,7 @@ export function validateOfferSnapshot(snapshot, { now = new Date() } = {}) {
       const regularPrice = String(offer.regularPrice || '').trim();
       const currentCents = euroCents(offer.price);
       const regularCents = euroCents(regularPrice);
-      if (!/^(?:\\d{1,3}(?:\\.\\d{3})+|\\d+)(?:,\\d{2})?\\s*€$/i.test(regularPrice) || regularCents === null || currentCents === null || regularCents <= currentCents) {
+      if (!/^(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d{2})?\s*€$/i.test(regularPrice) || regularCents === null || currentCents === null || regularCents <= currentCents) {
         throw new Error(`Angebotssnapshot: regulärer Vergleichspreis von Angebot ${index + 1} ist ungültig oder nicht höher als der Angebotspreis.`);
       }
     }
