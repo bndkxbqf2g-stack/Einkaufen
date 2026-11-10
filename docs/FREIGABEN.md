@@ -1394,3 +1394,10 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
   nicht veröffentlicht.
 - Kein neuer Freigabepunkt: keine Nutzer-, Angebots-, Kauf-, Vorrats-,
   Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Testhärtung 10.11.2026 – Grundpreis-Schreibweisen
+
+- Die Parser-Regressionen prüfen /, pro, je und per sowie alleinstehende Grundpreisangaben.
+- Kein neuer Freigabepunkt: Es wurden nur Tests und Dokumentation ergänzt.
+- Kaufabschluss/IST-Betrag, Verbrauchsbuchung, Mehrstopp-Fahrtkosten, Supabase-Datenänderungen und Produktionsänderungen bleiben unverändert freigabepflichtig.
