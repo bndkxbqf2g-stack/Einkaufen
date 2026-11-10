@@ -2391,7 +2391,8 @@
 
     function renderMarketChoices() {
       const selected = Array.isArray(settings.selectedMarkets) ? settings.selectedMarkets : [];
-      $('#marketChoices').innerHTML = Object.entries(marketDetails).map(([name, details]) => `<label class="market-row" style="cursor:pointer"><div class="market-left"><input type="checkbox" value="${name}" data-market-choice ${selected.includes(name) ? 'checked' : ''}><div class="market-logo">${details.logo}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(marketDistanceLabel(details.distance))}</div></div></div><span class="market-count">${details.count} Treffer</span></label>`).join('');
+      const currentOfferCount = name => offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer) && offer.store === name).length;
+      $('#marketChoices').innerHTML = Object.entries(marketDetails).map(([name, details]) => `<label class="market-row" style="cursor:pointer"><div class="market-left"><input type="checkbox" value="${name}" data-market-choice ${selected.includes(name) ? 'checked' : ''}><div class="market-logo">${details.logo}</div><div><div class="market-name">${escapeHtml(marketDisplayName(name))}</div><div class="market-distance">${escapeHtml(marketDistanceLabel(details.distance))}</div></div></div><span class="market-count">${currentOfferCount(name)} gültige Angebote</span></label>`).join('');
     }
 
     function offerImageUrl(offer) {
