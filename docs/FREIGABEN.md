@@ -1230,3 +1230,11 @@ sicherer Packungsgröße und explizit parsebaren Preisen. Unklare Größen oder
 Preise erzeugen keine künstliche Rangfolge. Die zusätzliche
 Mehrstopp-/Fahrtkostenoptimierung bleibt ausdrücklich freigabepflichtig.
 Keine Angebots-, Nutzer-, Supabase- oder Produktionsdaten wurden verändert.
+
+## Fortschritt 10.11.2026 – synthetischer Einkaufsfluss
+
+Der freigegebene lokale Kern ist jetzt zusätzlich als End-to-End-Test
+abgesichert: Mittagessen und optionales Abendessen, Teilvorrat,
+Packungsrundung sowie Angebots- und reguläre Vergleichssumme werden in einem
+synthetischen Szenario gemeinsam geprüft. Keine Nutzer-, Kauf-, Supabase- oder
+Produktionsdaten werden verwendet.
