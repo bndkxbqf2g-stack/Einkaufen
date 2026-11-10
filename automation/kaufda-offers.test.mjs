@@ -6,6 +6,19 @@ const match = source.match(/function validUntilFrom\(value, now = new Date\(\)\)
 assert.ok(match, 'validUntilFrom muss im KaufDA-Importer vorhanden sein');
 const validUntilFrom = new Function(`${match[0]}; return validUntilFrom;`)();
 
+const unitPriceMatch = source.match(/function stripUnitPriceExpressions\(value\) \{[\s\S]*?\n\}/);
+const priceMatch = source.match(/function priceFrom\(value\) \{[\s\S]*?\n\}/);
+assert.ok(unitPriceMatch, 'stripUnitPriceExpressions muss vorhanden sein');
+assert.ok(priceMatch, 'priceFrom muss vorhanden sein');
+const priceFrom = new Function(
+  `${unitPriceMatch[0]}\n${priceMatch[0]}; return priceFrom;`,
+)();
+
+assert.equal(priceFrom('2,49 €'), '2,49 €');
+assert.equal(priceFrom('2,49 € / kg'), '–');
+assert.equal(priceFrom('1 kg = 2,49 € 1,99 €'), '1,99 €');
+assert.equal(priceFrom('2,49 €/kg 1,99 €'), '1,99 €');
+
 assert.equal(
   validUntilFrom('Gültig bis 03.01.', new Date('2026-12-28T12:00:00.000Z')),
   '03.01.2027',
