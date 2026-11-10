@@ -31,7 +31,7 @@ return { offerEvidenceStatus, isShoppingOfferCostUsable, shoppingOfferEvidenceLa
 
 const functions = buildEvidence(
   {},
-  eval(`(${offerEndDate}; offerEndDate)`),
+  null,
   () => false,
   () => false,
   () => true,
