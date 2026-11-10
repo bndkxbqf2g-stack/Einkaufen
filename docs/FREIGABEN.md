@@ -1301,3 +1301,9 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Kein Freigabepunkt ausgelöst: Die Änderung macht unbekannte Packungsgrößen sichtbar, ohne Nutzer-, Angebots-, Supabase- oder Produktionsdaten zu verändern.
 - Weiterhin offen bleiben Kaufabschluss, Cloud-Datenübernahme, Konfliktzusammenführung, Haushaltsrollen, KI-/Kostenanbieter und zusätzliche Marktstopps.
+
+
+## Qualitätsaudit 10.11.2026: Angebots-Match-Evidenz
+
+- Kein Freigabepunkt ausgelöst: Die Änderung entfernt unbelegte Prozentbehauptungen aus der Anzeige und lässt die interne Rangfolge unverändert.
+- Keine Supabase-, Nutzer-, Angebots-, Preis- oder Produktionsdaten wurden geändert.
