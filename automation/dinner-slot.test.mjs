@@ -166,6 +166,7 @@ test('shows a recipe source link on dinner cards when available', () => {
     getMealIngredients: () => ['Brot', 'Käse'],
     recipeSourceUrl: dinner => dinner.url || '',
     mealDurationLabel: () => '30 Min.',
+    mealDifficultyLabel: () => 'leicht',
   };
   vm.runInNewContext(
     `${dinnerCardMatch[0]}\nglobalThis.renderDinnerCard = renderDinnerCard;`,
