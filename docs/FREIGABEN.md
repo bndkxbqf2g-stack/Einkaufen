@@ -1206,3 +1206,11 @@ einen Vergleichspreis ausdrücklich mit statt, vorher, regulär, Normalpreis
 oder UVP und einem Eurobetrag nennt. Prozentangaben werden nicht
 zurückgerechnet. Regressionstests decken Aldi, Kaufland, EDEKA und Netto ab;
 Angebotsdateien, Nutzerdaten, Supabase und Produktivbetrieb bleiben unverändert.
+
+## Fortschritt 10.11.2026 – Händlervergleichspreise vollständig geprüft
+
+PR #329 deckt den optionalen Vergleichspreis-Vertrag für Aldi, Kaufland,
+EDEKA und Netto ab. CI bestätigte 356/356 Tests, Worker-Build und
+Endpunktprüfung; der Deploy-Job blieb übersprungen. Es wurden keine
+Angebotsdateien, Nutzerdaten, Supabase-Daten oder Produktionsressourcen
+verändert.
