@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { parseAldiOffers, parseKauflandOffers } from './retailer-offers.mjs';
+import { parseAldiOffers, parseEdekaOffers, parseKauflandOffers, parseNettoOffers } from './retailer-offers.mjs';
 
 test('filters availability metadata and parses only explicit offer dates', () => {
   const parsed = parseAldiOffers(`
@@ -85,4 +85,36 @@ test('übernimmt einen ausdrücklich genannten regulären Vergleichspreis', () =
 
   assert.equal(parsed.offers[0].price, '1,99 €');
   assert.equal(parsed.offers[0].regularPrice, '2,49 €');
+});
+
+test('preserves explicit regular prices in every retailer parser without reverse-calculating savings', () => {
+  const cases = [
+    {
+      label: 'Kaufland',
+      parse: parseKauflandOffers,
+      html: '<p>Gültig vom 02.11.2026 bis 07.11.2026</p><a>Äpfel statt 2,49 € nur 1,99 €</a>',
+    },
+    {
+      label: 'EDEKA',
+      parse: parseEdekaOffers,
+      html: '<p>Gültig vom 02.11.2026 bis 07.11.2026</p><p>Angebot: Äpfel statt 2,49 € nur 1,99 €</p>',
+    },
+    {
+      label: 'Netto',
+      parse: parseNettoOffers,
+      html: '<p>Gültig vom 02.11.2026 bis 07.11.2026</p><h3>Äpfel</h3><div>statt 2,49 € nur 1,99 €</div>',
+    },
+  ];
+
+  for (const { label, parse, html } of cases) {
+    const parsed = parse(html);
+    assert.equal(parsed.offers.length, 1, label);
+    assert.equal(parsed.offers[0].price, '1,99 €', label);
+    assert.equal(parsed.offers[0].regularPrice, '2,49 €', label);
+  }
+
+  const percentageOnly = parseAldiOffers(
+    '<p>Gültig vom 02.11.2026 bis 07.11.2026</p><a>Äpfel -20% 1,99 €</a>',
+  );
+  assert.equal(percentageOnly.offers[0].regularPrice, undefined);
 });
