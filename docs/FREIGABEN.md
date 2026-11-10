@@ -1169,3 +1169,10 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 - Fallback-Gerichte neutralisieren die Vorlage mit `cost: ''` und `costSource: 'unknown'`; die Plananzeige akzeptiert Kosten nur bei `offer-subtotal` und parsebarem Betrag.
 - Ein Regressionstest schützt diesen Vertrag. Es wurden keine Angebots-, Nutzer-/Haushalts-, Supabase-/Schema-Daten oder Produktionsressourcen verändert.
 - Nächster sicherer Schritt: weitere deterministische Warenkorb-/Marktvergleichslücken prüfen. Der verbindliche Kaufabschluss mit IST-Beträgen bleibt ein späterer Freigabepunkt.
+
+## Audit 10.11.2026 – Angebotsnachlass bleibt transparent
+
+- Das Feld `saving` wird nicht als regulärer Vergleichspreis oder berechnete Ersparnis verwendet.
+- Ohne aktuelle, quellenbelegte und nichtmanuelle Evidenz zeigt die App `Vergleichspreis nicht belegt`.
+- Bei belastbarer Herkunft wird der Wert ausschließlich als unveränderte Quellenangabe mit dem Hinweis `nicht berechnet` angezeigt.
+- Ein Regressionstest schützt diese Grenze. Keine Angebots-, Nutzer-, Supabase-, Produktions- oder Kostenänderung.
