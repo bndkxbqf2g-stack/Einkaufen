@@ -65,3 +65,17 @@ test('verbindet synthetischen Plan, Teilvorrat, Packungsbedarf und Vergleichskos
 });
 
 console.log('Synthetic local shopping flow checks passed');
+
+test('hält nicht verifizierte Angebotspreise aus Plan- und Vergleichssummen heraus', () => {
+  const summary = costs.summarizeShoppingCosts([{
+    id: 'unverified-offer',
+    packCount: 1,
+    offer: { price: '2,00 €', regularPrice: '2,49 €' },
+  }], parseEuro, () => false);
+
+  assert.equal(summary.knownOfferTotalCents, null);
+  assert.equal(summary.knownOfferCount, 0);
+  assert.equal(summary.unknownPriceCount, 1);
+  assert.equal(summary.knownComparisonCount, 0);
+  assert.equal(summary.unknownComparisonCount, 1);
+});
