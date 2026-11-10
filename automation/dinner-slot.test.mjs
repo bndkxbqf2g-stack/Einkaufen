@@ -226,3 +226,19 @@ test('renders slot actions only for lunch-capable suggestions with real recipe i
   assert.match(lunchHtml, /data-plan-recipe="main-1"/);
   assert.doesNotMatch(breakfastHtml, /data-(today|assign|plan)-recipe/);
 });
+
+
+test('bezieht optionale Abendessen chronologisch in den sichtbaren Abwechslungswert ein', () => {
+  const varietyMatch = source.match(/function calculateVariety\(meals\) \{[\s\S]*?\n    \}/);
+  assert.ok(varietyMatch, 'calculateVariety must be present in index.html');
+  const calculateVariety = vm.runInNewContext(`${varietyMatch[0]}\ncalculateVariety`, {});
+
+  const lunch = { profile: 'warm', main: 'Nudeln', vegetarian: true };
+  const dinner = { profile: 'cold', main: 'Nudeln', vegetarian: false };
+  assert.notEqual(calculateVariety([lunch]).score, calculateVariety([lunch, dinner]).score);
+
+  const renderPlan = source.slice(source.indexOf('function renderPlan'), source.indexOf('function renderPlanSuggestions'));
+  assert.match(renderPlan, /const varietyMeals = visible\.flatMap\(\(meal, index\) => \[meal, dinnerSlots\[index\]\]\.filter\(Boolean\)\)/);
+  assert.match(renderPlan, /const variety = calculateVariety\(varietyMeals\)/);
+  assert.equal(dist, source);
+});
