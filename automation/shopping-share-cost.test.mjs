@@ -37,7 +37,7 @@ test('shares the known subtotal and open cash boundary explicitly', () => {
       { packCount: 3, offer: { price: '1,20 €' } },
       { packCount: 1, offer: { price: 'Preis unbekannt' } },
     ]),
-    'Bekannter Angebotsbetrag 3,60 € · 1 Preis unbekannt · 2 Vergleichepreise unbekannt · Kassenbetrag offen',
+    'Bekannter Angebotsbetrag 3,60 € · 1 Preis unbekannt · 2 Vergleichspreise unbekannt · Kassenbetrag offen',
   );
   assert.match(html, /shoppingShareSummary\(pending\)/);
   assert.match(html, /Fehlende Artikel und Vorräte sind nicht enthalten/);
