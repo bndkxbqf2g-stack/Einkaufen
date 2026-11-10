@@ -66,14 +66,14 @@ function formatEuroAmount(value) {
 function offerPrice(text) {
   const amount = euroAmountPattern();
   const unitPricePattern = new RegExp('\\b\\d+(?:[.,]\\d+)?\\s*(?:kg|g|l|ml)\\s*=\\s*' + amount + '\\s*€?\\b', 'gi');
-  const unitPriceAfterPattern = new RegExp('(' + amount + ')\\\s*€\\s*(?:/|pro|je|per)\\\s*(?:\\d+(?:[.,]\\d+)?\\s*)?(?:kg|g|l|ml)\\b', 'gi');
+  const unitPriceAfterPattern = new RegExp('(' + amount + ')\\s*€\\s*(?:/|pro|je|per)\\s*(?:\\d+(?:[.,]\\d+)?\\s*)?(?:kg|g|l|ml)\\b', 'gi');
   const negativePricePattern = new RegExp('[-−–—]\\s*' + amount + '\\s*€?\\b', 'g');
   const outside = String(text || '')
     .replace(/\([^)]*\)/g, ' ')
     .replace(unitPricePattern, ' ')
     .replace(unitPriceAfterPattern, (match, unitAmount, offset, source) => {
       const remainder = source.slice(offset + match.length);
-      const nextPricePattern = new RegExp('(?<![\\\\d.,])' + amount + '(?![\\\\d.,])\\\\s*€?\\\\b', 'i');
+      const nextPricePattern = new RegExp('(?<![\\d.,])' + amount + '(?![\\d.,])\\s*€?\\b', 'i');
       return nextPricePattern.test(remainder) ? ' ' : unitAmount + ' €';
     })
     .replace(negativePricePattern, ' ');
