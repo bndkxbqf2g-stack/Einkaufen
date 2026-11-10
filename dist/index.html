@@ -1505,7 +1505,7 @@
       const details = [coverage, `${summary.knownOfferCount} von ${summary.offerItemCount} Angebotspositionen mit Preis`];
       if (summary.unknownPriceCount) details.push(`${summary.unknownPriceCount} Preis${summary.unknownPriceCount === 1 ? '' : 'e'} unbekannt`);
       if (summary.knownComparisonCount) details.push(`Bekannter regulärer Vergleichsanteil ${formatEuro(summary.knownRegularTotal)} · rechnerische Differenz ${formatEuro(summary.knownSavings)}`);
-      if (summary.unknownComparisonCount) details.push(`${summary.unknownComparisonCount} Vergleich${summary.unknownComparisonCount === 1 ? 's' : 'e'}preis unbekannt`);
+      if (summary.unknownComparisonCount) details.push(`${summary.unknownComparisonCount} ${summary.unknownComparisonCount === 1 ? 'Vergleichspreis' : 'Vergleichspreise'} unbekannt`);
       if (summary.manualMissingCount) details.push(`${summary.manualMissingCount} manuelle${summary.manualMissingCount === 1 ? 'r' : ''} Artikel ohne Angebotsanker`);
       if (summary.unanchoredMissingCount) details.push(`${summary.unanchoredMissingCount} ${summary.unanchoredMissingCount === 1 ? 'weiterer' : 'weitere'} Artikel ohne Angebotsanker`);
       return details.join(' · ');
@@ -2098,6 +2098,8 @@
       const details = [];
       details.push(summary.knownOfferCount ? `Bekannter Angebotsbetrag ${formatEuro(summary.knownOfferTotal)}` : 'Kein verifizierter Angebotsbetrag');
       if (summary.unknownPriceCount) details.push(`${summary.unknownPriceCount} Preis${summary.unknownPriceCount === 1 ? '' : 'e'} unbekannt`);
+      if (summary.knownComparisonCount) details.push(`Regulärer Vergleichsanteil ${formatEuro(summary.knownRegularTotal)} · rechnerische Differenz ${formatEuro(summary.knownSavings)}`);
+      if (summary.unknownComparisonCount) details.push(`${summary.unknownComparisonCount} ${summary.unknownComparisonCount === 1 ? 'Vergleichspreis' : 'Vergleichspreise'} unbekannt`);
       if (summary.manualMissingCount) details.push(`${summary.manualMissingCount} manuelle${summary.manualMissingCount === 1 ? 'r' : ''} Artikel ohne Angebotsanker`);
       if (summary.unanchoredMissingCount) details.push(`${summary.unanchoredMissingCount} ${summary.unanchoredMissingCount === 1 ? 'weiterer' : 'weitere'} Artikel ohne Angebotsanker`);
       details.push('Kassenbetrag offen');
@@ -2112,7 +2114,7 @@
       if (summary.knownOfferCount) details.push(`Bekannte Angebotssumme ${formatEuro(summary.knownOfferTotal)}`);
       if (comparison.knownComparisonCount) details.push(`Regulärer Vergleichsanteil ${formatEuro(comparison.knownRegularTotal)} · Differenz ${formatEuro(comparison.knownSavings)}`);
       if (summary.unknownPriceCount) details.push(`${summary.unknownPriceCount} Preis${summary.unknownPriceCount === 1 ? '' : 'e'} unbekannt`);
-      if (comparison.unknownComparisonCount) details.push(`${comparison.unknownComparisonCount} Vergleich${comparison.unknownComparisonCount === 1 ? 's' : 'e'}preis unbekannt`);
+      if (comparison.unknownComparisonCount) details.push(`${comparison.unknownComparisonCount} ${comparison.unknownComparisonCount === 1 ? 'Vergleichspreis' : 'Vergleichspreise'} unbekannt`);
       return details.join(' · ');
     }
 
