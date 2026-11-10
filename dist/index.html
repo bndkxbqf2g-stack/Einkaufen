@@ -871,7 +871,10 @@
     function isOfferRefreshDue(market) {
       const status = liveOfferStatus[market];
       if (!status) return true;
-      if (status.nextCheckAt) return new Date(status.nextCheckAt) <= new Date();
+      if (status.nextCheckAt) {
+        const nextCheckAt = new Date(status.nextCheckAt);
+        if (Number.isFinite(nextCheckAt.getTime())) return nextCheckAt <= new Date();
+      }
       const validUntil = offerEndDate(status.validUntil);
       if (validUntil) return validUntil <= new Date();
       const fetchedAt = status.fetchedAt ? new Date(status.fetchedAt) : null;
