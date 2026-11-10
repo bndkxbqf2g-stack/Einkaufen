@@ -1281,3 +1281,10 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Der serverseitige Rezeptimport hatte noch den alten Erstzahl-Dauerparser und setzte fehlende Familienangaben pauschal auf `true`; beides ist korrigiert.
 - Der Endpoint-Test prüft jetzt `PT1H30M = 90` Minuten und das Fehlen eines erfundenen Familienstatus.
 - Kein Freigabepunkt ausgelöst: keine Nutzer-, Angebots-, Vorrats-, Kassen-, Supabase-, Datenbank- oder Produktionsänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – unbekannte Favoritenmetadaten
+
+- Der Seed-Abgleich ergänzt fehlende persönliche Rezeptdauer und Schwierigkeit nicht mehr automatisch.
+- Eine Regression schützt den unbekannten Zustand und die Root-/`dist`-Parität.
+- Kein Freigabepunkt ausgelöst: keine Nutzer-, Angebots-, Vorrats-, Kassen-, Supabase-, Datenbank- oder Produktionsänderung.
