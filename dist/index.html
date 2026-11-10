@@ -1038,6 +1038,10 @@
       return `${formattedLoaded} von ${formattedTarget} Karten geladen; Status des Ladeziels unbekannt`;
     }
 
+    function parseOfferStatusTimestamp(value) {
+      const date = value ? new Date(value) : null;
+      return date && Number.isFinite(date.getTime()) ? date : null;
+    }
     function renderSourceStatus() {
       const selected = sortedSelectedMarkets();
       const activeMarkets = selected.slice(0, Number(settings.markets || 2));
@@ -1045,19 +1049,23 @@
         const count = offers.filter(offer => isOfferCurrent(offer) && !isDemoOffer(offer) && offer.store === name).length;
         const activeLabel = activeMarkets.includes(name) ? 'für Planung aktiv' : selected.includes(name) ? 'ausgewählt, über dem Stopplimit' : 'nicht ausgewählt';
         const live = liveOfferStatus[name];
+        const nextCheckAt = parseOfferStatusTimestamp(live?.nextCheckAt);
+        const fetchedAt = parseOfferStatusTimestamp(live?.fetchedAt);
+        const checkedAt = parseOfferStatusTimestamp(live?.checkedAt);
+        const validUntil = offerEndDate(live?.validUntil);
         const offerLabel = name === 'Bring' ? `${count} Artikel erkannt` : count === 1 ? '1 gültiges Angebot' : count ? `${count} gültige Angebote` : 'manueller Import';
-        const nextCheckLabel = live?.nextCheckAt && new Date(live.nextCheckAt) > new Date() ? ` · nächste Prüfung ${new Date(live.nextCheckAt).toLocaleDateString('de-DE')}` : '';
+        const nextCheckLabel = nextCheckAt && nextCheckAt > new Date() ? ` · nächste Prüfung ${nextCheckAt.toLocaleDateString('de-DE')}` : '';
         const sourceLabel = live?.error
           ? (live.count ? 'Live-Prüfung fehlgeschlagen · letzter Datensatz behalten' : 'Live-Prüfung fehlgeschlagen')
           : live?.count ? `${isGithubPagesHost ? 'GitHub-Datensatz geladen' : 'Live-Datensatz geladen'} · ${live.count} Treffer` : isGithubPagesHost && liveOfferMarkets.has(name) ? 'GitHub-Workflow verfügbar' : liveOfferMarkets.has(name) ? 'Live-Quelle verfügbar' : 'manueller Import';
-        const timestampLabel = live?.timestampSource === 'source' && live?.fetchedAt
-          ? ` · Datenstand ${new Date(live.fetchedAt).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })}`
-          : live?.timestampSource === 'stale' && live?.fetchedAt
-            ? ` · letzter Datenstand ${new Date(live.fetchedAt).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })}`
-            : live?.timestampSource === 'check' && live?.checkedAt
-              ? ` · geprüft ${new Date(live.checkedAt).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })}`
+        const timestampLabel = live?.timestampSource === 'source' && fetchedAt
+          ? ` · Datenstand ${fetchedAt.toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })}`
+          : live?.timestampSource === 'stale' && fetchedAt
+            ? ` · letzter Datenstand ${fetchedAt.toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })}`
+            : live?.timestampSource === 'check' && checkedAt
+              ? ` · geprüft ${checkedAt.toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' })}`
               : live?.count ? ' · Datenstand unbekannt' : '';
-        const validUntilLabel = live?.validUntil ? ` · gültig bis ${live.validUntil}` : '';
+        const validUntilLabel = validUntil ? ` · gültig bis ${live.validUntil}` : '';
         const coverageLabel = live?.count ? ` · ${offerCoverageLabel(live)}` : '';
         const liveSourceUrl = sourceUrlForDisplay(live?.sourceUrl);
         const sourceUrl = live?.sourceUrl === undefined ? details.source : liveSourceUrl;

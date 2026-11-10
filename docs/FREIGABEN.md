@@ -1146,3 +1146,8 @@ Die bestehende Mittag-/Abendessen-Aggregation wurde gegen eine Tagesindex-Regres
 
 - Die kanonische Deduplizierung benötigt keine neue Freigabe.
 - Keine Vorrats-, Verbrauchs-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+## Gebündelte Notiz 10.11.2026 – Zeitstempelanzeige
+
+- Die Änderung ist rein lesend und benötigt keine neue Freigabe.
+- Keine Angebots-, Nutzer-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.

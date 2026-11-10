@@ -822,3 +822,8 @@ Der Mengenpfad bewahrt den ursprünglichen Tagesindex auch bei Tagen ohne Abende
 
 - Die Anzeigezählung nutzt für Legacy- und mengenfähige Treffer die vorhandene Zutatenidentität; reine Schreibvarianten wie Groß-/Kleinschreibung erzeugen keine zweite Vorratszutat.
 - Dies bleibt eine lokale, lesende Darstellungskorrektur ohne Änderung am Vorrat oder Verbrauch.
+
+## Angebotsquellen 10.11.2026 – Zeitstempelanzeige gehärtet
+
+- Ungültige lokale Prüf-, Abruf- oder Gültigkeitszeitpunkte werden in der Marktstatusanzeige nicht mehr als `Invalid Date` dargestellt; der Datenstand bleibt unbekannt.
+- Die Refresh- und Angebotsdatenregeln bleiben unverändert konservativ.
