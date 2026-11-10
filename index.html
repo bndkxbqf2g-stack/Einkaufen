@@ -889,7 +889,7 @@
     favorites = favorites.map(item => {
       const builtIn = seededFavorites.find(seed => normalizeIngredient(seed.name) === normalizeIngredient(item.name));
       if (!builtIn) return item;
-      return { ...builtIn, ...item, ingredients: Array.isArray(item.ingredients) && item.ingredients.length ? item.ingredients : builtIn.ingredients, time: item.time || builtIn.time, vegetarian: item.vegetarian ?? builtIn.vegetarian, familyFriendly: typeof item.familyFriendly === 'boolean' ? item.familyFriendly : null, category: item.category || builtIn.category, difficulty: item.difficulty || builtIn.difficulty, instructions: item.instructions || builtIn.instructions };
+      return { ...builtIn, ...item, ingredients: Array.isArray(item.ingredients) && item.ingredients.length ? item.ingredients : builtIn.ingredients, time: normalizeMealDuration(item.time), vegetarian: item.vegetarian ?? builtIn.vegetarian, familyFriendly: typeof item.familyFriendly === 'boolean' ? item.familyFriendly : null, category: item.category || builtIn.category, difficulty: typeof item.difficulty === 'string' && item.difficulty.trim() ? item.difficulty.trim() : null, instructions: item.instructions || builtIn.instructions };
     });
     const existingFavoriteNames = new Set(favorites.map(item => normalizeIngredient(item.name)));
     let addedFavoriteDefaults = false;
