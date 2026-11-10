@@ -16,6 +16,14 @@ runInNewContext(costSource, browserGlobal);
 const costModel = browserGlobal.AngebotskuecheCostModel;
 const match = distHtml.match(/function estimateMatchCost\([^)]*\) \{[\s\S]*?\n    \}/);
 assert.ok(match, 'estimateMatchCost muss im App-Bundle vorhanden sein');
+const moneyParserMatch = distHtml.match(/function parseKnownMoney\(value\) \{[\s\S]*?\n    \}/);
+const euroFormatterMatch = distHtml.match(/function formatEuro\(value\) \{[\s\S]*?\n    \}/);
+assert.ok(moneyParserMatch, 'parseKnownMoney muss im App-Bundle vorhanden sein');
+assert.ok(euroFormatterMatch, 'formatEuro muss im App-Bundle vorhanden sein');
+const { parseKnownMoney: parseBundleMoney, formatEuro: formatBundleEuro } = runInNewContext(
+  `${moneyParserMatch[0]}\n${euroFormatterMatch[0]}\n({ parseKnownMoney, formatEuro })`,
+  {},
+);
 
 const parseKnownMoney = value => {
   const found = String(value || '').match(/^(\d+),(\d{2}) €$/);
@@ -35,6 +43,14 @@ return estimateMatchCost;`,
   offer => offer?.verified === true,
   formatEuro,
 );
+
+test('behandelt unsichere Geldgrenzen als unbekannt und rundet Centbeträge sicher', () => {
+  assert.equal(parseBundleMoney('1.234,56 €'), 1234.56);
+  assert.equal(parseBundleMoney('999999999999999,99 €'), null);
+  assert.equal(formatBundleEuro(12.345), '12,35 €');
+  assert.equal(formatBundleEuro(-1), '–');
+  assert.equal(formatBundleEuro(999999999999999.99), '–');
+});
 
 test('berechnet Rezeptkosten nur aus verifizierten Angebotspreisen', () => {
   const result = estimateMatchCost([

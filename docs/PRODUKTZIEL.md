@@ -994,3 +994,15 @@ werden. Angebots-, Nutzer-, Kassen- und Supabase-Daten bleiben unverändert.
 - Mittagessen- und Abendessenkarten verwenden jetzt denselben Kostenformatierer: nur costSource "offer-subtotal", sichere Centdarstellung und gültige Personenzahl erzeugen einen sichtbaren Angebotsanteil.
 - Historische/statische Kosten und übergroße Beträge bleiben als „Preis unbekannt“ sichtbar; eine Renderer-Ausnahme durch direkte toFixed-Skalierung ist ausgeschlossen.
 - Keine Nutzer-, Angebots-, Vorrats-, Kauf-, Supabase-, Datenbank-, Produktions- oder kostenpflichtige Änderung.
+
+
+## Fortschritt 10.11.2026 – sichere Geldgrenzen
+
+Der gemeinsame UI-Geldparser verwirft nun positive Beträge, deren Centwert nicht
+mehr sicher als Ganzzahl darstellbar ist. Der Euro-Formatter lehnt zusätzlich
+negative oder ebenfalls nicht sicher darstellbare Beträge ab und rundet
+bekannte Werte deterministisch auf Cent. Dadurch werden beschädigte oder
+unrealistisch große Preiswerte als unbekannt behandelt, statt sie anzuzeigen
+oder in Zwischensummen zu übernehmen. Root-/dist-Parität und Regressionstests
+sichern den Schritt ab. Es wurden keine Nutzer-, Angebots-, Supabase-,
+Datenbank- oder Produktionsdaten geändert.

@@ -2025,7 +2025,8 @@
         ? match[3].replace(/\./g, '').replace(',', '.')
         : /^\d{1,3}(?:\.\d{3})+$/u.test(match[3]) ? match[3].replace(/\./g, '') : match[3];
       const amount = Number(normalizedAmount);
-      return Number.isFinite(amount) && amount > 0 ? amount : null;
+      const cents = Math.round(amount * 100);
+      return Number.isFinite(amount) && amount > 0 && Number.isSafeInteger(cents) ? amount : null;
     }
 
     function parseKnownPackageSize(value) {
@@ -2181,7 +2182,10 @@
       const numeric = typeof value === 'number'
         ? value
         : typeof value === 'string' && value.trim() ? Number(value) : NaN;
-      return Number.isFinite(numeric) ? `${numeric.toFixed(2).replace('.', ',')} €` : '–';
+      const cents = Math.round(numeric * 100);
+      return Number.isFinite(numeric) && numeric >= 0 && Number.isSafeInteger(cents)
+        ? `${(cents / 100).toFixed(2).replace('.', ',')} €`
+        : '–';
     }
 
     function estimateMealCost(recipe) {

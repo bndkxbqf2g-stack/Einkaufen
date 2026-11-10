@@ -1346,3 +1346,14 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Kein neuer Freigabepunkt: Die Änderung vereinheitlicht nur die lokale Anzeigeprüfung für Mittagessen und Abendessen.
 - Keine Nutzer-, Kauf-, Vorrats-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – sichere Geldgrenzen
+
+- Der gemeinsame UI-Geldparser verwirft positive Beträge mit nicht sicher
+  darstellbarem Centwert.
+- Der Euro-Formatter zeigt negative oder nicht sicher darstellbare Werte nicht
+  als Preis an und rundet bekannte Werte deterministisch auf Cent.
+- Regression, Root-/dist-Parität und Worker-Artefakt werden durch CI geprüft.
+- Kein neuer Freigabepunkt: keine Nutzer-, Angebots-, Kauf-, Vorrats-,
+  Supabase-, Datenbank-, Produktions- oder Kostenänderung.
