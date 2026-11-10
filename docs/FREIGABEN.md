@@ -1321,3 +1321,10 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Kein neuer Freigabepunkt: Die Änderung ist eine lokale, deterministische Anzeigevalidierung im bestehenden Kostenpfad.
 - Bei expliziten Rezeptmengen wird ein regulärer Vergleichspreis nicht angezeigt, wenn das Angebots-Packmaß die benötigte Mengenfamilie nicht belegt.
 - Keine Nutzer-, Angebots-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Dokumentationsabgleich 10.11.2026 – lokaler Vorratsabgleich ist read-only integriert
+
+- Die lokale Vorratsdeckung ist bereits in getShoppingItems() eingebunden und verändert weder Vorrat noch pantryQuantities; die frühere Formulierung „produktive Einkaufslistenintegration bleibt Freigabepunkt 1“ wird insoweit als historischer Vorbereitungsstand präzisiert.
+- Freigabepflichtig bleiben die tatsächliche Verbrauchsbuchung, Reservierung, neue Daten-/Backup-/Cloud-/Supabase-Verträge sowie automatische Entscheidungen mit Nutzerdatenwirkung.
+- Keine Code-, Nutzer-, Angebots-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
