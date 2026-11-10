@@ -1267,3 +1267,10 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Favoriten mit gleichem Namen wie ein eingebautes Rezept erben bei fehlender eigener Angabe keinen Familienstatus mehr.
 - Regression, Root-/`dist`-Parität und Worker-Artefakt werden mitgeprüft.
 - Kein Freigabepunkt ausgelöst: keine Nutzer-, Angebots-, Vorrats-, Supabase-, Datenbank- oder Produktionsänderung.
+
+
+## Sicherheitskorrektur 10.11.2026 – vollständige Rezeptdauer
+
+- Der generische Rezeptimport verarbeitet `PT1H30M`, `1 Std. 30 Min.` und vergleichbare Angaben vollständig; die bisherige Verkürzung auf die erste Zahl ist entfernt.
+- Regression, Root-/`dist`-Parität und Worker-Bundle werden geprüft.
+- Kein Freigabepunkt ausgelöst: keine Nutzer-, Angebots-, Vorrats-, Kassen-, Supabase-, Datenbank- oder Produktionsänderung.
