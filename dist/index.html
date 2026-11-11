@@ -2968,7 +2968,7 @@
 
     function initializeSupabaseSync() {
       return window.angebotskuecheSupabaseSync?.initialize({
-        buildPayload: buildUserDataPayload,
+        buildPayload: () => buildUserDataPayload({ includePurchaseRecords: false }),
         validatePayload: validateUserDataPayload,
         applyPayload: applyUserDataPayload,
         showToast
@@ -2984,14 +2984,21 @@
 
     const backupArrayKeys = ['pantry', 'favorites', 'dismissedRecipes', 'pinnedRecipes', 'customOffers', 'manualShoppingItems', 'recipeHistory'];
     const backupObjectKeys = ['shoppingChecks', 'liveOfferStatus', 'manualPlan', 'manualDinnerPlan', 'recipeRatings', 'suggestionPreferences'];
+    const localBackupArrayKeys = [...backupArrayKeys, 'purchaseRecords'];
 
-    function buildUserDataPayload() {
-      return { version: 1, exportedAt: new Date().toISOString(), settings: stored('angebotskueche.settings', settings), pantry: stored('angebotskueche.pantry', pantry), favorites: stored('angebotskueche.favorites', favorites), dismissedRecipes: stored('angebotskueche.dismissedRecipes', dismissedRecipes), pinnedRecipes: stored('angebotskueche.pinnedRecipes', pinnedRecipes), customOffers: stored('angebotskueche.customOffers', []), shoppingChecks: stored('angebotskueche.shoppingChecks', shoppingChecks), manualShoppingItems: stored('angebotskueche.manualShoppingItems', manualShoppingItems), recipeHistory: stored('angebotskueche.recipeHistory', recipeHistory), liveOfferStatus: stored('angebotskueche.liveOfferStatus', liveOfferStatus), manualPlan: stored('angebotskueche.manualPlan', manualPlan), manualDinnerPlan: stored('angebotskueche.manualDinnerPlan', manualDinnerPlan), recipeRatings: stored('angebotskueche.recipeRatings', recipeRatings), suggestionPreferences: stored('angebotskueche.suggestionPreferences', suggestionPreferences) };
+    function buildUserDataPayload(options = {}) {
+      const payload = { version: 1, exportedAt: new Date().toISOString(), settings: stored('angebotskueche.settings', settings), pantry: stored('angebotskueche.pantry', pantry), favorites: stored('angebotskueche.favorites', favorites), dismissedRecipes: stored('angebotskueche.dismissedRecipes', dismissedRecipes), pinnedRecipes: stored('angebotskueche.pinnedRecipes', pinnedRecipes), customOffers: stored('angebotskueche.customOffers', []), shoppingChecks: stored('angebotskueche.shoppingChecks', shoppingChecks), manualShoppingItems: stored('angebotskueche.manualShoppingItems', manualShoppingItems), recipeHistory: stored('angebotskueche.recipeHistory', recipeHistory), liveOfferStatus: stored('angebotskueche.liveOfferStatus', liveOfferStatus), manualPlan: stored('angebotskueche.manualPlan', manualPlan), manualDinnerPlan: stored('angebotskueche.manualDinnerPlan', manualDinnerPlan), recipeRatings: stored('angebotskueche.recipeRatings', recipeRatings), suggestionPreferences: stored('angebotskueche.suggestionPreferences', suggestionPreferences) };
+      if (options.includePurchaseRecords !== false) payload.purchaseRecords = window.AngebotskuechePurchaseRecordStore?.load?.() || [];
+      return payload;
     }
 
     function validateUserDataPayload(payload) {
       if (!payload || payload.version !== 1 || typeof payload !== 'object' || Array.isArray(payload)) throw new Error('invalid');
       backupArrayKeys.forEach(key => { if (payload[key] !== undefined && !Array.isArray(payload[key])) throw new Error('invalid'); });
+      if (payload.purchaseRecords !== undefined) {
+        const store = window.AngebotskuechePurchaseRecordStore;
+        if (!store || !Array.isArray(payload.purchaseRecords) || payload.purchaseRecords.some(record => !store.load({ getItem: () => JSON.stringify([record]), setItem: () => {} })[0])) throw new Error('invalid');
+      }
       backupObjectKeys.forEach(key => { if (payload[key] !== undefined && (!payload[key] || typeof payload[key] !== 'object' || Array.isArray(payload[key]))) throw new Error('invalid'); });
       if (payload.settings !== undefined && (!payload.settings || typeof payload.settings !== 'object' || Array.isArray(payload.settings))) throw new Error('invalid');
       return payload;
@@ -3019,7 +3026,13 @@
       validateUserDataPayload(payload);
       const restoredSettings = options.mergeSettings ? { ...settings, ...(payload.settings || {}) } : (payload.settings || settings);
       const values = new Map([['angebotskueche.settings', JSON.stringify(restoredSettings)]]);
-      backupArrayKeys.forEach(key => { if (payload[key] !== undefined) values.set(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
+      localBackupArrayKeys.forEach(key => { if (key !== 'purchaseRecords' && payload[key] !== undefined) values.set(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
+      if (payload.purchaseRecords !== undefined) {
+        const store = window.AngebotskuechePurchaseRecordStore;
+        const records = store?.load?.({ getItem: () => JSON.stringify(payload.purchaseRecords), setItem: () => {} }) || [];
+        if (records.length !== payload.purchaseRecords.length) throw new Error('invalid');
+        values.set('angebotskueche.purchaseRecords', JSON.stringify(records));
+      }
       backupObjectKeys.forEach(key => { if (payload[key] !== undefined) values.set(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
       writeUserDataPayload(values);
       showToast(message);
