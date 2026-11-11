@@ -43,7 +43,7 @@ jobs:
           cp dist/supabase-sync.js supabase-sync.js
           cp dist/purchase-record.js purchase-record.js
           cp dist/purchase-record-store.js purchase-record-store.js
-          cp dist/purchase-entry.js purchase-entry.js purchase-history.js
+          cp dist/purchase-entry.js purchase-entry.js
           cp dist/purchase-history.js purchase-history.js
 
       - name: Commit mirrored files
