@@ -25,7 +25,7 @@
     if (!anchor) return false;
     const records = store.load();
     const months = [...new Set([new Date().toISOString().slice(0, 7), ...records.map(record => record.purchasedAt.slice(0, 7))])]
-      .filter(month => /^\\d{4}-(?:0[1-9]|1[0-2])$/.test(month))
+      .filter(month => /^\d{4}-(?:0[1-9]|1[0-2])$/.test(month))
       .sort((first, second) => second.localeCompare(first));
     let selectedMonth = months[0];
     const summary = currentMonth(records);
