@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'dist/**'
-      - 'automation/**'
+      - 'automation/e2e/**'
       - '.github/workflows/**'
       - 'meal-planning.js'
       - 'day-planning.js'
