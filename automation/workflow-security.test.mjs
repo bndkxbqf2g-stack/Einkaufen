@@ -6,7 +6,7 @@ const readWorkflow = name => readFile(new URL(name, workflowRoot), 'utf8');
 
 const pages = await readWorkflow('github-pages.yml');
 assert.match(pages, /permissions:\r?\n  contents: read/);
-assert.match(pages, /deploy:\r?\n    if: github\.event_name != 'pull_request'/);
+assert.match(pages, /deploy:\r?\n    if: github\.event_name == 'push'/);
 const deployStart = pages.indexOf('\n  deploy:');
 assert.ok(deployStart >= 0, 'Pages-Deploy-Job muss vorhanden sein');
 const deploy = pages.slice(deployStart);
