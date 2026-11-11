@@ -358,6 +358,14 @@ function parseNettoOffers(html) {
   return { validUntil, offers: uniqueOffers([...candidates, ...fallback], validUntil) };
 }
 
+function sourceCompletenessMetadata(value) {
+  const expected = value?.sourceExpectedTotalCount;
+  const observed = value?.sourceObservedTotalCount;
+  return Number.isInteger(expected) && expected > 0 && Number.isInteger(observed) && observed >= 0 && observed <= expected
+    ? { sourceExpectedTotalCount: expected, sourceObservedTotalCount: observed }
+    : {};
+}
+
 function parseLidlOffers(html) {
   const payload = JSON.parse(html);
   const validUntil = String(payload?.validUntil || '');
@@ -368,7 +376,7 @@ function parseLidlOffers(html) {
     if (!name || !/\d+[.,]\d{2}\s*€/u.test(price) || !likelyFood(name)) return null;
     return { name, price, saving: String(item.saving || '–'), icon: String(item.icon || '🛒'), category: 'Lebensmittel', packSize: String(item.packSize || ''), relevance: Number(item.relevance || 78), note: 'Lidl-Prospekt', validUntil };
   }).filter(Boolean).slice(0, 120) : [];
-  return { validUntil, sourceUrl: String(payload?.sourceUrl || 'https://www.lidl.de/c/online-prospekte/s10005610/'), offers };
+  return { validUntil, sourceUrl: String(payload?.sourceUrl || 'https://www.lidl.de/c/online-prospekte/s10005610/'), offers, ...sourceCompletenessMetadata(payload) };
 }
 
 async function parseOffers(request) {
@@ -393,7 +401,7 @@ async function parseOffers(request) {
       : parseNettoOffers(html);
     if (!parsed.offers.length) return json({ error: 'Die offizielle Seite enthielt keine sicher erkennbaren Lebensmittelangebote.' }, 422, request);
     if (!parsed.validUntil) return json({ error: 'Die offizielle Seite enthielt kein eindeutig belegtes Angebotsende.' }, 422, request);
-    return json({ market, sourceUrl: parsed.sourceUrl || source.url, fetchedAt: new Date().toISOString(), validUntil: parsed.validUntil, parser: source.parser, offers: parsed.offers }, 200, request);
+    return json({ market, sourceUrl: parsed.sourceUrl || source.url, fetchedAt: new Date().toISOString(), validUntil: parsed.validUntil, parser: source.parser, ...sourceCompletenessMetadata(parsed), offers: parsed.offers }, 200, request);
   } catch (error) {
     return json({ error: error?.name === 'AbortError' ? 'Die offizielle Angebotsseite hat zu lange gebraucht.' : 'Die offizielle Angebotsseite konnte nicht gelesen werden.' }, 504, request);
   } finally {

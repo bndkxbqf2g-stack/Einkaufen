@@ -1155,3 +1155,9 @@ Der nächste fachliche Schritt mit Datenwirkung bleibt der manuelle Kaufabschlus
 - Der Markt-/Quellstatus zeigt `Quellenvollständigkeit belegt` beziehungsweise `teilweise belegt` nur bei gültigen, expliziten `sourceExpectedTotalCount`- und `sourceObservedTotalCount`-Metadaten aus derselben Quelle.
 - Fehlende oder ungültige Quellzahlen bleiben unbekannt; `targetOfferCount`, `loadedOfferCardCount`, `recognizedCount` und `targetReached` werden nicht als Prospektumfang umgedeutet. Root und `dist` bleiben synchron.
 - Die Änderung ist rein darstellend und testgesichert. Parser, Normalisierung, Supabase, SQL, Auth, Nutzerdaten und Deployment bleiben unverändert.
+
+
+## Audit 11.11.2026 – Weitergabe der Quellenvollständigkeit
+
+- Der Worker reicht explizite sourceExpectedTotalCount-/sourceObservedTotalCount-Metadaten aus JSON-Angebotssnapshots nur bei ganzzahligen, nicht-negativen und nicht widersprüchlichen Werten bis zum /api/offers-Payload weiter.
+- Fehlende, nicht-ganzzahlige oder unmögliche Werte wie 101 beobachtet bei 100 erwartet werden verworfen. Root, dist und der generierte Worker bleiben durch den Endpoint-Validator abgesichert.
