@@ -1472,3 +1472,8 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - PR #396 wurde nach Korrektur eines reinen VM-Testvergleichsfehlers gemergt. Die Änderung enthielt ausschließlich automation/pantry-cost-integration.test.mjs; Main-Validierung, Worker-/Endpoint-Prüfung, Pages und Browser-E2E waren grün.
 - Kein neuer Freigabepunkt: Es wurden keine Runtime-, Angebots-, Nutzer-, Kauf-, Vorrats-, Supabase-, SQL-, Auth- oder Produktionsdaten geändert.
 - Weiterhin gebündelt freigabepflichtig bleiben manueller Kaufabschluss mit IST-/Belegbetrag, Verbrauchsbuchung/Reservierung, Offline-Konflikt-UX, Fahrtkosten/Routing/Mehrstoppentscheidung und weitere produktive Supabase-Datenverträge.
+
+## Gebündelte Notiz 11.11.2026 – sichtbare Quellenvollständigkeit
+
+- Der Markt-/Quellstatus darf eine Vollständigkeit nur aus expliziten, gültigen Soll-/Ist-Gesamtzahlen derselben Quelle anzeigen; Ladeziele und erkannte Treffer bleiben davon getrennt.
+- Fehlende oder ungültige Quellmetadaten bleiben unbekannt. Es wurden keine Angebots-, Nutzer-, Supabase-, Datenbank-, Produktions- oder Deploymentdaten verändert.

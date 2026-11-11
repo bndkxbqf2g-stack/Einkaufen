@@ -1149,3 +1149,9 @@ bleiben ebenfalls getrennte Freigabepunkte.
 Der lokale Einkaufsfluss ist zusätzlich mit einem synthetischen Integrationstest abgesichert: Teildeckung, unbekannte und inkompatible Vorräte werden konservativ bis zur Packungsrundung und zum bekannten Angebotsbetrag in Cent verfolgt. Unbekannte Preise bleiben außerhalb des bekannten Betrags; Vorratsdaten werden dabei nicht mutiert. Der Test ergänzt keine Runtime-, Daten-, Supabase-, SQL-, Auth- oder Deploymentlogik.
 
 Der nächste fachliche Schritt mit Datenwirkung bleibt der manuelle Kaufabschluss mit bestätigtem IST-/Belegbetrag. Verbrauchsbuchung, Reservierung, Fahrtkosten-/Mehrstoppentscheidung und automatische Cloud-Konfliktlogik bleiben bis zur gebündelten Freigabe ausgeschlossen.
+
+## Fortschritt 11.11.2026 – sichtbare Quellenvollständigkeit
+
+- Der Markt-/Quellstatus zeigt `Quellenvollständigkeit belegt` beziehungsweise `teilweise belegt` nur bei gültigen, expliziten `sourceExpectedTotalCount`- und `sourceObservedTotalCount`-Metadaten aus derselben Quelle.
+- Fehlende oder ungültige Quellzahlen bleiben unbekannt; `targetOfferCount`, `loadedOfferCardCount`, `recognizedCount` und `targetReached` werden nicht als Prospektumfang umgedeutet. Root und `dist` bleiben synchron.
+- Die Änderung ist rein darstellend und testgesichert. Parser, Normalisierung, Supabase, SQL, Auth, Nutzerdaten und Deployment bleiben unverändert.
