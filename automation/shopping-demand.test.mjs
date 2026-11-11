@@ -26,5 +26,5 @@ test('delegates pantry reconciliation without changing demand semantics', () => 
   const items = model.buildShoppingDemand([{ title: 'Suppe', people: 2, ingredients: ['500 g Kartoffeln'] }], scope);
   const result = model.applyPantryCoverage(items, { Kartoffeln: { amount: 250, unit: 'g', family: 'mass' } }, scope);
   assert.ok(result && Array.isArray(result.items));
-  assert.equal(result.items[0].pantryRemainingDemand, 250);
+  assert.equal(result.coverage.positions[0].remainingDemand, 250);
 });
