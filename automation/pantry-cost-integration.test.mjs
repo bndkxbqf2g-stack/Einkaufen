@@ -52,7 +52,7 @@ test('führt Teildeckung, unbekannte und inkompatible Vorräte konservativ bis z
 
   const costItems = result.items.map(item => ({ ...item, packCount: quantity.calculateExactPackCount(item) }));
   const summary = costs.summarizeShoppingCosts(costItems, parseEuro);
-  assert.deepEqual(costItems.map(item => item.packCount), [1, 1, 2, 1]);
+  assert.deepEqual([...costItems.map(item => item.packCount)], [1, 1, 2, 1]);
   assert.equal(summary.knownOfferTotalCents, 480);
   assert.equal(summary.knownOfferCount, 3);
   assert.equal(summary.unknownPriceCount, 1);
