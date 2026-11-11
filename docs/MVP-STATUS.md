@@ -1,7 +1,7 @@
 # MVP-Status – Angebotsküche
 
 Stand: 11.11.2026  
-Basis: main@8ffa2d7f10cb9e656a2c6e693d1e0a5ecbee3255
+Basis: main@87c6c618fe98c16ad10f816f9f63d34451da33c6
 
 ## Reparaturpaket 1: Startdarstellung
 
@@ -68,6 +68,16 @@ Status: emulierter Test in `main` integriert.
 - CI-Nachweis: MVP-Browserlauf #44 (GitHub Actions Run `42971340701`) grün; Pages-Deployment #1038 und Pages-Build/Deploy #738 grün.
 - Keine Produktionslogik-, Supabase-, Datenbank- oder kostenpflichtige Dienständerung.
 
+## Reparaturpaket 2g: Fehlende Angebotsanker transparent behandeln
+
+Status: Testabdeckung ergänzt und in `main` integriert.
+
+- Ein manueller Einkaufsartikel ohne Angebotsanker wird im Browserablauf sichtbar als „ergänzen“ markiert.
+- Für diesen Artikel wird kein Preisfeld gerendert; insbesondere wird kein `0 €` als scheinbarer Angebots- oder Kaufpreis angezeigt.
+- Der Nachweis ergänzt die bestehenden Unit-Tests für initiale Kosten und Angebots-Evidenz um den sichtbaren End-to-End-Pfad.
+- CI-Nachweis: PR #393, Playwright MVP flow Run `42972085920` und `validate` Run `42972085924` grün.
+- Keine Produktionslogik-, Supabase-, Datenbank- oder kostenpflichtige Dienständerung.
+
 ## Reparaturpaket 2: MVP-Kernablauf
 
 Status: in main integriert und veröffentlicht.
@@ -77,7 +87,7 @@ Status: in main integriert und veröffentlicht.
 - Geprüft: Vorrat `Reis` mit `500 g`, tatsächlicher Vorratsabgleich und Speicherung in Pantry/Mengenmodell.
 - Geprüft: automatisch berechnete Einkaufsartikel, manueller Zusatzartikel mit zwei Packungen und Persistenz nach Reload.
 - Zusätzlich: Der Test sammelt JavaScript-Seitenfehler und `console.error`; beide waren im grünen Lauf leer.
-- CI-Nachweis: MVP-Browserlauf #40 (GitHub Actions Run `42969597931`) grün; Pages-Deployment #1032 und Pages-Build/Deploy #736 grün.
+- CI-Nachweis: MVP-Browserlauf #44 (GitHub Actions Run `42971340701`) grün; Pages-Deployment #1038 und Pages-Build/Deploy #738 grün.
 - Befund/Fix: Der Einkaufslistencontainer wurde beim Wechsel auf die Seite und nach Reload nicht zuverlässig neu gerendert. `showPage('shopping')` aktualisiert die Liste jetzt. Zusätzlich wurde ein echter Renderfehler in `decoratePlanSourceLinks` korrigiert: NodeList-Iteration verwendet `$$` statt des einzelnen `$`.
 - Angebotsabgrenzung: Der Test schaltet den optionalen Filter „mindestens 2 Angebotszutaten“ aus, damit fehlende oder veraltete Angebote den Kernablauf nicht blockieren. Es wurden keine Angebotsdaten erfunden.
 
