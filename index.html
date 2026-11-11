@@ -1484,9 +1484,15 @@
       const budgetModel = window.AngebotskuecheBudgetModel;
       if (!budgetModel || typeof budgetModel.summarizeBudgetTransparency !== 'function') return;
       const field = suffix => $(`#${prefix}${suffix}`);
+      const purchaseStore = window.AngebotskuechePurchaseRecordStore;
+      const purchaseSummary = purchaseStore?.summarizeMonth?.(
+        purchaseStore.load(),
+        new Date().toISOString().slice(0, 7),
+      );
       const budget = budgetModel.summarizeBudgetTransparency({
         knownOfferTotalCents: costSummary?.knownOfferTotalCents,
         unresolvedPositionCount: (costSummary?.unknownPriceCount || 0) + (costSummary?.missingCount || 0),
+        actualSpendCents: purchaseSummary?.actualSpendCents ?? null,
       });
       field('TargetValue').textContent = formatEuro(budget.monthlyTargetCents / 100);
       field('TargetNote').textContent = 'Planungsziel · Lebensmittel und Getränke';
@@ -1503,7 +1509,7 @@
         : formatEuro(budget.actualSpendCents / 100);
       field('ActualNote').textContent = budget.actualSpendStatus === 'not-recorded'
         ? 'Noch nicht erfasst'
-        : 'Status unbekannt';
+        : `${purchaseSummary.recordCount} bestätigte Einkäufe im aktuellen Monat`;
       field('TransparencyNote').textContent = budget.knownOfferStatus === 'partial'
         ? 'Der Plan-/Angebotswert ist kein Kassenbetrag. Unbekannte Preise und fehlende Artikel bleiben außerhalb; tatsächliche IST-Ausgaben sind noch nicht erfasst.'
         : 'Der Plan-/Angebotswert ist kein Kassenbetrag oder bestätigte Ausgabe; tatsächliche IST-Ausgaben sind noch nicht erfasst.';
