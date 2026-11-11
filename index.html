@@ -1408,7 +1408,7 @@
       const quantityModel = typeof window !== 'undefined' ? window.AngebotskuecheIngredientQuantityModel : null;
       const plannedMeals = [
         ...(planSections.lunches || []).map((meal, index) => ({ meal, people: typeof getPlanPeople === 'function' ? getPlanPeople(index) : globalPeople })),
-        ...(planSections.dinners || []).map((meal, index) => ({ meal, people: typeof getPlanPeople === 'function' ? getPlanPeople(index) : globalPeople })).filter(entry => entry.meal),
+        ...(planSections.dinners || []).map((meal, index) => ({ meal, people: meal?.people ?? (typeof getPlanPeople === 'function' ? getPlanPeople(index) : globalPeople) })).filter(entry => entry.meal),
       ];
       plannedMeals.forEach(({ meal, people }) => {
         getMealIngredients(meal).forEach(rawIngredient => {
