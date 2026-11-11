@@ -126,6 +126,22 @@ Bis diese Kriterien erfüllt sind, sollten Rezeptautomatisierung und KI-Vorschl�
 
 ## Dokumentationsstatus
 
+## Fortschritt 11.11.2026 – Settings-Erhalt über alle lokalen Sync-Grenzen
+
+- Der aktuelle Stand bewahrt auch unbekannte bzw. persönliche Settings-Felder beim lokalen Speichern, Backup-Restore und bestätigten Cloud-Load; bekannte Felder werden weiterhin normalisiert.
+- Der Roundtrip ist durch die vollständige Automation-Suite mit 195/195 grünen Tests belegt. Root-/`dist`-Synchronität und der Worker-Payload-Vertrag bleiben dabei geschützt.
+- Es wurden keine Nutzerdaten, Supabase-Daten, Datenbankstrukturen oder Deployments verändert. Die produktive IST-/Kassen-Erfassung bleibt weiterhin Freigabepunkt 9.
+
+## Fortschritt 11.11.2026 – Veröffentlichter Worker-Shell-Stand synchronisiert
+
+- Das generierte Worker-Artefakt wurde mit den bereits vorhandenen Root-/`dist`-Quellen synchronisiert; Service-Worker-Cache und Registrierungskennung verwenden nun konsistent Version 29.
+- Die vollständige Automation-Suite bleibt mit 195/195 Tests grün. Es wurden keine Angebots-, Nutzer-, Supabase- oder Datenbankdaten verändert.
+
+## Fortschritt 11.11.2026 – Worker-Shell-Regressionstest
+
+- Die Automation-Suite prüft nun zusätzlich, dass der veröffentlichte Worker exakt dieselben `index.html`- und `sw.js`-Inhalte ausliefert wie die geprüften `dist`-Artefakte.
+- Dadurch wird ein veralteter eingebetteter Service-Worker künftig erkannt; die Suite umfasst jetzt 196/196 Tests.
+
 Angelegt bzw. ergänzt am 05.11.2026:
 
 - `AGENTS.md` – dauerhafte Arbeitsregeln für dieses Repository.
@@ -369,3 +385,4 @@ Die aktuelle Nutzerentscheidung ersetzt frühere Planungsannahmen mit Frühstüc
 ### Fortschritt 07.11.2026 – ISO-Gültigkeitsdaten im Angebotsstatus
 
 - Die App wertet Snapshot-Gültigkeitsdaten jetzt in den beiden vom Snapshot-Vertrag erlaubten Formen `TT.MM.JJJJ` und `JJJJ-MM-TT` identisch aus. Unmögliche Kalenderdaten bleiben ungültig; unbekannte Daten werden nicht erfunden.
+
