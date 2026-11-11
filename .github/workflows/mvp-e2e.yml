@@ -63,7 +63,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run MVP browser test
-        run: npx playwright test automation/e2e/mvp.spec.mjs --config=automation/e2e/playwright.config.mjs
+        run: timeout --signal=TERM --kill-after=15s 120s npx playwright test automation/e2e/mvp.spec.mjs --config=automation/e2e/playwright.config.mjs
 
       - name: Upload browser report on failure
         if: failure()
