@@ -1,1 +1,16 @@
-import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport fs from 'node:fs';\nimport path from 'node:path';\nimport { fileURLToPath } from 'node:url';\n\nconst root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');\n\ntest('keeps a manual article when a recipe article has the same normalized key', () => {\n  for (const relativePath of ['index.html', 'dist/index.html']) {\n    const source = fs.readFileSync(path.join(root, relativePath), 'utf8');\n    assert.ok(source.includes('let manualKey = key;'));\n    assert.ok(source.includes('while (items.has(manualKey))'));\n    assert.ok(source.includes('items.set(manualKey'));\n  }\n});\n
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+test('keeps a manual article when a recipe article has the same normalized key', () => {
+  for (const relativePath of ['index.html', 'dist/index.html']) {
+    const source = fs.readFileSync(path.join(root, relativePath), 'utf8');
+    assert.ok(source.includes('let manualKey = key;'));
+    assert.ok(source.includes('while (items.has(manualKey))'));
+    assert.ok(source.includes('items.set(manualKey'));
+  }
+});
