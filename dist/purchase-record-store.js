@@ -32,7 +32,7 @@
 
   function summarizeMonth(records, monthKey) {
     const month = String(monthKey || '').trim();
-    if (!/^\\d{4}-(?:0[1-9]|1[0-2])$/.test(month)) return Object.freeze({ month: null, recordCount: 0, actualSpendCents: null });
+    if (!/^\d{4}-(?:0[1-9]|1[0-2])$/.test(month)) return Object.freeze({ month: null, recordCount: 0, actualSpendCents: null });
     const normalized = (Array.isArray(records) ? records : []).map(recordModel?.normalizePurchaseRecord).filter(Boolean)
       .filter(record => record.purchasedAt.slice(0, 7) === month);
     const total = normalized.reduce((sum, record) => {
