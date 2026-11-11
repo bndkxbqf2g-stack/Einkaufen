@@ -53,11 +53,42 @@
     });
   }
 
+  function normalizeMonthKey(value) {
+    const month = String(value || '').trim();
+    return /^\\d{4}-(?:0[1-9]|1[0-2])$/.test(month) ? month : null;
+  }
+
+  function summarizeMonthlyBudget(entries) {
+    const totals = new Map();
+    for (const entry of Array.isArray(entries) ? entries : []) {
+      const month = normalizeMonthKey(entry?.month);
+      if (!month) continue;
+      const current = totals.get(month) || {
+        month,
+        plannedExpenseCents: null,
+        actualSpendCents: null,
+        travelCostCents: null,
+        unresolvedPositionCount: 0,
+      };
+      for (const field of ['plannedExpenseCents', 'actualSpendCents', 'travelCostCents']) {
+        const value = normalizeCents(entry?.[field]);
+        if (value === null) continue;
+        current[field] = current[field] === null ? value : addSafeCents(current[field], value);
+      }
+      const unresolved = normalizeCount(entry?.unresolvedPositionCount);
+      current.unresolvedPositionCount += unresolved;
+      totals.set(month, current);
+    }
+    return [...totals.values()].sort((first, second) => first.month.localeCompare(second.month));
+  }
+
   root.AngebotskuecheBudgetModel = Object.freeze({
     monthlyTargetCents: MONTHLY_TARGET_CENTS,
     alternativeMonthlyTargetCents: ALTERNATIVE_MONTHLY_TARGET_CENTS,
     normalizeMonthlyTargetCents,
     summarizeBudgetTransparency,
+    normalizeMonthKey,
+    summarizeMonthlyBudget,
   });
 }(typeof window !== 'undefined' ? window : globalThis));
 
