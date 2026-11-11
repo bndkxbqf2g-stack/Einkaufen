@@ -584,6 +584,7 @@
   <script src="./purchase-record.js"></script>
   <script src="./purchase-record-store.js"></script>
   <script src="./purchase-entry.js"></script>
+  <script src="./purchase-history.js"></script>
   <script src="./supabase-sync.js"></script>
   <script>
     const seedOffers = [
@@ -3372,6 +3373,7 @@
     };
     // The offline/demo shell must be usable even when an offer source is slow or unavailable.
     renderApp();
+    window.AngebotskuechePurchaseHistory?.mount();
     startInitialOfferRefresh().then(renderApp, renderApp);
     setTimeout(() => refreshPendingRecipeImports().catch(() => {}), 250);
     const APP_BUILD = '2026-11-08-budget-transparency-1';

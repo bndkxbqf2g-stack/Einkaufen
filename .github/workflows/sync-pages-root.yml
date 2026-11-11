@@ -12,6 +12,7 @@ on:
       - 'dist/purchase-record.js'
       - 'dist/purchase-record-store.js'
       - 'dist/purchase-entry.js'
+      - 'dist/purchase-history.js'
       - '.github/workflows/sync-pages-root.yml'
   workflow_dispatch:
 
@@ -43,17 +44,18 @@ jobs:
           cp dist/purchase-record.js purchase-record.js
           cp dist/purchase-record-store.js purchase-record-store.js
           cp dist/purchase-entry.js purchase-entry.js
+          cp dist/purchase-history.js purchase-history.js
 
       - name: Commit mirrored files
         shell: bash
         run: |
-          if git diff --quiet -- index.html manifest.json icons sw.js supabase-sync.js purchase-record.js purchase-record-store.js purchase-entry.js; then
+          if git diff --quiet -- index.html manifest.json icons sw.js supabase-sync.js purchase-record.js purchase-record-store.js purchase-entry.js purchase-history.js; then
             echo "Root files are already current."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html manifest.json icons sw.js supabase-sync.js purchase-record.js purchase-record-store.js purchase-entry.js
+          git add index.html manifest.json icons sw.js supabase-sync.js purchase-record.js purchase-record-store.js purchase-entry.js purchase-history.js
           git commit -m "Sync GitHub Pages root with dist"
           for attempt in 1 2 3 4 5; do
             if git pull --rebase origin main && git push origin HEAD:main; then

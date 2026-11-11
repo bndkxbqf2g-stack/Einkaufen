@@ -1,5 +1,5 @@
 const CACHE_NAME = 'angebotskueche-shell-v32';
-const APP_SHELL = ['./index.html', './manifest.json', './ingredient-normalization.js', './shopping-costs.js', './budget-transparency.js', './meal-planning.js', './day-planning.js', './ingredient-quantity.js', './pantry-quantity.js', './pantry-shopping-coverage.js', './purchase-record.js', './purchase-record-store.js', './purchase-entry.js', './supabase-sync.js'];
+const APP_SHELL = ['./index.html', './manifest.json', './ingredient-normalization.js', './shopping-costs.js', './budget-transparency.js', './meal-planning.js', './day-planning.js', './ingredient-quantity.js', './pantry-quantity.js', './pantry-shopping-coverage.js', './purchase-record.js', './purchase-record-store.js', './purchase-entry.js', './purchase-history.js', './supabase-sync.js'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
