@@ -31,6 +31,19 @@ test('published service worker and manifest stay identical to their root sources
   ]);
 });
 
+test('published worker serves the same shell artifacts as dist', async () => {
+  const [workerModule, publishedIndex, publishedWorker] = await Promise.all([
+    import('../dist/server/index.js'),
+    readFile(resolve(root, 'dist/index.html'), 'utf8'),
+    readFile(resolve(root, 'dist/sw.js'), 'utf8'),
+  ]);
+  const worker = workerModule.default;
+  const page = await worker.fetch(new Request(`${origin}/`));
+  const serviceWorker = await worker.fetch(new Request(`${origin}/sw.js`));
+  assert.equal(await page.text(), publishedIndex);
+  assert.equal(await serviceWorker.text(), publishedWorker);
+});
+
 test('keeps the active shell cache during APP_BUILD updates', () => {
   assert.match(index, /const APP_BUILD = '[^']+'/);
   assert.match(index, /registration\.update\(\)/);
@@ -340,3 +353,4 @@ test('Pages root sync keeps published PWA icons aligned with dist', async () => 
   assert.ok(workflow.includes('cp -R dist/icons/. icons/'));
   assert.ok(workflow.includes('git add index.html manifest.json icons sw.js supabase-sync.js'));
 });
+
