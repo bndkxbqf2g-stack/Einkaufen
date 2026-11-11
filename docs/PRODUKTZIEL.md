@@ -1142,3 +1142,10 @@ bleiben ebenfalls getrennte Freigabepunkte.
 - Der optionale Abruf aktueller Angebote läuft danach und aktualisiert die Ansichten bei Erfolg oder Fehler.
 - Ein langsamer oder nicht erreichbarer Angebots-Endpoint blockiert damit nicht mehr Start, Navigation und lokale Planung.
 - Root, dist, Worker-Artefakt und Regressionstest werden gemeinsam geprüft.
+
+
+## Testfortschritt 11.11.2026 – Vorrat bis Angebotskosten durchgängig abgesichert
+
+Der lokale Einkaufsfluss ist zusätzlich mit einem synthetischen Integrationstest abgesichert: Teildeckung, unbekannte und inkompatible Vorräte werden konservativ bis zur Packungsrundung und zum bekannten Angebotsbetrag in Cent verfolgt. Unbekannte Preise bleiben außerhalb des bekannten Betrags; Vorratsdaten werden dabei nicht mutiert. Der Test ergänzt keine Runtime-, Daten-, Supabase-, SQL-, Auth- oder Deploymentlogik.
+
+Der nächste fachliche Schritt mit Datenwirkung bleibt der manuelle Kaufabschluss mit bestätigtem IST-/Belegbetrag. Verbrauchsbuchung, Reservierung, Fahrtkosten-/Mehrstoppentscheidung und automatische Cloud-Konfliktlogik bleiben bis zur gebündelten Freigabe ausgeschlossen.

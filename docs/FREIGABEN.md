@@ -1464,3 +1464,11 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Der lokale App-Kern wird vor dem optionalen Angebotsabruf gerendert; ein fehlerhafter oder langsamer Angebotsabruf verhindert den Start nicht.
 - Kein neuer Freigabepunkt: keine Nutzer-, Kauf-, Vorrats-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+
+## Test-/Dokumentationsabgleich 11.11.2026 – Vorrat, Packung und Kosten
+
+- Ein synthetischer Integrationstest prüft Teildeckung, unbekannte und inkompatible Vorräte, anschließende Packungsrundung, bekannte Angebotskosten in Cent und unveränderte Vorratsdaten.
+- PR #396 wurde nach Korrektur eines reinen VM-Testvergleichsfehlers gemergt. Die Änderung enthielt ausschließlich automation/pantry-cost-integration.test.mjs; Main-Validierung, Worker-/Endpoint-Prüfung, Pages und Browser-E2E waren grün.
+- Kein neuer Freigabepunkt: Es wurden keine Runtime-, Angebots-, Nutzer-, Kauf-, Vorrats-, Supabase-, SQL-, Auth- oder Produktionsdaten geändert.
+- Weiterhin gebündelt freigabepflichtig bleiben manueller Kaufabschluss mit IST-/Belegbetrag, Verbrauchsbuchung/Reservierung, Offline-Konflikt-UX, Fahrtkosten/Routing/Mehrstoppentscheidung und weitere produktive Supabase-Datenverträge.
