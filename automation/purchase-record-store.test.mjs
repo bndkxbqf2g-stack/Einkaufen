@@ -33,3 +33,18 @@ test('rejects invalid records without overwriting existing data', () => {
   assert.equal(store.save([{ ...inputRecord, totalCents: -1 }]), false);
   assert.deepEqual(JSON.parse(JSON.stringify(store.load())), [record]);
 });
+
+
+test('summarizes confirmed purchases for the selected calendar month', () => {
+  assert.deepEqual(JSON.parse(JSON.stringify(store.summarizeMonth(store.load(), '2026-11'))), {
+    month: '2026-11',
+    recordCount: 1,
+    actualSpendCents: 2387,
+  });
+  assert.deepEqual(JSON.parse(JSON.stringify(store.summarizeMonth(store.load(), '2026-10'))), {
+    month: '2026-10',
+    recordCount: 0,
+    actualSpendCents: 0,
+  });
+  assert.equal(store.summarizeMonth(store.load(), 'invalid').actualSpendCents, null);
+});
