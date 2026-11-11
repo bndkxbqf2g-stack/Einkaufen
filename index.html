@@ -2997,7 +2997,7 @@
       backupArrayKeys.forEach(key => { if (payload[key] !== undefined && !Array.isArray(payload[key])) throw new Error('invalid'); });
       if (payload.purchaseRecords !== undefined) {
         const store = (typeof window !== 'undefined' ? window : globalThis).AngebotskuechePurchaseRecordStore;
-        if (!store || !Array.isArray(payload.purchaseRecords) || payload.purchaseRecords.some(record => !store.load({ getItem: () => JSON.stringify([record]), setItem: () => {} })[0])) throw new Error('invalid');
+        if (!Array.isArray(payload.purchaseRecords) || (payload.purchaseRecords.length > 0 && (!store || payload.purchaseRecords.some(record => !store.load({ getItem: () => JSON.stringify([record]), setItem: () => {} })[0])))) throw new Error('invalid');
       }
       backupObjectKeys.forEach(key => { if (payload[key] !== undefined && (!payload[key] || typeof payload[key] !== 'object' || Array.isArray(payload[key]))) throw new Error('invalid'); });
       if (payload.settings !== undefined && (!payload.settings || typeof payload.settings !== 'object' || Array.isArray(payload.settings))) throw new Error('invalid');
@@ -3026,12 +3026,12 @@
       validateUserDataPayload(payload);
       const restoredSettings = options.mergeSettings ? { ...settings, ...(payload.settings || {}) } : (payload.settings || settings);
       const values = new Map([['angebotskueche.settings', JSON.stringify(restoredSettings)]]);
-      localBackupArrayKeys.forEach(key => { if (key !== 'purchaseRecords' && payload[key] !== undefined) values.set(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
+      backupArrayKeys.forEach(key => { if (payload[key] !== undefined) values.set(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
       if (payload.purchaseRecords !== undefined) {
         const store = (typeof window !== 'undefined' ? window : globalThis).AngebotskuechePurchaseRecordStore;
         const records = store?.load?.({ getItem: () => JSON.stringify(payload.purchaseRecords), setItem: () => {} }) || [];
         if (records.length !== payload.purchaseRecords.length) throw new Error('invalid');
-        values.set('angebotskueche.purchaseRecords', JSON.stringify(records));
+        if (records.length) values.set('angebotskueche.purchaseRecords', JSON.stringify(records));
       }
       backupObjectKeys.forEach(key => { if (payload[key] !== undefined) values.set(`angebotskueche.${key}`, JSON.stringify(payload[key])); });
       writeUserDataPayload(values);
