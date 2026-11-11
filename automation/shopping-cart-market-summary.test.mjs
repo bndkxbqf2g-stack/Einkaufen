@@ -26,6 +26,8 @@ const shoppingShareSummary = new Function(
   'formatEuro',
   `${shareSummaryMatch[0]}; return shoppingShareSummary;`,
 )(getShoppingCostSummary, formatEuro);
+const calculateOfferAmount = items => costModel.calculateOfferAmount(items, parseKnownMoney, () => true);
+const calculateOfferComparison = items => costModel.calculateOfferComparison(items, parseKnownMoney, () => true);
 const formatShoppingGroupOfferSummary = new Function(
   'calculateOfferAmount',
   'calculateOfferComparison',
@@ -33,7 +35,7 @@ const formatShoppingGroupOfferSummary = new Function(
   'isShoppingOfferCostUsable',
   'formatEuro',
   `${groupSummaryMatch[0]}; return formatShoppingGroupOfferSummary;`,
-)(costModel.calculateOfferAmount, costModel.calculateOfferComparison, parseKnownMoney, () => true, formatEuro);
+)(calculateOfferAmount, calculateOfferComparison, parseKnownMoney, () => true, formatEuro);
 
 test('hält gemischte Mittag-/Abendessen-Positionen in Kosten- und geteilter Liste getrennt nachvollziehbar', () => {
   const sharedLunchDinner = {
