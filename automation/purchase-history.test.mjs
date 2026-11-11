@@ -3,11 +3,13 @@ import { readFile } from 'node:fs/promises';
 import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 
-const [storeSource, historySource] = await Promise.all([
+const [recordSource, storeSource, historySource] = await Promise.all([
+  readFile(new URL('../purchase-record.js', import.meta.url), 'utf8'),
   readFile(new URL('../purchase-record-store.js', import.meta.url), 'utf8'),
   readFile(new URL('../purchase-history.js', import.meta.url), 'utf8'),
 ]);
 const scope = {};
+runInNewContext(recordSource, scope);
 runInNewContext(storeSource, scope);
 runInNewContext(historySource, scope);
 const history = scope.AngebotskuechePurchaseHistory;
