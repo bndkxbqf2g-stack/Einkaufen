@@ -71,6 +71,10 @@ test('durchgängiger MVP-Ablauf bleibt lokal bedienbar und speichert Änderungen
   await page.locator('#saveShoppingItem').click();
   await expect(page.locator('#shoppingModal')).not.toHaveClass(/open/);
   await expect(page.locator('#shoppingList')).toContainText('E2E-Zutat');
+  const missingItem = page.locator('.shopping-item').filter({ hasText: 'E2E-Zutat' });
+  await expect(missingItem).toHaveCount(1);
+  await expect(missingItem.locator('.shopping-item-missing')).toContainText('ergänzen');
+  await expect(missingItem.locator('.shopping-item-price')).toHaveCount(0);
 
   const manualItems = await page.evaluate(() => JSON.parse(localStorage.getItem('angebotskueche.manualShoppingItems') || '[]'));
   expect(manualItems).toEqual(expect.arrayContaining([
