@@ -9,6 +9,8 @@ on:
       - 'dist/icons/**'
       - 'dist/sw.js'
       - 'dist/supabase-sync.js'
+      - 'dist/purchase-record.js'
+      - 'dist/purchase-record-store.js'
       - '.github/workflows/sync-pages-root.yml'
   workflow_dispatch:
 
@@ -37,11 +39,13 @@ jobs:
           cp -R dist/icons/. icons/
           cp dist/sw.js sw.js
           cp dist/supabase-sync.js supabase-sync.js
+          cp dist/purchase-record.js purchase-record.js
+          cp dist/purchase-record-store.js purchase-record-store.js
 
       - name: Commit mirrored files
         shell: bash
         run: |
-          if git diff --quiet -- index.html manifest.json icons sw.js supabase-sync.js; then
+          if git diff --quiet -- index.html manifest.json icons sw.js supabase-sync.js purchase-record.js purchase-record-store.js; then
             echo "Root files are already current."
             exit 0
           fi
