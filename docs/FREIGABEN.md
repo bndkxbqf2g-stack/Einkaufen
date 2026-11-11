@@ -1499,3 +1499,10 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Cache-Versionierung, Root-/dist-Parität, Install-/Activate-Lifecycle und Offline-Fallbacks sind durch bestehende Regressionen abgedeckt.
 - Same-origin-GETs bleiben network-first; Cross-Origin-, Sync- und Nicht-GET-Anfragen werden nicht unkontrolliert gecacht.
 - Kein neuer Freigabepunkt: keine Runtime-, Nutzer-, Angebots-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+
+## Fortschritt 11.11.2026 – lokaler Kauf- und Budgetfluss
+
+- PR #424–#431 bilden den lokalen, validierten Kauf-/IST-Fluss schrittweise ab: Datensatzmodell, lokaler Speicher, bestätigte Erfassung, Monatsbudget, Historie, Monatsfilter und verbleibendes Budget.
+- PR #429 nimmt Kaufdatensätze in lokale Backups auf, hält sie aber aus dem bestehenden Supabase-Payload heraus.
+- Keine zusätzliche Freigabe für diese rein lokale, deterministische und getestete Umsetzung; mein-geldplan bleibt unangetastet und es wurden keine kostenpflichtigen Ressourcen erstellt.
+- Weiterhin gebündelt freigabepflichtig bleiben: Vorratsverbrauch/Reservierung nach einem Einkauf, itemgenaue Belegzuordnung, produktive purchaseRecords-Supabase-Migration und Synchronisierung, Konflikt-UX für diese neuen Daten, Fahrtkosten/Routing und automatische Mehrstoppentscheidungen.
