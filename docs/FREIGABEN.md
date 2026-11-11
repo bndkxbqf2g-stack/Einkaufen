@@ -2,6 +2,14 @@
 
 Stand: 07.11.2026
 
+## Verifizierter Zwischenstand – 11.11.2026
+
+- Der Settings-Roundtrip über lokale Speicherung, Backup und bestätigten Cloud-Load ist auf dem aktuellen Branch durch 195/195 Automationstests abgesichert.
+- Unbekannte persönliche Settings-Felder bleiben erhalten; es wurde keine Supabase-Migration, keine produktive Datenänderung und kein Deployment ausgeführt.
+- Die nächste größere Produktetappe bleibt die produktive IST-/Kassen-Erfassung gemäß Freigabepunkt 9 und wird ohne ausdrückliche fachliche Freigabe nicht aktiviert.
+- Das generierte Worker-Artefakt wurde ohne Laufzeitvertragsänderung auf den bereits gültigen Service-Worker-Stand v29 synchronisiert; keine zusätzliche Freigabe war erforderlich.
+- Ein read-only Regressionstest prüft jetzt zusätzlich die Übereinstimmung der vom Worker ausgelieferten Shell mit den `dist`-Artefakten; 196/196 Automationstests sind grün.
+
 Kleine, rückwärtsverträgliche Programmier- und Testschritte laufen weiter. Die
 folgenden Punkte werden gesammelt und erst umgesetzt, wenn sie ausdrücklich
 freigegeben oder entschieden wurden.
@@ -607,3 +615,4 @@ Die folgende Entscheidung ist für eine spätere mengenfähige Vorratserfassung 
 
 - [PR #200](https://github.com/bndkxbqf2g-stack/Einkaufen/pull/200) bewahrt unbekannte bzw. persönliche Legacy-Settings beim Speichern, während bekannte Einstellungen wie bisher aktualisiert werden. Der fokussierte Regressionstest, Build, Validator und die Vollsuite (194/194) waren grün.
 - Der ergänzte Zeilenenden-Ausgleich betrifft ausschließlich den bestehenden Test-Harness; keine Migration, keine Supabase-/Nutzerdatenänderung und keine neuen Kosten.
+
