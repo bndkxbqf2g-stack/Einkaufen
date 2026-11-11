@@ -196,7 +196,12 @@ test('optionales Abendessen ist separat wählbar und beeinflusst die Einkaufslis
 
   await page.locator('button[data-page="plan"]').click();
   await expect(page.locator('#page-plan')).toHaveClass(/active/);
-  await page.locator('#eveningToggle').uncheck({ force: true });
+  await page.locator('#eveningToggle').evaluate(toggle => {
+    if (toggle.checked) {
+      toggle.checked = false;
+      toggle.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  });
   await expect(page.locator('#eveningToggle')).not.toBeChecked();
   await expect(page.locator('[data-dinner-index]')).toHaveCount(0);
   await page.locator('button[data-page="shopping"]').click();
