@@ -55,7 +55,7 @@
 
   function normalizeMonthKey(value) {
     const month = String(value || '').trim();
-    return /^\\d{4}-(?:0[1-9]|1[0-2])$/.test(month) ? month : null;
+    return /^\d{4}-(?:0[1-9]|1[0-2])$/.test(month) ? month : null;
   }
 
   function summarizeMonthlyBudget(entries) {
