@@ -181,7 +181,7 @@ test('optionales Abendessen ist separat wählbar und beeinflusst die Einkaufslis
   await page.locator('#assignDaySelect').selectOption('0');
   await page.locator('#saveDayAssignment').click();
   await expect(page.locator('#assignModal')).not.toHaveClass(/open/);
-  await expect(page.locator('[data-dinner-index="0"]')).toContainText('E2E-Abendessen');
+  await expect(page.locator('.day-card').filter({ has: page.locator('[data-dinner-index="0"]') })).toContainText('E2E-Abendessen');
 
   const savedDinnerPlan = await page.evaluate(() => JSON.parse(localStorage.getItem('angebotskueche.manualDinnerPlan') || '{}'));
   expect(Object.keys(savedDinnerPlan)).not.toHaveLength(0);
@@ -194,7 +194,7 @@ test('optionales Abendessen ist separat wählbar und beeinflusst die Einkaufslis
 
   await page.locator('button[data-page="plan"]').click();
   await page.locator('#eveningToggle').check({ force: true });
-  await expect(page.locator('[data-dinner-index="0"]')).toContainText('E2E-Abendessen');
+  await expect(page.locator('.day-card').filter({ has: page.locator('[data-dinner-index="0"]') })).toContainText('E2E-Abendessen');
   await page.locator('button[data-page="shopping"]').click();
   await expect(page.locator('.shopping-item-name').filter({ hasText: /^E2E-Käse$/ })).toHaveCount(1);
 
