@@ -53,11 +53,56 @@
     });
   }
 
+  function normalizeMonthKey(value) {
+    const month = String(value || '').trim();
+    return /^\d{4}-(?:0[1-9]|1[0-2])$/.test(month) ? month : null;
+  }
+
+  function summarizeMonthlyBudget(entries) {
+    const totals = new Map();
+    for (const entry of Array.isArray(entries) ? entries : []) {
+      const month = normalizeMonthKey(entry?.month);
+      if (!month) continue;
+      const current = totals.get(month) || {
+        month,
+        plannedExpenseCents: null,
+        actualSpendCents: null,
+        travelCostCents: null,
+        unresolvedPositionCount: 0,
+        unknownFields: new Set(),
+      };
+      for (const field of ['plannedExpenseCents', 'actualSpendCents', 'travelCostCents']) {
+        const value = normalizeCents(entry?.[field]);
+        if (value === null || current.unknownFields.has(field)) continue;
+        if (current[field] === null) {
+          current[field] = value;
+          continue;
+        }
+        const next = addSafeCents(current[field], value);
+        if (next === null) {
+          current[field] = null;
+          current.unknownFields.add(field);
+        } else {
+          current[field] = next;
+        }
+      }
+      const unresolved = normalizeCount(entry?.unresolvedPositionCount);
+      current.unresolvedPositionCount = Number.isSafeInteger(current.unresolvedPositionCount + unresolved)
+        ? current.unresolvedPositionCount + unresolved
+        : Number.MAX_SAFE_INTEGER;
+      totals.set(month, current);
+    }
+    return [...totals.values()].sort((first, second) => first.month.localeCompare(second.month))
+      .map(({ unknownFields, ...summary }) => Object.freeze(summary));
+  }
+
   root.AngebotskuecheBudgetModel = Object.freeze({
     monthlyTargetCents: MONTHLY_TARGET_CENTS,
     alternativeMonthlyTargetCents: ALTERNATIVE_MONTHLY_TARGET_CENTS,
     normalizeMonthlyTargetCents,
     summarizeBudgetTransparency,
+    normalizeMonthKey,
+    summarizeMonthlyBudget,
   });
 }(typeof window !== 'undefined' ? window : globalThis));
 

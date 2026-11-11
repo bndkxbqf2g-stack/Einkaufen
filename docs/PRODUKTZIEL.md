@@ -1155,3 +1155,8 @@ Der nächste fachliche Schritt mit Datenwirkung bleibt der manuelle Kaufabschlus
 - Der Markt-/Quellstatus zeigt `Quellenvollständigkeit belegt` beziehungsweise `teilweise belegt` nur bei gültigen, expliziten `sourceExpectedTotalCount`- und `sourceObservedTotalCount`-Metadaten aus derselben Quelle.
 - Fehlende oder ungültige Quellzahlen bleiben unbekannt; `targetOfferCount`, `loadedOfferCardCount`, `recognizedCount` und `targetReached` werden nicht als Prospektumfang umgedeutet. Root und `dist` bleiben synchron.
 - Die Änderung ist rein darstellend und testgesichert. Parser, Normalisierung, Supabase, SQL, Auth, Nutzerdaten und Deployment bleiben unverändert.
+
+
+## Technischer Fortschritt – Monatsbudgetmodell (2026-11-11)
+
+Das modulare Modell `budget-transparency.js` aggregiert Monatswerte deterministisch nach `YYYY-MM`. Plan-, bestätigte IST- und Fahrtkosten bleiben getrennt; ungültige Monatswerte werden verworfen. Bei Cent-Überlauf bleibt die betroffene Kostenart für den Monat dauerhaft unbekannt statt später stillschweigend überschrieben zu werden. Die bestehende UI und Cloud-Synchronisierung bleiben unverändert.
