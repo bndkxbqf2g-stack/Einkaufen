@@ -13,6 +13,14 @@ Status: in `main` integriert und veröffentlicht.
 - Veröffentlichung: GitHub-Pages-Deployment #983, Root-Sync #223 und Pages-Build #725 waren grün.
 - Noch offen: Ein vollständiger iPhone-End-to-End-Test ist noch nicht durchgeführt. Die Browsersteuerung konnte den veröffentlichten App-Tab laden und den Titel lesen, lief beim DOM-/Screenshot-Zugriff aber in einen reproduzierbaren Timeout. Das bleibt getrennt vom App-Befund.
 
+## Reparaturpaket 2a: Tagesbezogene Personenzahl
+
+Status: Testabdeckung ergänzt.
+
+- Der Browser-E2E-Test prüft jetzt eine vom globalen Wert abweichende Tagespersonenzahl.
+- Die Änderung wird in den lokalen Planungseinstellungen gespeichert und nach einem Reload wiederhergestellt.
+- Keine Backend-, Angebots- oder Datenmodelländerung.
+
 ## Reparaturpaket 2: MVP-Kernablauf
 
 Status: in main integriert und veröffentlicht.
