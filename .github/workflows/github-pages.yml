@@ -66,7 +66,7 @@ jobs:
         run: node scripts/validate-worker.mjs
 
   deploy:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'push'
     needs: validate
     permissions:
       contents: read
