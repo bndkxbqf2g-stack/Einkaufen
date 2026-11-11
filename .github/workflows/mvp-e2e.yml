@@ -39,13 +39,14 @@ permissions:
   contents: read
 
 concurrency:
-  group: mvp-e2e-\${{ github.workflow }}-\${{ github.ref }}
+  group: mvp-e2e-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   browser:
     name: Playwright MVP flow
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
