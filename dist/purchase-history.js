@@ -24,6 +24,10 @@
     const anchor = shoppingPage?.querySelector('.budget-transparency');
     if (!anchor) return false;
     const records = store.load();
+    const months = [...new Set([new Date().toISOString().slice(0, 7), ...records.map(record => record.purchasedAt.slice(0, 7))])]
+      .filter(month => /^\d{4}-(?:0[1-9]|1[0-2])$/.test(month))
+      .sort((first, second) => second.localeCompare(first));
+    let selectedMonth = months[0];
     const summary = currentMonth(records);
     const panel = documentRef.createElement('section');
     panel.className = 'panel';
@@ -32,31 +36,44 @@
     const header = documentRef.createElement('div');
     header.className = 'panel-header';
     header.innerHTML = '<div><h2 class="panel-title">Einkaufshistorie</h2><p class="panel-subtitle">Bestätigte Kassenbeträge dieses Geräts · keine Planwerte</p></div><span class="tag muted">lokal</span>';
+    const monthSelect = documentRef.createElement('select');
+    monthSelect.className = 'input';
+    monthSelect.id = 'purchaseHistoryMonth';
+    monthSelect.setAttribute('aria-label', 'Monat der Einkaufshistorie');
+    for (const month of months) { const option = documentRef.createElement('option'); option.value = month; option.textContent = monthLabel(month); monthSelect.append(option); }
+    header.append(monthSelect);
     panel.append(header);
     const body = documentRef.createElement('div');
     body.className = 'panel-body';
     const current = documentRef.createElement('div');
     current.className = 'source-note';
-    current.textContent = summary.recordCount
-      ? `${monthLabel(summary.month)}: ${formatEuro(summary.actualSpendCents)} aus ${summary.recordCount} bestätigten Einkäufen`
-      : `${monthLabel(summary.month)}: noch kein bestätigter Einkauf`;
-    body.append(current);
     const list = documentRef.createElement('div');
     list.className = 'purchase-history-list';
-    for (const record of records.slice().reverse().slice(0, 20)) {
+    const renderMonth = month => {
+      selectedMonth = month;
+      const monthSummary = store.summarizeMonth(records, month);
+      current.textContent = monthSummary.recordCount
+        ? `${monthLabel(month)}: ${formatEuro(monthSummary.actualSpendCents)} aus ${monthSummary.recordCount} bestätigten Einkäufen`
+        : `${monthLabel(month)}: noch kein bestätigter Einkauf`;
+      list.replaceChildren();
+      for (const record of records.filter(item => item.purchasedAt.slice(0, 7) === month).slice().reverse().slice(0, 20)) {
       const row = documentRef.createElement('div');
       row.className = 'purchase-history-row';
       const date = new Date(record.purchasedAt);
       row.textContent = `${Number.isNaN(date.getTime()) ? record.purchasedAt : date.toLocaleString('de-DE')} · ${record.market} · ${formatEuro(record.totalCents)}${record.note ? ` · ${record.note}` : ''}`;
-      list.append(row);
-    }
-    if (!records.length) {
+        list.append(row);
+      }
+      if (!monthSummary.recordCount) {
       const empty = documentRef.createElement('div');
       empty.className = 'source-note';
       empty.textContent = 'Noch keine bestätigten Einkäufe gespeichert.';
-      list.append(empty);
-    }
+        list.append(empty);
+      }
+    };
+    monthSelect.addEventListener('change', () => renderMonth(monthSelect.value));
+    body.append(current);
     body.append(list);
+    renderMonth(selectedMonth);
     panel.append(body);
     anchor.after(panel);
     return true;
