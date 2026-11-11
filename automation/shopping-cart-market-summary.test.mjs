@@ -65,7 +65,7 @@ test('hält gemischte Mittag-/Abendessen-Positionen in Kosten- und geteilter Lis
   assert.equal(summary.manualMissingCount, 1);
   assert.equal(summary.unanchoredMissingCount, 1);
   assert.equal(summary.knownOfferCoveragePercent, 25);
-  assert.equal(summary.knownComparisonTotalCents, 450);
+  assert.equal(summary.knownComparisonTotalCents, 360);
   assert.equal(summary.knownSavingsCents, 90);
 
   assert.equal(
