@@ -1,7 +1,7 @@
 # MVP-Status – Angebotsküche
 
-Stand: 10.11.2026  
-Basis: main@f4c90acb095353065cfa8b3f504662451992b696
+Stand: 11.11.2026  
+Basis: main@4c7709e801c34c592ae3dcde24a4ad83dd1915bb
 
 ## Reparaturpaket 1: Startdarstellung
 
@@ -29,6 +29,16 @@ Status: Testabdeckung ergänzt.
 - Die Änderung wird in den lokalen Planungseinstellungen gespeichert und nach einem Reload wiederhergestellt.
 - Keine Backend-, Angebots- oder Datenmodelländerung.
 
+## Reparaturpaket 2c: Explizite Mengen und Teildeckung
+
+Status: Testabdeckung ergänzt und in `main` integriert.
+
+- Der Browser-E2E-Test importiert ein manuelles Rezept mit `500 g` Hackfleisch, ordnet es einem Planungstag zu und erfasst `250 g` desselben Vorrats.
+- Die Einkaufsliste weist nachweisbar `Vorrat deckt 250 g · Restbedarf 250 g` aus; der Restbedarf bleibt sichtbar und wird nicht stillschweigend entfernt.
+- Lokale Mengen-/Planpersistenz und leere JavaScript-/Konsolenfehler wurden im selben Lauf geprüft.
+- CI-Nachweis: MVP-Browserlauf #33 (GitHub Actions Run `42967184656`) grün; Pages-Deployment #1021 und Pages-Build/Deploy #732 grün.
+- Keine Produktionslogik-, Supabase-, Datenbank- oder kostenpflichtige Dienständerung.
+
 ## Reparaturpaket 2: MVP-Kernablauf
 
 Status: in main integriert und veröffentlicht.
@@ -38,7 +48,7 @@ Status: in main integriert und veröffentlicht.
 - Geprüft: Vorrat `Reis` mit `500 g`, tatsächlicher Vorratsabgleich und Speicherung in Pantry/Mengenmodell.
 - Geprüft: automatisch berechnete Einkaufsartikel, manueller Zusatzartikel mit zwei Packungen und Persistenz nach Reload.
 - Zusätzlich: Der Test sammelt JavaScript-Seitenfehler und `console.error`; beide waren im grünen Lauf leer.
-- CI-Nachweis: MVP-Browserlauf #29 (GitHub Actions Run `42965513430`) grün; Pages-Deployment #1015 und Pages-Build/Deploy #730 grün.
+- CI-Nachweis: MVP-Browserlauf #33 (GitHub Actions Run `42967184656`) grün; Pages-Deployment #1021 und Pages-Build/Deploy #732 grün.
 - Befund/Fix: Der Einkaufslistencontainer wurde beim Wechsel auf die Seite und nach Reload nicht zuverlässig neu gerendert. `showPage('shopping')` aktualisiert die Liste jetzt. Zusätzlich wurde ein echter Renderfehler in `decoratePlanSourceLinks` korrigiert: NodeList-Iteration verwendet `$$` statt des einzelnen `$`.
 - Angebotsabgrenzung: Der Test schaltet den optionalen Filter „mindestens 2 Angebotszutaten“ aus, damit fehlende oder veraltete Angebote den Kernablauf nicht blockieren. Es wurden keine Angebotsdaten erfunden.
 
