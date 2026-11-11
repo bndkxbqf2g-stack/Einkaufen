@@ -203,3 +203,56 @@ test('optionales Abendessen ist separat wählbar und beeinflusst die Einkaufslis
   expect(pageErrors).toEqual([]);
   expect(consoleErrors).toEqual([]);
 });
+
+
+test('ein Rezepttausch ersetzt die bestehende Tagesauswahl und aktualisiert den Plan', async ({ page }) => {
+  const pageErrors = [];
+  const consoleErrors = [];
+  page.on('pageerror', error => pageErrors.push(error.message));
+  page.on('console', message => {
+    if (message.type() === 'error') consoleErrors.push(message.text());
+  });
+
+  await page.goto('/');
+  await expect(page.locator('#page-plan')).toHaveClass(/active/);
+  await page.locator('#daysSelect').selectOption('4');
+  await page.locator('#eveningToggle').uncheck({ force: true });
+
+  await page.locator('button[data-page="suggestions"]').click();
+  await expect(page.locator('#page-suggestions')).toHaveClass(/active/);
+  await page.locator('#suggestionOfferMin2').uncheck({ force: true });
+
+  const firstRecipe = page.locator('button[data-assign-recipe="linsencurry-paprika"]');
+  await expect(firstRecipe).toBeVisible();
+  await firstRecipe.click();
+  await expect(page.locator('#assignModal')).toHaveClass(/open/);
+  await page.locator('#assignDaySelect').selectOption('0');
+  await page.locator('#saveDayAssignment').click();
+  await expect(page.locator('#assignModal')).not.toHaveClass(/open/);
+
+  let manualPlan = await page.evaluate(() => JSON.parse(localStorage.getItem('angebotskueche.manualPlan') || '{}'));
+  expect(manualPlan['0']).toBe('linsencurry-paprika');
+
+  const replacementRecipe = page.locator('button[data-assign-recipe="kartoffelgratin-gouda"]');
+  await expect(replacementRecipe).toBeVisible();
+  await replacementRecipe.click();
+  await expect(page.locator('#assignModal')).toHaveClass(/open/);
+  await page.locator('#assignDaySelect').selectOption('0');
+  await page.locator('#saveDayAssignment').click();
+  await expect(page.locator('#assignModal')).not.toHaveClass(/open/);
+
+  manualPlan = await page.evaluate(() => JSON.parse(localStorage.getItem('angebotskueche.manualPlan') || '{}'));
+  expect(manualPlan['0']).toBe('kartoffelgratin-gouda');
+  expect(Object.values(manualPlan)).not.toContain('linsencurry-paprika');
+
+  await page.locator('button[data-page="plan"]').click();
+  await expect(page.locator('#page-plan')).toHaveClass(/active/);
+  await expect(page.locator('#dayList .day-card').first()).toContainText('Kartoffelgratin mit Gouda');
+  await expect(page.locator('#dayList .day-card').first()).not.toContainText('Rotes Linsencurry mit Paprika');
+
+  await page.locator('button[data-page="shopping"]').click();
+  await expect(page.locator('#shoppingList')).not.toBeEmpty();
+
+  expect(pageErrors).toEqual([]);
+  expect(consoleErrors).toEqual([]);
+});
