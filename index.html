@@ -1510,7 +1510,7 @@
         : formatEuro(budget.actualSpendCents / 100);
       field('ActualNote').textContent = budget.actualSpendStatus === 'not-recorded'
         ? 'Noch nicht erfasst'
-        : `${purchaseSummary.recordCount} bestätigte Einkäufe im aktuellen Monat`;
+        : `${purchaseSummary.recordCount} bestätigte Einkäufe · verbleibend ${formatEuro(Math.max(0, budget.remainingBudgetCents) / 100)}`;
       field('TransparencyNote').textContent = budget.knownOfferStatus === 'partial'
         ? 'Der Plan-/Angebotswert ist kein Kassenbetrag. Unbekannte Preise und fehlende Artikel bleiben außerhalb; tatsächliche IST-Ausgaben sind noch nicht erfasst.'
         : 'Der Plan-/Angebotswert ist kein Kassenbetrag oder bestätigte Ausgabe; tatsächliche IST-Ausgaben sind noch nicht erfasst.';
