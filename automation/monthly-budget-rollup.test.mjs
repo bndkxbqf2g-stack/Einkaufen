@@ -25,3 +25,19 @@ test('rolls up monthly plan, actual and travel costs independently', () => {
     { month: '2026-02', plannedExpenseCents: 2000, actualSpendCents: 1000, travelCostCents: 250, unresolvedPositionCount: 3 },
   ]);
 });
+
+test('makes a numeric overflow permanently unknown for the month', () => {
+  const result = JSON.parse(JSON.stringify(model.summarizeMonthlyBudget([
+    { month: '2026-03', plannedExpenseCents: Number.MAX_SAFE_INTEGER },
+    { month: '2026-03', plannedExpenseCents: 1 },
+  ])));
+  assert.equal(result[0].plannedExpenseCents, null);
+});
+
+test('ignores unsafe and negative unresolved counts', () => {
+  const result = JSON.parse(JSON.stringify(model.summarizeMonthlyBudget([
+    { month: '2026-04', unresolvedPositionCount: -4 },
+    { month: '2026-04', unresolvedPositionCount: Number.MAX_SAFE_INTEGER + 1 },
+  ])));
+  assert.equal(result[0].unresolvedPositionCount, 0);
+});
