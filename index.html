@@ -3373,6 +3373,7 @@
     };
     // The offline/demo shell must be usable even when an offer source is slow or unavailable.
     renderApp();
+    window.AngebotskuechePurchaseHistory?.mount();
     startInitialOfferRefresh().then(renderApp, renderApp);
     setTimeout(() => refreshPendingRecipeImports().catch(() => {}), 250);
     const APP_BUILD = '2026-11-08-budget-transparency-1';
