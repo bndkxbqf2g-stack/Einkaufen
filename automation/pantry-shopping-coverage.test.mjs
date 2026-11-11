@@ -118,6 +118,13 @@ test('zeigt bei explizitem Bedarf auch ohne Angebotsanker die benötigte Menge a
   assert.match(distIndexSource, /shoppingQuantityLabel\(item\)/);
 });
 
+test('kennzeichnet unklare und inkompatible Vorräte ohne den Bedarf zu reduzieren', () => {
+  assert.match(indexSource, /Vorrat unklar · Bedarf vollständig eingeplant/);
+  assert.match(indexSource, /Vorrat nicht verrechnet · Einheit nicht kompatibel/);
+  assert.match(indexSource, /shoppingPantryCoverageLabel\(item\)/);
+  assert.equal(distIndexSource, indexSource);
+});
+
 test('bindet die mengenbasierte Coverage nur für explizite Bedarfe in beide App-Artefakte ein', () => {
   assert.equal(distIndexSource, indexSource);
   assert.match(indexSource, /pantry-shopping-coverage\.js/);
