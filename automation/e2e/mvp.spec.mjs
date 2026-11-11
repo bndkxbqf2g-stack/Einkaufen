@@ -193,7 +193,9 @@ test('optionales Abendessen ist separat wählbar und beeinflusst die Einkaufslis
   await expect(page.locator('.shopping-item-name').filter({ hasText: /^E2E-Käse$/ })).toHaveCount(0);
 
   await page.locator('button[data-page="plan"]').click();
-  await page.locator('#eveningToggle').check({ force: true });
+  const eveningToggle = page.locator('#eveningToggle');
+  if (!(await eveningToggle.isChecked())) await eveningToggle.check({ force: true });
+  await expect(eveningToggle).toBeChecked();
   await expect(page.locator('.day-card').filter({ has: page.locator('[data-dinner-index="0"]') })).toContainText('E2E-Abendessen');
   await page.locator('button[data-page="shopping"]').click();
   await expect(page.locator('.shopping-item-name').filter({ hasText: /^E2E-Käse$/ })).toHaveCount(1);
