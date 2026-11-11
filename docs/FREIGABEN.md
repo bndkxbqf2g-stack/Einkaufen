@@ -1484,3 +1484,11 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - [ ] Keine Freigabe erforderlich für den modularen, getesteten Monatsaggregator; er schreibt weder Supabase noch Kauf-/IST-Daten.
 - [ ] Vor einer späteren UI-Anbindung ist festzulegen, welche Monatsquellen verbindlich als Plan, IST und Fahrtkosten gelten.
 - [ ] Vor produktiver Monatsbudget-Auswertung sind reale Datenpfade und Konfliktregeln separat zu prüfen.
+
+
+## Dokumentationsabgleich 11.11.2026 – Worker-Quellenvollständigkeit
+
+- PR #420 reicht explizite Quell-Soll-/Ist-Zahlen aus Angebots-Snapshots nur nach deterministischer Validierung weiter.
+- Fehlende, nicht-ganzzahlige oder widersprüchliche Werte bleiben unbekannt; es werden keine Angebotszahlen erfunden.
+- CI und Browser-E2E waren erfolgreich. Keine Nutzer-, Kauf-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
+- Kein neuer Freigabepunkt; Kaufabschluss, Verbrauchsbuchung, Fahrtkosten/Routing und produktive Datenverträge bleiben separat freigabepflichtig.
