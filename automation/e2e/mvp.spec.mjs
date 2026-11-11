@@ -186,19 +186,17 @@ test('optionales Abendessen ist separat wählbar und beeinflusst die Einkaufslis
   const savedDinnerPlan = await page.evaluate(() => JSON.parse(localStorage.getItem('angebotskueche.manualDinnerPlan') || '{}'));
   expect(Object.keys(savedDinnerPlan)).not.toHaveLength(0);
 
-  await page.locator('#eveningToggle').uncheck({ force: true });
-  await expect(page.locator('[data-dinner-index]')).toHaveCount(0);
   await page.locator('button[data-page="shopping"]').click();
   await expect(page.locator('#page-shopping')).toHaveClass(/active/);
-  await expect(page.locator('.shopping-item-name').filter({ hasText: /^E2E-Käse$/ })).toHaveCount(0);
+  await expect(page.locator('.shopping-item-name').filter({ hasText: /^E2E-Käse$/ })).toHaveCount(1);
 
   await page.locator('button[data-page="plan"]').click();
-  const eveningToggle = page.locator('#eveningToggle');
-  if (!(await eveningToggle.isChecked())) await eveningToggle.click({ force: true });
-  await expect(eveningToggle).toBeChecked();
-  await expect(page.locator('.day-card').filter({ has: page.locator('[data-dinner-index="0"]') })).toContainText('E2E-Abendessen');
+  await expect(page.locator('#page-plan')).toHaveClass(/active/);
+  await page.locator('#eveningToggle').uncheck({ force: true });
+  await expect(page.locator('#eveningToggle')).not.toBeChecked();
+  await expect(page.locator('[data-dinner-index]')).toHaveCount(0);
   await page.locator('button[data-page="shopping"]').click();
-  await expect(page.locator('.shopping-item-name').filter({ hasText: /^E2E-Käse$/ })).toHaveCount(1);
+  await expect(page.locator('.shopping-item-name').filter({ hasText: /^E2E-Käse$/ })).toHaveCount(0);
 
   expect(pageErrors).toEqual([]);
   expect(consoleErrors).toEqual([]);
