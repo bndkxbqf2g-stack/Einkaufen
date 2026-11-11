@@ -1,7 +1,7 @@
 # MVP-Status – Angebotsküche
 
 Stand: 10.11.2026  
-Basis: main@d2a4ec7aea859c9e20cf66739be82d53823712e2
+Basis: main@f4c90acb095353065cfa8b3f504662451992b696
 
 ## Reparaturpaket 1: Startdarstellung
 
@@ -35,10 +35,10 @@ Status: in main integriert und veröffentlicht.
 
 - Reproduzierbarkeit: lokaler Node-Static-Server für `dist/`, gepinnter Playwright-Test-Runner `@playwright/test@1.51.1`, Chromium in GitHub Actions.
 - Geprüft: Personenanzahl, Tagesanzahl, optionale Abendessen, Rezeptvorschlag öffnen und einem Tag zuordnen, lokale Speicherung des manuellen Plans.
-- Geprüft: Vorrat `E2E-Reis` mit `500 g`, Speicherung in Pantry und Mengenmodell.
+- Geprüft: Vorrat `Reis` mit `500 g`, tatsächlicher Vorratsabgleich und Speicherung in Pantry/Mengenmodell.
 - Geprüft: automatisch berechnete Einkaufsartikel, manueller Zusatzartikel mit zwei Packungen und Persistenz nach Reload.
 - Zusätzlich: Der Test sammelt JavaScript-Seitenfehler und `console.error`; beide waren im grünen Lauf leer.
-- CI-Nachweis: MVP-Browserlauf #24 (GitHub Actions Run `42829607538`) grün; Pages-Validierung/Deployment #1009, Root-Sync #224 und Pages-Build/Deploy #727 grün.
+- CI-Nachweis: MVP-Browserlauf #29 (GitHub Actions Run `42965513430`) grün; Pages-Deployment #1015 und Pages-Build/Deploy #730 grün.
 - Befund/Fix: Der Einkaufslistencontainer wurde beim Wechsel auf die Seite und nach Reload nicht zuverlässig neu gerendert. `showPage('shopping')` aktualisiert die Liste jetzt. Zusätzlich wurde ein echter Renderfehler in `decoratePlanSourceLinks` korrigiert: NodeList-Iteration verwendet `$$` statt des einzelnen `$`.
 - Angebotsabgrenzung: Der Test schaltet den optionalen Filter „mindestens 2 Angebotszutaten“ aus, damit fehlende oder veraltete Angebote den Kernablauf nicht blockieren. Es wurden keine Angebotsdaten erfunden.
 
