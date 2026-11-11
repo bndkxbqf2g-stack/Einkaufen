@@ -1477,3 +1477,10 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Der Markt-/Quellstatus darf eine Vollständigkeit nur aus expliziten, gültigen Soll-/Ist-Gesamtzahlen derselben Quelle anzeigen; Ladeziele und erkannte Treffer bleiben davon getrennt.
 - Fehlende oder ungültige Quellmetadaten bleiben unbekannt. Es wurden keine Angebots-, Nutzer-, Supabase-, Datenbank-, Produktions- oder Deploymentdaten verändert.
+
+
+## Gebündelte Freigaben – Monatsbudgetmodell (2026-11-11)
+
+- [ ] Keine Freigabe erforderlich für den modularen, getesteten Monatsaggregator; er schreibt weder Supabase noch Kauf-/IST-Daten.
+- [ ] Vor einer späteren UI-Anbindung ist festzulegen, welche Monatsquellen verbindlich als Plan, IST und Fahrtkosten gelten.
+- [ ] Vor produktiver Monatsbudget-Auswertung sind reale Datenpfade und Konfliktregeln separat zu prüfen.
