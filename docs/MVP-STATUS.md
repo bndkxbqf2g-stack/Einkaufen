@@ -1,7 +1,7 @@
 # MVP-Status – Angebotsküche
 
 Stand: 11.11.2026  
-Basis: main@4c7709e801c34c592ae3dcde24a4ad83dd1915bb
+Basis: main@abd1a0dfb45c22b2eb04f25e4faaa3adece1d858
 
 ## Reparaturpaket 1: Startdarstellung
 
@@ -36,7 +36,17 @@ Status: Testabdeckung ergänzt und in `main` integriert.
 - Der Browser-E2E-Test importiert ein manuelles Rezept mit `500 g` Hackfleisch, ordnet es einem Planungstag zu und erfasst `250 g` desselben Vorrats.
 - Die Einkaufsliste weist nachweisbar `Vorrat deckt 250 g · Restbedarf 250 g` aus; der Restbedarf bleibt sichtbar und wird nicht stillschweigend entfernt.
 - Lokale Mengen-/Planpersistenz und leere JavaScript-/Konsolenfehler wurden im selben Lauf geprüft.
-- CI-Nachweis: MVP-Browserlauf #33 (GitHub Actions Run `42967184656`) grün; Pages-Deployment #1021 und Pages-Build/Deploy #732 grün.
+- CI-Nachweis: MVP-Browserlauf #37 (GitHub Actions Run `42968580657`) grün; Pages-Deployment #1027 und Pages-Build/Deploy #734 grün.
+- Keine Produktionslogik-, Supabase-, Datenbank- oder kostenpflichtige Dienständerung.
+
+## Reparaturpaket 2d: Optionales Abendessen im Browserablauf
+
+Status: Testabdeckung ergänzt und in `main` integriert.
+
+- Der Browser-E2E-Test importiert ein Brotzeit-Rezept, ordnet es separat einem Planungstag zu und prüft die lokale Speicherung des Abendessenplans.
+- Beim Deaktivieren des optionalen Abendessen-Slots verschwindet die Abendessen-Zutat aus der Einkaufsliste; beim erneuten Aktivieren wird sie wieder berücksichtigt.
+- Frühstück, Snacks und Getränke werden in diesem Planungspfad nicht als eigene Slots verwendet.
+- CI-Nachweis: MVP-Browserlauf #37 (GitHub Actions Run `42968580657`) grün; Pages-Deployment #1027 und Pages-Build/Deploy #734 grün.
 - Keine Produktionslogik-, Supabase-, Datenbank- oder kostenpflichtige Dienständerung.
 
 ## Reparaturpaket 2: MVP-Kernablauf
