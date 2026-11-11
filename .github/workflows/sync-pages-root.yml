@@ -41,7 +41,7 @@ jobs:
           cp dist/sw.js sw.js
           cp dist/supabase-sync.js supabase-sync.js
           cp dist/purchase-record.js purchase-record.js
-          cp dist/purchase-record-store.js purchase-record-store.js purchase-entry.js
+          cp dist/purchase-record-store.js purchase-record-store.js
           cp dist/purchase-entry.js purchase-entry.js
 
       - name: Commit mirrored files
@@ -53,7 +53,7 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html manifest.json icons sw.js supabase-sync.js
+          git add index.html manifest.json icons sw.js supabase-sync.js purchase-record.js purchase-record-store.js purchase-entry.js
           git commit -m "Sync GitHub Pages root with dist"
           for attempt in 1 2 3 4 5; do
             if git pull --rebase origin main && git push origin HEAD:main; then
