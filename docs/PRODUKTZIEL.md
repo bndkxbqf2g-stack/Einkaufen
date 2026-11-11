@@ -1160,3 +1160,11 @@ Der nächste fachliche Schritt mit Datenwirkung bleibt der manuelle Kaufabschlus
 ## Technischer Fortschritt – Monatsbudgetmodell (2026-11-11)
 
 Das modulare Modell `budget-transparency.js` aggregiert Monatswerte deterministisch nach `YYYY-MM`. Plan-, bestätigte IST- und Fahrtkosten bleiben getrennt; ungültige Monatswerte werden verworfen. Bei Cent-Überlauf bleibt die betroffene Kostenart für den Monat dauerhaft unbekannt statt später stillschweigend überschrieben zu werden. Die bestehende UI und Cloud-Synchronisierung bleiben unverändert.
+
+
+## Integrationsstand 11.11.2026 – Worker-Shell-Parität
+
+- PR #415 wurde aus dem aktuellen `main`-Stand erstellt und nach erfolgreicher CI per Squash integriert.
+- Die veröffentlichte Worker-Shell wird durch einen isolierten Regressionstest gegen die `dist`-Artefakte geprüft.
+- Pages-Validierung und MVP-Browser-E2E waren für den PR grün.
+- Der Schritt verändert keine Supabase-Struktur, keine Nutzerdaten und keine Angebotsdaten.
