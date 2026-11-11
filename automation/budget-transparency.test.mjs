@@ -157,9 +157,10 @@ test('hält Budgetmodell und veröffentlichte App synchron', () => {
   assert.match(source, /budget-transparency\.js/);
 });
 
-test('führt keine purchaseRecords- oder Cloud-Schreiblogik für die Anzeige ein', () => {
+test('liest bestätigte purchaseRecords für die Anzeige, schreibt aber keine Kauf- oder Cloud-Daten', () => {
   assert.ok(rendererStart >= 0 && rendererEnd > rendererStart, 'Budgetrenderer muss vorhanden sein');
-  assert.doesNotMatch(renderer, /purchaseRecords|supabase|cloud/i);
+  assert.match(renderer, /purchaseRecords|PurchaseRecordStore|purchaseSummary/i);
+  assert.doesNotMatch(renderer, /localStorage\\.setItem|store\\.append|supabase|cloud/i);
 });
 
 test('hält purchaseRecords-Schreibpfade bis zur Freigabe außerhalb der Runtime', () => {
