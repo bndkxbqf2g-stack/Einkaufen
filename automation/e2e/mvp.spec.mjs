@@ -31,7 +31,7 @@ test('durchgängiger MVP-Ablauf bleibt lokal bedienbar und speichert Änderungen
   // Fehlende/alte Angebote dürfen den Kernablauf nicht blockieren.
   await page.locator('#suggestionOfferMin2').uncheck({ force: true });
   await expect(page.locator('button[data-assign-recipe]').first()).toBeVisible();
-  await page.locator('button[data-assign-recipe]').first().click();
+  await page.locator('button[data-assign-recipe="linsencurry-paprika"]').click();
   await expect(page.locator('#assignModal')).toHaveClass(/open/);
   await page.locator('#assignDaySelect').selectOption('1');
   await page.locator('#saveDayAssignment').click();
@@ -47,22 +47,24 @@ test('durchgängiger MVP-Ablauf bleibt lokal bedienbar und speichert Änderungen
   await page.locator('button[data-page="pantry"]').click();
   await expect(page.locator('#page-pantry')).toHaveClass(/active/);
   await page.locator('#addPantry').click();
-  await page.locator('#pantryInput').fill('E2E-Reis');
+  await page.locator('#pantryInput').fill('Reis');
   await page.locator('#pantryQuantity').fill('500');
   await page.locator('#pantryUnit').selectOption('g');
   await page.locator('#savePantryItem').click();
   await page.locator('#cancelPantryModal').click();
   await expect(page.locator('#pantryModal')).not.toHaveClass(/open/);
-  await expect(page.locator('#pantryList')).toContainText('E2E-Reis');
+  await expect(page.locator('#pantryList')).toContainText('Reis');
 
   const pantry = await page.evaluate(() => JSON.parse(localStorage.getItem('angebotskueche.pantry') || '[]'));
-  expect(pantry).toContain('E2E-Reis');
+  expect(pantry).toContain('Reis');
   const pantryQuantities = await page.evaluate(() => JSON.parse(localStorage.getItem('angebotskueche.pantryQuantities') || '{}'));
-  expect(JSON.stringify(pantryQuantities)).toContain('E2E-Reis');
+  expect(JSON.stringify(pantryQuantities)).toContain('Reis');
 
   await page.locator('button[data-page="shopping"]').click();
   await expect(page.locator('#page-shopping')).toHaveClass(/active/);
   await expect(page.locator('#shoppingList')).not.toBeEmpty();
+  await expect(page.locator('#shoppingPantryDetail')).toContainText('Reis');
+  await expect(page.locator('.shopping-item-name').filter({ hasText: /^Reis$/ })).toHaveCount(0);
   await page.locator('#openShoppingItem').click();
   await page.locator('#shoppingItemInput').fill('E2E-Zutat');
   await page.locator('#shoppingItemQuantity').fill('2');

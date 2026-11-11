@@ -13,6 +13,14 @@ Status: in `main` integriert und veröffentlicht.
 - Veröffentlichung: GitHub-Pages-Deployment #983, Root-Sync #223 und Pages-Build #725 waren grün.
 - Noch offen: Ein vollständiger iPhone-End-to-End-Test ist noch nicht durchgeführt. Die Browsersteuerung konnte den veröffentlichten App-Tab laden und den Titel lesen, lief beim DOM-/Screenshot-Zugriff aber in einen reproduzierbaren Timeout. Das bleibt getrennt vom App-Befund.
 
+## Reparaturpaket 2b: Vorratswirkung im Browserablauf
+
+Status: Testabdeckung ergänzt.
+
+- Der MVP-Browserlauf wählt ein deterministisches Reisgericht und legt Reis mit Mengenangabe im Vorrat an.
+- Der Einkaufslistenlauf weist den Vorratsabgleich aus und stellt sicher, dass Reis nicht als zusätzlicher Einkaufsartikel erscheint.
+- Keine Kaufbuchung, keine Datenbankänderung und keine Angebotsannahme.
+
 ## Reparaturpaket 2a: Tagesbezogene Personenzahl
 
 Status: Testabdeckung ergänzt.
