@@ -1452,11 +1452,14 @@
         const ingredient = manualItem.name.trim();
         if (!ingredient || isPantryIngredient(ingredient)) return;
         const key = shoppingIngredientKey(ingredient);
-        if (!key || items.has(key)) return;
+        if (!key) return;
+        let manualKey = key;
+        let manualSuffix = 2;
+        while (items.has(manualKey)) manualKey = `${key}::manual-${manualSuffix++}`;
         const offer = matchingOfferCandidates(ingredient, activeOffers)[0] || null;
         const rawManualQuantity = Number(manualItem.quantity);
         const manualQuantity = Number.isInteger(rawManualQuantity) && rawManualQuantity >= 1 && rawManualQuantity <= 99 ? rawManualQuantity : 1;
-        items.set(key, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id, manualQuantity });
+        items.set(manualKey, { id: `manual-${manualItem.id}`, name: ingredient, count: 1, meals: ['zusätzlich ergänzt'], offer, manual: true, manualId: manualItem.id, manualQuantity });
       });
       const coverageModel = typeof window !== 'undefined' ? window.AngebotskuechePantryShoppingCoverageModel : null;
       const reconciled = coverageModel?.applyPantryCoverageToShoppingItems?.([...items.values()], pantryQuantities);
