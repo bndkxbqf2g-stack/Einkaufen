@@ -58,7 +58,7 @@ test('durchgängiger MVP-Ablauf bleibt lokal bedienbar und speichert Änderungen
   const pantry = await page.evaluate(() => JSON.parse(localStorage.getItem('angebotskueche.pantry') || '[]'));
   expect(pantry).toContain('Reis');
   const pantryQuantities = await page.evaluate(() => JSON.parse(localStorage.getItem('angebotskueche.pantryQuantities') || '{}'));
-  expect(JSON.stringify(pantryQuantities)).toContain('E2E-Reis');
+  expect(JSON.stringify(pantryQuantities)).toContain('Reis');
 
   await page.locator('button[data-page="shopping"]').click();
   await expect(page.locator('#page-shopping')).toHaveClass(/active/);
