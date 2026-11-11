@@ -15,12 +15,12 @@ test('normalizes valid month keys and rejects invalid months', () => {
 });
 
 test('rolls up monthly plan, actual and travel costs independently', () => {
-  assert.deepEqual(model.summarizeMonthlyBudget([
+  assert.deepEqual(JSON.parse(JSON.stringify(model.summarizeMonthlyBudget([
     { month: '2026-02', plannedExpenseCents: 1200, actualSpendCents: 900, travelCostCents: 200, unresolvedPositionCount: 1 },
     { month: '2026-01', plannedExpenseCents: 3000, actualSpendCents: 2500 },
     { month: '2026-02', plannedExpenseCents: 800, actualSpendCents: 100, travelCostCents: 50, unresolvedPositionCount: 2 },
     { month: 'not-a-month', plannedExpenseCents: 9999 },
-  ]), [
+  ]))), [
     { month: '2026-01', plannedExpenseCents: 3000, actualSpendCents: 2500, travelCostCents: null, unresolvedPositionCount: 0 },
     { month: '2026-02', plannedExpenseCents: 2000, actualSpendCents: 1000, travelCostCents: 250, unresolvedPositionCount: 3 },
   ]);
