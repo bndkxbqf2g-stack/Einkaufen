@@ -144,3 +144,62 @@ test('explizite Rezeptmenge und Teildeckung durch Vorrat bleiben im Einkauf sich
   expect(pageErrors).toEqual([]);
   expect(consoleErrors).toEqual([]);
 });
+
+
+test('optionales Abendessen ist separat wählbar und beeinflusst die Einkaufsliste nur bei Aktivierung', async ({ page }) => {
+  const pageErrors = [];
+  const consoleErrors = [];
+  page.on('pageerror', error => pageErrors.push(error.message));
+  page.on('console', message => {
+    if (message.type() === 'error') consoleErrors.push(message.text());
+  });
+
+  await page.goto('/');
+  await expect(page.locator('#page-plan')).toHaveClass(/active/);
+  await page.locator('#daysSelect').selectOption('4');
+  await page.locator('#eveningToggle').check({ force: true });
+
+  await page.locator('button[data-page="favorites"]').click();
+  await expect(page.locator('#page-favorites')).toHaveClass(/active/);
+  await page.locator('#openFavorite').click();
+  await page.locator('#recipeName').fill('E2E-Abendessen');
+  await page.locator('#recipeIngredients').fill('1 Stück E2E-Brot\n200 g E2E-Käse');
+  await page.locator('#recipeMealPurpose').selectOption('Brotzeit');
+  await page.locator('#importRecipe').click();
+  await expect(page.locator('#favoriteCatalog')).toContainText('E2E-Abendessen');
+
+  await page.locator('button[data-page="plan"]').click();
+  await expect(page.locator('#page-plan')).toHaveClass(/active/);
+  await expect(page.locator('[data-choose-dinner="0"]')).toBeVisible();
+  await page.locator('[data-choose-dinner="0"]').click();
+  await expect(page.locator('#assignModal')).toHaveClass(/open/);
+
+  const dinnerOption = page.locator('#assignRecipeSelect option').filter({ hasText: 'E2E-Abendessen' });
+  await expect(dinnerOption).toHaveCount(1);
+  const dinnerRecipeId = await dinnerOption.getAttribute('value');
+  await page.locator('#assignRecipeSelect').selectOption(dinnerRecipeId);
+  await page.locator('#assignDaySelect').selectOption('0');
+  await page.locator('#saveDayAssignment').click();
+  await expect(page.locator('#assignModal')).not.toHaveClass(/open/);
+  await expect(page.locator('.day-card').filter({ has: page.locator('[data-dinner-index="0"]') })).toContainText('E2E-Abendessen');
+
+  const savedDinnerPlan = await page.evaluate(() => JSON.parse(localStorage.getItem('angebotskueche.manualDinnerPlan') || '{}'));
+  expect(Object.keys(savedDinnerPlan)).not.toHaveLength(0);
+
+  await page.locator('#eveningToggle').uncheck({ force: true });
+  await expect(page.locator('[data-dinner-index]')).toHaveCount(0);
+  await page.locator('button[data-page="shopping"]').click();
+  await expect(page.locator('#page-shopping')).toHaveClass(/active/);
+  await expect(page.locator('.shopping-item-name').filter({ hasText: /^E2E-Käse$/ })).toHaveCount(0);
+
+  await page.locator('button[data-page="plan"]').click();
+  const eveningToggle = page.locator('#eveningToggle');
+  if (!(await eveningToggle.isChecked())) await eveningToggle.check({ force: true });
+  await expect(eveningToggle).toBeChecked();
+  await expect(page.locator('.day-card').filter({ has: page.locator('[data-dinner-index="0"]') })).toContainText('E2E-Abendessen');
+  await page.locator('button[data-page="shopping"]').click();
+  await expect(page.locator('.shopping-item-name').filter({ hasText: /^E2E-Käse$/ })).toHaveCount(1);
+
+  expect(pageErrors).toEqual([]);
+  expect(consoleErrors).toEqual([]);
+});
