@@ -1492,3 +1492,10 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 - Fehlende, nicht-ganzzahlige oder widersprüchliche Werte bleiben unbekannt; es werden keine Angebotszahlen erfunden.
 - CI und Browser-E2E waren erfolgreich. Keine Nutzer-, Kauf-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
 - Kein neuer Freigabepunkt; Kaufabschluss, Verbrauchsbuchung, Fahrtkosten/Routing und produktive Datenverträge bleiben separat freigabepflichtig.
+
+
+## Read-only-Audit 11.11.2026 – Offline-/Service-Worker-Verhalten
+
+- Cache-Versionierung, Root-/dist-Parität, Install-/Activate-Lifecycle und Offline-Fallbacks sind durch bestehende Regressionen abgedeckt.
+- Same-origin-GETs bleiben network-first; Cross-Origin-, Sync- und Nicht-GET-Anfragen werden nicht unkontrolliert gecacht.
+- Kein neuer Freigabepunkt: keine Runtime-, Nutzer-, Angebots-, Supabase-, Datenbank-, Produktions- oder Kostenänderung.
