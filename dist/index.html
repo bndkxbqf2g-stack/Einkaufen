@@ -1028,6 +1028,12 @@
     }
 
     function offerCoverageLabel(live) {
+      const expected = live?.sourceExpectedTotalCount;
+      const observed = live?.sourceObservedTotalCount;
+      if (Number.isInteger(expected) && expected > 0 && Number.isInteger(observed) && observed >= 0 && observed <= expected) {
+        const status = observed >= expected ? 'belegt' : 'teilweise belegt';
+        return `Quellenvollständigkeit ${status} (${observed}/${expected})`;
+      }
       const target = Number(live?.targetOfferCount);
       const loaded = Number(live?.loadedOfferCardCount);
       if (!Number.isFinite(target) || target <= 0 || !Number.isFinite(loaded) || loaded < 0 || live?.loadedOfferCardCount == null) return 'Angebotsumfang unbekannt';
@@ -1160,7 +1166,7 @@
         const validUntil = result.payload ? offerEndDate(result.payload.validUntil) : null;
         const nextCheckAt = result.payload ? (validUntil ? new Date(validUntil.getTime() + 60 * 1000).toISOString() : new Date(checkedAt.getTime() + offerRefreshFallbackMs).toISOString()) : new Date(checkedAt.getTime() + offerRetryDelayMs).toISOString();
         liveOfferStatus[result.market] = result.payload
-          ? { fetchedAt: sourceFetchedAt, checkedAt: checkedAt.toISOString(), timestampSource: sourceFetchedAt ? 'source' : 'unknown', sourceUrl: sourceUrlForDisplay(result.payload.sourceUrl), validUntil: result.payload.validUntil, targetOfferCount: Number(result.payload.targetOfferCount || 0), loadedOfferCardCount: Number(result.payload.loadedOfferCardCount || 0), targetReached: typeof result.payload.targetReached === 'boolean' ? result.payload.targetReached : null, nextCheckAt, count: Number(result.payload.recognizedCount ?? result.payload.offers.length) }
+          ? { fetchedAt: sourceFetchedAt, checkedAt: checkedAt.toISOString(), timestampSource: sourceFetchedAt ? 'source' : 'unknown', sourceUrl: sourceUrlForDisplay(result.payload.sourceUrl), validUntil: result.payload.validUntil, targetOfferCount: Number(result.payload.targetOfferCount || 0), loadedOfferCardCount: Number(result.payload.loadedOfferCardCount || 0), targetReached: typeof result.payload.targetReached === 'boolean' ? result.payload.targetReached : null, sourceExpectedTotalCount: result.payload.sourceExpectedTotalCount, sourceObservedTotalCount: result.payload.sourceObservedTotalCount, nextCheckAt, count: Number(result.payload.recognizedCount ?? result.payload.offers.length) }
           : {
             ...liveOfferStatus[result.market],
             checkedAt: checkedAt.toISOString(),
