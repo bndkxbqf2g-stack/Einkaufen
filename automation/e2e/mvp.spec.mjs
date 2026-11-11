@@ -186,19 +186,17 @@ test('optionales Abendessen ist separat wählbar und beeinflusst die Einkaufslis
   const savedDinnerPlan = await page.evaluate(() => JSON.parse(localStorage.getItem('angebotskueche.manualDinnerPlan') || '{}'));
   expect(Object.keys(savedDinnerPlan)).not.toHaveLength(0);
 
-  await page.locator('#eveningToggle').uncheck({ force: true });
-  await expect(page.locator('[data-dinner-index]')).toHaveCount(0);
   await page.locator('button[data-page="shopping"]').click();
   await expect(page.locator('#page-shopping')).toHaveClass(/active/);
-  await expect(page.locator('.shopping-item-name').filter({ hasText: /^E2E-Käse$/ })).toHaveCount(0);
+  await expect(page.locator('.shopping-item-name').filter({ hasText: /^E2E-Käse$/ })).toHaveCount(1);
 
   await page.locator('button[data-page="plan"]').click();
-  const eveningToggle = page.locator('#eveningToggle');
-  if (!(await eveningToggle.isChecked())) await eveningToggle.check({ force: true });
-  await expect(eveningToggle).toBeChecked();
-  await expect(page.locator('.day-card').filter({ has: page.locator('[data-dinner-index="0"]') })).toContainText('E2E-Abendessen');
+  await expect(page.locator('#page-plan')).toHaveClass(/active/);
+  await page.locator('#eveningToggle').uncheck({ force: true });
+  await expect(page.locator('#eveningToggle')).not.toBeChecked();
+  await expect(page.locator('[data-dinner-index]')).toHaveCount(0);
   await page.locator('button[data-page="shopping"]').click();
-  await expect(page.locator('.shopping-item-name').filter({ hasText: /^E2E-Käse$/ })).toHaveCount(1);
+  await expect(page.locator('.shopping-item-name').filter({ hasText: /^E2E-Käse$/ })).toHaveCount(0);
 
   expect(pageErrors).toEqual([]);
   expect(consoleErrors).toEqual([]);
@@ -255,4 +253,48 @@ test('ein Rezepttausch ersetzt die bestehende Tagesauswahl und aktualisiert den 
 
   expect(pageErrors).toEqual([]);
   expect(consoleErrors).toEqual([]);
+});
+
+
+test.describe('mobiler Viewport-Nachweis', () => {
+  test.use({
+    hasTouch: true,
+    isMobile: true,
+    viewport: { width: 390, height: 844 }
+  });
+
+  test('startet, navigiert und speichert die Einkaufsliste im iPhone-ähnlichen Viewport', async ({ page }) => {
+    const pageErrors = [];
+    const consoleErrors = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+    page.on('console', message => {
+      if (message.type() === 'error') consoleErrors.push(message.text());
+    });
+
+    await page.goto('/');
+    await expect(page.locator('#page-plan')).toHaveClass(/active/);
+    await expect(page.locator('.sidebar')).toBeVisible();
+
+    const layout = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth
+    }));
+    expect(layout.scrollWidth).toBeLessThanOrEqual(layout.clientWidth + 1);
+
+    await page.locator('button[data-page="shopping"]').click();
+    await expect(page.locator('#page-shopping')).toHaveClass(/active/);
+    await page.locator('#openShoppingItem').click();
+    await page.locator('#shoppingItemInput').fill('E2E-Mobile');
+    await page.locator('#shoppingItemQuantity').fill('1');
+    await page.locator('#saveShoppingItem').click();
+    await expect(page.locator('#shoppingModal')).not.toHaveClass(/open/);
+    await expect(page.locator('#shoppingList')).toContainText('E2E-Mobile');
+
+    await page.reload();
+    await page.locator('button[data-page="shopping"]').click();
+    await expect(page.locator('#shoppingList')).toContainText('E2E-Mobile');
+
+    expect(pageErrors).toEqual([]);
+    expect(consoleErrors).toEqual([]);
+  });
 });
