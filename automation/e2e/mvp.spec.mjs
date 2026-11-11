@@ -18,6 +18,13 @@ test('durchgängiger MVP-Ablauf bleibt lokal bedienbar und speichert Änderungen
   await expect(page.locator('#dayList .day-card')).toHaveCount(8);
   await page.locator('#eveningToggle').uncheck({ force: true });
   await expect(page.locator('#dayList .day-card')).toHaveCount(4);
+  await page.locator('#dayList .day-people-filter select').first().selectOption('4');
+  await expect(page.locator('#dayList .day-people-filter select').first()).toHaveValue('4');
+  const savedPlanningSettings = await page.evaluate(() => JSON.parse(localStorage.getItem('angebotskueche.settings') || '{}'));
+  expect(savedPlanningSettings.dayPeople).toEqual(expect.objectContaining({ '0': 4 }));
+  await page.reload();
+  await expect(page.locator('#dayList .day-card')).toHaveCount(4);
+  await expect(page.locator('#dayList .day-people-filter select').first()).toHaveValue('4');
 
   await page.locator('button[data-page="suggestions"]').click();
   await expect(page.locator('#page-suggestions')).toHaveClass(/active/);
