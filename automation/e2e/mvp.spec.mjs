@@ -111,7 +111,7 @@ test('explizite Rezeptmenge und Teildeckung durch Vorrat bleiben im Einkauf sich
   await page.locator('button[data-page="suggestions"]').click();
   await expect(page.locator('#page-suggestions')).toHaveClass(/active/);
   await page.locator('#suggestionOfferMin2').uncheck({ force: true });
-  const importedSuggestion = page.locator('article.plan-suggestion-card').filter({ hasText: 'E2E-Mengen-Rezept' });
+  const importedSuggestion = page.locator('article.suggestion-card').filter({ hasText: 'E2E-Mengen-Rezept' });
   await expect(importedSuggestion).toBeVisible();
   await importedSuggestion.locator('button[data-assign-recipe]').click();
   await expect(page.locator('#assignModal')).toHaveClass(/open/);
