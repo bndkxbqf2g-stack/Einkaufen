@@ -1155,3 +1155,10 @@ Der nächste fachliche Schritt mit Datenwirkung bleibt der manuelle Kaufabschlus
 - Der Markt-/Quellstatus zeigt `Quellenvollständigkeit belegt` beziehungsweise `teilweise belegt` nur bei gültigen, expliziten `sourceExpectedTotalCount`- und `sourceObservedTotalCount`-Metadaten aus derselben Quelle.
 - Fehlende oder ungültige Quellzahlen bleiben unbekannt; `targetOfferCount`, `loadedOfferCardCount`, `recognizedCount` und `targetReached` werden nicht als Prospektumfang umgedeutet. Root und `dist` bleiben synchron.
 - Die Änderung ist rein darstellend und testgesichert. Parser, Normalisierung, Supabase, SQL, Auth, Nutzerdaten und Deployment bleiben unverändert.
+
+
+## Audit 11.11.2026 – Offline-/Service-Worker-Verhalten
+
+- Cache-Version `angebotskueche-shell-v32`, Registrierungsparameter `sw.js?v=32` und Root/dist-Service-Worker sind synchron. Der APP_BUILD-Updatepfad fordert ein Update an, ohne aktive Caches vorzeitig zu löschen.
+- Install precacht den lokalen App-Shell, Activate entfernt ausschließlich alte Angebotsküche-Shell-Caches und übernimmt bestehende Clients. Der Fetch-Pfad arbeitet für same-origin-GETs network-first, kennzeichnet Cache-Fallbacks und liefert den precachten Index nur bei Offline-Navigation; Cross-Origin-, Sync- und Nicht-GET-Anfragen bleiben ausgeschlossen.
+- Der Audit fand keine sichere Runtime-Lücke. Die vorhandenen Service-Worker-Regressionstests decken Versionierung, Parität, Install/Activate, Client-Übernahme, Cache-Fallback und Offline-Asset-Grenzen ab.

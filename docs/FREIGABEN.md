@@ -1477,3 +1477,8 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Der Markt-/Quellstatus darf eine Vollständigkeit nur aus expliziten, gültigen Soll-/Ist-Gesamtzahlen derselben Quelle anzeigen; Ladeziele und erkannte Treffer bleiben davon getrennt.
 - Fehlende oder ungültige Quellmetadaten bleiben unbekannt. Es wurden keine Angebots-, Nutzer-, Supabase-, Datenbank-, Produktions- oder Deploymentdaten verändert.
+
+
+## Auditnotiz 11.11.2026 – Offline-/Service-Worker-Verhalten
+
+- Kein neuer Freigabepunkt: Der Offline-Shell- und Cache-Lifecycle ist testgesichert. Es wurden keine Runtime-, Nutzer-, Angebots-, Supabase-, SQL-, Auth-, Datenbank-, Produktions- oder Deploymentdaten geändert.
