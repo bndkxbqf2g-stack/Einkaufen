@@ -1168,3 +1168,15 @@ Das modulare Modell `budget-transparency.js` aggregiert Monatswerte deterministi
 - Die veröffentlichte Worker-Shell wird durch einen isolierten Regressionstest gegen die `dist`-Artefakte geprüft.
 - Pages-Validierung und MVP-Browser-E2E waren für den PR grün.
 - Der Schritt verändert keine Supabase-Struktur, keine Nutzerdaten und keine Angebotsdaten.
+
+## Fortschritt 11.11.2026 – bestätigter lokaler Einkauf
+
+- PR #424 ergänzt den validierten Kaufdatensatzkern mit Markt, Kassenbetrag, Datum, optionaler Notiz und validierten Positionen.
+- PR #425 ergänzt einen lokalen Speicher für diese Datensätze; ungültige Einträge überschreiben keinen bestehenden Stand.
+- PR #426 ergänzt die ausdrücklich bestätigte lokale Erfassung des tatsächlichen Kassenbetrags im Einkaufsbereich.
+- PR #427 zeigt bestätigte IST-Ausgaben des aktuellen Monats im bestehenden Budgetmodell.
+- PR #428 ergänzt eine lokale Einkaufshistorie; PR #430 ergänzt die Monatsauswahl; PR #431 zeigt das verbleibende Monatsbudget.
+- Lokale Backups erhalten die Kaufhistorie seit PR #429. Der bestehende Supabase-Payload bleibt bewusst unverändert, bis ein eigener Datenvertrag und eine Migration geprüft sind.
+- Vorratsverbrauch, Reservierung, automatische Kaufpositionsermittlung und Cloud-Synchronisierung werden nicht implizit ausgelöst. Alle genannten PRs wurden mit grüner CI, Browser-E2E und Pages-Prüfung integriert.
+
+Damit ist der lokale IST-/Belegbetrag nachvollziehbar, aber der vollständige Verbrauchs- und Haushalts-Sync-Fluss noch nicht abgeschlossen.
