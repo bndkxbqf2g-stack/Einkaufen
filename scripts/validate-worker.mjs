@@ -36,13 +36,14 @@ const rejected = await worker.fetch(new Request('https://example.test/api/recipe
 assert.equal(rejected.status, 400);
 const previousFetch = globalThis.fetch;
 let omitOfferDates = false;
+let invalidSourceCompleteness = false;
 globalThis.fetch = async request => {
   const requestUrl = request?.url || request?.href || String(request);
   if (new URL(requestUrl).hostname === 'filiale.kaufland.de') return new Response('<div>Gültig vom 02.11. bis 07.11.</div><a>Span. Paprika-Mix je 500-g-Packg.-25%1.49 1.99</a><a>WC-Frisch je 50-g-Packg.-42%1.00 1.75</a>', { headers: { 'content-type': 'text/html' } });
   if (new URL(requestUrl).hostname === 'www.edeka.de') return new Response('<div>Gültig vom 02.11.2026 bis 07.11.2026.</div><h2>Angebot: Himbeeren 2.99</h2><p>Festpreis von 2.99€</p><h2>Angebot: Géramont 2.22</h2><p>-36%</p><h2>Angebote der Woche bei EDEKA</h2><h3>Angebot: Salatgurke 0.88</h3>', { headers: { 'content-type': 'text/html' } });
   if (new URL(requestUrl).hostname === 'www.aldi-sued.de') return new Response(omitOfferDates ? '<a>Verfügbar ab 06.11.2026 Kühlung GOLDEN SEAFOOD Lachsfilet 1 kg 15,99 €</a>' : '<div>Gültig vom 06.11.2026 bis 12.11.2026</div><a>Verfügbar ab 06.11.2026 Kühlung GOLDEN SEAFOOD Lachsfilet 1 kg 15,99 €</a><a>Verfügbar ab 06.11.2026 WC-Reiniger 750 ml 1,49 €</a>', { headers: { 'content-type': 'text/html' } });
   if (new URL(requestUrl).hostname === 'www.netto-online.de') return new Response('<div>Gültig vom 06.11.2026 bis 12.11.2026</div><h3>Clementinen</h3><p>1 kg Netz Italien / Spanien</p><p>-32% 1,69</p><h3>WC-Reiniger</h3><p>750 ml -20% 1,49</p>', { headers: { 'content-type': 'text/html' } });
-  if (new URL(requestUrl).hostname === 'raw.githubusercontent.com') return new Response(JSON.stringify({ market: 'Lidl', sourceUrl: 'https://www.lidl.de/c/online-prospekte/s10005610/', validUntil: '07.11.2026', offers: [{ name: 'Pfanni Speisekartoffeln', price: '2,49 €', saving: '-24%', packSize: '2,5 kg' }, { name: 'Tomaten', price: '1.49', saving: '–' }, { name: 'WC-Reiniger', price: '1,49 €' }] }), { headers: { 'content-type': 'application/json' } });
+  if (new URL(requestUrl).hostname === 'raw.githubusercontent.com') return new Response(JSON.stringify({ market: 'Lidl', sourceUrl: 'https://www.lidl.de/c/online-prospekte/s10005610/', validUntil: '07.11.2026', ...(invalidSourceCompleteness ? { sourceExpectedTotalCount: 100, sourceObservedTotalCount: 101 } : { sourceExpectedTotalCount: 2, sourceObservedTotalCount: 2 }), offers: [{ name: 'Pfanni Speisekartoffeln', price: '2,49 €', saving: '-24%', packSize: '2,5 kg' }, { name: 'Tomaten', price: '1.49', saving: '–' }, { name: 'WC-Reiniger', price: '1,49 €' }] }), { headers: { 'content-type': 'application/json' } });
   return new Response('<script type="application/ld+json">{"@type":"Recipe","name":"Test-Curry","recipeIngredient":["Paprika","Öl"]}</script>', { headers: { 'content-type': 'text/html' } });
 };
 try {
@@ -79,9 +80,18 @@ try {
   const lidlPayload = await lidl.json();
   assert.equal(lidlPayload.parser, 'lidl-github-offers-v1');
   assert.equal(lidlPayload.sourceUrl, 'https://www.lidl.de/c/online-prospekte/s10005610/');
+  assert.equal(lidlPayload.sourceExpectedTotalCount, 2);
+  assert.equal(lidlPayload.sourceObservedTotalCount, 2);
   assert.equal(lidlPayload.offers[0].name, 'Pfanni Speisekartoffeln');
   assert.equal(lidlPayload.offers.some(offer => /WC-Reiniger/i.test(offer.name)), false);
   assert.equal(lidlPayload.offers.some(offer => /Tomaten/i.test(offer.name)), false);
+  invalidSourceCompleteness = true;
+  const invalidLidl = await worker.fetch(new Request('https://example.test/api/offers?market=Lidl'));
+  assert.equal(invalidLidl.status, 200);
+  const invalidLidlPayload = await invalidLidl.json();
+  assert.equal(invalidLidlPayload.sourceExpectedTotalCount, undefined);
+  assert.equal(invalidLidlPayload.sourceObservedTotalCount, undefined);
+  invalidSourceCompleteness = false;
   omitOfferDates = true;
   const undated = await worker.fetch(new Request('https://example.test/api/offers?market=Aldi'));
   assert.equal(undated.status, 422);

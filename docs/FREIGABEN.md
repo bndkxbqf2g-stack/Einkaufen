@@ -1477,3 +1477,8 @@ vollständige Kassen-/IST-Fluss sowie Fahrtkosten- und Routingentscheidungen.
 
 - Der Markt-/Quellstatus darf eine Vollständigkeit nur aus expliziten, gültigen Soll-/Ist-Gesamtzahlen derselben Quelle anzeigen; Ladeziele und erkannte Treffer bleiben davon getrennt.
 - Fehlende oder ungültige Quellmetadaten bleiben unbekannt. Es wurden keine Angebots-, Nutzer-, Supabase-, Datenbank-, Produktions- oder Deploymentdaten verändert.
+
+
+## Auditnotiz 11.11.2026 – Worker-Metadaten
+
+- Die Worker-Weitergabe expliziter Quell-Gesamtzahlen ist rein validierend und darstellend. Es wurden keine Prospektdaten erfunden, keine Parserquelle erweitert und keine Supabase-, SQL-, Auth-, Nutzer- oder Produktionsdaten geändert.
