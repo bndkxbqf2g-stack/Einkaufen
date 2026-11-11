@@ -233,8 +233,8 @@ test('ein Rezepttausch ersetzt die bestehende Tagesauswahl und aktualisiert den 
   let manualPlan = await page.evaluate(() => JSON.parse(localStorage.getItem('angebotskueche.manualPlan') || '{}'));
   expect(manualPlan['0']).toBe('linsencurry-paprika');
 
-  const replacementRecipe = page.locator('button[data-assign-recipe="kartoffelgratin-gouda"]');
-  await expect(replacementRecipe).toBeVisible();
+  const replacementRecipe = page.locator('article.suggestion-card').filter({ has: page.locator('button[data-assign-recipe="kartoffelgratin-gouda"]') }).locator('button[data-assign-recipe="kartoffelgratin-gouda"]');
+  await expect(replacementRecipe).toHaveCount(1);
   await replacementRecipe.click();
   await expect(page.locator('#assignModal')).toHaveClass(/open/);
   await page.locator('#assignDaySelect').selectOption('0');
