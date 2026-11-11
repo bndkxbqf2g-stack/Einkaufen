@@ -1,7 +1,7 @@
 # MVP-Status – Angebotsküche
 
 Stand: 11.11.2026  
-Basis: main@1db58ef35e369dd58a11b92b9462fb886ec50fe6
+Basis: main@8ffa2d7f10cb9e656a2c6e693d1e0a5ecbee3255
 
 ## Reparaturpaket 1: Startdarstellung
 
@@ -55,7 +55,17 @@ Status: Testabdeckung ergänzt und in `main` integriert.
 
 - Der Browser-E2E-Test ordnet zunächst ein Rezept einem Tag zu und ersetzt es anschließend durch ein anderes Rezept am selben Tag.
 - Die alte Zuordnung wird aus `angebotskueche.manualPlan` entfernt; Planansicht und Einkaufsliste werden nach dem Tausch neu aufgebaut.
-- CI-Nachweis: MVP-Browserlauf #40 (GitHub Actions Run `42969597931`) grün; Pages-Deployment #1032 und Pages-Build/Deploy #736 grün.
+- CI-Nachweis: MVP-Browserlauf #44 (GitHub Actions Run `42971340701`) grün; Pages-Deployment #1038 und Pages-Build/Deploy #738 grün.
+- Keine Produktionslogik-, Supabase-, Datenbank- oder kostenpflichtige Dienständerung.
+
+## Reparaturpaket 2f: Mobiler Viewport-Nachweis
+
+Status: emulierter Test in `main` integriert.
+
+- Der bestehende Playwright-Lauf prüft einen Touch-Viewport mit `390×844` Pixeln.
+- Start, Hauptnavigation, horizontale Überlauffreiheit sowie Speichern und Wiederherstellen eines Einkaufsartikels wurden im mobilen Chromium-Viewport geprüft.
+- Das ist ein reproduzierbarer Layout-/Bediennachweis, aber kein echter iPhone-/Safari-Praxistest. Dieser bleibt für den Nutzergerätetest offen.
+- CI-Nachweis: MVP-Browserlauf #44 (GitHub Actions Run `42971340701`) grün; Pages-Deployment #1038 und Pages-Build/Deploy #738 grün.
 - Keine Produktionslogik-, Supabase-, Datenbank- oder kostenpflichtige Dienständerung.
 
 ## Reparaturpaket 2: MVP-Kernablauf
