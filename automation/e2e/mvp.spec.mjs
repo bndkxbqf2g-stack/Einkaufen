@@ -96,7 +96,7 @@ test('explizite Rezeptmenge und Teildeckung durch Vorrat bleiben im Einkauf sich
 
   await page.goto('/');
   await expect(page.locator('#page-plan')).toHaveClass(/active/);
-  await page.locator('#daysSelect').selectOption('1');
+  await page.locator('#daysSelect').selectOption('4');
   await page.locator('#eveningToggle').uncheck({ force: true });
 
   await page.locator('button[data-page="favorites"]').click();
