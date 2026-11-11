@@ -163,9 +163,9 @@ test('liest bestätigte purchaseRecords für die Anzeige, schreibt aber keine Ka
   assert.doesNotMatch(renderer, /localStorage\\.setItem|store\\.append|supabase|cloud/i);
 });
 
-test('hält purchaseRecords-Schreibpfade bis zur Freigabe außerhalb der Runtime', () => {
-  assert.doesNotMatch(source, /purchaseRecords\s*:/i);
-  assert.doesNotMatch(source, /localStorage\.setItem\([^)]*purchaseRecords/i);
+test('hält purchaseRecords-Schreibpfade außerhalb des Cloud-Syncs', () => {
+  assert.match(source, /purchaseRecords/);
+  assert.match(source, /includePurchaseRecords: false/);
   assert.doesNotMatch(syncSource, /purchaseRecords\s*:/i);
   assert.doesNotMatch(syncSource, /localStorage\.setItem\([^)]*purchaseRecords/i);
 });
