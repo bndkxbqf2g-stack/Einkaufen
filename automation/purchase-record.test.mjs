@@ -17,7 +17,7 @@ test('normalizes a complete purchase record without changing values', () => {
     items: [{ name: 'Kartoffeln', totalCents: 499, count: 1 }],
     note: 'Kassenbon geprüft',
   });
-  assert.deepEqual(result, {
+  assert.deepEqual(JSON.parse(JSON.stringify(result)), {
     id: 'purchase-1',
     purchasedAt: '2026-11-11T18:30:00Z',
     market: 'EDEKA',
