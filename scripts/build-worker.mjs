@@ -3,7 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const read = name => readFile(resolve(root, name), 'utf8');
+const read = name => readFile(resolve(root, name), 'utf8').then(contents => contents.replace(/\r\n/g, '\n'));
 const [template, page, manifest, serviceWorker, supabaseSync] = await Promise.all([
   read('worker/index.js'),
   read('dist/index.html'),

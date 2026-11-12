@@ -5,6 +5,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const normalizeLineEndings = value => value.replace(/\r\n/g, '\n');
 
 test('published worker serves the same shell artifacts as dist', async () => {
   const [workerModule, publishedIndex, publishedWorker] = await Promise.all([
@@ -16,6 +17,6 @@ test('published worker serves the same shell artifacts as dist', async () => {
   const page = await worker.fetch(new Request('https://app.example/'));
   const serviceWorker = await worker.fetch(new Request('https://app.example/sw.js'));
 
-  assert.equal(await page.text(), publishedIndex);
-  assert.equal(await serviceWorker.text(), publishedWorker);
+  assert.equal(await page.text(), normalizeLineEndings(publishedIndex));
+  assert.equal(await serviceWorker.text(), normalizeLineEndings(publishedWorker));
 });
