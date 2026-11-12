@@ -1600,21 +1600,32 @@
     }
 
     function combinePantryCoverage(legacyCoverage, quantityCoverage) {
-      const labels = [
+      const normalizeLabels = items => (Array.isArray(items) ? items : [])
+        .map(item => String(item || '').trim())
+        .filter(Boolean);
+      const uniqueLabels = items => {
+        const seen = new Set();
+        return normalizeLabels(items).filter(label => {
+          const canonical = typeof shoppingIngredientIdentity === 'function'
+            ? shoppingIngredientIdentity(label)
+            : label.toLocaleLowerCase('de-DE');
+          if (seen.has(canonical)) return false;
+          seen.add(canonical);
+          return true;
+        });
+      };
+      const coveredItems = uniqueLabels([
         ...(Array.isArray(legacyCoverage?.coveredItems) ? legacyCoverage.coveredItems : []),
         ...(Array.isArray(quantityCoverage?.coveredItems) ? quantityCoverage.coveredItems : []),
-        ...(Array.isArray(quantityCoverage?.partialItems) ? quantityCoverage.partialItems : []),
-      ].map(item => String(item || '').trim()).filter(Boolean);
-      const seen = new Set();
-      const coveredItems = labels.filter(label => {
-        const canonical = typeof shoppingIngredientIdentity === 'function'
-          ? shoppingIngredientIdentity(label)
-          : label.toLocaleLowerCase('de-DE');
-        if (seen.has(canonical)) return false;
-        seen.add(canonical);
-        return true;
-      });
-      return { coveredItems, coveredCount: coveredItems.length };
+      ]);
+      const partialItems = uniqueLabels(quantityCoverage?.partialItems);
+      return {
+        coveredItems,
+        coveredCount: coveredItems.length,
+        partialItems,
+        partialCount: partialItems.length,
+        uncertainCount: Number(quantityCoverage?.unknownCount || 0) + Number(quantityCoverage?.incompatibleCount || 0),
+      };
     }
     function renderShoppingList() {
       const plannedDinners = typeof getPlannedDinnerMeals === 'function' ? getPlannedDinnerMeals() : [];

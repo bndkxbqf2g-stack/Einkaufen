@@ -8,12 +8,13 @@ const [source, published] = await Promise.all([
 ]);
 
 assert.equal(published, source, 'published bundle must stay byte-identical to the source');
+const normalizedSource = source.replace(/\r\n/g, '\n');
 
 function extractBetween(startMarker, endMarker) {
-  const start = source.indexOf(startMarker);
-  const end = source.indexOf(endMarker, start);
+  const start = normalizedSource.indexOf(startMarker);
+  const end = normalizedSource.indexOf(endMarker, start);
   assert.ok(start >= 0 && end > start, startMarker + ' must remain present');
-  return source.slice(start, end);
+  return normalizedSource.slice(start, end);
 }
 
 const sourceUrlForDisplay = extractBetween(

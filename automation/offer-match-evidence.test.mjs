@@ -4,11 +4,12 @@ import test from 'node:test';
 
 const source = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 const published = await readFile(new URL('../dist/index.html', import.meta.url), 'utf8');
+const normalizedSource = source.replace(/\r\n/g, '\n');
 
-const start = source.indexOf('function offerMatchLabel');
-const end = source.indexOf('\n\n    function compareOfferCandidates', start);
+const start = normalizedSource.indexOf('function offerMatchLabel');
+const end = normalizedSource.indexOf('\n\n    function compareOfferCandidates', start);
 assert.ok(start >= 0 && end > start, 'offerMatchLabel muss im App-Code vorhanden sein');
-const helper = source.slice(start, end);
+const helper = normalizedSource.slice(start, end);
 const offerMatchLabel = new Function(helper + '; return offerMatchLabel;')();
 
 test('zeigt keine unbelegte Match-Prozentzahl', () => {

@@ -56,8 +56,11 @@ test('zählt Legacy- und mengenfähige Vorratsdeckung je Zutat nur einmal', () =
     { coveredItems: ['milch'], partialItems: ['Öl'] },
   );
 
-  assert.deepEqual(result.coveredItems, ['Milch', 'Öl']);
-  assert.equal(result.coveredCount, 2);
+  assert.deepEqual(result.coveredItems, ['Milch']);
+  assert.equal(result.coveredCount, 1);
+  assert.deepEqual(result.partialItems, ['Öl']);
+  assert.equal(result.partialCount, 1);
+  assert.equal(result.uncertainCount, 0);
 });
 
 test('aggregiert mehrere Bedarfseinträge derselben Identität vor der Abdeckung', () => {
