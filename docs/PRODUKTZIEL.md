@@ -1174,4 +1174,4 @@ Das modulare Modell `budget-transparency.js` aggregiert Monatswerte deterministi
 - `apply-pantry-fix-v4.ps1` ist im aktiven Workspace weder vorhanden noch als PowerShell-Befehl verfügbar; der direkte Lauf wurde deshalb mit Exit-Code 1 abgebrochen.
 - Die vorab vorhandene Pantry-Änderung in `index.html` wurde gezielt nach `dist/index.html` synchronisiert; das generierte Worker-Artefakt wurde anschließend neu gebaut.
 - Die fokussierten Pantry-Tests (31/31), die vollständige Automation-Suite (455/455), der Worker-Build und die Endpoint-Validierung sind grün. Zwei CRLF/LF-abhängige Testextraktionen wurden plattformunabhängig gemacht.
-- Nächster Schritt: den finalen Diff prüfen und nur bei unverändert grüner CI committen und pushen.
+- Commit `fa6239a` wurde nach grüner lokaler CI auf `origin/codex/pantry-coverage-transparency-20261111` gepusht. Der Feature-Branch löst gemäß Workflow-Konfiguration selbst keinen GitHub-Actions-Lauf aus; für Remote-CI ist ein Pull Request gegen `main` der nächste sinnvolle Schritt.
