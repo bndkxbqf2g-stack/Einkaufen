@@ -1168,3 +1168,10 @@ Das modulare Modell `budget-transparency.js` aggregiert Monatswerte deterministi
 - Die veröffentlichte Worker-Shell wird durch einen isolierten Regressionstest gegen die `dist`-Artefakte geprüft.
 - Pages-Validierung und MVP-Browser-E2E waren für den PR grün.
 - Der Schritt verändert keine Supabase-Struktur, keine Nutzerdaten und keine Angebotsdaten.
+
+## Prüfstand 12.11.2026 – Ausführung des Pantry-Fix-Skripts
+
+- `apply-pantry-fix-v4.ps1` ist im aktiven Workspace weder vorhanden noch als PowerShell-Befehl verfügbar; der direkte Lauf wurde deshalb mit Exit-Code 1 abgebrochen.
+- Die vorab vorhandene Pantry-Änderung in `index.html` wurde gezielt nach `dist/index.html` synchronisiert; das generierte Worker-Artefakt wurde anschließend neu gebaut.
+- Die fokussierten Pantry-Tests (31/31), die vollständige Automation-Suite (455/455), der Worker-Build und die Endpoint-Validierung sind grün. Zwei CRLF/LF-abhängige Testextraktionen wurden plattformunabhängig gemacht.
+- Nächster Schritt: den finalen Diff prüfen und nur bei unverändert grüner CI committen und pushen.
